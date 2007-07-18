@@ -1,12 +1,20 @@
 
 It is suggested to install easy_install, see http://peak.telecommunity.com/DevCenter/EasyInstall, try
 
-$ wget http://peak.telecommunity.com/dist/ez_setup.py
-$ python ez_setup.py
+  wget http://peak.telecommunity.com/dist/ez_setup.py
+  python ez_setup.py
 
 
 == importing dot files ==
 
-In case you have troubles installing graphviz, try:
+<!-- In case you have troubles installing graphviz, try: -->
 
-$ easy_install pyparsing
+  easy_install pyparsing
+
+pydot is quite active, so maybe it's good to use the most current version for now.
+It's license under the MIT license.
+
+  svn checkout http://pydot.googlecode.com/svn/trunk/ pydot
+  cd pydot
+  python setup.py install
+
