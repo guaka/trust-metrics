@@ -3,7 +3,7 @@
 from distutils.core import setup
 import pydot
 
-setup(	name = 'trust-metrics',
+setup(	name = 'trustlet',
 	version = pydot.__version__,
 	description = 'Analyse trust metrics on social networks',
 	author = 'Kasper Souren',
@@ -21,4 +21,6 @@ setup(	name = 'trust-metrics',
                    #     'Topic :: Scientific/Engineering :: Visualization',\
                          'Topic :: Software Development :: Libraries :: Python Modules'],
 	long_description = "\n".join(pydot.__doc__.split('\n')),
-	py_modules = ['advogato'])
+	# py_modules = ['trustlet', 'pymmetry']
+        packages = ['trustlet', 'pymmetry']
+        )
