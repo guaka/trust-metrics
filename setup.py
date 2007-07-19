@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
-import pydot # is this enough for creating a dependency?
+import trustlet
 
 
 setup(	name = 'trustlet',
-	version = pydot.__version__,
+	version = trustlet.__version__,
 	description = 'Analyse trust metrics on social networks',
 	author = 'Kasper Souren, Paolo Massa and others',
 	author_email = 'souren@itc.it',
@@ -21,7 +21,8 @@ setup(	name = 'trustlet',
                          'Programming Language :: Python',		\
                    #     'Topic :: Scientific/Engineering :: Visualization',\
                          'Topic :: Software Development :: Libraries :: Python Modules'],
-	long_description = "\n".join(pydot.__doc__.split('\n')),
-	# py_modules = ['trustlet', 'pymmetry']
+	long_description = "\n".join(trustlet.__doc__.split('\n')),
+	# py_modules = ['trustlet', 'pymmetry'],
+        scripts=['scripts/dataset-downloader'],
         packages = ['trustlet', 'pymmetry']
         )
