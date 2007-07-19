@@ -12,10 +12,10 @@ setup(	name = 'trustlet',
 	url = 'http://trustlet.org/wiki/Code',
 	license = 'GPL',
 	platforms = ["any"],
-	classifiers =	[
-                   #     'Development Status :: 5 - Production/Stable',	\
+        # see http://www.python.org/pypi?%3Aaction=list_classifiers
+	classifiers =	['Development Status :: 2 - Pre-Alpha',	\
                          'Intended Audience :: Science/Research',	\
-                         'License :: OSI Approved :: GPL License',\
+                         'License :: OSI Approved :: GNU General Public License (GPL)', \
                          'Natural Language :: English',			\
                          'Operating System :: OS Independent',		\
                          'Programming Language :: Python',		\
