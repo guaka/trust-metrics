@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import Dataset
-import pydot
 
 class Advogato(Dataset.Network):
     def __init__(self):
@@ -13,6 +12,7 @@ class Advogato(Dataset.Network):
         self.download(self.url, self.file)
 
     def load(self):
+        import pydot
         g = pydot.graph_from_dot_file(os.path.join(self.path, self.file))
     
 
