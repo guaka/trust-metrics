@@ -24,5 +24,5 @@ setup(	name = 'trustlet',
 	long_description = "\n".join(trustlet.__doc__.split('\n')),
 	# py_modules = ['trustlet', 'pymmetry'],
         scripts=['scripts/dataset-downloader'],
-        packages = ['trustlet', 'pymmetry']
+        packages = ['trustlet', 'pymmetry', 'networkxfuture']
         )
