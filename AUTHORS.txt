@@ -1,3 +1,11 @@
 
+instigators of this project:
+
 Kasper Souren <souren@itc.it>
 Paolo Massa <massa@itc.it>
+
+
+
+Some code has totally been written by other people, but has been added
+to this project because of the appropriate license and for ease of
+use.

@@ -1,13 +1,22 @@
 
-It is suggested to install easy_install, see http://peak.telecommunity.com/DevCenter/EasyInstall, try
+Try:
+
+  python setup.py install
+
+
+== Depending packages ==
+
+You will need a whole lot of other stuff. It is suggested to install
+easy_install [http://peak.telecommunity.com/DevCenter/EasyInstall]
+try:
 
   wget http://peak.telecommunity.com/dist/ez_setup.py
   python ez_setup.py
 
 
-== importing dot files ==
+== Importing dot files ==
 
-<!-- In case you have troubles installing graphviz, try: -->
+In case you have troubles installing graphviz, try:
 
   easy_install pyparsing
 
