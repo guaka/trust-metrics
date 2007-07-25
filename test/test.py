@@ -1,14 +1,16 @@
-import networkxfuture.page_rank
-from networkx import *
-from numpy import *
-# import numpy 
+#!/usr/bin/env python
+
+import networkxfuture.page_rank as NX_future_page_rank
+import networkx
+
+# import numpy  # currently not used 
 
 import trustlet.Advogato
 a = trustlet.Advogato.Advogato()
 
-G=DiGraph()
+G = networkx.DiGraph()
 
-if 0==1:
+if False:
     edges=[(1,2),(1,3),\
            (3,1),(3,2),(3,5),\
            (4,5),(4,6),\
@@ -16,7 +18,7 @@ if 0==1:
            (6,4)]    
     G.add_edges_from(edges)
 else:
-    G=read_dot(a.filepath) # better use advogato object
+    G = networkx.read_dot(a.filepath) # better use advogato object
 
 print "--> Numero nodi=%s" % len(G.nodes())
 
@@ -25,7 +27,7 @@ print "--> Numero nodi=%s" % len(G.nodes())
 #p=numpy.array(ev[:,0]/ev[:,0].sum())[:,0]
 #print "exact  ", p
 
-pr=networkxfuture.page_rank.page_rank(G,alpha=0.9,tol=1.0e-8)
+pr = NX_future_page_rank.page_rank(G,alpha=0.9,tol=1.0e-8)
 print "networkx", pr.values()
 
 #np=my_page_rank.page_rank_numpy(G,alpha=0.9)

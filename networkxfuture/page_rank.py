@@ -85,9 +85,9 @@ def stochastic(G,inplace=False):
         W=G # copy, better be an XGraph
     else:
         if G.is_directed():
-            W=networkx.XDiGraph(G) # make a new XDiGraph
+            W=NX.XDiGraph(G) # make a new XDiGraph
         else:
-            W=networkx.XGraph(G) # make a new XGraph
+            W=NX.XGraph(G) # make a new XGraph
     for (u,v,d) in W.edges():
         if d is None:
             W.add_edge(u,v,1.0)
