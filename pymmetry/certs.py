@@ -84,7 +84,7 @@ class CertInfo:
 
 
 def test():
-	print "hm..."
+	print "Hm..." # hmm?
 
 if __name__ == '__main__':
 	test()

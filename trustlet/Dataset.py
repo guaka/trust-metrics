@@ -20,7 +20,7 @@ class Network:
             os.mkdir(self.dataset_path)
         return self.dataset_path
         
-    def download(self, url, file):
+    def download_file(self, url, file):
         '''Download url to filename into the right path '''
         filepath = os.path.join(self.path, file)
         print "Downloading %s to %s " % (url, filepath)

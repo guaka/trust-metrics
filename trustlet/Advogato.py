@@ -11,14 +11,15 @@ class Advogato(Dataset.Network):
         self.filepath = os.path.join(self.path, self.file)
         
     def download(self):
-        self.download(self.url, self.file)
+        self.download_file(self.url, self.file)
 
     def load(self):
         import pydot
-        g = pydot.graph_from_dot_file(os.path.join(self.path, self.file))
+        if not os.path.exists(self.filepath):
+            self.download()
+        print "Loading graph.dot..."
+        g = pydot.graph_from_dot_file(self.filepath)
     
-
-
 if __name__ == "__main__":
     adv = Advogato()
     adv.load()
