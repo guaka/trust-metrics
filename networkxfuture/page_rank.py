@@ -100,7 +100,8 @@ def stochastic(G,inplace=False):
     return W
 
 def google_matrix(G,alpha=0.85,nodelist=None):
-    M=to_numpy_matrix(G,nodelist=nodelist)
+    import numpy
+    M=NX.to_numpy_matrix(G,nodelist=nodelist)
     (n,m)=M.shape # should be square
     # add constant to dangling nodes' row
     dangling=numpy.where(M.sum(axis=1)==0)
@@ -168,7 +169,7 @@ def page_rank_scipy(G,alpha=0.85,max_iter=100,tol=1.0e-4,nodelist=None):
 
     """
     import scipy.sparse
-    M=to_scipy_sparse_matrix(G,nodelist=nodelist)
+    M=NX.to_scipy_sparse_matrix(G,nodelist=nodelist)
     (n,m)=M.shape # should be square
     S=scipy.array(M.sum(axis=1)).flatten()
     index=scipy.where(S<>0)[0]
