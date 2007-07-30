@@ -46,8 +46,10 @@
 """
 
 TWEAK = 1
-FALSE = 0
-TRUE = 1
+
+# False and True are now defined in the language
+# FALSE = 0  
+# TRUE = 1   
 
 class Debug:
 	"""	why on earth this isn't a base-class in python,
@@ -213,7 +215,7 @@ class NetFlowPriv(Debug):
 
 			Do see sim/NetFlow.java for more implementation comments.
 
-			Return value: TRUE if an augmenting path exists.
+			Return value: True if an augmenting path exists.
 
 		"""
 		visited_in = {}
@@ -224,14 +226,14 @@ class NetFlowPriv(Debug):
 		result = 0
 
 		for i in node_list:
-			visited_in[i] = FALSE
-			visited_out[i] = FALSE
+			visited_in[i] = False
+			visited_out[i] = False
 
 		# visit seed-in 
 		queue.append(seed)
-		queue_dir.append(FALSE)
+		queue_dir.append(False)
 		pred.append(0)
-		visited_in[seed] = TRUE
+		visited_in[seed] = True
 
 		self.debug("netflow_augment")
 
@@ -309,7 +311,7 @@ class NetFlowPriv(Debug):
 							
 						node = pred_node
 				self.debug("")
-				result = TRUE
+				result = True
 				break
 			
 			else:
@@ -319,9 +321,9 @@ class NetFlowPriv(Debug):
 					and not visited_out[node]:
 				
 					queue.append(node)
-					queue_dir.append(TRUE)
+					queue_dir.append(True)
 					pred.append(q_beg)
-					visited_out[node] = TRUE
+					visited_out[node] = True
 					self.debug("add %so to queue (from %si)" % \
 						(str(node), str(node)))
 				
@@ -330,9 +332,9 @@ class NetFlowPriv(Debug):
 				
 					# backwards flow from out to in residual graph 
 					queue.append(node)
-					queue_dir.append(FALSE)
+					queue_dir.append(False)
 					pred.append(q_beg)
-					visited_in[node] = TRUE
+					visited_in[node] = True
 					self.debug("add %si to queue (from %so)" % \
 						(str(node), str(node)))
 
@@ -348,10 +350,10 @@ class NetFlowPriv(Debug):
 						if not visited_in[dst]:
 						
 							queue.append(dst)
-							queue_dir.append(FALSE)
+							queue_dir.append(False)
 							pred.append(q_beg)
 							self.debug("add %si to queue" % str(dst))
-							visited_in[dst] = TRUE
+							visited_in[dst] = True
 				else:
 				
 					# ingoing edges 
@@ -363,10 +365,10 @@ class NetFlowPriv(Debug):
 						if (not visited_out[src]) and self.edge_flow[edge] > 0:
 						
 							queue.append(src)
-							queue_dir.append(TRUE)
+							queue_dir.append(True)
 							pred.append(q_beg)
 							self.debug("add %do to queue" % src)
-							visited_out[src] = TRUE
+							visited_out[src] = True
 
 			q_beg += 1
 
