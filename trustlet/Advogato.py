@@ -9,7 +9,8 @@ class Advogato(Dataset.Network):
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
         self.filepath = os.path.join(self.path, self.file)
-        
+        self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot)')
+
     def download(self):
         self.download_file(self.url, self.file)
         # it's really fast, so we just do this as well
@@ -33,7 +34,7 @@ class Advogato(Dataset.Network):
                         replace('Journeyer"', '0.8').
                         replace('Apprentice"', '0.6'),
                         l_names)
-        newfilename = os.path.join(self.path, 'graph.numbers.dot)')
+        newfilename = self.numbersfilepath 
         newfile = open(newfilename, 'w')
         newfile.writelines(l_numbers)
         newfile.close()

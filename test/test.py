@@ -18,7 +18,7 @@ if False:
            (6,4)]    
     G.add_edges_from(edges)
 else:
-    G = networkx.read_dot(a.filepath) # better use advogato object
+    G = networkx.read_dot(a.filepath)
 
 print "--> Numero nodi=%s" % len(G.nodes())
 
