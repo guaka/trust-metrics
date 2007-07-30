@@ -769,7 +769,7 @@ def test():
 	# time / memory this takes up (about 1k per node).
 	# try 100,000: it's fun!
 
-	from whrandom import randint
+	from random import randint
 
 	f = NetFlow()
 	f.netflow_add_edge("-", 0)
