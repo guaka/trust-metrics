@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import networkxfuture.page_rank as page_rank
 import numpy
 

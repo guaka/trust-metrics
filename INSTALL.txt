@@ -6,15 +6,30 @@ Try:
 
 == Depending packages ==
 
-You will need a whole lot of other stuff. It is suggested to install
-easy_install [http://peak.telecommunity.com/DevCenter/EasyInstall]
-try:
+* NetworkX 
+* scipy
+* graphviz
+* pygraphviz
+* pyparsing
+
+
+=== scipy ===
+
+scipy is a big beast. It might be hard to install. If it doesn't
+install from your distro it could be worth it to to try the bleeding
+edge from subversion.
+
+
+=== easy_install === 
+
+Since you will need a whole lot of other stuff. It is suggested to
+install easy_install. Try:
 
   wget http://peak.telecommunity.com/dist/ez_setup.py
   python ez_setup.py
 
 
-== Importing dot files ==
+=== Importing dot files ===
 
 In case you have troubles installing graphviz, try:
 
