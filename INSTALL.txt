@@ -43,3 +43,11 @@ MIT license.
   cd pydot
   python setup.py install
 
+
+== Debian ==
+
+=== stable ===
+
+This might be enough:
+
+  apt-get install python-scipy python-networkx python-pyparsing python-pydot
