@@ -6,6 +6,7 @@ import networkx
 
 def test():
     a = Advogato()
+    a.download(only_if_needed = True)
     G = networkx.read_dot(a.numbersfilepath)
 
     if False:

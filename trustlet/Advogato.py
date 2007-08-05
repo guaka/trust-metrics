@@ -11,17 +11,19 @@ class Advogato(Dataset.Network):
         self.filepath = os.path.join(self.path, self.file)
         self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot)')
 
-    def download(self):
+    def download(self, only_if_needed = False):
+        if only_if_needed and os.path.exists(self.filepath):
+            return
         self.download_file(self.url, self.file)
         # it's really fast, so we just do this as well
         self.numbersfilepath = self.convert_dot_names_into_numbers()
 
     def load(self):
         import pydot
-        if not os.path.exists(self.filepath):
-            self.download()
+        self.download(only_if_needed = True)
         print "Loading graph.dot..."
         g = pydot.graph_from_dot_file(self.filepath)
+
     
     def convert_dot_names_into_numbers(self):
         '''Really fast stuff to convert certificate levels from graph.dot into numbers.'''
