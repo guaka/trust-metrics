@@ -9,7 +9,7 @@ class Advogato(Dataset.Network):
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
         self.filepath = os.path.join(self.path, self.file)
-        self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot)')
+        self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot')
         self.download(only_if_needed = True)
 
     def download(self, only_if_needed = False):

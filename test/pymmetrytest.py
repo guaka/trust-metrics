@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from pymmetry.net_flow import NetFlow
 from trustlet.Advogato import Advogato
@@ -6,6 +7,9 @@ import networkx
 
 def test():
     a = Advogato()
+    print a.numbersfilepath
+    print
+    print
     G = networkx.read_dot(a.numbersfilepath)
 
     if False:
