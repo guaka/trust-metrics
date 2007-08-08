@@ -8,7 +8,7 @@ class Network:
     """
     This should probably extend NetworkX.XGraph
 
-    see https://networkx.lanl.gov/reference/networkx/
+    see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XGraph-class.html
     """
 
     def __init__(self):
