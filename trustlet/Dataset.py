@@ -5,7 +5,11 @@ import os
 import urllib
 
 class Network:
-    """This should probably extend some graph class of NetworkX"""
+    """
+    This should probably extend NetworkX.XGraph
+
+    see https://networkx.lanl.gov/reference/networkx/
+    """
 
     def __init__(self):
         '''Create directory for class name if needed'''
