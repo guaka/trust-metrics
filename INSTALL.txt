@@ -41,13 +41,21 @@ MIT license.
 
   svn checkout http://pydot.googlecode.com/svn/trunk/ pydot
   cd pydot
-  python setup.py install
+  sudo python setup.py install
 
 
-== Debian ==
+== Debianic ==
 
 === stable ===
 
 This might be enough:
 
-  apt-get install python-scipy python-networkx python-pyparsing python-pydot
+  apt-get install ipython python-scipy python-pyparsing python-networkx python-pydot
+
+=== Ubuntu ===
+
+Uncomment universe stuff in /etc/apt/sources.list
+  
+  apt-get install ipython python-scipy python-pyparsing
+  easy_install networkx
+  # now do the pydot thing
