@@ -52,10 +52,12 @@ This might be enough:
 
   apt-get install ipython python-scipy python-pyparsing python-networkx python-pydot
 
-=== Ubuntu ===
+=== Ubuntu Dapper ===
 
 Uncomment universe stuff in /etc/apt/sources.list
   
-  apt-get install ipython python-scipy python-pyparsing
+  apt-get install ipython python-scipy python-pyparsing python-f2py g77
   easy_install networkx
   # now do the pydot thing
+  easy_install numpy
+
