@@ -5,6 +5,8 @@ import os
 import urllib
 
 class Network:
+    """This should probably extend some graph class of NetworkX"""
+
     def __init__(self):
         '''Create directory for class name if needed'''
         self.path = os.path.join(self.dataset_dir(), self.__class__.__name__)
