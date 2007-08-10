@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 """
+Testing PageRank on a random graph.
+
+
 Output is supposed to be something like:
 
 exact   [ 0.03721197  0.05395735  0.04150565  0.37508082  0.20599833  0.28624589]
@@ -25,49 +28,59 @@ NX = page_rank.NX
 
 # paolo - for me ONLY WORKS WITH PYTHON2.4
 
-#G=NX.DiGraph()
-#G=NX.read_dot(dataset.filepath)
-#H=G.copy()
-#H.ban_multiedges() #pagerank does not work on multiedges graphs
-#print H.info()
 
-#print "the value on the edge MUST be a number, in order for to_numpy to work! TODO: convert advogato.dot so that edges values are numbers and not colors!"
+def test():
+    G = NX.DiGraph()
+    edges = [(1,2), (1,3),
+             (3,1), (3,2), (3,5),
+             (4,5), (4,6),
+             (5,4), (5,6),
+             (6,4)]
+    G.add_edges_from(edges)
 
-#M=page_rank.google_matrix(H,alpha=0.9)
-#e,ev=numpy.linalg.eig(M.T)
-#p=numpy.array(ev[:,0]/ev[:,0].sum())[:,0]
-#print "exact  ", p
+    M = page_rank.google_matrix(G, alpha=0.9)
+    e, ev = numpy.linalg.eig(M.T)
+    p = numpy.array(ev[:,0] / ev[:,0].sum())[:,0]
+    print "exact  ", p
 
-#pr=page_rank.page_rank(H,alpha=0.9,tol=1.0e-8)
-#print "networkx", pr.values()
+    pr = page_rank.page_rank(G,alpha=0.9,tol=1.0e-8)
+    print "networkx", pr.values()
 
-#np=my_page_rank.page_rank_numpy(H,alpha=0.9)
-#print "numpy  ", np
+    np = page_rank.page_rank_numpy(G,alpha=0.9)
+    print "numpy  ", np
 
-#ns=my_page_rank.page_rank_scipy(H,alpha=0.9)
-#print "scipy  ", ns
+    ns = page_rank.page_rank_scipy(G,alpha=0.9)
+    print "scipy  ", ns
+
+
+if __name__ == '__main__':
+    test()
+
+
+"""
+#
+# You can also comment huge chunks by making them into a string!  But
+# it's probably nicer to put stuff in a function that you don't use.
 
 G=NX.DiGraph()
+G=NX.read_dot(dataset.filepath)
+H=G.copy()
+H.ban_multiedges() #pagerank does not work on multiedges graphs
+print H.info()
 
-edges=[(1,2),(1,3),\
-       (3,1),(3,2),(3,5),\
-       (4,5),(4,6),\
-       (5,4),(5,6),\
-       (6,4)]
+print "the value on the edge MUST be a number, in order for to_numpy to work! TODO: convert advogato.dot so that edges values are numbers and not colors!"
 
-
-G.add_edges_from(edges)
-
-M=page_rank.google_matrix(G,alpha=0.9)
+M=page_rank.google_matrix(H,alpha=0.9)
 e,ev=numpy.linalg.eig(M.T)
 p=numpy.array(ev[:,0]/ev[:,0].sum())[:,0]
 print "exact  ", p
 
-pr=page_rank.page_rank(G,alpha=0.9,tol=1.0e-8)
+pr=page_rank.page_rank(H,alpha=0.9,tol=1.0e-8)
 print "networkx", pr.values()
 
-np=page_rank.page_rank_numpy(G,alpha=0.9)
+np=my_page_rank.page_rank_numpy(H,alpha=0.9)
 print "numpy  ", np
 
-ns=page_rank.page_rank_scipy(G,alpha=0.9)
+ns=my_page_rank.page_rank_scipy(H,alpha=0.9)
 print "scipy  ", ns
+"""
