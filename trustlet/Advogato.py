@@ -16,6 +16,7 @@ class Advogato(Dataset.Network):
         if only_if_needed and os.path.exists(self.filepath):
             return
         self.download_file(self.url, self.file)
+        self.fix_graphdot()
         # it's really fast, so we just do this as well
         self.numbersfilepath = self.convert_dot_names_into_numbers()
 
@@ -25,7 +26,22 @@ class Advogato(Dataset.Network):
         print "Loading graph.dot..."
         g = pydot.graph_from_dot_file(self.filepath)
 
-    
+    def fix_graphdot(self):
+        '''Fix syntax of graph.dot (8bit -> blah doesn't work!)'''
+        import re
+        
+        print 'Fixing graph.dot'
+        f = open(self.filepath, 'r')
+        l_names = f.readlines()
+        f.close()
+        p = re.compile(' (\w+)')
+        l_fixed = map(lambda s: p.sub(r' "\1"', s), l_names)
+
+        f = open(self.filepath, 'w')
+        f.writelines(l_fixed)
+        f.close()
+        return self.filepath
+
     def convert_dot_names_into_numbers(self):
         '''Really fast stuff to convert certificate levels from graph.dot into numbers.'''
         print 'Quickly converting graph.dot into graph.numbers.dot'
@@ -39,12 +55,14 @@ class Advogato(Dataset.Network):
                         l_names)
         newfilename = self.numbersfilepath 
         newfile = open(newfilename, 'w')
+        newfile.write("/* fixed node names starting with number */ \n");
         newfile.writelines(l_numbers)
         newfile.close()
         return newfilename
     
 if __name__ == "__main__":
     adv = Advogato()
-    adv.download()
+    # adv.fix_graphdot()
+    # adv.download()
     # adv.load()
             
