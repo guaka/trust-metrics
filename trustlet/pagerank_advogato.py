@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import networkxfuture.page_rank as NX_future_page_rank
+# import networkxfuture.page_rank as NX_future_page_rank
+import page_rank as NX_future_page_rank
 import networkx
 
 # import numpy  # currently not used 
@@ -8,17 +9,19 @@ import networkx
 import trustlet.Advogato
 a = trustlet.Advogato.Advogato()
 
-G = networkx.DiGraph()
-
-if False:
+def test_graph():
+    G = networkx.DiGraph()
     edges=[(1,2),(1,3),\
            (3,1),(3,2),(3,5),\
            (4,5),(4,6),\
            (5,4),(5,6),\
            (6,4)]    
     G.add_edges_from(edges)
-else:
-    G = networkx.read_dot(a.filepath)
+    return G
+
+G = networkx.read_dot(a.filepath)
+# H = G.copy() #possibility
+G.ban_multiedges() #pagerank doesn't work on multiedge graphs
 
 print "--> Numero nodi=%s" % len(G.nodes())
 

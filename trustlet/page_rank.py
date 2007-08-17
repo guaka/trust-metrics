@@ -47,6 +47,7 @@ def page_rank(G,alpha=0.85,max_iter=100,tol=1.0e-4,nstart=None):
 
     nnodes=W.number_of_nodes()
     # "dangling" nodes, no links out from them
+
     dangle=[n for n in W if sum(W.adj[n])==0.0]  # XGraph internals exposed   
     # pagerank power iteration: make up to max_iter iterations        
     for i in range(max_iter):
@@ -94,6 +95,7 @@ def stochastic(G,inplace=False):
 
     # exposing graph/digraph internals here
     for n in W:
+        # print W.adj[n]
         deg=float(sum(W.adj[n].values()))
         for p in W.adj[n]: 
             W.adj[n][p]/=deg
