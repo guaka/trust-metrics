@@ -52,8 +52,8 @@ def test():
     try:
         ns = page_rank.page_rank_scipy(G,alpha=0.9)
         print "scipy  ", ns
-    catch:
-        print "bla"
+    except Error:
+        print "scipy not working"
 
 
 if __name__ == '__main__':
