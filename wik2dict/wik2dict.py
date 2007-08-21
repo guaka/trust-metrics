@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2004-2006 Kasper Souren
+# Copyright (c) 2004-2007 Kasper Souren
 #
 # wik2dict is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -156,8 +156,11 @@ def main():
 	opt_parser = OptionParser("")
 	(options, args) = opt_parser.parse_args()
 
-	for filename in args:
-		d2d = Dump2dict(filename)
+	if not args:
+		print __doc__
+	else:
+		for filename in args:
+			d2d = Dump2dict(filename)
 
 if __name__ == "__main__":
 	main()
