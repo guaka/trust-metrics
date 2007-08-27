@@ -1,0 +1,3342 @@
+#
+# robots.net certs network as of 2005-12-19.
+#
+
+egoo76,dhil,Apprentice
+egoo76,kmh_1974,Apprentice
+egoo76,bvdborgh,Master
+egoo76,cschur,Master
+egoo76,playbot,Apprentice
+egoo76,Leungdaryl,Journeyer
+egoo76,NeonElf,Apprentice
+egoo76,jcrobotics,Apprentice
+egoo76,pspro,Journeyer
+egoo76,rao,Apprentice
+Leaf,sashi_ono,Master
+90mp14,millenium,Apprentice
+90mp14,Serac,Master
+alf,Goodrobot,Journeyer
+alf,The Swirling Brain,Apprentice
+alf,Boobs Bot,Apprentice
+alf,Psyco,Apprentice
+alf,drhackalot,Apprentice
+alf,hudson,Master
+steve,raph,Apprentice
+steve,YaTu,Journeyer
+steve,josborn,Journeyer
+steve,scottpreston,Journeyer
+steve,jdkovar,Apprentice
+steve,vivek,Journeyer
+steve,Chuck McM.,Master
+steve,machinebrain,Journeyer
+steve,Gary,Apprentice
+steve,eokerson,Master
+steve,danfuboco,Journeyer
+steve,jeffkoenig,Master
+steve,G4MJW,Apprentice
+steve,dannymc,Apprentice
+steve,RailSpyke,Apprentice
+steve,dwhall,Journeyer
+steve,keykey_kcet,Apprentice
+steve,gregcx,Apprentice
+steve,petegray,Journeyer
+steve,dvideo,Apprentice
+steve,vahidbazargan,Apprentice
+steve,gandolfwhite,Apprentice
+steve,songsmyth,Apprentice
+steve,upper,Apprentice
+steve,winterj,Apprentice
+steve,dtvpedro,Apprentice
+steve,Whistlre,Apprentice
+steve,michel,Apprentice
+steve,nikjo11,Apprentice
+steve,dgjerni,Apprentice
+steve,raymondritz,Apprentice
+steve,niklasw,Apprentice
+steve,janvr,Apprentice
+steve,frostw,Apprentice
+steve,Mecha_Maker,Apprentice
+steve,Thinkhole,Apprentice
+steve,martin chandler,Apprentice
+steve,attman,Journeyer
+steve,zellers,Apprentice
+steve,ObsoleteSuperMan,Journeyer
+steve,vahid mirjalili,Apprentice
+steve,unkfreq,Apprentice
+steve,jmfmeaney,Apprentice
+steve,PeterVB,Apprentice
+steve,rundells,Journeyer
+steve,rsbohn,Apprentice
+steve,SirPhade,Apprentice
+steve,phoneguin,Master
+steve,Foxgirl,Apprentice
+steve,Trudge,Apprentice
+steve,pedrog,Apprentice
+steve,jstrohm,Apprentice
+steve,swing4543,Apprentice
+steve,tobor1701,Journeyer
+steve,EZ,Apprentice
+steve,kaizem,Apprentice
+steve,jamie2k3,Apprentice
+steve,DougEvans,Journeyer
+steve,Timster,Apprentice
+steve,RoboGal,Apprentice
+steve,kantra,Apprentice
+steve,xutron,Apprentice
+steve,RatOmeter,Apprentice
+steve,kmoravec,Master
+steve,tdickens,Apprentice
+steve,roadnarrowskim,Apprentice
+steve,mwalimu,Journeyer
+steve,Frank McNeill,Apprentice
+steve,kelaar,Apprentice
+steve,reynaldo,Apprentice
+steve,Devil,Apprentice
+steve,Gadget Guy,Apprentice
+steve,kmh_1974,Apprentice
+steve,ilan2003,Apprentice
+steve,jg167,Apprentice
+steve,Balthaser,Apprentice
+steve,plasma16,Apprentice
+steve,Takeshi,Apprentice
+steve,waldmeyer,Apprentice
+steve,sigfpe,Journeyer
+steve,mrplong,Journeyer
+steve,Mythbreaker,Apprentice
+steve,peterman921,Journeyer
+steve,while_true,Journeyer
+steve,SomeoneKnows,Apprentice
+steve,ikmart,Apprentice
+steve,shawncollins,Apprentice
+steve,Leungdaryl,Apprentice
+steve,JoelHaasnoot,Apprentice
+steve,monsoon,Apprentice
+steve,c6jones720,Apprentice
+steve,jaiger,Apprentice
+steve,tim.holt,Journeyer
+steve,wsc,Journeyer
+steve,Josef,Apprentice
+steve,ddukemail,Journeyer
+steve,gregpak,Journeyer
+steve,heathkit,Apprentice
+steve,brybert,Apprentice
+steve,JoelC,Journeyer
+steve,ericzayers,Journeyer
+steve,agnessa,Apprentice
+steve,pindiespace,Apprentice
+steve,ericdamphousse,Apprentice
+steve,peter_desimone,Apprentice
+steve,bitspit,Apprentice
+steve,anttch360,Apprentice
+steve,stingraze,Apprentice
+steve,dalewheat,Journeyer
+steve,dpa,Master
+steve,zhaoway,Apprentice
+steve,Sleepsalot,Journeyer
+steve,olparatrooper,Journeyer
+steve,pcalnon,Apprentice
+steve,Axiom,Apprentice
+steve,focuspeck,Journeyer
+steve,Enki,Apprentice
+steve,Amccutchen,Apprentice
+steve,William Rogers,Apprentice
+steve,wildmage,Apprentice
+steve,Jagtek,Apprentice
+steve,lafugitt,Apprentice
+steve,wedesoft,Apprentice
+steve,ellis76016,Journeyer
+steve,microfarmer,Apprentice
+steve,dogsbody_d,Journeyer
+steve,ziptone,Journeyer
+steve,Chris Wallsmith,Journeyer
+steve,tagayoff,Apprentice
+steve,theBot,Apprentice
+steve,Masse,Apprentice
+steve,ZenX10,Apprentice
+steve,JohnPuttman,Apprentice
+steve,JayFrancis,Journeyer
+steve,egoo76,Apprentice
+steve,jdrits,Apprentice
+steve,Aleksi,Apprentice
+steve,japester,Apprentice
+steve,Jeffbot,Apprentice
+steve,artspace,Apprentice
+steve,pbeeson,Apprentice
+steve,jakebozz,Apprentice
+steve,reed,Apprentice
+steve,cvbriggler,Apprentice
+steve,thisisper,Apprentice
+steve,lynca,Journeyer
+steve,dwradar,Apprentice
+steve,jscolman,Apprentice
+steve,anonymous22,Apprentice
+steve,zappepcs,Journeyer
+steve,rangerobot,Apprentice
+steve,gouldy102030,Apprentice
+steve,Jan,Apprentice
+steve,AlbinoGT,Apprentice
+steve,teknochuck,Apprentice
+steve,DaveC,Apprentice
+steve,Cannon Fury,Apprentice
+steve,shanemassey,Apprentice
+steve,ThePinkTeam,Apprentice
+steve,nfreier,Apprentice
+steve,gwlucas,Journeyer
+steve,nalrawahi,Apprentice
+steve,LordM,Apprentice
+steve,tioguerra,Apprentice
+steve,fischer,Apprentice
+steve,Uruk-haiman,Apprentice
+steve,alias132,Apprentice
+steve,Ragooman,Journeyer
+steve,William Crolley,Journeyer
+steve,NeonElf,Apprentice
+steve,wecole,Journeyer
+steve,mini-cedron,Apprentice
+steve,Jake11611,Apprentice
+steve,roboteacher,Apprentice
+steve,phillysteak527,Apprentice
+steve,TravisMS,Apprentice
+steve,Paul O,Apprentice
+steve,June Craig,Apprentice
+steve,ArtYoung,Apprentice
+steve,Lurch,Apprentice
+steve,jota23,Apprentice
+steve,dmlvhll,Apprentice
+steve,wilson02,Apprentice
+steve,eoliene,Apprentice
+steve,aolney,Apprentice
+steve,Chrisg,Apprentice
+steve,marcin,Journeyer
+steve,davesand,Apprentice
+steve,Claudette,Apprentice
+steve,Nelson,Apprentice
+steve,stansley,Journeyer
+steve,tonyenkiducx,Journeyer
+steve,Christophe Menant,Journeyer
+steve,bettsg,Apprentice
+steve,johnsrobotics,Apprentice
+steve,mondada,Journeyer
+steve,bboyes,Journeyer
+steve,IgorCarron,Journeyer
+steve,sovrr,Apprentice
+steve,campp1,Master
+steve,sparrow,Journeyer
+steve,kingpin094,Apprentice
+steve,limor,Apprentice
+steve,stokes,Apprentice
+zerooverride,tolga,Journeyer
+zerooverride,Wolvie74,Apprentice
+superdave33,JEDI_MASTER,Apprentice
+robomatic12,The Swirling Brain,Master
+reza_ashkarian,aminetezazian,Apprentice
+reza_ashkarian,amin_emami,Apprentice
+reza_ashkarian,e_tarkesh,Master
+lalit_luck_2000,scienceboy2,Master
+NeonElf,The Swirling Brain,Master
+NeonElf,steve,Master
+NeonElf,roschler,Journeyer
+NeonElf,egoo76,Apprentice
+shiraztk,Shiraz,Apprentice
+shiraztk,AVBSHASHIDHAR,Apprentice
+kiran316,zeta,Master
+kiran316,sharique,Master
+DEWARE,Lodewijk13,Apprentice
+xxx01r5,wasperen,Apprentice
+rolandgpainter,nitro,Journeyer
+ajaysagar,mikegotis,Master
+robo_man,jcrue451,Apprentice
+fat,Goodrobot,Master
+fat,RoboGal,Apprentice
+fat,Botnerd,Master
+fat,The Swirling Brain,Apprentice
+fat,Mad scientist,Apprentice
+fat,hudson,Master
+fat,ObsoleteSuperMan,Master
+fat,steve,Master
+fat,DrEinStein,Apprentice
+fat,brit-bot,Apprentice
+fat,Psyco,Apprentice
+fat,drhackalot,Apprentice
+fat,veager,Apprentice
+fat,simonthehappy,Apprentice
+fat,HighTECHredNECK,Apprentice
+fat,mikegotis,Master
+fat,WhoPhlungPoo,Master
+fat,zodiak,Master
+fat,VoodooZ,Apprentice
+Johnny12345,Dhawal,Journeyer
+roberth9000,tsims,Apprentice
+roberth9000,Rog-a-matic,Master
+roberth9000,zeta,Journeyer
+roberth9000,shager,Apprentice
+roberth9000,phinch,Apprentice
+roberth9000,dheroy,Apprentice
+roberth9000,Garfield2007,Apprentice
+jsampson,rudybrian,Master
+jsampson,Chuck McM.,Master
+jsampson,rodbrooks,Master
+jsampson,zodiak,Journeyer
+jsampson,Rog-a-matic,Master
+jsampson,Bill,Master
+jsampson,earlwb,Master
+jsampson,jethro,Journeyer
+jsampson,hamjudo,Master
+jsampson,hockeyrink,Master
+jsampson,hudson,Master
+jsampson,Kenneth,Master
+Pontifier,robotdojo,Master
+Pontifier,Nic,Master
+Pontifier,JamesBruton,Master
+sunny123,chris_m,Master
+j1m2y,Cronotiger2002,Journeyer
+t5,steve,Master
+t5,The Swirling Brain,Master
+t5,golden,Apprentice
+t5,Goodrobot,Apprentice
+FAKER,mobile,Master
+zizipossy,Blackout,Master
+zakhirhussain99,roboshopindia.8m.com,Master
+jeanicewade,simonthehappy,Master
+Royce,Keith Rowell,Apprentice
+TomD,elundquist,Master
+bottomquark,opamp,Journeyer
+bottomquark,kael,Journeyer
+no_way,earlwb,Master
+no_way,steve,Master
+no_way,The Swirling Brain,Master
+no_way,Timster,Journeyer
+no_way,Frank McNeill,Apprentice
+no_way,Dozier,Journeyer
+sooty193,johanvdb,Master
+cyber,lkcl,Apprentice
+cyber,steve,Master
+rui,moreira,Master
+Tomilubmaly,Blaze,Master
+zw,jup,Journeyer
+zw,blueeyedpop,Master
+darkwolf572,dukeman911,Journeyer
+darkwolf572,darkdragon,Journeyer
+darkwolf572,RobotFan,Journeyer
+darkwolf572,rockerbot27,Journeyer
+darkwolf572,The Swirling Brain,Master
+darkwolf572,zeta,Master
+darkwolf572,DragonFlame,Journeyer
+darkwolf572,billy,Apprentice
+darkwolf572,bot_dude 00,Apprentice
+darkwolf572,rex,Journeyer
+darkwolf572,Kav7441596,Apprentice
+t1x2irc,DavidM,Master
+VoodooZ,rodbrooks,Master
+VoodooZ,ole,Journeyer
+VoodooZ,The Swirling Brain,Master
+VoodooZ,superdave33,Apprentice
+VoodooZ,steve,Master
+VoodooZ,zeta,Master
+VoodooZ,Rog-a-matic,Master
+VoodooZ,EdwardRupp,Master
+VoodooZ,JinSato,Master
+Necro_,DrDoom,Master
+Enigma,petegray,Master
+theBot,roschler,Master
+theBot,steve,Master
+theBot,The Swirling Brain,Master
+theBot,Botnerd,Master
+theBot,MaxxFury,Apprentice
+bacstge,topazx2,Master
+bacstge,dcalkins,Master
+santolover2,alan12345,Master
+dukeman911,bishca87,Apprentice
+dukeman911,The Swirling Brain,Master
+dukeman911,alexanderknight,Apprentice
+dukeman911,Maxim,Apprentice
+dukeman911,steve,Master
+dukeman911,R0b0Girll,Apprentice
+dukeman911,Ghostsaber,Apprentice
+dukeman911,darkwolf572,Journeyer
+dukeman911,zeta,Master
+dukeman911,nitinpawar29,Apprentice
+dukeman911,yscryeon,Journeyer
+dukeman911,omar_shokry,Apprentice
+dukeman911,Trebouche,Journeyer
+dukeman911,robotconflict,Journeyer
+dukeman911,Derek28,Apprentice
+dukeman911,josborn,Journeyer
+dukeman911,theymightberudy,Journeyer
+dukeman911,botman,Apprentice
+dukeman911,Penn71911,Journeyer
+Viper Strike,scienceboy2,Journeyer
+Highland_Ranger89,scottbaker,Apprentice
+Highland_Ranger89,mikegotis,Master
+Highland_Ranger89,JakeV001,Apprentice
+andreww,focuspeck,Master
+joekarel,Mythbreaker,Master
+drhackalot,catkelly,Apprentice
+drhackalot,Psyco,Journeyer
+profesor,steve,Master
+profesor,hudson,Master
+profesor,VoodooZ,Master
+profesor,jiggersplat,Master
+bob and co,tzimmerman,Master
+bob and co,Dawson2002,Master
+bob and co,Blaze,Master
+marko33,matsw,Journeyer
+ultraintelligence,steven_gifford,Journeyer
+ultraintelligence,MissCass,Journeyer
+ultraintelligence,gesteacher,Journeyer
+ultraintelligence,Blaze,Master
+ultraintelligence,zodiak,Master
+ultraintelligence,robocube,Master
+ultraintelligence,The Swirling Brain,Master
+ultraintelligence,ruiner,Apprentice
+ultraintelligence,jcrobotics,Journeyer
+ultraintelligence,Devil,Journeyer
+ultraintelligence,PaulHayslett,Apprentice
+ultraintelligence,hendrawan,Journeyer
+ultraintelligence,robotdojo,Master
+ultraintelligence,Rog-a-matic,Master
+ultraintelligence,Gary,Apprentice
+ultraintelligence,YaTu,Journeyer
+ultraintelligence,digitalkid3k,Apprentice
+ultraintelligence,11111,Master
+ultraintelligence,steve,Apprentice
+ultraintelligence,Psyco,Apprentice
+ultraintelligence,Robot,Journeyer
+ultraintelligence,spirit,Apprentice
+ultraintelligence,scienceboy2,Apprentice
+ultraintelligence,Tenacious C,Apprentice
+ultraintelligence,nitro,Journeyer
+ultraintelligence,Axle,Apprentice
+ultraintelligence,irfan4u22,Apprentice
+ultraintelligence,rudybrian,Master
+peter_desimone,steve,Master
+rahulb,jiggersplat,Master
+pedrog,sparkjim,Master
+pedrog,lnxfergy,Journeyer
+pedrog,johanvdb,Journeyer
+macdorman,steve,Master
+macdorman,dogsbody_d,Master
+macdorman,The Swirling Brain,Master
+macdorman,Botnerd,Master
+RoboticFather,FatherRobot,Journeyer
+RoboticFather,RobotFather,Journeyer
+opamp,steve,Master
+opamp,The Swirling Brain,Journeyer
+opamp,earlwb,Master
+opamp,Jhoffa_,Apprentice
+opamp,Rog-a-matic,Master
+opamp,Psyco,Apprentice
+opamp,kael,Journeyer
+opamp,Timster,Journeyer
+opamp,bottomquark,Apprentice
+bob,simonthehappy,Journeyer
+bob,The Swirling Brain,Master
+bob,Psyco,Apprentice
+bob,rudybrian,Master
+cgates,StaceoRobot,Apprentice
+cgates,ghartung,Journeyer
+cgates,Nic,Journeyer
+cgates,davee,Master
+cgates,steve,Master
+cgates,motters,Master
+cgates,mikegotis,Master
+cgates,HighTECHredNECK,Apprentice
+cgates,matthewstein,Master
+cgates,RoboGal,Journeyer
+cgates,WelshGeezer,Apprentice
+cgates,cschur,Master
+cgates,dafyddwalters,Master
+cgates,bvdborgh,Apprentice
+cgates,Jagtek,Apprentice
+cgates,The Swirling Brain,Master
+cgates,Lace,Apprentice
+cgates,sgmcclellan,Apprentice
+cgates,steroidmicros,Master
+jkkroll,bronson,Master
+veager,amd2001,Apprentice
+veager,steve,Master
+veager,ada83,Apprentice
+veager,Psyco,Journeyer
+veager,skipet,Apprentice
+veager,simonthehappy,Journeyer
+veager,mancio,Journeyer
+veager,saranharold,Apprentice
+veager,pushkal,Apprentice
+veager,hudson,Journeyer
+veager,Seb,Apprentice
+veager,Terry Harmer,Journeyer
+veager,Matt Jaeck,Apprentice
+veager,arundeepak1,Apprentice
+veager,Rog-a-matic,Master
+veager,designpro2001,Apprentice
+veager,Weinga-Unity,Journeyer
+veager,Abhishek D.Mohile,Apprentice
+veager,riteshagarwal440,Apprentice
+veager,Perceptron,Apprentice
+veager,jokerdude,Apprentice
+veager,jkkroll,Journeyer
+veager,navodaya.g,Journeyer
+veager,icube,Apprentice
+veager,klstover,Apprentice
+veager,drhackalot,Journeyer
+veager,lkcl,Journeyer
+veager,brit-bot,Journeyer
+veager,rudybrian,Master
+veager,DaveJ,Journeyer
+veager,gustaf,Journeyer
+veager,PsIke,Journeyer
+veager,HollidayOne,Apprentice
+veager,fecc20,Journeyer
+veager,Daniel Mark Mcandrew,Apprentice
+Robert,steve,Master
+Robert,DC,Apprentice
+Robert,augiesoccer3,Apprentice
+Robert,lkcl,Journeyer
+Robert,Masters,Apprentice
+josephgatchalian,tappo,Master
+josephgatchalian,scottpreston,Master
+Lindsay_X,scienceboy2,Master
+Battle_Droid_8912,a.i,Apprentice
+Battle_Droid_8912,The Swirling Brain,Master
+pulkit_gaur,roboshopindia.8m.com,Master
+pulkit_gaur,icechip,Journeyer
+pulkit_gaur,MIG_India,Master
+Tenacious C,Rog-a-matic,Master
+Tenacious C,a.i,Apprentice
+Tenacious C,0222,Master
+Tenacious C,walter.anderson,Master
+RoboGal,steve,Master
+RoboGal,Rog-a-matic,Master
+RoboGal,lnxfergy,Journeyer
+RoboGal,Botnerd,Apprentice
+RoboGal,msprague,Journeyer
+RoboGal,The Swirling Brain,Master
+RoboGal,nitro,Apprentice
+RoboGal,cgates,Journeyer
+RoboGal,Kenneth,Master
+RoboGal,Muarrif,Apprentice
+recharger2,opamp,Apprentice
+Chuck McM.,rodbrooks,Master
+kubus1985,blueeyedpop,Master
+wildmage,Nic,Journeyer
+wildmage,Enki,Master
+maryam,triple.m,Apprentice
+maryam,Jimm,Journeyer
+maryam,Marco-Adorno,Apprentice
+maryam,rubenz,Apprentice
+cschur,Enigma,Apprentice
+cschur,The Swirling Brain,Master
+cschur,c6jones720,Master
+cschur,Nic,Master
+cschur,wedesoft,Apprentice
+cschur,Enki,Journeyer
+cschur,bvdborgh,Master
+cschur,marcin,Journeyer
+robodave,Rog-a-matic,Master
+robodave,The Swirling Brain,Master
+robodave,DLDInDallas,Journeyer
+robodave,YaTu,Master
+robodave,steve,Master
+mss,steve,Apprentice
+JamesBruton,c6jones720,Master
+JamesBruton,Timster,Master
+JamesBruton,White Box Robotics,Master
+sirish,steve,Apprentice
+australian,Frank McNeill,Apprentice
+zxcvb123,shaggydogg61,Master
+zxcvb123,bestviki_007,Apprentice
+Trebouche,The Swirling Brain,Journeyer
+Trebouche,ROB.T.,Apprentice
+Trebouche,dukeman911,Journeyer
+Trebouche,scienceboy2,Apprentice
+Trebouche,Pallen,Apprentice
+Trebouche,tech123,Apprentice
+Trebouche,Misterblue,Apprentice
+Trebouche,superdave33,Apprentice
+Trebouche,ruhazat,Apprentice
+Trebouche,ashwinswarup,Apprentice
+Trebouche,riteshagarwal440,Apprentice
+Trebouche,Ankush,Apprentice
+Trebouche,aaguilera,Journeyer
+Trebouche,mats_onnerby,Journeyer
+Trebouche,tzimmerman,Apprentice
+Trebouche,YaTu,Master
+Trebouche,raghaviyarasi,Apprentice
+Trebouche,hwoolery,Apprentice
+Trebouche,hudson,Journeyer
+Trebouche,mikegotis,Master
+Trebouche,blueeyedpop,Journeyer
+Trebouche,JENNIFER_COOLCHICK,Apprentice
+JamesMPW,steve,Master
+blueeyedpop,The Swirling Brain,Master
+blueeyedpop,Rog-a-matic,Master
+blueeyedpop,RMDumse,Master
+blueeyedpop,ragaphreak,Apprentice
+blueeyedpop,Delirious,Journeyer
+blueeyedpop,jbm,Master
+blueeyedpop,Nettron,Journeyer
+blueeyedpop,phoneguin,Master
+blueeyedpop,Foxgirl,Apprentice
+01111,10000,Journeyer
+bdekraker,asim1230,Apprentice
+bdekraker,RMDumse,Master
+bdekraker,pantera,Apprentice
+bdekraker,ROB.T.,Journeyer
+bdekraker,steve,Master
+bdekraker,Rog-a-matic,Master
+bdekraker,The Swirling Brain,Master
+bdekraker,Automiton247,Apprentice
+ilan2003,steve,Master
+KokiriMooshu,Chuck McM.,Master
+KokiriMooshu,sparkjim,Journeyer
+cat,kittubond_007,Apprentice
+m_dadkhah,e_tarkesh,Master
+freqrobot,raquib,Apprentice
+Legolas,Mythbreaker,Journeyer
+Legolas,goblinarchr,Journeyer
+OmniBot,RatOmeter,Journeyer
+japanspy,billyjong,Master
+1234asd,zxcvb123,Apprentice
+ps2master,WhoPhlungPoo,Apprentice
+RatOmeter,tafkaks,Journeyer
+sonyboy1,MissCass,Journeyer
+sonyboy1,yoyodaddy23,Apprentice
+sonyboy1,i_shariati,Apprentice
+JayFrancis,profesor,Master
+polio,Nic,Master
+polio,mikegotis,Master
+Jhoffa_,The Swirling Brain,Master
+Jhoffa_,jbm,Journeyer
+Jhoffa_,ROB.T.,Journeyer
+Jhoffa_,matthewstein,Master
+Jhoffa_,cat007,Journeyer
+Jhoffa_,earlwb,Master
+marcus mcadam,Bill,Master
+marcus mcadam,pussyluver69,Master
+marcus mcadam,nalrawahi,Master
+sid,kris conble,Apprentice
+sid,Rog-a-matic,Master
+sid,vivek,Journeyer
+sid,salil.mittal,Apprentice
+sid,Siddharth Parekh,Journeyer
+sid,divyeshparikh,Apprentice
+Thinktank,simonthehappy,Journeyer
+petegray,blueeyedpop,Master
+petegray,RMDumse,Master
+jon82,phoneboy,Master
+jon82,Timster,Master
+roboprize,mikegotis,Master
+mohammad shams,e_tarkesh,Master
+dvestguy,steve,Master
+dvestguy,divyeshparikh,Apprentice
+dvestguy,archimense,Apprentice
+dvestguy,alex holden,Apprentice
+dvestguy,benjfield,Apprentice
+dvestguy,WhoPhlungPoo,Master
+dvestguy,botman,Apprentice
+dvestguy,dukeman911,Journeyer
+dvestguy,robotconflict,Journeyer
+dvestguy,josborn,Master
+dvestguy,bot_dude 00,Apprentice
+dvestguy,kerap,Apprentice
+dvestguy,mtidwell,Journeyer
+dvestguy,zerooverride,Journeyer
+dvestguy,Wolvie74,Apprentice
+dvestguy,ash_gupt_in,Apprentice
+Nettron2000,peta,Apprentice
+Nettron2000,Pallen,Apprentice
+raunakmehta,siddharthdev,Master
+bot_dude 00,Siddharth Parekh,Apprentice
+bot_dude 00,0222,Master
+bot_dude 00,Rog-a-matic,Master
+bot_dude 00,Dave Fleischer,Apprentice
+bot_dude 00,rudybrian,Master
+bot_dude 00,darkwolf572,Master
+theymightberudy,robotconflict,Apprentice
+theymightberudy,IceMetal,Apprentice
+theymightberudy,dukeman911,Journeyer
+theymightberudy,R0b0Girll,Journeyer
+theymightberudy,WhoPhlungPoo,Journeyer
+theymightberudy,NewbergHighRobotics,Apprentice
+Balthaser,steve,Master
+Balthaser,Nutter,Apprentice
+Balthaser,rudybrian,Master
+Radix,kerwin,Journeyer
+johnson,cat,Master
+carrot crusader,nuke,Master
+carrot crusader,tim.holt,Master
+walter.anderson,Chuck McM.,Master
+walter.anderson,steve,Master
+walter.anderson,rodbrooks,Master
+walter.anderson,Rog-a-matic,Master
+walter.anderson,sternobomb,Apprentice
+walter.anderson,Mikul,Apprentice
+Enki,rudybrian,Master
+Enki,DrDoom,Journeyer
+jlin,josborn,Journeyer
+jlin,NeuronExMachina,Journeyer
+jlin,fayshaw,Master
+assai,ira,Master
+Jayakrishnan,steve,Master
+Jayakrishnan,Jay_C_Beavers,Master
+Jayakrishnan,icechip,Master
+Jayakrishnan,cschur,Master
+10000,01111,Master
+aplumb,mikegotis,Master
+aplumb,lnxfergy,Journeyer
+aplumb,steve,Master
+aplumb,Ironw45,Apprentice
+aplumb,sigfpe,Journeyer
+aplumb,Kiryu,Master
+aplumb,Timster,Master
+aplumb,cschur,Master
+aplumb,Leungdaryl,Journeyer
+aplumb,Spoons,Journeyer
+aplumb,Dylan Evans,Master
+aplumb,motters,Master
+aplumb,akira,Journeyer
+aplumb,ODT,Apprentice
+aplumb,jewelerm,Journeyer
+aplumb,razali,Journeyer
+aplumb,JinSato,Master
+aplumb,VoodooZ,Master
+aplumb,jnewton,Journeyer
+aplumb,pierre_gene,Journeyer
+aplumb,ericzayers,Apprentice
+aplumb,agnessa,Apprentice
+aplumb,aaguilar,Apprentice
+aplumb,Marcus8675,Journeyer
+aplumb,orionrobots,Apprentice
+aplumb,bitspit,Apprentice
+aplumb,AaronD,Journeyer
+aplumb,stingraze,Apprentice
+aplumb,zhaoway,Apprentice
+aplumb,gtmize,Apprentice
+michel,roadnarrowskim,Journeyer
+sivu,0222,Master
+jtryspice98,sashi_ono,Journeyer
+e_tarkesh,parham,Master
+e_tarkesh,walter.anderson,Apprentice
+e_tarkesh,raghaviyarasi,Journeyer
+e_tarkesh,zeta,Journeyer
+e_tarkesh,aaronlrichards,Journeyer
+e_tarkesh,WhoPhlungPoo,Journeyer
+e_tarkesh,amir77,Apprentice
+e_tarkesh,aminetezazian,Apprentice
+gud8,roboteq,Master
+gud8,steve,Master
+gud8,Rashid,Apprentice
+gud8,ergodiczone,Master
+gud8,earlwb,Master
+gud8,Masters,Journeyer
+gud8,Blaze,Journeyer
+gud8,parham,Master
+gud8,rohit,Apprentice
+gud8,Rog-a-matic,Master
+gud8,zeta,Master
+edleighton,DLDInDallas,Master
+edleighton,mohit,Journeyer
+edleighton,josborn,Journeyer
+edleighton,rudybrian,Master
+edleighton,sashi_ono,Apprentice
+edleighton,phil,Apprentice
+edleighton,Kiryu,Master
+manik,Rog-a-matic,Master
+manik,Mikos,Journeyer
+trik dp crew,iBOT,Master
+Golden_Hawk,jeffkoenig,Apprentice
+rudybrian,The Swirling Brain,Master
+rudybrian,edleighton,Journeyer
+rudybrian,YaTu,Journeyer
+rudybrian,JaapHavinga,Journeyer
+rudybrian,Kiryu,Journeyer
+rudybrian,rodbrooks,Master
+rudybrian,josborn,Journeyer
+rudybrian,hamjudo,Journeyer
+rudybrian,EdwardRupp,Journeyer
+rudybrian,ghartung,Journeyer
+rudybrian,Chuck McM.,Master
+rudybrian,drgavin,Journeyer
+rudybrian,strider_mt2k,Journeyer
+rudybrian,wim,Journeyer
+rudybrian,blueeyedpop,Journeyer
+rudybrian,motters,Journeyer
+rudybrian,davee,Journeyer
+rudybrian,tafkaks,Journeyer
+rudybrian,rm53,Journeyer
+rudybrian,Nettron2000,Journeyer
+rudybrian,jbm,Journeyer
+rudybrian,Nettron,Journeyer
+rudybrian,matthewstein,Master
+rudybrian,jimbo,Journeyer
+rudybrian,roboteq,Journeyer
+rudybrian,jkkroll,Journeyer
+rudybrian,onnimikki,Journeyer
+rudybrian,jsampson,Journeyer
+rudybrian,dafyddwalters,Journeyer
+rudybrian,topazx2,Journeyer
+maff,jcrobotics,Master
+maff,The Swirling Brain,Master
+maff,steve,Master
+maff,bettsg,Apprentice
+Master of Darkness,steve,Master
+desaipa,robotdojo,Journeyer
+DLDInDallas,The Swirling Brain,Master
+DLDInDallas,YaTu,Master
+DLDInDallas,robodave,Journeyer
+kjub03,alexanderknight,Apprentice
+kjub03,steve,Master
+kjub03,Xadavus,Apprentice
+kjub03,ROB.T.,Master
+kjub03,cschur,Master
+ricardo,sashi_ono,Journeyer
+charger2,opamp,Apprentice
+Mad scientist,raullapeira,Journeyer
+Mad scientist,The Swirling Brain,Master
+Mad scientist,Blaze,Master
+Mad scientist,Geek_and_Proud,Apprentice
+Mad scientist,Botnerd,Master
+Mad scientist,hudson,Master
+Mad scientist,wilberto,Master
+Mad scientist,ROB.T.,Master
+Mad scientist,sonyboy1,Apprentice
+Mad scientist,cschur,Master
+robotdojo,hudson,Master
+robotdojo,steve,Master
+robotdojo,kjub03,Apprentice
+robotdojo,wilberto,Apprentice
+robotdojo,davee,Master
+robotdojo,chris_m,Apprentice
+robotdojo,Automiton247,Apprentice
+robotdojo,blueeyedpop,Journeyer
+robotdojo,ferriss,Apprentice
+robotdojo,johanvdb,Apprentice
+robotdojo,basenji,Journeyer
+robotdojo,nevyn,Journeyer
+robotdojo,brezuicab,Apprentice
+robotdojo,MadMex,Apprentice
+robotdojo,Vader,Apprentice
+robotdojo,iBOT-2,Apprentice
+robotdojo,iBOT-1,Apprentice
+robotdojo,RailSpyke,Apprentice
+robotdojo,francis777,Apprentice
+robotdojo,Gonzalo Zapata A.,Apprentice
+robotdojo,z400_135,Apprentice
+robotdojo,gensrini,Apprentice
+robotdojo,Nick,Apprentice
+robotdojo,RoboticFather,Apprentice
+robotdojo,keanu2883,Apprentice
+robotdojo,saji_s,Apprentice
+robotdojo,Charu Makkar,Apprentice
+robotdojo,songsmyth,Apprentice
+gerbilfyed2,JinSato,Master
+DrEinStein,dr_scrapper,Apprentice
+DrEinStein,YaTu,Master
+DrEinStein,rudybrian,Master
+DrEinStein,steve,Master
+DrEinStein,Xmike,Apprentice
+DrEinStein,MrFaial,Apprentice
+dwhall,RayRenteria,Journeyer
+Lodewijk13,Blaze,Journeyer
+Lodewijk13,Jason-Bot,Journeyer
+Lodewijk13,arunkumar_tgi,Apprentice
+Lodewijk13,matsw,Master
+Lodewijk13,ira,Master
+Lodewijk13,scottpreston,Master
+Lodewijk13,JaapHavinga,Journeyer
+Lodewijk13,nitro,Journeyer
+Lodewijk13,dude_plasma,Apprentice
+Lodewijk13,WhoPhlungPoo,Master
+Lodewijk13,ROB.T.,Master
+Lodewijk13,RoboGal,Apprentice
+Lodewijk13,zodiak,Master
+Lodewijk13,cat,Apprentice
+Lodewijk13,kittubond_007,Apprentice
+Lodewijk13,Timster,Apprentice
+Lodewijk13,jiggersplat,Master
+Lodewijk13,rahulb,Journeyer
+Lodewijk13,josborn,Journeyer
+Lodewijk13,robotdojo,Master
+Lodewijk13,mrplong,Master
+Lodewijk13,cschur,Master
+Lodewijk13,mikegotis,Master
+skull2002,robofreak2002,Master
+skull2002,mikegotis,Journeyer
+skull2002,superskullca,Master
+ascherchen,vipul,Master
+brit-bot,lurbano,Journeyer
+brit-bot,thomasbulckaert,Journeyer
+brit-bot,shahraeeni_m,Apprentice
+brit-bot,kenlanier,Apprentice
+brit-bot,DrEinStein,Apprentice
+brit-bot,Boobs Bot,Master
+brit-bot,rajat_goyal17,Apprentice
+brit-bot,superdave33,Apprentice
+brit-bot,ada83,Apprentice
+brit-bot,drhackalot,Apprentice
+brit-bot,veager,Apprentice
+brit-bot,hudson,Journeyer
+brit-bot,simonthehappy,Journeyer
+brit-bot,juddr,Apprentice
+brit-bot,HollidayOne,Apprentice
+brit-bot,gustaf,Apprentice
+brit-bot,macet74,Journeyer
+matsw,mats_onnerby,Journeyer
+matsw,hudson,Master
+matsw,blueeyedpop,Master
+matsw,Robot-Maker,Journeyer
+amin_emami,aminetezazian,Apprentice
+Spoons,aplumb,Journeyer
+Spoons,sashi_ono,Master
+Spoons,zxcvb123,Apprentice
+Spoons,c6jones720,Apprentice
+Spoons,steve,Journeyer
+Spoons,motters,Master
+Spoons,cschur,Master
+Spoons,WhoPhlungPoo,Journeyer
+Spoons,roboteq,Master
+Spoons,hudson,Master
+Spoons,dwhall,Journeyer
+Spoons,robotdojo,Master
+Spoons,zeta,Apprentice
+Spoons,lumpy,Journeyer
+Spoons,peterman921,Journeyer
+Spoons,jaiger,Apprentice
+Spoons,Kiryu,Master
+Spoons,i_R_a,Apprentice
+Spoons,rudybrian,Master
+Lace,wildmage,Apprentice
+Lace,dafyddwalters,Journeyer
+Lace,Robot_CrAzY,Apprentice
+krishnath_p,Serac,Journeyer
+neel_krish,vipul,Apprentice
+durostick,DavidM,Master
+durostick,Blaze,Master
+Jimm,robodave,Journeyer
+Jimm,triple.m,Apprentice
+Jimm,maryam,Apprentice
+jibberish,xxx01r5,Apprentice
+mikegotis,steve,Master
+mikegotis,The Swirling Brain,Journeyer
+mikegotis,nitro,Apprentice
+mikegotis,Prabashan,Apprentice
+mikegotis,hudson,Master
+mikegotis,WhoPhlungPoo,Master
+mikegotis,rudybrian,Master
+mikegotis,NateW,Master
+mikegotis,ira,Journeyer
+mikegotis,blueeyedpop,Master
+mikegotis,jeremy_mat,Journeyer
+mikegotis,walter.anderson,Master
+mikegotis,Chuck McM.,Master
+mikegotis,mats_onnerby,Master
+mikegotis,Rog-a-matic,Master
+mikegotis,rodbrooks,Master
+mikegotis,RMDumse,Master
+mikegotis,JaapHavinga,Master
+mikegotis,motters,Master
+mikegotis,matsw,Master
+mikegotis,ROB.T.,Master
+mikegotis,robin_11robot,Apprentice
+mikegotis,robomonkey27,Apprentice
+mikegotis,bdekraker,Journeyer
+mikegotis,pantera,Apprentice
+mikegotis,acybernaut,Apprentice
+mikegotis,mockerybird,Apprentice
+mikegotis,Seb,Journeyer
+mikegotis,robodave,Journeyer
+mikegotis,iam4opnsrc,Apprentice
+mikegotis,evilrobots,Apprentice
+mikegotis,davee,Master
+mikegotis,KokiriMooshu,Apprentice
+mikegotis,omagureanu,Apprentice
+mikegotis,asim1230,Apprentice
+mikegotis,jjwiseman,Apprentice
+mikegotis,sashi_ono,Journeyer
+mikegotis,jcrue451,Apprentice
+mikegotis,mohit,Journeyer
+mikegotis,chris_m,Master
+mikegotis,Automiton247,Apprentice
+mikegotis,iBOT-2,Apprentice
+mikegotis,ObsoleteSuperMan,Journeyer
+mikegotis,HighTECHredNECK,Journeyer
+mikegotis,cgates,Master
+mikegotis,kelaar,Journeyer
+mikegotis,thesky997,Master
+mikegotis,anttch360,Apprentice
+mikegotis,robo-me,Apprentice
+mikegotis,robotdojo,Master
+mikegotis,ericzayers,Master
+mikegotis,roschler,Master
+mikegotis,c6jones720,Master
+mikegotis,kunal,Master
+mikegotis,zhaoway,Apprentice
+mikegotis,jaiger,Journeyer
+mikegotis,roboticsconnection,Master
+mikegotis,zodiak,Master
+mikegotis,stingraze,Journeyer
+mikegotis,roboshopindia.8m.com,Master
+mikegotis,roboprize,Master
+ehagman,RobotFan,Journeyer
+Rava,Botnerd,Journeyer
+danthegreat,dude_plasma,Journeyer
+Boobs Bot,brit-bot,Master
+catkelly,drhackalot,Master
+Big Man,trik dp crew,Apprentice
+Big Man,Psyco,Journeyer
+cyborge,cyber,Journeyer
+darkdragon,darkwolf572,Journeyer
+jcrobotics,ultraintelligence,Master
+jcrobotics,Rog-a-matic,Master
+jcrobotics,The Swirling Brain,Master
+jcrobotics,steve,Journeyer
+jcrobotics,darkwolf572,Journeyer
+jcrobotics,rex,Journeyer
+jcrobotics,wedesoft,Master
+jcrobotics,rob2713g,Apprentice
+jcrobotics,cschur,Master
+jcrobotics,petegray,Journeyer
+jcrobotics,egoo76,Journeyer
+jcrobotics,marcin,Journeyer
+jcrobotics,JamesBruton,Master
+jcrobotics,mohansameer1983,Master
+jcrobotics,NateW,Journeyer
+jcrobotics,Timster,Master
+jcrobotics,c6jones720,Master
+jcrobotics,BrianJennings,Journeyer
+jcrobotics,robomax02920,Apprentice
+jcrobotics,Randwilliams,Journeyer
+jcrobotics,amanda_414,Apprentice
+jcrobotics,agnessa,Apprentice
+jcrobotics,EdwardRupp,Master
+jcrobotics,robotvibes,Master
+jcrobotics,maff,Master
+jcrobotics,mikeville,Apprentice
+jcrobotics,microfarmer,Journeyer
+jcrobotics,eidu,Apprentice
+jcrobotics,Botnerd,Master
+jcrobotics,bboyes,Master
+jcrobotics,maruthichinnam,Journeyer
+jcrobotics,ericzayers,Master
+jcrobotics,chenster000,Journeyer
+jcrobotics,svo,Journeyer
+jcrobotics,IceMetal,Journeyer
+jcrobotics,raghav182001,Apprentice
+jcrobotics,theymightberudy,Master
+jcrobotics,WhoPhlungPoo,Master
+jcrobotics,dvestguy,Apprentice
+jcrobotics,sashi_ono,Master
+jcrobotics,rudybrian,Master
+jcrobotics,matthewstein,Master
+DavidM,wasperen,Journeyer
+DavidM,johanc,Apprentice
+DavidM,scottpreston,Journeyer
+quantum,kerux,Master
+gte910h,magus74,Apprentice
+gte910h,lilserf,Journeyer
+rex,josborn,Master
+rex,kerap,Apprentice
+rex,DavidM,Journeyer
+rex,Wolvie74,Apprentice
+rex,parallaxd,Apprentice
+rex,zerooverride,Journeyer
+rex,mtidwell,Journeyer
+rex,darkwolf572,Journeyer
+rex,edleighton,Master
+rex,lucretiaX,Apprentice
+rex,The Swirling Brain,Master
+rex,steve,Master
+rex,wasperen,Apprentice
+rex,JaapHavinga,Journeyer
+rex,david ,Apprentice
+rex,neobot,Apprentice
+rex,Kiryu,Master
+rex,hudson,Master
+rex,mohit,Journeyer
+rex,oopicFan,Journeyer
+rex,simonthehappy,Journeyer
+rex,jcrobotics,Journeyer
+matrix,The Swirling Brain,Master
+marcin,cschur,Master
+marcin,johanvdb,Master
+vamsi,Rog-a-matic,Master
+balaji,SomeoneKnows,Apprentice
+balaji,nayan,Master
+wilcosky,steve,Master
+dr_scrapper,YaTu,Master
+dr_scrapper,DrEinStein,Apprentice
+dr_scrapper,MrFaial,Apprentice
+dr_scrapper,Xmike,Apprentice
+rob2713g,sepideh,Apprentice
+rob2713g,tech123,Apprentice
+rob2713g,matsw,Journeyer
+rob2713g,Jako,Apprentice
+rob2713g,ccc,Apprentice
+evilrobots,lkcl,Apprentice
+evilrobots,pothed,Apprentice
+evilrobots,temp,Apprentice
+evilrobots,roboguy69,Apprentice
+evilrobots,ROB.T.,Apprentice
+evilrobots,AI4U,Journeyer
+evilrobots,robothater,Apprentice
+nalrawahi,LordM,Apprentice
+nalrawahi,cschur,Journeyer
+nalrawahi,JaapHavinga,Master
+nalrawahi,onnimikki,Journeyer
+nalrawahi,ROB.T.,Apprentice
+nalrawahi,MIG_India,Apprentice
+Corrupted.Mind,kelaar,Master
+Sleepsalot,Nic,Journeyer
+Sleepsalot,roschler,Master
+Sleepsalot,ZenX10,Apprentice
+Sleepsalot,cschur,Master
+Sleepsalot,rob2713g,Apprentice
+Hollister,WhoPhlungPoo,Journeyer
+Hollister,Chuck McM.,Master
+Hybrid_Hero,chris_m,Master
+keeth,robotdojo,Master
+KMeowzart,Axle,Apprentice
+syafiqah90_04,josh_jay,Master
+syafiqah90_04,Jay_C_Beavers,Apprentice
+HASSESH,mbainrot,Master
+David2,The Swirling Brain,Master
+david,Rog-a-matic,Master
+yourfriend411,chromekraut,Apprentice
+yourfriend411,alagurajan,Apprentice
+yourfriend411,monirgea,Apprentice
+yourfriend411,a.rajesh,Apprentice
+iBOT-2,iBOT-1,Master
+iBOT-2,blueeyedpop,Master
+iBOT-2,robotdojo,Master
+campp1,Chuck McM.,Master
+campp1,topazx2,Master
+campp1,Rog-a-matic,Master
+campp1,phoneguin,Master
+campp1,eokerson,Master
+campp1,steve,Master
+campp1,JinSato,Master
+campp1,bronson,Master
+campp1,Gibson,Master
+AnswerGuru,BertBigB,Apprentice
+AnswerGuru,DrDoom,Journeyer
+AnswerGuru,blueeyedpop,Master
+BERTRAM,ozkal,Journeyer
+BERTRAM,monster,Apprentice
+BERTRAM,gene,Apprentice
+scanan,joseph_chinnadurai,Apprentice
+scanan,xutron,Apprentice
+jothish,Gadget Guy,Apprentice
+Zarin,The Swirling Brain,Master
+Zarin,nitro,Journeyer
+icechip,riteshagarwal440,Apprentice
+icechip,Ankush,Apprentice
+icechip,Pallen,Apprentice
+icechip,Trebouche,Journeyer
+icechip,sabhinav_1984,Apprentice
+icechip,sivareddy,Apprentice
+icechip,sushil ,Apprentice
+icechip,xtreme,Apprentice
+icechip,dis ,Apprentice
+icechip,sagar,Apprentice
+icechip,ira,Journeyer
+icechip,N.D.RANGESH,Apprentice
+alphabot,steve,Master
+alphabot,Varney,Apprentice
+alphabot,pedrog,Journeyer
+alphabot,The Swirling Brain,Master
+alphabot,jiggersplat,Apprentice
+alphabot,WhoPhlungPoo,Master
+alphabot,adarshmurthy,Apprentice
+alphabot,hudson,Master
+alphabot,Timster,Journeyer
+alphabot,sparkjim,Journeyer
+alphabot,Robolord,Apprentice
+alphabot,evilrobots,Apprentice
+alphabot,jsampson,Journeyer
+alphabot,ROB.T.,Journeyer
+alphabot,finin,Apprentice
+alphabot,pauld2,Journeyer
+alphabot,Joe Bosworth,Apprentice
+alphabot,Rekker,Apprentice
+alphabot,lnxfergy,Journeyer
+alphabot,nitro,Apprentice
+alphabot,NateW,Journeyer
+alphabot,walter.anderson,Journeyer
+alphabot,Botnerd,Apprentice
+alphabot,JakeV001,Apprentice
+alphabot,Kiryu,Journeyer
+TheSwirlingBrainsGay,steve,Apprentice
+TheSwirlingBrainsGay,11111,Master
+TheSwirlingBrainsGay,The Swirling Brain,Apprentice
+TheSwirlingBrainsGay,ultraintelligence,Apprentice
+TheSwirlingBrainsGay,Tenacious C,Apprentice
+TheSwirlingBrainsGay,Rog-a-matic,Master
+TheSwirlingBrainsGay,VoodooZ,Master
+TheSwirlingBrainsGay,hudson,Apprentice
+TheSwirlingBrainsGay,Psyco,Apprentice
+TheSwirlingBrainsGay,Big Man,Journeyer
+TheSwirlingBrainsGay,walter.anderson,Journeyer
+TheSwirlingBrainsGay,Botnerd,Master
+TheSwirlingBrainsGay,Mad scientist,Journeyer
+TheSwirlingBrainsGay,sirish,Apprentice
+TheSwirlingBrainsGay,Blaze,Master
+Relic,Jim_McNeat,Journeyer
+Relic,sparkjim,Master
+jcrue451,steve,Master
+jdkovar,steve,Master
+hreher,The Swirling Brain,Master
+sparkjim,nznguy,Journeyer
+sparkjim,robodave,Master
+sparkjim,hudson,Master
+sparkjim,omagureanu,Journeyer
+sparkjim,KokiriMooshu,Apprentice
+sparkjim,vahid,Apprentice
+sparkjim,Prishani,Apprentice
+sparkjim,mikie,Apprentice
+sparkjim,ramon,Apprentice
+sparkjim,Chuck McM.,Master
+sparkjim,rodbrooks,Master
+sparkjim,rh81,Apprentice
+sparkjim,Shreedhar,Apprentice
+sparkjim,steve,Master
+sparkjim,chris_m,Master
+sparkjim,Relic,Journeyer
+sparkjim,cadethal,Apprentice
+sparkjim,abdulsal,Apprentice
+sparkjim,Jim_McNeat,Journeyer
+sparkjim,jeffkoenig,Master
+sparkjim,gmjosh,Apprentice
+sparkjim,rich00123456789,Apprentice
+sparkjim,jcrue451,Apprentice
+sparkjim,ira,Master
+sparkjim,asim1230,Journeyer
+sparkjim,braceman,Journeyer
+sparkjim,wilberto,Journeyer
+sparkjim,lucretiaX,Journeyer
+sparkjim,kjub03,Journeyer
+sparkjim,spirit,Journeyer
+sparkjim,evilrobots,Journeyer
+sparkjim,michel,Journeyer
+Yogafire,N.D.RANGESH,Journeyer
+nitro,Prabashan,Apprentice
+nitro,ira,Master
+nitro,sriny,Journeyer
+nitro,neeraj_kuar,Apprentice
+nitro,marko33,Apprentice
+nitro,bdekraker,Journeyer
+nitro,rudybrian,Master
+nitro,mohshab2002,Apprentice
+nitro,asim1230,Apprentice
+nitro,Cronotiger2002,Journeyer
+nitro,wilberto,Master
+nitro,James MPW ,Apprentice
+nitro,YaTu,Master
+nitro,The Swirling Brain,Master
+nitro,robotdojo,Master
+nitro,hudson,Master
+nitro,WhoPhlungPoo,Master
+nitro,zeta,Journeyer
+nitro,mohit,Journeyer
+nitro,lnxfergy,Master
+nitro,motters,Master
+nitro,nabeel,Apprentice
+nitro,BERTRAM,Apprentice
+nitro,Robolord,Apprentice
+nitro,Dago85,Apprentice
+nitro,robomatic12,Journeyer
+nitro,nevyn,Journeyer
+nitro,simonthehappy,Journeyer
+nitro,alphabot,Journeyer
+nitro,Joe Bosworth,Apprentice
+nitro,Timster,Journeyer
+nitro,jiggersplat,Master
+nitro,pedrog,Journeyer
+nitro,sparkjim,Master
+nitro,simon,Apprentice
+nitro,adarshmurthy,Apprentice
+nitro,homers12,Apprentice
+nitro,walter.anderson,Master
+nitro,jbm,Master
+nitro,Viper Strike,Apprentice
+nitro,archimense,Journeyer
+nitro,yeow,Journeyer
+nitro,mtidwell,Journeyer
+nitro,dvestguy,Apprentice
+nitro,robotconflict,Journeyer
+nitro,botman,Apprentice
+nitro,impsyberbob,Journeyer
+nitro,edleighton,Master
+nitro,DLDInDallas,Master
+nitro,sashi_ono,Journeyer
+nitro,Kiryu,Master
+nitro,rex,Journeyer
+nitro,Rekker,Apprentice
+nitro,Varney,Apprentice
+nitro,steve,Master
+nitro,oopicFan,Journeyer
+nitro,Robot,Journeyer
+nitro,profesor,Master
+nitro,Indianafalls,Apprentice
+nitro,nineiron,Apprentice
+nitro,dude_plasma,Journeyer
+nitro,Botnerd,Journeyer
+nitro,msprague,Journeyer
+nitro,Lodewijk13,Journeyer
+nitro,poochy bot,Apprentice
+nitro,Georgyo,Apprentice
+nitro,lavaelous,Apprentice
+nitro,Bro,Journeyer
+nitro,Hantu,Apprentice
+nitro,RoboGal,Apprentice
+nitro,mwatts,Apprentice
+nitro,mtnbiker18,Apprentice
+nitro,HighTECHredNECK,Master
+nitro,chris_m,Master
+nitro,jcrue451,Apprentice
+nitro,zodiak,Journeyer
+nitro,raquib,Journeyer
+nitro,terminator215,Apprentice
+nitro,rolandgpainter,Journeyer
+nitro,Axle,Apprentice
+nitro,blyonline,Apprentice
+nitro,sdiwanji,Apprentice
+nitro,Kenneth,Master
+nitro,Delirious,Master
+nitro,ObsoleteSuperMan,Master
+nitro,Tenacious C,Journeyer
+nitro,Battle_Droid_8912,Master
+nitro,earlwb,Master
+nitro,Kav7441596,Journeyer
+nitro,gustaf,Master
+nitro,DrWyrm,Journeyer
+nitro,genius,Apprentice
+nitro,gear21,Journeyer
+nitro,kittubond_007,Apprentice
+nitro,cat,Apprentice
+nitro,pah711,Apprentice
+nitro,MartinCalsyn,Master
+nitro,robocube,Journeyer
+nitro,bgmoon,Apprentice
+nitro,fossip,Apprentice
+nitro,AnkushJohar,Apprentice
+nitro,Zarin,Journeyer
+nitro,perattigroup,Apprentice
+nitro,MechUser,Apprentice
+nitro,ruksen,Apprentice
+nitro,Robust,Journeyer
+nitro,voonsiew,Apprentice
+nitro,scanan,Journeyer
+nitro,YR814,Apprentice
+nitro,zynko,Apprentice
+nitro,The Time Keeper,Apprentice
+nitro,robotx52,Apprentice
+nitro,jup,Journeyer
+nitro,EdwardRupp,Journeyer
+nitro,jibanez,Apprentice
+nitro,outsider,Journeyer
+nitro,conection,Apprentice
+nitro,RoboRick,Apprentice
+nitro,vivekmahajan,Apprentice
+nitro,mrwtripp2,Apprentice
+nitro,theymightberudy,Journeyer
+nitro,Mad scientist,Apprentice
+nitro,sks,Journeyer
+nitro,RatOmeter,Journeyer
+nitro,godbadbeautiful,Apprentice
+nitro,daniel202020,Apprentice
+nitro,chiram,Apprentice
+nitro,blue tech,Apprentice
+nitro,mentaldetergent,Apprentice
+nitro,B1b0,Apprentice
+nitro,bigbertb,Journeyer
+nitro,robo_yodel,Apprentice
+nitro,hisham,Apprentice
+nitro,gingi,Apprentice
+nitro,ace,Journeyer
+nitro,AdamDW,Apprentice
+sreekumar,roboshopindia.8m.com,Master
+tivo,mohit,Apprentice
+josborn,bheller,Journeyer
+josborn,rudybrian,Master
+amramsey,The Swirling Brain,Journeyer
+bishca87,mohit,Apprentice
+bishca87,sashi_ono,Apprentice
+bishca87,The Swirling Brain,Master
+bishca87,josborn,Journeyer
+bishca87,zeta,Apprentice
+bishca87,phil,Apprentice
+bishca87,Revi,Apprentice
+bishca87,dukeman911,Apprentice
+bishca87,alex holden,Apprentice
+bishca87,iweil,Journeyer
+bishca87,ashuboy,Apprentice
+cludeckenny,jbm,Apprentice
+oopicFan,aaguilera,Journeyer
+oopicFan,rui,Apprentice
+oopicFan,sbean,Journeyer
+oopicFan,DrEinStein,Journeyer
+oopicFan,rex,Journeyer
+oopicFan,Los,Apprentice
+oopicFan,steve,Master
+oopicFan,YaTu,Journeyer
+lakout,Blackout,Master
+thesisus,altug,Journeyer
+phillysteak527,BrianJennings,Journeyer
+phillysteak527,JamesBruton,Master
+coolkid,icechip,Journeyer
+rsbohn,TroyJ,Apprentice
+bitomat,tappo,Master
+drunk,Psyco,Master
+roboticslecturer,Goodrobot,Apprentice
+roboticslecturer,steve,Master
+roboticslecturer,Rog-a-matic,Master
+aaguilar,Nic,Master
+aaguilar,zellers,Journeyer
+aaguilar,magus74,Journeyer
+DC,pg_india,Apprentice
+Kav7441596,caty_mora,Apprentice
+Kav7441596,Blackout,Journeyer
+Kav7441596,rohit,Journeyer
+Kav7441596,tpeterson,Apprentice
+Kav7441596,phippsca,Journeyer
+Kav7441596,dorbor,Journeyer
+Kav7441596,PhoenixFiresky,Apprentice
+kyle clementz,The Swirling Brain,Master
+chenster000,The Swirling Brain,Apprentice
+saw,wilberto,Master
+Karnika,kittubond_007,Apprentice
+HighTECHredNECK,motters,Master
+HighTECHredNECK,mikegotis,Master
+HighTECHredNECK,HighTECHredNECK ,Master
+HighTECHredNECK,ROB.T.,Journeyer
+HighTECHredNECK,steve,Master
+HighTECHredNECK,0222,Apprentice
+HighTECHredNECK,Pallen,Apprentice
+HighTECHredNECK,cgates,Journeyer
+HighTECHredNECK,orionrobots,Apprentice
+HighTECHredNECK,tohru,Apprentice
+HighTECHredNECK,Monomorphic,Apprentice
+HighTECHredNECK,davee,Master
+HighTECHredNECK,yourfriend411,Apprentice
+HighTECHredNECK,Bstame,Master
+HighTECHredNECK,simonthehappy,Master
+HighTECHredNECK,walter.anderson,Master
+alan12345,WhoPhlungPoo,Apprentice
+magnus,dcalkins,Master
+magnus,machinebrain,Master
+Nic,scottpreston,Master
+Nic,goblinarchr,Apprentice
+Nic,mrplong,Master
+Nic,steve,Master
+Nic,aaguilar,Apprentice
+Nic,cgates,Master
+Nic,ROB.T.,Master
+Nic,Botnerd,Apprentice
+Nic,roschler,Journeyer
+zeevon,rodbrooks,Master
+zeevon,raph,Apprentice
+zeevon,steve,Master
+brandon,thecyborgus,Apprentice
+brandon,edleighton,Journeyer
+nevyn,robotdojo,Master
+nevyn,Dart246,Apprentice
+energy,steve,Master
+energy,bvdborgh,Master
+energy,mikegotis,Master
+Bandit727,scienceboy2,Master
+brain_wave,kunal,Master
+baskaran,wasperen,Journeyer
+Xmike,DrEinStein,Apprentice
+Xmike,dr_scrapper,Apprentice
+Xmike,MrFaial,Apprentice
+winterj,Jimm,Master
+winterj,roboteq,Apprentice
+BotD2,villaseca,Master
+IceMetal,magus74,Master
+IceMetal,alpa78,Master
+tim_16,cschur,Master
+tim_16,mally,Master
+msprague,petegray,Journeyer
+msprague,lnxfergy,Journeyer
+msprague,rudybrian,Master
+msprague,RoboGal,Apprentice
+msprague,nitro,Journeyer
+msprague,matsw,Journeyer
+omagureanu,sparkjim,Journeyer
+ericzayers,Keith Rowell,Master
+ericzayers,JinSato,Master
+ericzayers,icechip,Journeyer
+ericzayers,rodbrooks,Master
+ericzayers,EdwardRupp,Master
+ericzayers,kingpin094,Master
+mobile,steve,Master
+mobile,Takeshi,Apprentice
+phil,edleighton,Journeyer
+phil,mohit,Apprentice
+phil,sashi_ono,Journeyer
+jup,Axle,Apprentice
+jup,The Time Keeper,Apprentice
+jup,jstrohm,Journeyer
+jup,zw,Journeyer
+jup,EdwardRupp,Journeyer
+jup,raullapeira,Journeyer
+jup,motters,Master
+Jay_C_Beavers,roboshopindia.8m.com,Master
+Jay_C_Beavers,NateW,Master
+chris_m,bang,Journeyer
+chris_m,sparkjim,Master
+chris_m,Jim_McNeat,Master
+chris_m,Relic,Journeyer
+chris_m,blueeyedpop,Master
+chris_m,jcrue451,Apprentice
+chris_m,jbm,Journeyer
+chris_m,iBOT-2,Journeyer
+chris_m,dwhall,Journeyer
+chris_m,RayRenteria,Journeyer
+chris_m,davee,Journeyer
+chris_m,motters,Master
+chris_m,hudson,Master
+chris_m,mikegotis,Master
+chris_m,steve,Master
+chris_m,walter.anderson,Master
+chris_m,rodbrooks,Master
+chris_m,mats_onnerby,Master
+bestviki_007,bob and co,Journeyer
+pierre_gene,JinSato,Master
+pierre_gene,steve,Master
+pierre_gene,aplumb,Journeyer
+JakeV001,bob and co,Apprentice
+JakeV001,The Swirling Brain,Master
+summitraj,steve,Master
+anuj_me_2007,homers12,Journeyer
+sidharath,walter.anderson,Master
+j_ira,steve,Master
+Mordamir,rodbrooks,Master
+Z,zeta,Master
+Z,Mikos,Apprentice
+Z,iBOT-1,Apprentice
+11111,ultraintelligence,Master
+11111,The Swirling Brain,Apprentice
+11111,steve,Apprentice
+11111,VoodooZ,Master
+11111,hudson,Apprentice
+11111,ROB.T.,Master
+11111,zodiak,Master
+11111,walter.anderson,Journeyer
+11111,Tenacious C,Apprentice
+11111,rudybrian,Master
+11111,Psyco,Apprentice
+11111,Big Man,Apprentice
+11111,veager,Journeyer
+11111,brit-bot,Apprentice
+11111,Boobs Bot,Master
+11111,drhackalot,Apprentice
+11111,simonthehappy,Journeyer
+11111,HighTECHredNECK,Journeyer
+11111,Bstame,Apprentice
+11111,Qwerty,Apprentice
+11111,Mad scientist,Apprentice
+11111,Botnerd,Master
+11111,robocube,Master
+11111,Delirious,Master
+11111,blueeyedpop,Master
+11111,WhoPhlungPoo,Journeyer
+11111,yeow,Apprentice
+11111,ram_nut,Apprentice
+11111,ObsoleteSuperMan,Master
+11111,shaz1,Apprentice
+adarshmurthy,jiggersplat,Apprentice
+raquib,motters,Master
+raquib,blueeyedpop,Master
+raquib,Nic,Journeyer
+rick,brandon,Journeyer
+rick,altug,Apprentice
+rick,kvrastogi,Apprentice
+rick,mohit,Journeyer
+rick,DLDInDallas,Journeyer
+rick,vipul,Journeyer
+rick,djlash,Journeyer
+rajat_goyal17,brit-bot,Journeyer
+kerap,bot_dude 00,Apprentice
+kerap,xxx01r5,Apprentice
+kerap,mohitkaul,Apprentice
+kerap,sbean,Master
+Marcus8675,aplumb,Journeyer
+Marcus8675,zodiak,Master
+Marcus8675,ericzayers,Journeyer
+Marcus8675,kunal,Master
+Marcus8675,peterman921,Journeyer
+Marcus8675,icechip,Journeyer
+Marcus8675,Botnerd,Journeyer
+Mikos,bot_dude 00,Apprentice
+Mikos,steve,Master
+Mikos,Rog-a-matic,Master
+Mikos,tzimmerman,Apprentice
+Mikos,hudson,Master
+Mikos,WhoPhlungPoo,Master
+Mikos,iBOT,Journeyer
+tim.holt,aipod,Apprentice
+ping_pong,WhoPhlungPoo,Master
+ping_pong,Timster,Journeyer
+ping_pong,kunal,Master
+ping_pong,steve,Master
+attar37,zeta,Master
+beerbot,opamp,Apprentice
+Ratface,gear21,Journeyer
+Ratface,steve,Master
+Ratface,robotdojo,Master
+Ratface,blueeyedpop,Master
+anttch360,steve,Master
+anttch360,mikegotis,Master
+mohit,YaTu,Journeyer
+mohit,tivo,Apprentice
+mohit,edleighton,Journeyer
+mohit,DLDInDallas,Journeyer
+mohit,vipul,Journeyer
+mohit,phil,Journeyer
+mohit,niraj,Apprentice
+mohit,Revi,Journeyer
+mohit,rex,Journeyer
+Ybbet,rodbrooks,Master
+Ybbet,adetiloye,Apprentice
+Ybbet,tagishandy,Apprentice
+Ybbet,Jimm,Journeyer
+Ybbet,zeta,Master
+Ybbet,Rog-a-matic,Master
+Ybbet,mafalda,Apprentice
+Ybbet,Pallen,Apprentice
+Ybbet,coadetiloye,Apprentice
+Ybbet,superdave33,Apprentice
+Ybbet,ruhazat,Journeyer
+Ybbet,ddxxbb,Apprentice
+Ybbet,microetk,Apprentice
+Ybbet,Enki,Master
+Ybbet,joyjov,Journeyer
+Ybbet,Michel Baily,Apprentice
+recharger,opamp,Apprentice
+wilberto,0222,Master
+wilberto,saw,Master
+wilberto,Mikul,Apprentice
+wilberto,robotdojo,Master
+wilberto,quantum,Master
+wilberto,RoboticFather,Master
+wilberto,sparkjim,Master
+wilberto,kjub03,Apprentice
+wilberto,Rog-a-matic,Master
+wilberto,monster,Master
+R2-D2,ROB.T.,Master
+Master of Puppets,steve,Master
+hsadeghian2001,e_tarkesh,Apprentice
+jeffkoenig,Swittech,Apprentice
+jeffkoenig,The Swirling Brain,Master
+jeffkoenig,wecole,Journeyer
+jeffkoenig,dogsbody_d,Master
+Penn71911,robotconflict,Journeyer
+wedesoft,The Swirling Brain,Master
+wedesoft,bvdborgh,Master
+wedesoft,ericzayers,Journeyer
+wedesoft,dahl_ag,Journeyer
+wedesoft,tappo,Master
+wedesoft,steve,Master
+NEWROBOTICS,bvdborgh,Master
+NEWROBOTICS,energy,Journeyer
+FoS,Botnerd,Master
+thinmachine,bvdborgh,Master
+thinmachine,Goodrobot,Master
+thinmachine,t5,Apprentice
+thinmachine,The Swirling Brain,Journeyer
+thinmachine,steve,Master
+siddharthdev,vivek,Master
+siddharthdev,anish,Master
+matt111,nitro,Apprentice
+matt111,roboshopindia.8m.com,Master
+rosatocrobotics,magus74,Apprentice
+ira,sashi_ono,Journeyer
+ira,markus,Apprentice
+ira,Mikul,Apprentice
+ira,rudybrian,Master
+ira,walter.anderson,Master
+ira,motters,Master
+ira,pxlkrz,Journeyer
+Seb,Psyco,Apprentice
+Seb,hudson,Journeyer
+Cannon Fury,steve,Master
+Cannon Fury,The Swirling Brain,Master
+jaldred,JENNIFER_COOLCHICK,Apprentice
+Anee,LordM,Apprentice
+Anee,ROB.T.,Master
+Robot_CrAzY,Lace,Apprentice
+ObsoleteSuperMan,davee,Master
+ObsoleteSuperMan,simonthehappy,Journeyer
+ObsoleteSuperMan,shaz1,Apprentice
+ObsoleteSuperMan,ragaphreak,Apprentice
+ObsoleteSuperMan,tafkaks,Master
+ObsoleteSuperMan,motters,Master
+ObsoleteSuperMan,steve,Journeyer
+ObsoleteSuperMan,otterish,Apprentice
+ObsoleteSuperMan,maejow007,Apprentice
+ObsoleteSuperMan,TroyJ,Apprentice
+ObsoleteSuperMan,White Box Robotics,Master
+kunal,Timster,Journeyer
+kunal,outsider,Journeyer
+kunal,waldmeyer,Apprentice
+kunal,steve,Master
+kunal,WhoPhlungPoo,Master
+kunal,aplumb,Journeyer
+kunal,sigfpe,Journeyer
+kunal,e_tarkesh,Apprentice
+kunal,theymightberudy,Apprentice
+kunal,valentine,Journeyer
+kunal,AVBSHASHIDHAR,Apprentice
+kunal,inferno_gogo,Apprentice
+kunal,Rog-a-matic,Master
+kunal,zodiak,Journeyer
+kunal,peterman921,Journeyer
+kunal,roschler,Journeyer
+kunal,aubois,Journeyer
+kunal,KMeowzart,Apprentice
+kunal,c6jones720,Apprentice
+kunal,brybert,Apprentice
+kunal,Nic,Journeyer
+kunal,agnessa,Apprentice
+kunal,JinSato,Master
+kunal,mohansameer1983,Master
+kunal,egoo76,Journeyer
+scienceboy2,steve,Master
+scienceboy2,NateW,Journeyer
+scienceboy2,0222,Apprentice
+scienceboy2,aaguilera,Apprentice
+scienceboy2,Viper Strike,Apprentice
+scienceboy2,Cronotiger2002,Journeyer
+scienceboy2,Otto66,Apprentice
+scienceboy2,vijay_wai,Apprentice
+scienceboy2,cgates,Journeyer
+scienceboy2,haguilar,Apprentice
+scienceboy2,louise,Apprentice
+scienceboy2,N.D.RANGESH,Apprentice
+scienceboy2,robomatic12,Master
+scienceboy2,zeta,Master
+scienceboy2,sid,Master
+scienceboy2,chloe5353,Apprentice
+scienceboy2,gear21,Journeyer
+scienceboy2,Robot,Journeyer
+scienceboy2,Mikul,Journeyer
+scienceboy2,kerap,Journeyer
+scienceboy2,The Swirling Brain,Master
+scienceboy2,Armored Core,Apprentice
+scienceboy2,Battle_Droid_8912,Journeyer
+scienceboy2,robo,Apprentice
+scienceboy2,brian40,Apprentice
+scienceboy2,haydenmay,Apprentice
+scienceboy2,SteveW,Apprentice
+scienceboy2,wim,Journeyer
+scienceboy2,wronkiew,Apprentice
+scienceboy2,acatzin,Apprentice
+scienceboy2,Dozier,Journeyer
+scienceboy2,raghaviyarasi,Journeyer
+scienceboy2,Tenacious C,Journeyer
+scienceboy2,Automiton247,Journeyer
+scienceboy2,CaptainElectron,Journeyer
+scienceboy2,buckles,Apprentice
+scienceboy2,Trebouche,Master
+scienceboy2,ssk_net,Apprentice
+scienceboy2,HighTECHredNECK,Apprentice
+scienceboy2,wilberto,Journeyer
+scienceboy2,Buttons,Apprentice
+scienceboy2,James MPW ,Apprentice
+scienceboy2,Bstame,Journeyer
+scienceboy2,ObsoleteSuperMan,Master
+scienceboy2,Delirious,Journeyer
+scienceboy2,earlwb,Master
+scienceboy2,01010101,Journeyer
+scienceboy2,688Imaster,Apprentice
+scienceboy2,jbm,Master
+scienceboy2,Botnerd,Journeyer
+aaguilera,steve,Journeyer
+ewaite,johanvdb,Apprentice
+sporkfork,dukeman911,Journeyer
+to cool,drhackalot,Master
+ergodiczone,wilberto,Journeyer
+ergodiczone,gud8,Apprentice
+workbot,opamp,Journeyer
+Cronotiger2002,Viper Strike,Apprentice
+Cronotiger2002,YaTu,Master
+Cronotiger2002,steve,Master
+Cronotiger2002,archimense,Journeyer
+ozkal,bascioglu,Master
+ozkal,kursad,Master
+elundquist,motters,Master
+elundquist,DougEvans,Master
+elundquist,TomD,Master
+elundquist,jeffkoenig,Master
+alagurajan,rahimi,Apprentice
+alagurajan,bharath,Apprentice
+pop,zeta,Master
+pop,steve,Master
+pop,vivek,Master
+thesky997,mikegotis,Master
+thesky997,The Swirling Brain,Apprentice
+thesky997,rudybrian,Apprentice
+thesky997,Spoons,Apprentice
+zeta,rick,Master
+zeta,steve,Master
+zeta,chris_c_20_00,Master
+zeta,YaTu,Master
+zeta,david,Master
+zeta,wsw47,Master
+zeta,0222,Master
+zeta,pjalwa,Apprentice
+zeta,The Swirling Brain,Master
+zeta,RoboSynergy,Master
+zeta,Air,Master
+zeta,magus74,Master
+zeta,Rog-a-matic,Master
+zeta,JENNIFER_COOLCHICK,Master
+zeta,jacob,Master
+zeta,dbarber12,Master
+zeta,mohit,Master
+zeta,totalchaos,Master
+zeta,Spridle_racer,Master
+zeta,ishar,Master
+zeta,edleighton,Master
+zeta,vipul,Master
+zeta,thesisus,Journeyer
+zeta,MAT,Master
+zeta,Vendetta,Master
+zeta,villaseca,Master
+zeta,discrete,Master
+zeta,huyc,Master
+zeta,Enki,Apprentice
+zeta,attar37,Master
+aiurel,ROB.T.,Master
+aiurel,blueeyedpop,Journeyer
+outsider,michel,Master
+matthewstein,steve,Master
+p4n1c,mikegotis,Master
+simonthehappy,technik,Apprentice
+simonthehappy,YaTu,Master
+simonthehappy,rodbrooks,Master
+simonthehappy,Air,Master
+simonthehappy,zeta,Master
+simonthehappy,The Swirling Brain,Master
+simonthehappy,Rog-a-matic,Master
+simonthehappy,DrDoom,Master
+simonthehappy,Psyco,Apprentice
+simonthehappy,tappo,Master
+simonthehappy,Serac,Journeyer
+simonthehappy,phooky,Journeyer
+simonthehappy,veager,Journeyer
+simonthehappy,brit-bot,Journeyer
+simonthehappy,steve,Master
+simonthehappy,Seb,Apprentice
+simonthehappy,juddr,Apprentice
+simonthehappy,neobot,Journeyer
+simonthehappy,rex,Journeyer
+simonthehappy,darkwolf572,Journeyer
+simonthehappy,Kav7441596,Journeyer
+simonthehappy,Chuck McM.,Master
+simonthehappy,Thinktank,Apprentice
+simonthehappy,iweil,Journeyer
+simonthehappy,josborn,Master
+simonthehappy,gear21,Journeyer
+simonthehappy,markgt,Apprentice
+simonthehappy,ROB.T.,Journeyer
+simonthehappy,yeow,Journeyer
+simonthehappy,glkai,Apprentice
+simonthehappy,jeanicewade,Apprentice
+simonthehappy,robotdojo,Master
+simonthehappy,davee,Master
+simonthehappy,HighTECHredNECK,Journeyer
+simonthehappy,yourfriend411,Apprentice
+scosys,profesor,Apprentice
+MadCoder,DaoOfWeiqi,Master
+MadCoder,rohit,Journeyer
+mbainrot,Goodrobot,Journeyer
+davidbuckley,Joe Bosworth,Journeyer
+Wilson.HK,steve,Master
+impsyberbob,ObsoleteSuperMan,Journeyer
+impsyberbob,Kiryu,Master
+impsyberbob,matthewstein,Apprentice
+impsyberbob,Rog-a-matic,Master
+impsyberbob,earlwb,Master
+impsyberbob,rodbrooks,Master
+impsyberbob,The Swirling Brain,Journeyer
+impsyberbob,DLDInDallas,Journeyer
+impsyberbob,RMDumse,Master
+impsyberbob,davee,Journeyer
+impsyberbob,dwhall,Master
+impsyberbob,JaapHavinga,Journeyer
+impsyberbob,hockeyrink,Master
+impsyberbob,hudson,Journeyer
+impsyberbob,blueeyedpop,Master
+impsyberbob,jeffkoenig,Master
+impsyberbob,robotdojo,Master
+impsyberbob,edleighton,Journeyer
+impsyberbob,elundquist,Journeyer
+impsyberbob,jbm,Master
+impsyberbob,Chuck McM.,Journeyer
+impsyberbob,rm53,Master
+impsyberbob,motters,Journeyer
+impsyberbob,eokerson,Master
+impsyberbob,roboteq,Journeyer
+impsyberbob,robodave,Master
+impsyberbob,steve,Master
+impsyberbob,Air,Master
+impsyberbob,rudybrian,Journeyer
+impsyberbob,stefanfogarasi,Master
+impsyberbob,ROB.T.,Journeyer
+impsyberbob,NateW,Journeyer
+impsyberbob,matsw,Journeyer
+impsyberbob,WhoPhlungPoo,Master
+impsyberbob,YaTu,Master
+impsyberbob,mats_onnerby,Journeyer
+Goodrobot,mbainrot,Apprentice
+Goodrobot,ANDROIDM,Apprentice
+spirit,Robot,Apprentice
+Robolord,nitro,Apprentice
+brandon green,xerox,Journeyer
+c6jones720,motters,Master
+c6jones720,JinSato,Master
+c6jones720,bvdborgh,Master
+c6jones720,JamesBruton,Master
+manasi,R0b0Girll,Master
+BrianJennings,The Swirling Brain,Master
+BrianJennings,steve,Master
+BrianJennings,phillysteak527,Journeyer
+BrianJennings,jcrobotics,Apprentice
+BrianJennings,magi,Apprentice
+BrianJennings,roschler,Master
+BrianJennings,Botnerd,Master
+BrianJennings,JamesBruton,Master
+BrianJennings,WhoPhlungPoo,Master
+BrianJennings,sparkjim,Master
+BrianJennings,mikegotis,Master
+BrianJennings,c6jones720,Master
+BrianJennings,JinSato,Master
+BrianJennings,marcin,Journeyer
+BrianJennings,matsw,Master
+oldgit ,Axle,Apprentice
+oldgit ,jiggersplat,Apprentice
+oldgit ,Lodewijk13,Apprentice
+oldgit ,australian,Apprentice
+oldgit ,roboticslecturer,Apprentice
+oldgit ,Psyco,Apprentice
+oldgit ,drhackalot,Apprentice
+oldgit ,Frank McNeill,Apprentice
+Ragooman,steve,Master
+Ragooman,The Swirling Brain,Master
+Ragooman,motters,Master
+shobhanb,Botnerd,Journeyer
+shobhanb,The Swirling Brain,Master
+shobhanb,steve,Master
+shobhanb,Rog-a-matic,Master
+shobhanb,jeffkoenig,Master
+shobhanb,Ratface,Journeyer
+shobhanb,earlwb,Master
+shobhanb,ROB.T.,Master
+shobhanb,dude_plasma,Journeyer
+shobhanb,lnxfergy,Journeyer
+shobhanb,RoboGal,Apprentice
+shobhanb,mikegotis,Master
+shobhanb,rudybrian,Master
+shobhanb,blueeyedpop,Master
+juddr,neobot,Journeyer
+DrDoom,Rog-a-matic,Master
+DrDoom,Necro_,Master
+DrDoom,simonthehappy,Master
+frank mcspreaderneil,Frank McNeill,Apprentice
+frank mcspreaderneil,The Swirling Brain,Apprentice
+frank mcspreaderneil,rudybrian,Master
+frank mcspreaderneil,Psyco,Apprentice
+frank mcspreaderneil,TheSwirlingBrainsGay,Master
+pantera,Rog-a-matic,Master
+pantera,steve,Master
+pantera,MadCoder,Apprentice
+pantera,gear21,Journeyer
+pantera,walter.anderson,Journeyer
+pantera,Mikul,Journeyer
+pantera,ira,Apprentice
+pantera,The Swirling Brain,Master
+pantera,rudybrian,Master
+pantera,JENNIFER_COOLCHICK,Apprentice
+greg_m,jbm,Journeyer
+kmh_1974,steve,Master
+kmh_1974,Botnerd,Journeyer
+sritom,JENNIFER_COOLCHICK,Master
+currentc,recycledelectrons,Master
+currentc,The Swirling Brain,Master
+currentc,matsw,Master
+currentc,ericzayers,Journeyer
+currentc,svo,Journeyer
+currentc,marcin,Master
+Delirious,scienceboy2,Journeyer
+Delirious,ROB.T.,Journeyer
+Delirious,rodbrooks,Master
+Delirious,zeevon,Apprentice
+Delirious,The Swirling Brain,Master
+Delirious,hudson,Master
+Delirious,blueeyedpop,Master
+robocube,nitro,Journeyer
+robocube,Botnerd,Apprentice
+trinity_19in,sashi_ono,Journeyer
+ROBOHUNK,Goodrobot,Master
+ROBOHUNK,steve,Master
+ROBOHUNK,wildmage,Master
+vbazargan,vahidbazargan,Master
+hockeyrink,Solarbotics,Master
+CyberMOnk,rohit,Master
+royallsa3,zeta,Master
+GOODTIME,mbainrot,Journeyer
+3some,WhoPhlungPoo,Master
+3some,Rog-a-matic,Master
+3some,Kiryu,Master
+3some,The Swirling Brain,Master
+tonyphuah,macet74,Journeyer
+tonyphuah,ckt77,Journeyer
+botmaster,sashi_ono,Master
+maximus_acroyear,hockeyrink,Master
+maximus_acroyear,Solarbotics,Master
+maximus_acroyear,MaxxFury,Journeyer
+maximus_acroyear,The Swirling Brain,Master
+nettron1000,rudybrian,Master
+Mikul,steve,Master
+Mikul,lurbano,Journeyer
+Mikul,Automiton247,Apprentice
+Mikul,wouter,Apprentice
+Mikul,wilberto,Apprentice
+Mikul,walter.anderson,Journeyer
+Mikul,rudybrian,Master
+Mikul,ira,Apprentice
+Mikul,CyberLizard,Apprentice
+Mikul,pantera,Apprentice
+mafalda,Ybbet,Apprentice
+stingraze,mikegotis,Master
+stingraze,cschur,Master
+stingraze,Timster,Master
+stingraze,aplumb,Journeyer
+stingraze,Mythbreaker,Journeyer
+stingraze,aaguilar,Apprentice
+stingraze,samaaaaneh,Apprentice
+stingraze,annaxt,Journeyer
+stingraze,vivek_hchs,Apprentice
+stingraze,roboticsconnection,Master
+infamous,sashi_ono,Journeyer
+vipul,YaTu,Master
+vipul,The Swirling Brain,Master
+vipul,steve,Master
+vipul,Rog-a-matic,Master
+vipul,esaavedra,Journeyer
+vipul,phooky,Journeyer
+vipul,fnorky,Journeyer
+dafyddwalters,motters,Master
+dafyddwalters,janvr,Journeyer
+Psyco,sircarlow,Apprentice
+Psyco,rudybrian,Master
+Psyco,simonthehappy,Journeyer
+Psyco,tappo,Journeyer
+Psyco,The Swirling Brain,Master
+Psyco,DarkWolf,Apprentice
+Psyco,darkwolf572,Journeyer
+Psyco,bot_dude 00,Apprentice
+Psyco,Kav7441596,Apprentice
+Psyco,bob,Apprentice
+Psyco,Mikos,Journeyer
+Psyco,tzimmerman,Apprentice
+Psyco,manik,Apprentice
+Psyco,DrEinStein,Apprentice
+Psyco,DLDInDallas,Journeyer
+Psyco,Hollister,Journeyer
+Psyco,wasperen,Journeyer
+Psyco,merrilymccarthy,Apprentice
+Psyco,mportef,Apprentice
+Psyco,Dracante,Apprentice
+Psyco,Gigaflop,Apprentice
+Psyco,baskaran,Apprentice
+Psyco,yenstefan,Apprentice
+Psyco,dr_za3lan,Apprentice
+Psyco,phooky,Master
+Psyco,drunk,Apprentice
+Psyco,Monty,Apprentice
+Psyco,brmohammad,Apprentice
+Psyco,lurbano,Journeyer
+Psyco,josborn,Journeyer
+Psyco,srikanthreddysnist,Apprentice
+Psyco,YaTu,Master
+Psyco,Air,Master
+Psyco,steve,Master
+Psyco,rodbrooks,Master
+Psyco,Rog-a-matic,Master
+Psyco,TheThief,Journeyer
+Psyco,rajkotaru,Apprentice
+Psyco,flomonitor,Apprentice
+Psyco,thomasbulckaert,Journeyer
+Psyco,kenlanier,Apprentice
+Psyco,brit-bot,Master
+Psyco,guad20,Apprentice
+Psyco,shahraeeni_m,Apprentice
+Psyco,utterchaos,Apprentice
+Psyco,rajat_goyal17,Apprentice
+Psyco,cgates,Journeyer
+Psyco,pg_india,Apprentice
+Psyco,Boobs Bot,Master
+Psyco,shurlan,Apprentice
+Psyco,mwwhited,Apprentice
+Psyco,Robert,Apprentice
+Psyco,DC,Journeyer
+Psyco,mltango5,Apprentice
+Psyco,StaceoRobot,Apprentice
+Psyco,amer nazir,Apprentice
+Psyco,AcDc,Apprentice
+Psyco,sobek,Journeyer
+Psyco,xavier,Apprentice
+Psyco,karanchecker,Apprentice
+Psyco,EdwardRupp,Journeyer
+Psyco,johnator,Apprentice
+Psyco,superdave33,Apprentice
+Psyco,bwalker,Apprentice
+Psyco,icube,Apprentice
+Psyco,Jimmy,Apprentice
+Psyco,zyy,Apprentice
+Psyco,vanoden,Apprentice
+Psyco,jethro,Journeyer
+Psyco,cpicardo,Apprentice
+Psyco,drhackalot,Apprentice
+Psyco,hudson,Master
+Psyco,WhoPhlungPoo,Master
+Psyco,busfour,Apprentice
+Psyco,jiggersplat,Apprentice
+Psyco,pushkal,Apprentice
+Psyco,veager,Journeyer
+Psyco,Seb,Journeyer
+Psyco,Terry Harmer,Journeyer
+Psyco,Matt Jaeck,Apprentice
+Psyco,arundeepak1,Apprentice
+Psyco,designpro2001,Apprentice
+Psyco,riteshagarwal440,Apprentice
+Psyco,Perceptron,Apprentice
+Psyco,jokerdude,Apprentice
+Psyco,jkkroll,Apprentice
+Psyco,navodaya.g,Journeyer
+Psyco,DaveJ,Journeyer
+Psyco,gustaf,Journeyer
+Psyco,juddr,Apprentice
+Psyco,kerwin,Apprentice
+Psyco,suresh  jagtap,Apprentice
+Psyco,dgrimes,Apprentice
+Psyco,adam2002,Apprentice
+Psyco,simskid,Apprentice
+Psyco,georgian,Apprentice
+Psyco,mahjabeen,Apprentice
+Psyco,Jyujinkai,Apprentice
+Psyco,Evader,Journeyer
+Psyco,Angel,Apprentice
+Psyco,maheshnagarkar,Apprentice
+Psyco,chrisfree,Apprentice
+Psyco,vikrant50,Apprentice
+Psyco,zoom2004,Apprentice
+Psyco,roy.wathen.,Apprentice
+Psyco,Jeff Johnson,Apprentice
+Psyco,digitalkid3k,Apprentice
+Psyco,geeman,Apprentice
+Psyco,iBOT,Apprentice
+Psyco,ada83,Journeyer
+Psyco,zrobotus,Apprentice
+Psyco,TJ,Apprentice
+Psyco,Sakke,Apprentice
+Psyco,hwhisperer,Apprentice
+Psyco,arifay,Apprentice
+Psyco,moldaw,Apprentice
+Psyco,moldaw2,Apprentice
+Psyco,markus,Apprentice
+Psyco,lilserf,Apprentice
+Psyco,Castdragon,Apprentice
+Psyco,jibberish,Apprentice
+Psyco,ROB.T.,Journeyer
+Psyco,santhoshrnair,Apprentice
+Psyco,arunan,Apprentice
+Psyco,hari_prayogi,Apprentice
+Psyco,Reg Joy,Apprentice
+Psyco,Chuck McM.,Journeyer
+Psyco,strider_mt2k,Apprentice
+Psyco,clyde,Apprentice
+Psyco,aaguilera,Journeyer
+Psyco,oopicFan,Apprentice
+Psyco,NateW,Master
+Psyco,abe_lama,Apprentice
+Psyco,machinebrain,Apprentice
+Psyco,Rick Redman,Journeyer
+Psyco,Thinktank,Apprentice
+Psyco,heli72,Journeyer
+Psyco,clubc,Apprentice
+Psyco,Big Man,Journeyer
+Psyco,Robot,Journeyer
+Psyco,Gelder,Apprentice
+Psyco,gear21,Journeyer
+asim1230,bdekraker,Apprentice
+asim1230,mikegotis,Master
+asim1230,motters,Journeyer
+raghav182001,IceMetal,Master
+jbm,greg_m,Journeyer
+jbm,steve,Master
+jbm,jferguso,Journeyer
+jbm,simonfernandez,Journeyer
+jbm,Nettron,Journeyer
+jbm,whiskers,Journeyer
+jbm,zyy,Apprentice
+jbm,rubenz,Apprentice
+jbm,nosheen,Apprentice
+jbm,Arik Yavnai,Apprentice
+jbm,Tip,Apprentice
+jbm,hotajack,Apprentice
+jbm,roy.wathen.,Apprentice
+jbm,Van Trang,Apprentice
+jbm,ekawahyu,Apprentice
+jbm,shahraeeni_m,Apprentice
+jbm,dwhall,Journeyer
+jbm,hudson,Master
+jbm,kjub03,Apprentice
+jbm,nevyn,Journeyer
+jbm,Kiryu,Apprentice
+jbm,sparkjim,Apprentice
+jbm,rudybrian,Master
+jbm,nprobert,Journeyer
+jbm,petegray,Journeyer
+jbm,Jhoffa_,Apprentice
+jbm,motters,Journeyer
+jbm,blueeyedpop,Master
+jbm,songsmyth,Apprentice
+jbm,cgates,Journeyer
+jbm,elundquist,Master
+jbm,profesor,Master
+jbm,johanvdb,Journeyer
+jbm,matsw,Master
+superskullca,skull2002,Master
+peterneal,Rog-a-matic,Master
+peterneal,topazx2,Master
+sumi,roboshopindia.8m.com,Master
+Luv2Learn,rodbrooks,Master
+pyrosk8er,ericzayers,Journeyer
+pyrosk8er,The Swirling Brain,Master
+pyrosk8er,Solarbotics,Master
+pyrosk8er,hockeyrink,Master
+bheller,josborn,Apprentice
+Buttons,Rog-a-matic,Master
+Buttons,scienceboy2,Master
+zuhair,JEDI_MASTER,Apprentice
+zuhair,aslan,Master
+ANDROIDM,bvdborgh,Master
+ANDROIDM,Goodrobot,Master
+ANDROIDM,GOODTIME,Master
+Mephiare,The Swirling Brain,Master
+Mephiare,Rog-a-matic,Master
+icube,Rog-a-matic,Master
+MIG_India,pulkit_gaur,Master
+MIG_India,roschler,Master
+MIG_India,motters,Master
+HighTECHredNECK ,HighTECHredNECK,Apprentice
+stansley,NateW,Master
+stansley,Jay_C_Beavers,Master
+stansley,Timster,Master
+wim,Pallen,Apprentice
+wim,scienceboy,Master
+wim,rudybrian,Master
+earlwb,steve,Master
+earlwb,jeffkoenig,Master
+earlwb,stefanfogarasi,Master
+earlwb,rm53,Master
+earlwb,brezuicab,Apprentice
+earlwb,nevyn,Journeyer
+earlwb,LordKrispy,Journeyer
+earlwb,robotdojo,Master
+earlwb,Jhoffa_,Journeyer
+earlwb,ROB.T.,Journeyer
+earlwb,motters,Master
+earlwb,roboteq,Master
+earlwb,ObsoleteSuperMan,Journeyer
+earlwb,opamp,Apprentice
+earlwb,impsyberbob,Apprentice
+earlwb,hockeyrink,Master
+earlwb,dude_plasma,Apprentice
+earlwb,zeevon,Apprentice
+earlwb,guad13,Apprentice
+earlwb,Timster,Journeyer
+earlwb,blueeyedpop,Master
+earlwb,Axle,Apprentice
+earlwb,shobhanb,Apprentice
+earlwb,nitro,Apprentice
+earlwb,jsampson,Journeyer
+earlwb,Blaze,Journeyer
+earlwb,gordon,Apprentice
+earlwb,robovan,Apprentice
+earlwb,Masters,Apprentice
+earlwb,Frank McNeill,Apprentice
+earlwb,gud8,Apprentice
+knob,fnorky,Master
+David.Brice,zeta,Master
+DaoOfWeiqi,MadCoder,Journeyer
+krazydeets,steve,Master
+brybert,The Swirling Brain,Master
+Jonathan ,sircarlow,Master
+gustaf,veager,Journeyer
+gustaf,brit-bot,Journeyer
+gustaf,Psyco,Apprentice
+merrilymccarthy,steve,Master
+merrilymccarthy,zeta,Apprentice
+LordM,nalrawahi,Apprentice
+LordM,Anee,Apprentice
+LordM,steve,Master
+LordM,Techno-Knight,Apprentice
+LordM,The Swirling Brain,Master
+LordM,Botnerd,Master
+LordM,sovrr,Apprentice
+LordM,NateW,Master
+velledriver,SirPhade,Journeyer
+mohansameer1983,kunal,Master
+mohansameer1983,zodiak,Master
+mohansameer1983,pulkit_gaur,Master
+b101,Mythbreaker,Journeyer
+MrFaial,DrEinStein,Apprentice
+MrFaial,dr_scrapper,Apprentice
+MrFaial,Xmike,Apprentice
+acybernaut,mikegotis,Master
+ROB.T.,gear21,Journeyer
+ROB.T.,simonthehappy,Journeyer
+ROB.T.,Automiton247,Journeyer
+ROB.T.,mats_onnerby,Journeyer
+ROB.T.,walter.anderson,Journeyer
+ROB.T.,sashi_ono,Master
+ROB.T.,Trebouche,Journeyer
+ROB.T.,pantera,Apprentice
+ROB.T.,bdekraker,Apprentice
+ROB.T.,asim1230,Apprentice
+ROB.T.,mikegotis,Master
+ROB.T.,motters,Master
+ROB.T.,hudson,Master
+ROB.T.,matsw,Master
+ROB.T.,blueeyedpop,Journeyer
+ROB.T.,Kiryu,Journeyer
+ROB.T.,davee,Journeyer
+ROB.T.,ira,Journeyer
+ROB.T.,scienceboy2,Apprentice
+ROB.T.,sparkjim,Journeyer
+ROB.T.,omagureanu,Apprentice
+ROB.T.,Dozier,Apprentice
+ROB.T.,nznguy,Apprentice
+ROB.T.,steve,Master
+ROB.T.,The Swirling Brain,Master
+ROB.T.,chris_m,Journeyer
+ROB.T.,nitro,Apprentice
+ROB.T.,Chuck McM.,Master
+ROB.T.,Jim_McNeat,Apprentice
+ROB.T.,jcrue451,Apprentice
+ROB.T.,robotdojo,Master
+ROB.T.,mohit,Journeyer
+ROB.T.,jbm,Journeyer
+ROB.T.,iBOT-2,Apprentice
+ROB.T.,rodbrooks,Master
+ROB.T.,nevyn,Journeyer
+ROB.T.,aiurel,Apprentice
+ROB.T.,Jhoffa_,Journeyer
+ROB.T.,Whistlre,Apprentice
+ROB.T.,kjub03,Apprentice
+ROB.T.,matthewstein,Master
+ROB.T.,evilrobots,Apprentice
+ROB.T.,janvr,Apprentice
+ROB.T.,earlwb,Master
+ROB.T.,profesor,Journeyer
+ROB.T.,HighTECHredNECK,Apprentice
+ROB.T.,cat007,Journeyer
+ROB.T.,Chief Robotman,Journeyer
+ROB.T.,VoodooZ,Journeyer
+ROB.T.,dude_plasma,Apprentice
+ROB.T.,jimbo,Journeyer
+ROB.T.,petegray,Journeyer
+ROB.T.,Pontifier,Journeyer
+ROB.T.,mr63,Journeyer
+ROB.T.,edleighton,Master
+ROB.T.,ragaphreak,Apprentice
+ROB.T.,Delirious,Journeyer
+ROB.T.,zeevon,Journeyer
+ROB.T.,Nic,Master
+ROB.T.,ObsoleteSuperMan,Journeyer
+ROB.T.,johanvdb,Journeyer
+ROB.T.,roboteq,Master
+ROB.T.,jstrohm,Apprentice
+ROB.T.,nemesis_vii,Apprentice
+ROB.T.,rsbohn,Apprentice
+ROB.T.,pedrog,Apprentice
+ROB.T.,cjvirus,Apprentice
+ROB.T.,jkkroll,Journeyer
+ROB.T.,onnimikki,Master
+ROB.T.,pauld2,Apprentice
+ROB.T.,jsampson,Master
+ROB.T.,rudybrian,Master
+ROB.T.,lnxfergy,Journeyer
+ROB.T.,JakeV001,Apprentice
+ROB.T.,Botnerd,Apprentice
+ROB.T.,RoboGal,Journeyer
+ROB.T.,phooky,Journeyer
+ROB.T.,alphabot,Master
+ROB.T.,zodiak,Master
+ROB.T.,jup,Journeyer
+ROB.T.,sonyboy1,Apprentice
+ROB.T.,Axle,Apprentice
+ROB.T.,The Time Keeper,Apprentice
+ROB.T.,Mad scientist,Apprentice
+ROB.T.,B1b0,Apprentice
+ROB.T.,dafyddwalters,Master
+ROB.T.,Werner,Journeyer
+ROB.T.,Devil,Apprentice
+ROB.T.,davidljung,Apprentice
+ROB.T.,lumpy,Journeyer
+ROB.T.,JoelHaasnoot,Apprentice
+ROB.T.,c6jones720,Journeyer
+ROB.T.,Timster,Master
+ROB.T.,aplumb,Journeyer
+ROB.T.,sgmcclellan,Apprentice
+ROB.T.,roschler,Master
+ROB.T.,wildmage,Journeyer
+ROB.T.,Jagtek,Apprentice
+ROB.T.,Lace,Apprentice
+ROB.T.,bvdborgh,Master
+ROB.T.,Robot_CrAzY,Apprentice
+ROB.T.,cschur,Master
+ROB.T.,Solarbotics,Master
+ROB.T.,steroidmicros,Journeyer
+ROB.T.,nalrawahi,Apprentice
+ROB.T.,Anee,Apprentice
+ROB.T.,sleve,Apprentice
+ROB.T.,dogsbody_d,Journeyer
+ROB.T.,hockeyrink,Master
+Automiton247,bdekraker,Apprentice
+VunderBob,sternobomb,Apprentice
+VunderBob,catskul,Apprentice
+VunderBob,walter.anderson,Journeyer
+WhoPhlungPoo,theymightberudy,Journeyer
+WhoPhlungPoo,rodbrooks,Master
+WhoPhlungPoo,david,Master
+WhoPhlungPoo,3some,Journeyer
+WhoPhlungPoo,hudson,Journeyer
+WhoPhlungPoo,EmeraldNova,Apprentice
+WhoPhlungPoo,mikegotis,Master
+WhoPhlungPoo,ROB.T.,Master
+WhoPhlungPoo,roboteq,Master
+WhoPhlungPoo,matsw,Master
+WhoPhlungPoo,Kiryu,Master
+WhoPhlungPoo,sashi_ono,Master
+WhoPhlungPoo,JinSato,Master
+Kiwilek,gandolfwhite,Apprentice
+Bstame,mikegotis,Master
+Bstame,bot_dude 00,Apprentice
+Bstame,scienceboy2,Apprentice
+Bstame,HighTECHredNECK,Master
+Botnerd,Randwilliams,Master
+Botnerd,rodbrooks,Master
+Botnerd,lnxfergy,Journeyer
+Botnerd,Nic,Journeyer
+Botnerd,frostw,Apprentice
+Botnerd,Hunter 7,Apprentice
+Botnerd,Jason-Bot,Apprentice
+Botnerd,The Swirling Brain,Master
+Botnerd,nitro,Apprentice
+Botnerd,Georgyo,Apprentice
+Botnerd,msprague,Apprentice
+Botnerd,RoboGal,Apprentice
+Botnerd,alphabot,Journeyer
+Botnerd,ROB.T.,Journeyer
+Botnerd,Lodewijk13,Apprentice
+Botnerd,thiahien,Apprentice
+Botnerd,mikegotis,Master
+Botnerd,Kiryu,Journeyer
+Botnerd,walter.anderson,Master
+Botnerd,devlin,Journeyer
+Botnerd,Bonaparte Jones,Apprentice
+Botnerd,Axle,Apprentice
+Botnerd,cat,Apprentice
+Botnerd,MartinCalsyn,Journeyer
+Botnerd,robocube,Journeyer
+Botnerd,shobhanb,Journeyer
+Botnerd,ankushk,Apprentice
+Botnerd,scanan,Journeyer
+Botnerd,Robust,Apprentice
+Botnerd,zynko,Apprentice
+Botnerd,ruksen,Apprentice
+Botnerd,wim,Journeyer
+Botnerd,raullapeira,Journeyer
+Botnerd,Mad scientist,Apprentice
+Botnerd,Geek_and_Proud,Apprentice
+Botnerd,kteam,Apprentice
+Botnerd,steve,Master
+Botnerd,outsider,Journeyer
+Botnerd,jibanez,Apprentice
+Botnerd,The Time Keeper,Apprentice
+Botnerd,RatOmeter,Apprentice
+Botnerd,DavidM,Journeyer
+Botnerd,mentaldetergent,Apprentice
+Botnerd,ace,Apprentice
+Botnerd,Show_Me,Apprentice
+Botnerd,fluff,Apprentice
+Botnerd,sonyboy1,Apprentice
+Botnerd,motters,Master
+Botnerd,futurevolution,Apprentice
+Botnerd,rezaei,Apprentice
+Botnerd,matthewstein,Master
+Botnerd,yakn,Apprentice
+Botnerd,GWBOND1,Apprentice
+Botnerd,zalahu,Apprentice
+Botnerd,robomaruthy,Apprentice
+Botnerd,Valdhor,Apprentice
+Botnerd,AnswerGuru,Apprentice
+Botnerd,pramos,Apprentice
+Botnerd,tongaloa,Apprentice
+Botnerd,tdickens,Apprentice
+Botnerd,roboc24,Apprentice
+Botnerd,roadnarrowskim,Apprentice
+Botnerd,earlwb,Master
+Botnerd,amanda_414,Apprentice
+Botnerd,tlclotus,Apprentice
+Botnerd,Balthaser,Apprentice
+Botnerd,William Rogers,Apprentice
+Botnerd,kunal,Journeyer
+Botnerd,topazx2,Master
+Botnerd,reynaldo,Apprentice
+Botnerd,Devil,Apprentice
+Botnerd,siliconcybernetics,Apprentice
+Botnerd,RoboTurfDom,Apprentice
+Botnerd,cyborgman,Apprentice
+Botnerd,FoS,Apprentice
+Botnerd,mrplong,Apprentice
+Botnerd,irfan4u22,Apprentice
+Botnerd,kmh_1974,Apprentice
+Botnerd,ilan2003,Apprentice
+Botnerd,jg167,Apprentice
+Botnerd,amiran,Apprentice
+Botnerd,Takeshi,Apprentice
+Botnerd,waldmeyer,Apprentice
+Botnerd,peterman921,Journeyer
+Botnerd,roschler,Journeyer
+Botnerd,davidljung,Apprentice
+Botnerd,c6jones720,Apprentice
+Botnerd,goblinarchr,Apprentice
+Botnerd,1234asd,Apprentice
+Botnerd,L937,Apprentice
+Botnerd,FirstCool,Apprentice
+Botnerd,SomeoneKnows,Apprentice
+Botnerd,acicuecalo,Apprentice
+Botnerd,sashi_ono,Journeyer
+Botnerd,Leungdaryl,Apprentice
+Botnerd,Marcus8675,Journeyer
+Botnerd,agnessa,Apprentice
+Botnerd,Bio Bricks,Apprentice
+Botnerd,pindiespace,Apprentice
+Botnerd,ericzayers,Journeyer
+Botnerd,Lace,Apprentice
+Botnerd,bvdborgh,Master
+Botnerd,theBot,Apprentice
+Botnerd,shanemassey,Apprentice
+Botnerd,Jake11611,Apprentice
+Botnerd,dogsbody_d,Journeyer
+Botnerd,BrianJennings,Journeyer
+Botnerd,macdorman,Apprentice
+Botnerd,andreww,Apprentice
+Botnerd,chenster000,Apprentice
+Botnerd,jlin,Master
+Botnerd,LordM,Journeyer
+Botnerd,svo,Journeyer
+Botnerd,bboyes,Journeyer
+Botnerd,magnus,Journeyer
+Botnerd,campp1,Master
+strider_mt2k,rudybrian,Master
+Timster,jiggersplat,Apprentice
+Timster,Jay_C_Beavers,Master
+wsc,rodbrooks,Master
+wsc,Rog-a-matic,Master
+wsc,The Swirling Brain,Master
+wsc,Rekker,Apprentice
+wsc,WhoPhlungPoo,Journeyer
+wsc,rudybrian,Master
+Ale5,bvdborgh,Master
+Ale5,Masse,Master
+Mythbreaker,josephgatchalian,Journeyer
+Mythbreaker,black,Apprentice
+Mythbreaker,smn_gs,Journeyer
+Mythbreaker,while_true,Journeyer
+Mythbreaker,b101,Apprentice
+Mythbreaker,hpmoon,Master
+perattigroup,mikegotis,Master
+Bio Bricks,Botnerd,Journeyer
+sashi_ono,The Swirling Brain,Master
+sashi_ono,steve,Master
+sashi_ono,chentzin,Apprentice
+sashi_ono,c6jones720,Apprentice
+sashi_ono,Corrupted.Mind,Apprentice
+sashi_ono,arman_kh,Apprentice
+sashi_ono,rudybrian,Master
+sashi_ono,FirstCool,Journeyer
+sashi_ono,1234asd,Journeyer
+sashi_ono,KMeowzart,Journeyer
+sashi_ono,Botnerd,Master
+sashi_ono,kunal,Master
+sashi_ono,Trebouche,Master
+sashi_ono,WhoPhlungPoo,Master
+sashi_ono,NagerHass,Apprentice
+sashi_ono,Kiryu,Master
+sashi_ono,zodiak,Journeyer
+sashi_ono,nitro,Journeyer
+sashi_ono,impsyberbob,Journeyer
+sashi_ono,3some,Journeyer
+sashi_ono,mikegotis,Master
+sashi_ono,ROB.T.,Master
+sashi_ono,billy,Apprentice
+sashi_ono,jbm,Master
+sashi_ono,zeta,Master
+sashi_ono,robodave,Master
+sashi_ono,botmaster,Apprentice
+sashi_ono,Spoons,Journeyer
+sashi_ono,brybert,Apprentice
+sashi_ono,aplumb,Journeyer
+sashi_ono,cschur,Master
+billy,sashi_ono,Master
+roboshopindia.8m.com,mikegotis,Master
+roboshopindia.8m.com,Nic,Journeyer
+roboshopindia.8m.com,ericzayers,Master
+roboshopindia.8m.com,nuke,Journeyer
+roboshopindia.8m.com,robotdojo,Master
+roboshopindia.8m.com,aplumb,Journeyer
+roboshopindia.8m.com,roschler,Journeyer
+roboshopindia.8m.com,c6jones720,Journeyer
+roboshopindia.8m.com,kunal,Apprentice
+roboshopindia.8m.com,WelshGeezer,Apprentice
+roboshopindia.8m.com,WhoPhlungPoo,Master
+roboshopindia.8m.com,zhaoway,Apprentice
+roboshopindia.8m.com,anttch360,Journeyer
+roboshopindia.8m.com,jaiger,Journeyer
+roboshopindia.8m.com,atulk,Master
+roboshopindia.8m.com,kmomeni,Apprentice
+roboshopindia.8m.com,flaviu_c,Apprentice
+roboshopindia.8m.com,kcbanner,Master
+roboshopindia.8m.com,lmdavis,Apprentice
+roboshopindia.8m.com,kp123_0,Apprentice
+roboshopindia.8m.com,Nige,Apprentice
+roboshopindia.8m.com,cgates,Master
+roboshopindia.8m.com,dude_plasma,Journeyer
+roboshopindia.8m.com,raghaviyarasi,Journeyer
+roboshopindia.8m.com,yscryeon,Master
+roboshopindia.8m.com,Rekker,Journeyer
+roboshopindia.8m.com,hwoolery,Journeyer
+roboshopindia.8m.com,zw,Master
+roboshopindia.8m.com,Randwilliams,Master
+roboshopindia.8m.com,zeta,Master
+roboshopindia.8m.com,Mythbreaker,Journeyer
+roboshopindia.8m.com,matsw,Master
+roboshopindia.8m.com,hudson,Master
+roboshopindia.8m.com,blueeyedpop,Master
+roboshopindia.8m.com,dalewheat,Master
+roboshopindia.8m.com,nznguy,Master
+roboshopindia.8m.com,scienceboy,Master
+roboshopindia.8m.com,mwatts,Master
+roboshopindia.8m.com,Lodewijk13,Master
+roboshopindia.8m.com,janvr,Master
+roboshopindia.8m.com,johanvdb,Master
+roboshopindia.8m.com,Leungdaryl,Master
+roboshopindia.8m.com,Robo-Tech-2004,Journeyer
+roboshopindia.8m.com,motters,Master
+roboshopindia.8m.com,Timster,Master
+roboshopindia.8m.com,Jay_C_Beavers,Master
+roboshopindia.8m.com,Jayakrishnan,Master
+roboshopindia.8m.com,pulkit_gaur,Master
+NateW,jiggersplat,Journeyer
+NateW,ROB.T.,Master
+NateW,B1b0,Apprentice
+NateW,sigfpe,Master
+NateW,Jay_C_Beavers,Master
+NateW,wildmage,Journeyer
+NateW,killerwolfbot,Apprentice
+NateW,jlin,Master
+NateW,bvdborgh,Master
+NateW,cschur,Master
+NateW,steroidmicros,Master
+NateW,Nic,Journeyer
+NateW,ericzayers,Journeyer
+NateW,kelvin.hamilton,Master
+phoneboy,jon82,Master
+djrug,steve,Master
+phooky,Psyco,Apprentice
+phooky,hudson,Journeyer
+MaxxFury,maximus_acroyear,Apprentice
+MaxxFury,mikegotis,Master
+MaxxFury,Rog-a-matic,Master
+sleve,GOODTIME,Apprentice
+sleve,Mad scientist,Master
+sleve,Goodrobot,Master
+sleve,bvdborgh,Master
+sleve,thinmachine,Apprentice
+sleve,Tenacious C,Apprentice
+sleve,roschler,Apprentice
+sleve,mikegotis,Apprentice
+sleve,sashi_ono,Apprentice
+sleve,ira,Apprentice
+sleve,cschur,Master
+sleve,c6jones720,Master
+sleve,JinSato,Apprentice
+sleve,pierre_gene,Apprentice
+sleve,aplumb,Master
+sleve,ericzayers,Apprentice
+sleve,wedesoft,Apprentice
+sleve,billyjong,Apprentice
+sleve,AI4U,Journeyer
+sleve,evilrobots,Master
+sleve,roboprize,Apprentice
+sleve,kunal,Apprentice
+sleve,WhoPhlungPoo,Apprentice
+sleve,wsc,Apprentice
+sleve,The Swirling Brain,Apprentice
+sleve,androphobe,Master
+sleve,aaron,Apprentice
+sleve,frank mcspreaderneil,Master
+sleve,Lodewijk13,Apprentice
+sleve,RoboGal,Apprentice
+sleve,ROB.T.,Apprentice
+sleve,Sleepsalot,Apprentice
+sleve,Spoons,Apprentice
+sleve,zodiak,Apprentice
+sleve,lnxfergy,Apprentice
+sleve,Battle_Droid_8912,Apprentice
+sleve,nitro,Apprentice
+sleve,Qwerty,Apprentice
+sleve,Psyco,Apprentice
+sleve,Robot,Apprentice
+sleve,msprague,Apprentice
+sleve,pedrog,Apprentice
+sleve,alphabot,Apprentice
+sleve,Axle,Apprentice
+sleve,sonyboy1,Apprentice
+sleve,Botnerd,Apprentice
+sleve,rudybrian,Master
+sleve,blueeyedpop,Journeyer
+sleve,shobhanb,Apprentice
+sleve,Ratface,Apprentice
+sleve,steve,Master
+sleve,DougEvans,Apprentice
+sleve,goblinarchr,Apprentice
+sleve,robodave,Journeyer
+sleve,impsyberbob,Apprentice
+sleve,Nic,Apprentice
+sleve,wildmage,Apprentice
+sleve,ROBOHUNK,Journeyer
+sleve,icechip,Apprentice
+sleve,Trebouche,Apprentice
+sleve,scienceboy2,Apprentice
+sleve,raghaviyarasi,Apprentice
+charger,opamp,Journeyer
+onnimikki,steroidmicros,Master
+salil.mittal,turmotor,Master
+norberto,JENNIFER_COOLCHICK,Apprentice
+norberto,Rog-a-matic,Apprentice
+norberto,angelina,Apprentice
+roschler,steve,Master
+roschler,motters,Master
+roschler,Nic,Journeyer
+roschler,tim.holt,Journeyer
+roschler,JinSato,Master
+roschler,Kiryu,Master
+roschler,petegray,Journeyer
+roschler,pulkit_gaur,Master
+roschler,Masse,Apprentice
+roschler,rodbrooks,Master
+roschler,Jay_C_Beavers,Master
+shadyblade,sensuk,Master
+shadyblade,mtidwell,Master
+shadyblade,zodiak,Master
+davidljung,rodbrooks,Master
+davidljung,ROB.T.,Apprentice
+davidljung,hudson,Apprentice
+Robot,spirit,Journeyer
+Robot,steve,Master
+Robot,oopicFan,Journeyer
+Robot,brit-bot,Journeyer
+Robot,DrEinStein,Apprentice
+Robot,Psyco,Journeyer
+Robot,evilrobots,Apprentice
+Robot,Gelder,Apprentice
+motters,rodbrooks,Master
+motters,hockeyrink,Master
+motters,mrplong,Apprentice
+Dhawal,rohit,Master
+Blackout,Flaviu,Apprentice
+Blackout,caty_mora,Journeyer
+Blackout,sassano.michele,Apprentice
+Blackout,Kav7441596,Apprentice
+Blackout,0222,Master
+kewdude19,lilserf,Apprentice
+kael,opamp,Journeyer
+kael,bottomquark,Journeyer
+dale_31,angelina,Master
+RMDumse,blueeyedpop,Master
+kcbanner,Solarbotics,Master
+kcbanner,hockeyrink,Master
+rasimkilic,steve,Master
+Qwerty,rohit,Master
+Qwerty,walter.anderson,Master
+Qwerty,Rog-a-matic,Master
+Qwerty,Bstame,Apprentice
+Qwerty,augiesoccer3,Apprentice
+Qwerty,ultraintelligence,Journeyer
+wasperen,Wolvie74,Apprentice
+wasperen,mtidwell,Journeyer
+wasperen,lingesh25,Apprentice
+wasperen,EmeraldNova,Apprentice
+wasperen,mohitkaul,Apprentice
+wasperen,xxx01r5,Apprentice
+wasperen,Manax,Apprentice
+wasperen,sbean,Journeyer
+wasperen,kill-9,Apprentice
+hudson,superdave33,Apprentice
+hudson,Psyco,Journeyer
+hudson,WhoPhlungPoo,Journeyer
+hudson,veager,Apprentice
+hudson,brit-bot,Apprentice
+hudson,lkcl,Journeyer
+hudson,ada83,Journeyer
+hudson,Seb,Journeyer
+hudson,kerwin,Apprentice
+hudson,markus,Apprentice
+hudson,ROB.T.,Journeyer
+hudson,Mikos,Apprentice
+hudson,rex,Journeyer
+hudson,bdekraker,Journeyer
+hudson,sparkjim,Journeyer
+hudson,mikegotis,Master
+hudson,Trebouche,Journeyer
+hudson,matsw,Master
+hudson,robotdojo,Master
+hudson,dwhall,Master
+hudson,VoodooZ,Journeyer
+hudson,profesor,Journeyer
+goblinarchr,akb,Apprentice
+goblinarchr,lamoid,Apprentice
+goblinarchr,rm53,Journeyer
+goblinarchr,plasma16,Apprentice
+goblinarchr,Muarrif,Apprentice
+goblinarchr,zodiak,Journeyer
+goblinarchr,walter.anderson,Master
+goblinarchr,VoodooZ,Journeyer
+goblinarchr,ankitwww,Apprentice
+goblinarchr,Goodrobot,Apprentice
+goblinarchr,raullapeira,Journeyer
+goblinarchr,Botnerd,Journeyer
+goblinarchr,Randwilliams,Journeyer
+goblinarchr,steve,Master
+goblinarchr,robodave,Journeyer
+goblinarchr,gear21,Journeyer
+goblinarchr,earlwb,Master
+goblinarchr,Legolas,Apprentice
+goblinarchr,Nic,Journeyer
+goblinarchr,mwalker,Apprentice
+Gelder,Robot,Apprentice
+mr63,dude_plasma,Journeyer
+Jim_McNeat,sparkjim,Master
+Jim_McNeat,chris_m,Journeyer
+raullapeira,jup,Journeyer
+raullapeira,kteam,Journeyer
+nuke,carrot crusader,Master
+nuke,steve,Master
+mtidwell,dvestguy,Apprentice
+mtidwell,The Swirling Brain,Master
+mtidwell,steve,Master
+lilserf,gte910h,Journeyer
+lilserf,DavidM,Journeyer
+Joel Tangjerd,Serac,Journeyer
+Joel Tangjerd,evilrobots,Apprentice
+Joel Tangjerd,cgates,Journeyer
+lnxfergy,motters,Master
+lnxfergy,pedrog,Journeyer
+lnxfergy,ROB.T.,Master
+lnxfergy,ole,Apprentice
+lnxfergy,rahulb,Journeyer
+lnxfergy,JakeV001,Apprentice
+lnxfergy,Botnerd,Journeyer
+lnxfergy,Randwilliams,Apprentice
+lnxfergy,Georgyo,Apprentice
+lnxfergy,msprague,Apprentice
+lnxfergy,dafyddwalters,Journeyer
+lnxfergy,RoboGal,Apprentice
+lnxfergy,Bro,Apprentice
+lnxfergy,Hantu,Apprentice
+lnxfergy,dodds,Apprentice
+lnxfergy,chizza,Apprentice
+lnxfergy,gandalfr,Apprentice
+lnxfergy,Lodewijk13,Apprentice
+lnxfergy,mwatts,Apprentice
+lnxfergy,zodiak,Journeyer
+lnxfergy,raquib,Journeyer
+lnxfergy,tito83,Apprentice
+lnxfergy,walter.anderson,Journeyer
+lnxfergy,JENNIFER_COOLCHICK,Apprentice
+lnxfergy,amir77,Apprentice
+lnxfergy,quantum,Apprentice
+lnxfergy,kerux,Apprentice
+lnxfergy,Mecha_Maker,Apprentice
+lnxfergy,tolga,Journeyer
+lnxfergy,James Matthews,Master
+lnxfergy,robocube,Journeyer
+lnxfergy,MartinCalsyn,Journeyer
+lnxfergy,cat,Apprentice
+lnxfergy,Cronotiger2002,Apprentice
+lnxfergy,Battle_Droid_8912,Apprentice
+01010101,01111,Journeyer
+svo,matsw,Master
+svo,pyrosk8er,Apprentice
+svo,bettsg,Apprentice
+svo,Pedro14,Apprentice
+xerox,The Swirling Brain,Master
+everdawn,MIG_India,Master
+Dezi0616,DaveC,Apprentice
+Castdragon,ABHIJIT,Master
+RoboCoach,The Robotics Chick,Journeyer
+topazx2,dcalkins,Master
+topazx2,JustinPinner,Journeyer
+topazx2,peterman921,Journeyer
+topazx2,chris_m,Apprentice
+yeow,WhoPhlungPoo,Journeyer
+yeow,mtidwell,Journeyer
+yeow,MelTorrie,Master
+yeow,gear21,Journeyer
+yeow,Rog-a-matic,Master
+yeow,hudson,Journeyer
+yeow,The Swirling Brain,Master
+yeow,Masters,Apprentice
+yeow,n_hakami,Apprentice
+yeow,wouter,Apprentice
+yeow,hwoolery,Apprentice
+yeow,Royce,Apprentice
+yeow,archimense,Apprentice
+yeow,Chuck McM.,Master
+yeow,Richard Allen,Apprentice
+yeow,rodbrooks,Master
+yeow,lucretiaX,Apprentice
+yeow,steve,Master
+yeow,simonthehappy,Journeyer
+yeow,ROB.T.,Journeyer
+yeow,jeanicewade,Apprentice
+yeow,rocketdrone,Apprentice
+yeow,amir007,Apprentice
+yeow,Clide,Apprentice
+yeow,ChandraNeil,Apprentice
+yeow,hussnain_raza,Apprentice
+yeow,science_olympiad2003,Apprentice
+yeow,Galen,Apprentice
+yeow,ri_fauquet,Apprentice
+yeow,harinder,Apprentice
+yeow,lewisc,Apprentice
+yeow,ram_nut,Apprentice
+yeow,happy_nawaz786,Apprentice
+yeow,Bonzi_19,Apprentice
+yeow,ryabear,Apprentice
+yeow,82840479,Apprentice
+Geek_and_Proud,Rog-a-matic,Master
+zodiak,matsw,Master
+zodiak,simonthehappy,Journeyer
+zodiak,steve,Master
+zodiak,matthewstein,Master
+zodiak,walter.anderson,Master
+zodiak,blueeyedpop,Master
+zodiak,niklo,Apprentice
+zodiak,Toad319,Apprentice
+zodiak,alex,Apprentice
+zodiak,jstrohm,Apprentice
+zodiak,Rog-a-matic,Master
+zodiak,WhoPhlungPoo,Master
+zodiak,The Swirling Brain,Master
+zodiak,norberto,Master
+zodiak,Lodewijk13,Journeyer
+zodiak,ROB.T.,Master
+zodiak,JENNIFER_COOLCHICK,Apprentice
+zodiak,rodbrooks,Master
+ruzbeh_64,aminetezazian,Apprentice
+zac911,ishar,Journeyer
+mrplong,mwalker,Journeyer
+kalia.rishi,rodbrooks,Master
+digitalkid3k,YaTu,Master
+munky1073,rudybrian,Master
+aminetezazian,e_tarkesh,Master
+aminetezazian,amin_emami,Apprentice
+oopic-r,HighTECHredNECK ,Master
+oopic-r,Bstame,Master
+gear21,steve,Master
+gear21,Automiton247,Apprentice
+gear21,zeevon,Apprentice
+gear21,Chuck McM.,Master
+gear21,simonthehappy,Journeyer
+gear21,strider_mt2k,Journeyer
+gear21,Psyco,Journeyer
+gear21,ROB.T.,Journeyer
+gear21,brit-bot,Journeyer
+gear21,Rog-a-matic,Master
+gear21,scottpreston,Journeyer
+gear21,Robot,Apprentice
+gear21,rudybrian,Master
+gear21,NateW,Journeyer
+gear21,yeow,Apprentice
+sircarlow,joelbenoit,Master
+TechPete,JinSato,Master
+James MPW ,nitro,Journeyer
+James MPW ,scienceboy2,Master
+dude_plasma,danthegreat,Apprentice
+Nettron,blueeyedpop,Master
+Nettron,rudybrian,Master
+Nettron,motters,Journeyer
+Nettron,jbm,Journeyer
+Nettron,strider_mt2k,Journeyer
+Nettron,EdwardRupp,Journeyer
+Nettron,wilberto,Apprentice
+Nettron,kjub03,Apprentice
+Nettron,cgates,Journeyer
+Nettron,Jimm,Apprentice
+Nettron,benny,Apprentice
+Nettron,zodiak,Journeyer
+Nettron,topazx2,Master
+Nettron,rodbrooks,Master
+focuspeck,andreww,Master
+Axle,Robust,Journeyer
+Axle,Botnerd,Journeyer
+Axle,robotx52,Apprentice
+Axle,MechUser,Apprentice
+Axle,blueeyedpop,Master
+Axle,The Time Keeper,Apprentice
+Axle,Pall,Apprentice
+Axle,ruksen,Apprentice
+Axle,belloc,Journeyer
+Axle,jup,Journeyer
+Axle,The Swirling Brain,Master
+Axle,scienceboy2,Master
+Axle,zeta,Journeyer
+Axle,theymightberudy,Apprentice
+Axle,EdwardRupp,Master
+Axle,RoboRick,Apprentice
+Axle,nitro,Master
+Axle,goodie,Journeyer
+Axle,KMeowzart,Apprentice
+Axle,klitiAlb,Apprentice
+Axle,sonyboy1,Apprentice
+Axle,jibanez,Journeyer
+Axle,walter.anderson,Master
+Axle,xutron,Journeyer
+Axle,Mad scientist,Journeyer
+Axle,raquib,Journeyer
+Axle,earlwb,Master
+Axle,rawheat,Apprentice
+Axle,ROB.T.,Master
+Axle,steve,Master
+Axle,yoyodaddy23,Apprentice
+Axle,Timster,Journeyer
+Axle,jiggersplat,Master
+Axle,robo_yodel,Apprentice
+Axle,bigbertb,Journeyer
+Axle,max_steel,Apprentice
+Axle,mentaldetergent,Apprentice
+Axle,blue tech,Apprentice
+Axle,hisham,Apprentice
+Axle,gpt_2020,Apprentice
+Axle,i_shariati,Apprentice
+Axle,Loius,Apprentice
+Axle,Robst,Journeyer
+Axle,leanneB,Apprentice
+Axle,deeps,Apprentice
+Axle,f_fallahi,Apprentice
+Axle,Show_Me,Apprentice
+Axle,jagadish,Journeyer
+johann.fridriksson,Rog-a-matic,Master
+m_vinoth,roboshopindia.8m.com,Master
+bvdborgh,The Swirling Brain,Master
+bvdborgh,cgates,Journeyer
+bvdborgh,Botnerd,Apprentice
+bvdborgh,ROB.T.,Master
+bvdborgh,thinmachine,Apprentice
+bvdborgh,NateW,Apprentice
+bvdborgh,steve,Master
+bvdborgh,shahin,Apprentice
+bvdborgh,billyjong,Apprentice
+bvdborgh,zodiak,Journeyer
+bvdborgh,ericzayers,Journeyer
+bvdborgh,c6jones720,Journeyer
+bvdborgh,egoo76,Apprentice
+bvdborgh,rob2713g,Apprentice
+bvdborgh,Cannon Fury,Apprentice
+bvdborgh,psychlotron,Apprentice
+amiverma,scienceboy2,Master
+David Simmons,zeta,Master
+AI4U,evilrobots,Journeyer
+AI4U,akira,Journeyer
+AI4U,Marcus8675,Master
+AI4U,Spoons,Master
+AI4U,jeremy_mat,Master
+AI4U,NeuronExMachina,Master
+AI4U,c6jones720,Master
+AI4U,White Box Robotics,Master
+AI4U,JamesBruton,Journeyer
+yoyodaddy23,steve,Master
+yoyodaddy23,The Swirling Brain,Master
+yoyodaddy23,Rog-a-matic,Master
+yoyodaddy23,Axle,Journeyer
+The Swirling Brain,aaron,Apprentice
+The Swirling Brain,YaTu,Master
+The Swirling Brain,theymightberudy,Apprentice
+The Swirling Brain,Penn71911,Journeyer
+The Swirling Brain,botman,Apprentice
+The Swirling Brain,Max,Apprentice
+The Swirling Brain,dvestguy,Apprentice
+The Swirling Brain,Dave Fleischer,Apprentice
+The Swirling Brain,bot_dude 00,Apprentice
+The Swirling Brain,lucretiaX,Apprentice
+The Swirling Brain,DavidM,Journeyer
+The Swirling Brain,mtidwell,Journeyer
+The Swirling Brain,wasperen,Apprentice
+The Swirling Brain,homers12,Apprentice
+The Swirling Brain,kerap,Apprentice
+The Swirling Brain,Wolvie74,Apprentice
+The Swirling Brain,parallaxd,Apprentice
+The Swirling Brain,zerooverride,Apprentice
+The Swirling Brain,justinFlorentine,Apprentice
+The Swirling Brain,EdwardRupp,Journeyer
+The Swirling Brain,jtryspice98,Apprentice
+The Swirling Brain,kilowatt,Apprentice
+The Swirling Brain,Kav7441596,Apprentice
+The Swirling Brain,cgates,Master
+The Swirling Brain,Hollister,Journeyer
+The Swirling Brain,DarkWolf,Apprentice
+The Swirling Brain,iam4opnsrc,Journeyer
+The Swirling Brain,ira,Apprentice
+The Swirling Brain,pantera,Apprentice
+The Swirling Brain,hwoolery,Journeyer
+The Swirling Brain,wim,Journeyer
+The Swirling Brain,Trebouche,Apprentice
+The Swirling Brain,zeevon,Journeyer
+The Swirling Brain,Pontifier,Journeyer
+The Swirling Brain,Automiton247,Journeyer
+The Swirling Brain,bdekraker,Apprentice
+The Swirling Brain,tafkaks,Journeyer
+The Swirling Brain,Jhoffa_,Journeyer
+The Swirling Brain,RoboticFather,Journeyer
+The Swirling Brain,upper,Apprentice
+The Swirling Brain,davee,Master
+The Swirling Brain,dwhall,Journeyer
+The Swirling Brain,robotdojo,Master
+The Swirling Brain,Chuck McM.,Master
+The Swirling Brain,jbm,Master
+The Swirling Brain,iBOT-2,Journeyer
+The Swirling Brain,ajft,Apprentice
+The Swirling Brain,drfuzzy,Journeyer
+The Swirling Brain,Jimm,Apprentice
+The Swirling Brain,ole,Apprentice
+The Swirling Brain,rohit,Apprentice
+The Swirling Brain,Misterblue,Apprentice
+The Swirling Brain,gordon,Apprentice
+The Swirling Brain,Chief Robotman,Journeyer
+The Swirling Brain,motters,Master
+The Swirling Brain,nevyn,Journeyer
+The Swirling Brain,roboteq,Journeyer
+The Swirling Brain,elundquist,Master
+The Swirling Brain,Fez,Apprentice
+The Swirling Brain,gene,Apprentice
+The Swirling Brain,petegray,Journeyer
+The Swirling Brain,Whistlre,Apprentice
+The Swirling Brain,arnab_nandi,Apprentice
+The Swirling Brain,Tonhozi,Apprentice
+The Swirling Brain,nprobert,Journeyer
+The Swirling Brain,Egray,Apprentice
+The Swirling Brain,Kraft,Apprentice
+The Swirling Brain,kjub03,Apprentice
+The Swirling Brain,yourfriend411,Apprentice
+The Swirling Brain,Werner,Apprentice
+The Swirling Brain,alagurajan,Apprentice
+The Swirling Brain,profesor,Journeyer
+The Swirling Brain,janvr,Journeyer
+The Swirling Brain,cat007,Apprentice
+The Swirling Brain,matthewstein,Apprentice
+The Swirling Brain,wohleb,Apprentice
+The Swirling Brain,frostw,Apprentice
+The Swirling Brain,simonthehappy,Journeyer
+The Swirling Brain,mr63,Apprentice
+The Swirling Brain,dude_plasma,Apprentice
+The Swirling Brain,jimbo,Journeyer
+The Swirling Brain,ObsoleteSuperMan,Apprentice
+The Swirling Brain,Delirious,Journeyer
+The Swirling Brain,jstrohm,Journeyer
+The Swirling Brain,nemesis_vii,Apprentice
+The Swirling Brain,Muarrif,Apprentice
+The Swirling Brain,pedrog,Journeyer
+The Swirling Brain,Kiryu,Journeyer
+The Swirling Brain,The Robotics Chick,Apprentice
+The Swirling Brain,pauld2,Journeyer
+The Swirling Brain,tobor1701,Apprentice
+The Swirling Brain,rsbohn,Journeyer
+The Swirling Brain,NateW,Master
+The Swirling Brain,hendrawan,Apprentice
+The Swirling Brain,mmr1914,Apprentice
+The Swirling Brain,DougEvans,Apprentice
+The Swirling Brain,jkkroll,Journeyer
+The Swirling Brain,guad13,Journeyer
+The Swirling Brain,onnimikki,Journeyer
+The Swirling Brain,JerryBocci,Apprentice
+The Swirling Brain,stevengeusens,Apprentice
+The Swirling Brain,oddrune,Apprentice
+The Swirling Brain,hreher,Apprentice
+The Swirling Brain,carloadams,Apprentice
+The Swirling Brain,finin,Apprentice
+The Swirling Brain,viveksaxena,Apprentice
+The Swirling Brain,olivier,Apprentice
+The Swirling Brain,jsampson,Journeyer
+The Swirling Brain,gschoep,Apprentice
+The Swirling Brain,Greg Webb,Apprentice
+The Swirling Brain,alphabot,Journeyer
+The Swirling Brain,Varney,Apprentice
+The Swirling Brain,nabeel,Apprentice
+The Swirling Brain,lnxfergy,Journeyer
+The Swirling Brain,shaolin,Apprentice
+The Swirling Brain,Joe Bosworth,Apprentice
+The Swirling Brain,Rekker,Apprentice
+The Swirling Brain,walter.anderson,Journeyer
+The Swirling Brain,John Venning,Apprentice
+The Swirling Brain,avrcard,Apprentice
+The Swirling Brain,kelvin.hamilton,Apprentice
+The Swirling Brain,Jason-Bot,Apprentice
+The Swirling Brain,msprague,Apprentice
+The Swirling Brain,dodds,Apprentice
+The Swirling Brain,RoboGal,Journeyer
+The Swirling Brain,gandalfr,Apprentice
+The Swirling Brain,thiahien,Apprentice
+The Swirling Brain,mwatts,Journeyer
+The Swirling Brain,dafyddwalters,Journeyer
+The Swirling Brain,dillon,Apprentice
+The Swirling Brain,zodiak,Journeyer
+The Swirling Brain,richard23,Apprentice
+The Swirling Brain,devlin,Journeyer
+The Swirling Brain,yertx,Apprentice
+The Swirling Brain,sdiwanji,Apprentice
+The Swirling Brain,Lodewijk13,Apprentice
+The Swirling Brain,MartinCalsyn,Journeyer
+The Swirling Brain,robocube,Journeyer
+The Swirling Brain,shobhanb,Apprentice
+The Swirling Brain,bgmoon,Apprentice
+The Swirling Brain,ankushk,Apprentice
+The Swirling Brain,sks,Apprentice
+The Swirling Brain,Axle,Apprentice
+The Swirling Brain,kteam,Apprentice
+The Swirling Brain,earlwb,Journeyer
+The Swirling Brain,tdickens,Journeyer
+The Swirling Brain,Sutekh,Apprentice
+The Swirling Brain,kelaar,Master
+The Swirling Brain,raullapeira,Journeyer
+The Swirling Brain,RobotWorx,Apprentice
+The Swirling Brain,White Box Robotics,Apprentice
+The Swirling Brain,mireltepes,Apprentice
+The Swirling Brain,Solarbotics,Journeyer
+The Swirling Brain,hockeyrink,Journeyer
+The Swirling Brain,reynaldo,Apprentice
+The Swirling Brain,topazx2,Journeyer
+The Swirling Brain,siliconcybernetics,Apprentice
+The Swirling Brain,lamoid,Apprentice
+The Swirling Brain,ankitwww,Apprentice
+The Swirling Brain,Magoga,Apprentice
+The Swirling Brain,akb,Apprentice
+The Swirling Brain,RadiXRobotics,Apprentice
+The Swirling Brain,peterman921,Journeyer
+The Swirling Brain,marscyborg,Apprentice
+The Swirling Brain,aplumb,Journeyer
+The Swirling Brain,SomeoneKnows,Apprentice
+The Swirling Brain,jaiger,Journeyer
+The Swirling Brain,c6jones720,Master
+The Swirling Brain,pcalnon,Apprentice
+The Swirling Brain,tim.holt,Journeyer
+The Swirling Brain,roschler,Master
+The Swirling Brain,wsc,Journeyer
+The Swirling Brain,brybert,Apprentice
+The Swirling Brain,PB-MX,Apprentice
+The Swirling Brain,Swittech,Apprentice
+The Swirling Brain,Enki,Journeyer
+The Swirling Brain,Amccutchen,Apprentice
+The Swirling Brain,wildmage,Journeyer
+The Swirling Brain,Nic,Master
+The Swirling Brain,Jagtek,Apprentice
+The Swirling Brain,sgmcclellan,Master
+The Swirling Brain,cschur,Master
+The Swirling Brain,jlin,Master
+The Swirling Brain,theBot,Journeyer
+The Swirling Brain,eistanbullu,Apprentice
+The Swirling Brain,maximus_acroyear,Apprentice
+The Swirling Brain,amramsey,Apprentice
+The Swirling Brain,lynca,Journeyer
+The Swirling Brain,egoo76,Journeyer
+The Swirling Brain,mohit,Journeyer
+The Swirling Brain,wilcosky,Apprentice
+The Swirling Brain,civo,Apprentice
+The Swirling Brain,Cannon Fury,Journeyer
+The Swirling Brain,anttch360,Journeyer
+The Swirling Brain,nalrawahi,Master
+The Swirling Brain,jeffkoenig,Master
+The Swirling Brain,jcrobotics,Journeyer
+The Swirling Brain,bvdborgh,Master
+The Swirling Brain,Botnerd,Master
+The Swirling Brain,dogsbody_d,Journeyer
+The Swirling Brain,JayFrancis,Journeyer
+The Swirling Brain,wecole,Journeyer
+The Swirling Brain,JamesBruton,Master
+The Swirling Brain,WhoPhlungPoo,Journeyer
+The Swirling Brain,rex,Journeyer
+The Swirling Brain,BrianJennings,Master
+The Swirling Brain,phillysteak527,Journeyer
+The Swirling Brain,Harold Nils Pelta,Apprentice
+The Swirling Brain,gregcx,Apprentice
+The Swirling Brain,magi,Apprentice
+The Swirling Brain,jjadams98,Apprentice
+The Swirling Brain,magnus,Journeyer
+The Swirling Brain,macdorman,Apprentice
+The Swirling Brain,robothobbies,Apprentice
+The Swirling Brain,wedesoft,Journeyer
+The Swirling Brain,currentc,Apprentice
+The Swirling Brain,marcin,Master
+The Swirling Brain,Axiom,Apprentice
+The Swirling Brain,rudybrian,Master
+The Swirling Brain,Claudette,Apprentice
+The Swirling Brain,chenster000,Journeyer
+The Swirling Brain,Sephet,Apprentice
+The Swirling Brain,svo,Journeyer
+The Swirling Brain,icechip,Master
+The Swirling Brain,wahbi_azzou,Apprentice
+The Swirling Brain,Ragooman,Apprentice
+The Swirling Brain,Rocketmagnet,Apprentice
+The Swirling Brain,dfolio,Apprentice
+The Swirling Brain,Julio,Apprentice
+The Swirling Brain,tonyenkiducx,Journeyer
+The Swirling Brain,HatHead,Journeyer
+The Swirling Brain,TravisMS,Apprentice
+The Swirling Brain,ericzayers,Master
+The Swirling Brain,p123a,Apprentice
+The Swirling Brain,LordM,Journeyer
+The Swirling Brain,RossumsChild,Journeyer
+The Swirling Brain,robotvibes,Journeyer
+The Swirling Brain,Christophe Menant,Journeyer
+The Swirling Brain,bettsg,Apprentice
+The Swirling Brain,udanis,Apprentice
+The Swirling Brain,mechanicalbrain,Apprentice
+The Swirling Brain,Nelson,Journeyer
+The Swirling Brain,dongibson,Apprentice
+The Swirling Brain,dletourneau,Apprentice
+The Swirling Brain,DaveC,Apprentice
+The Swirling Brain,DLDInDallas,Journeyer
+The Swirling Brain,robodave,Master
+The Swirling Brain,lafugitt,Apprentice
+The Swirling Brain,sovrr,Apprentice
+The Swirling Brain,while_true,Journeyer
+The Swirling Brain,kingpin094,Apprentice
+The Swirling Brain,sparrow,Apprentice
+The Swirling Brain,psychlotron,Apprentice
+Kiryu,JaapHavinga,Master
+Kiryu,rudybrian,Master
+Kiryu,DLDInDallas,Journeyer
+Kiryu,sashi_ono,Master
+WelshGeezer,cgates,Master
+mireltepes,JDavidson,Master
+Chief Robotman,roboticsconnection,Master
+jiggersplat,rahulb,Master

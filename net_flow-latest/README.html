@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.3.7: http://docutils.sourceforge.net/" />
+<title>net_flow</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="net-flow">
+<h1 class="title">net_flow</h1>
+<p>This is a Python wrapper around Raph Levien's &quot;network flow&quot;
+implementation of a trust network.  See</p>
+<blockquote>
+<a class="reference" href="http://www.advogato.org/trust-metric.html">http://www.advogato.org/trust-metric.html</a></blockquote>
+<p>for more information.  It also contains a Python rewrite of the actual
+trust metric used to calculate the advogato certifications, taken from
+mod_virgule's 'tmetric.c' file.</p>
+<p>You will need GLib version 2.0 installed in order to to compile
+'net_flow.cc'.  See 'setup.py' for more information.</p>
+<hr class="docutils" />
+<p>To build: 'python setup.py build'</p>
+<p>To try it out after a 'python setup.py build',</p>
+<blockquote>
+<ul>
+<li><p class="first">make sure that your build/lib* directory is in your PYTHONPATH.</p>
+</li>
+<li><p class="first">execute 'python examples/simple-network.py'</p>
+</li>
+<li><dl class="first docutils">
+<dt>execute 'python examples/calc-advogato.py data/advogato.org-certs.txt </dt>
+<dd><p class="first last">data/advogato.org-actual.txt'</p>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+<p>For answers or random information on the python stuff, contact
+Titus Brown &lt;<a class="reference" href="mailto:titus&#64;caltech.edu">titus&#64;caltech.edu</a>&gt;, or check out his advogato diary at</p>
+<blockquote>
+<a class="reference" href="http://www.advogato.org/person/titus/">http://www.advogato.org/person/titus/</a></blockquote>
+<hr class="docutils" />
+<p>FILES:</p>
+<pre class="literal-block">
+setup.py -- Python install script
+
+lib/net_flow.cc -- net_flow.c from mod_virgule project
+lib/net_flow.hh -- net_flow.h from mod_virgule project 
+lib/_net_flowmodule.cc -- Python wrapper for net_flow code.
+
+lib/net_flow.py -- class wrapper for _net_flow module.
+lib/advogato.py -- Python implementation of the advogato trust metric.
+
+examples/simple-network.py -- a simple network example
+examples/calc-advogato.py -- Calculation of the advogato trust certs.
+
+data/advogato.org-certs.txt -- certification network for www.advogato.org
+data/advogato.org-actual.txt -- actual cert levels for www.advogato.org
+
+data/robots.net-certs.txt -- certification network for www.robots.net
+data/robots.net-actual.txt -- actual cert levels for www.advogato.org
+</pre>
+</div>
+</body>
+</html>
