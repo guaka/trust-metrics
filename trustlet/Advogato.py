@@ -52,6 +52,7 @@ class Advogato(Dataset.Network):
                         replace('Master"', '1.0').
                         replace('Journeyer"', '0.8').
                         replace('Apprentice"', '0.6'),
+                        replace('Observer"', '0.0'), # Should Observer be 0?
                         l_names)
         newfilename = self.numbersfilepath 
         newfile = open(newfilename, 'w')
