@@ -48,10 +48,10 @@ class Advogato(Dataset.Network):
         f = open(self.filepath)
         l_names = f.readlines()
         l_numbers = map(lambda s:
-                        s.replace('level="', '').
+                        s.replace('level="', 'level=').
                         replace('Master"', '1.0').
                         replace('Journeyer"', '0.8').
-                        replace('Apprentice"', '0.6'),
+                        replace('Apprentice"', '0.6').
                         replace('Observer"', '0.0'), # Should Observer be 0?
                         l_names)
         newfilename = self.numbersfilepath 
@@ -63,7 +63,5 @@ class Advogato(Dataset.Network):
     
 if __name__ == "__main__":
     adv = Advogato()
-    # adv.fix_graphdot()
-    # adv.download()
-    # adv.load()
+    # adv.convert_dot_names_into_numbers()
             
