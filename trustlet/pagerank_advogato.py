@@ -10,9 +10,9 @@ a = trustlet.Advogato.Advogato()
 print "Starting reading the dataset"
 
 #G=networkx.generators.random_graphs.erdos_renyi_graph(10,0.15)
-#G = networkx.read_dot(a.filepath)
-G = networkx.read_dot("/home/phauly/datasets/Advogato/graph03.dot")
-print "network is of type="+type(G)
+G = networkx.read_dot(a.filepath)
+# G = networkx.read_dot("/home/phauly/datasets/Advogato/graph.dot")
+print "network is of type=" + repr(type(G))
 G=networkx.DiGraph(G) #cast a XDiGraph into a Graph, maybe this is not needed for pagerank to work, maybe it is needed
 #G.ban_multiedges() #pagerank doesn't work on multiedge graphs
 

@@ -516,15 +516,26 @@ class NetFlow(Debug):
 	"""	This class represents a nodes' view of the edges.
 	"""
 
-	def __init__(self):
+	def __init__(self, NX_graph = None):
 
 		self.succs = {} # dict by node of list of successors 
 		self.paths_to_sink = {} # 
 
 		Debug.__init__(self)
 
+		if NX_graph:
+		    for node in NX_graph:
+		        for trustee in NX_graph[node]:
+		            self.netflow_add_edge(node, trustee)
+
 	def num_nodes(self):
 		return len(self.succs)
+
+	def __len__(self):
+		return self.num_nodes()
+
+	def __getitem__(self, item):
+		return self.succs[item]
 
 	def netflow_find_node(self, name):
 		"""	finds a node _or_ adds a blank one
@@ -729,7 +740,7 @@ class NetFlow(Debug):
 
 		return priv
 
-	def netflow_max_flow_extract(self, seed, caps):
+	def netflow_max_flow_extract(self, seed, caps = [800, 200, 50, 12, 4, 2, 1]):
 		"""	performs and extracts a maximum flow network flow.
 
 			returns a dictionary with the node
