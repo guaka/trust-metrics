@@ -72,6 +72,8 @@ class Profiles:
 		self.info = {}
 		self.ProfileClass = ProfileClass
 		self.CertClass = CertClass
+		# adding this to make it easier to import datasets
+		self.create_profile_if_needed = True
 
 	def add_profile(self, name):
 		profile = self.ProfileClass(name, self.CertClass)
@@ -79,6 +81,8 @@ class Profiles:
 		return profile
 
 	def get_profile(self, name):
+		if self.create_profile_if_needed and not name in self.info.keys():
+			self.add_profile(name)
 		return self.info[name]
 
 	def get_profile_keys(self):
