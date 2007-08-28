@@ -63,7 +63,8 @@ def advogato():
 
 	t = TrustMetric(AdvogatoCertInfo(), p)
 	#r = t.tmetric_calc('like', ['raph', 'federico'])
-        r = t.tmetric_calc('like')
+	seeds = ['raph', 'federico', 'alan', 'miguel']
+        r = t.tmetric_calc('like', seeds)
 	# the alternative way is to just run the trust metric and set the seeds in AdvogatoCertInfo, self.info['seeds']: ['raph', 'federico']
 
 	pprint(r)
