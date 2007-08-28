@@ -82,6 +82,7 @@ class Profiles:
 
 	def get_profile(self, name):
 		if self.create_profile_if_needed and not name in self.info.keys():
+			# print "creating new node:", name 
 			self.add_profile(name)
 		return self.info[name]
 

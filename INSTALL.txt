@@ -15,9 +15,9 @@ Try:
 
 === scipy ===
 
-scipy is a big beast. It might be hard to install. If it doesn't
-install from your distro it could be worth it to to try the bleeding
-edge from subversion.
+scipy is a big beast. It depends on LAPACK, an even bigger beast. So
+it might be hard to install. If it doesn't install from your distro it
+could be worth it to to try the bleeding edge from subversion.
 
 
 === easy_install === 

@@ -27,7 +27,7 @@ class Advogato(Dataset.Network):
         g = pydot.graph_from_dot_file(self.filepath)
 
     def fix_graphdot(self):
-        '''Fix syntax of graph.dot (8bit -> blah doesn't work!)'''
+        """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
         import re
         
         print 'Fixing graph.dot'
@@ -60,6 +60,14 @@ class Advogato(Dataset.Network):
         newfile.writelines(l_numbers)
         newfile.close()
         return newfilename
+
+def get_graph_dot():
+    import networkx
+    adv = Advogato()
+    print "Reading", adv.filepath, "as a NetworkX graph"
+    graph = networkx.read_dot(adv.filepath)
+    return graph
+
     
 if __name__ == "__main__":
     adv = Advogato()

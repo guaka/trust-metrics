@@ -48,48 +48,23 @@ from pprint import pprint
 from profile import Profiles, Profile
 from certs import DictCertifications
 
+
 def advogato():
+	from trustlet.Advogato import get_graph_dot
+	G = get_graph_dot()
+
 	p = Profiles(Profile, DictCertifications)
-	
-	p.add_profile('luke')
-	p.add_profile('heather')
-	p.add_profile('raph')
 
-	p.add_cert('raph', 'like', 'heather', 'Master')
+	for n in G:
+		p.add_profile(n)
+		for e in G.edges(n):
+			p.add_cert(e[0], 'like', e[1], e[2]['level'])
+	print "Finished creating profiles"
 
-	p.add_cert('raph', 'like', 'mary', 'Apprentice')
-	
-	p.add_cert('raph', 'like', 'federico', 'Master')
-	p.add_cert('raph', 'like', 'bob', 'Observer')
-	
-	p.add_cert('raph', 'like', 'heather', 'Master')
-	p.add_cert('raph', 'like', 'mary', 'Apprentice')
-	p.add_cert('raph', 'like', 'federico', 'Master')
-	p.add_cert('raph', 'like', 'bob', 'Observer')
-	
-	p.add_cert('federico', 'like', 'raph', 'Master')
-	p.add_cert('federico', 'like', 'bob', 'Observer')
-	
-	p.add_cert('luke', 'like', 'heather', 'Journeyer')
-	
-	p.add_cert('heather', 'like', 'luke', 'Journeyer')
-	p.add_cert('heather', 'like', 'robbie the old crock pony', 'Journeyer')
-	p.add_cert('heather', 'like', 'tart, the flat-faced persian cat', 'Journeyer')
-	p.add_cert('heather', 'like', 'mo the mad orange pony', 'Journeyer' )
-	
-	p.add_cert('bob', 'like', 'mary', 'Apprentice')
-	p.add_cert('bob', 'like', 'heather', 'Apprentice')
-	
-	p.add_cert('mary', 'like', 'bob', 'Apprentice')
-	
-	p.add_cert('lesser fleas', 'like', 'fleas ad infinitum', 'Apprentice')
-	p.add_cert('little fleas', 'like', 'lesser fleas', 'Apprentice')
-	p.add_cert('fleas', 'like', 'little fleas', 'Apprentice')
-	p.add_cert('robbie the old crock pony', 'like', 'fleas', 'Journeyer')
-	
 	t = TrustMetric(AdvogatoCertInfo(), p)
-	r = t.tmetric_calc('like', ['raph', 'federico'])
-        #r = t.tmetric_calc('like') # the alternative way is to just run the trust metric and set the seeds in AdvogatoCertInfo, self.info['seeds']: ['raph', 'federico']
+	#r = t.tmetric_calc('like', ['raph', 'federico'])
+        r = t.tmetric_calc('like')
+	# the alternative way is to just run the trust metric and set the seeds in AdvogatoCertInfo, self.info['seeds']: ['raph', 'federico']
 
 	pprint(r)
 
