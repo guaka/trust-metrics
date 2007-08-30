@@ -5,6 +5,34 @@ class Random_tm:
     def predict_trust(self,graph,a,b):
         return random.random()
 
+class Advogato_global_tm:
+    pass
+
+class Advogato_local_tm:
+    pass
+
+class Pagerank_tm:
+    pass
+
+class Ebay_tm:
+    #predicted_trust(a,b)=average incoming links(b) # a does not matter
+    pass
+
+class Kasper_tm:
+    #average outgoing links of a
+    ## check the Jesus/Gandhi paradox: Jesus/Gandhi were good but too trustful, i.e. they were trusting also bad people and so do you if you trust their judgements.
+    pass
+
+class Zero_tm:
+    pass
+
+class One_tm:
+    pass
+
+class MoleTrust_tm:
+    pass
+
+
 def evaluate(Tm,graph):
     #error_graph=graph.get_nodes() # same nodes, no edges
 
@@ -12,7 +40,8 @@ def evaluate(Tm,graph):
     not_predicted_edges = 0
 
     tm=Tm() # clever to pass the graph here, just once the TM is instantiated? 
-    
+
+    #Attention. Edges that are self loops might be problematic
     for edge in graph.edges():
         print "edge=",edge,
         graph.delete_edge(edge)
@@ -31,6 +60,10 @@ def evaluate(Tm,graph):
         graph.add_edge(edge)
 
     print "Error=",abs_error
+
+    num_edges = graph.number_of_edges()
+    coverage = (num_edges - not_predicted_edges) / num_edges
+    accuracy = abs_error / num_edges
 
 import networkx
 
