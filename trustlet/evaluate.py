@@ -1,5 +1,5 @@
 from Advogato import Advogato
-
+from sets import Set
 
 def evaluate(trustmetric, graph):
     #error_graph = graph.get_nodes() # same nodes, no edges
@@ -38,16 +38,15 @@ def evaluate(trustmetric, graph):
             """
             
         i += 1
-        if divmod(i, 10000)[1] == 0:
+        if divmod(i, 3000)[1] == 0:
             print "acc=",abs_error / i #," real=",
         graph.add_edge(edge)
 
-    print "Error=",abs_error
+    # print "Error=",abs_error
 
     num_edges = graph.number_of_edges()
     coverage = (num_edges - not_predicted_edges) / num_edges
-    print "accuracy=",abs_error / num_edges
-
+    print "name:", trustmetric.__name__, "accuracy=", abs_error / num_edges
 
 
 ###############################################
@@ -74,7 +73,20 @@ def outb_tm(G, a, b):
     #average outgoing links of b
     return avg_or_zero(map(trust_on_edge, G.edges(b)))
 
-## check the Jesus/Gandhi paradox: Jesus/Gandhi were good but too trustful, i.e. they were trusting also bad people and so do you if you trust their judgements.
+def ebay_tm(G, a, b):
+    return avg_or_zero(map(trust_on_edge, G.in_edges(b)))
+
+
+def intersection_tm(G, a, b):
+    intersection = Set(G[a]).intersection(Set(map(lambda x: x[0], G.in_edges(b))))
+    if not intersection:
+        #somehow outa_tm up to now :)
+        return outa_tm(G, a, b)
+    else:
+        dict_a = dict(map(lambda x: (x[1], float(x[2]['level'])), G.edges(a)))
+        dict_b = dict(map(lambda x: (x[0], float(x[2]['level'])), G.in_edges(b)))
+        # now take the maximum of the minimum
+        return max(map(lambda i: min(dict_a[i], dict_b[i]), intersection))
 
 def moletrust_tm():
     pass
@@ -88,11 +100,13 @@ def advogato_local_tm(graph, a, b):
 def Pagerank_tm(G, a, b):
     pass
 
-def ebay_tm(G, a, b):
-    return avg_or_zero(map(trust_on_edge, G.in_edges(b)))
 
 if __name__ == "__main__":
-    advogato = Advogato()
+    syntax_debugging = False
+    if syntax_debugging:
+        advogato = Advogato("tiny")
+    else:
+        advogato = Advogato()
 
     import random
 
@@ -105,6 +119,7 @@ if __name__ == "__main__":
         evaluate(lambda G,a,b: 0.8, advogato)
         evaluate(lambda G,a,b: 0.9, advogato)
 
+    evaluate(intersection_tm, advogato) # 0.128261310511
     evaluate(ebay_tm, advogato)
     evaluate(outa_tm, advogato)  # this is the best from these "funny" trust metrics
     evaluate(outb_tm, advogato)

@@ -1,35 +1,373 @@
 digraph "G" {
-   /* "dbarth" */
-   "dbarth" -> "mikl" [level="Journeyer"];
+   "dbarth" -> "mikl" [level=0.8];
    /* "simonbaro" */
-   "simonbaro" -> "alan" [level="Master"];
-   "simonbaro" -> "mako" [level="Master"];
-   "simonbaro" -> "fxn" [level="Master"];
-   "simonbaro" -> "raph" [level="Master"];
-   "simonbaro" -> "zbowling" [level="Master"];
-   "simonbaro" -> "Telsa" [level="Master"];
-   "simonbaro" -> "dhd" [level="Master"];
-   "simonbaro" -> "werner" [level="Master"];
-   "simonbaro" -> "dria" [level="Master"];
-   "simonbaro" -> "zab" [level="Master"];
-   "simonbaro" -> "cbbrowne" [level="Master"];
-   "simonbaro" -> "jbuck" [level="Master"];
-   "simonbaro" -> "rbultje" [level="Master"];
-   "simonbaro" -> "sjburges" [level="Master"];
-   "simonbaro" -> "RossBurton" [level="Master"];
-   "simonbaro" -> "csv" [level="Journeyer"];
-   "simonbaro" -> "rodrigo" [level="Journeyer"];
-   "simonbaro" -> "jci" [level="Journeyer"];
-   "simonbaro" -> "azz" [level="Journeyer"];
-   "simonbaro" -> "tanis" [level="Journeyer"];
-   "simonbaro" -> "xsa" [level="Journeyer"];
-   "simonbaro" -> "linn" [level="Journeyer"];
-   "simonbaro" -> "rupert" [level="Journeyer"];
-   "simonbaro" -> "ishamael" [level="Journeyer"];
-   "simonbaro" -> "kimusan" [level="Journeyer"];
-   "simonbaro" -> "mascot" [level="Journeyer"];
-   "simonbaro" -> "kmself" [level="Journeyer"];
-   "simonbaro" -> "ths" [level="Journeyer"];
-   "simonbaro" -> "washort" [level="Journeyer"];
-   "simonbaro" -> "AlanShutko" [level="Journeyer"];
+   "simonbaro" -> "alan" [level=1.0];
+   "simonbaro" -> "mako" [level=1.0];
+   "simonbaro" -> "fxn" [level=1.0];
+   "simonbaro" -> "raph" [level=1.0];
+   "simonbaro" -> "zbowling" [level=1.0];
+   "simonbaro" -> "Telsa" [level=1.0];
+   "simonbaro" -> "dhd" [level=1.0];
+   "simonbaro" -> "werner" [level=1.0];
+   "simonbaro" -> "dria" [level=1.0];
+   "simonbaro" -> "zab" [level=1.0];
+   "simonbaro" -> "cbbrowne" [level=1.0];
+   "simonbaro" -> "jbuck" [level=1.0];
+   "simonbaro" -> "rbultje" [level=1.0];
+   "simonbaro" -> "sjburges" [level=1.0];
+   "simonbaro" -> "RossBurton" [level=1.0];
+   "simonbaro" -> "csv" [level=0.8];
+   "simonbaro" -> "rodrigo" [level=0.8];
+   "simonbaro" -> "jci" [level=0.8];
+   "simonbaro" -> "azz" [level=0.8];
+   "simonbaro" -> "tanis" [level=0.8];
+   "simonbaro" -> "xsa" [level=0.8];
+   "simonbaro" -> "linn" [level=0.8];
+   "simonbaro" -> "rupert" [level=0.8];
+   "simonbaro" -> "ishamael" [level=0.8];
+   "simonbaro" -> "kimusan" [level=0.8];
+   "simonbaro" -> "mascot" [level=0.8];
+   "simonbaro" -> "kmself" [level=0.8];
+   "simonbaro" -> "ths" [level=0.8];
+   "simonbaro" -> "washort" [level=0.8];
+   "simonbaro" -> "AlanShutko" [level=0.8];
+   "simonbaro" -> "seeS" [level=0.8];
+   "simonbaro" -> "brouhaha" [level=0.8];
+   "simonbaro" -> "ks" [level=0.8];
+   "simonbaro" -> "i0lanthe" [level=0.8];
+   "simonbaro" -> "stone" [level=0.8];
+   "simonbaro" -> "mikal" [level=0.8];
+   "simonbaro" -> "asuffield" [level=0.8];
+   "simonbaro" -> "taral" [level=0.8];
+   /* "minami" */
+   "minami" -> "minami" [level=0.6];
+   "minami" -> "polo" [level=0.8];
+   "minami" -> "movement" [level=0.8];
+   "minami" -> "jao" [level=0.8];
+   "minami" -> "ruda" [level=1.0];
+   "minami" -> "eliphas" [level=1.0];
+   "minami" -> "webseeker" [level=0.6];
+   "minami" -> "acme" [level=1.0];
+   "minami" -> "marcelo" [level=1.0];
+   "minami" -> "aristeu" [level=1.0];
+   "minami" -> "TheCorruptor" [level=0.8];
+   "minami" -> "maragato" [level=1.0];
+   "minami" -> "morcego" [level=1.0];
+   "minami" -> "Roxo" [level=0.8];
+   "minami" -> "boto" [level=0.8];
+   "minami" -> "clausen" [level=1.0];
+   "minami" -> "kojima" [level=1.0];
+   "minami" -> "riel" [level=1.0];
+   "minami" -> "brain" [level=0.8];
+   "minami" -> "bruder" [level=0.8];
+   "minami" -> "claudio" [level=1.0];
+   "minami" -> "lclaudio" [level=0.8];
+   "minami" -> "osvaldo" [level=0.8];
+   "minami" -> "epx" [level=1.0];
+   "minami" -> "olive" [level=0.8];
+   "minami" -> "Eitch" [level=0.8];
+   "minami" -> "rms" [level=1.0];
+   "minami" -> "rbp" [level=0.8];
+   "minami" -> "gwm" [level=1.0];
+   "minami" -> "rodarvus" [level=1.0];
+   "minami" -> "hypatia" [level=0.6];
+   "minami" -> "Telsa" [level=0.8];
+   "minami" -> "alan" [level=1.0];
+   "minami" -> "roguemtl" [level=1.0];
+   "minami" -> "chaos" [level=1.0];
+   "minami" -> "godoy" [level=1.0];
+   "minami" -> "baretta" [level=1.0];
+   "minami" -> "LaForge" [level=1.0];
+   "minami" -> "maluco" [level=0.6];
+   /* "more" */
+   "more" -> "more" [level=1.0];
+   /* "userisebay" */
+   /* "hpwmaria" */
+   /* "linda123" */
+   /* "animesh" */
+   "animesh" -> "animesh" [level=1.0];
+   /* "pac4854" */
+   "pac4854" -> "mrorganic" [level=0.0];
+   /* "corran" */
+   "corran" -> "mwh" [level=0.8];
+   "corran" -> "gward" [level=0.8];
+   "corran" -> "effbot" [level=1.0];
+   /* "frediiiii" */
+   /* "kyndig" */
+   /* "tadasana" */
+   "tadasana" -> "tadasana" [level=1.0];
+   /* "data64" */
+   "data64" -> "data64" [level=0.6];
+   /* "keanst" */
+   "keanst" -> "speeder" [level=1.0];
+   /* "marc" */
+   "marc" -> "marc" [level=1.0];
+   "marc" -> "wsanchez" [level=1.0];
+   "marc" -> "xela" [level=0.6];
+   "marc" -> "nocturne" [level=0.8];
+   "marc" -> "xiphmont" [level=1.0];
+   "marc" -> "jesse" [level=0.8];
+   "marc" -> "adam" [level=0.8];
+   /* "mayoral" */
+   /* "gzp" */
+   "gzp" -> "gzp" [level=0.6];
+   "gzp" -> "jrf" [level=0.8];
+   /* "realhappy" */
+   /* "arnabdotorg" */
+   /* "shukra" */
+   /* "btv" */
+   /* "tazium" */
+   /* "dael3" */
+   /* "morteza" */
+   "morteza" -> "morteza" [level=1.0];
+   /* "rachel" */
+   "rachel" -> "jeremy" [level=1.0];
+   "rachel" -> "Skud" [level=1.0];
+   "rachel" -> "Telsa" [level=1.0];
+   /* "form" */
+   /* "littleye" */
+   "littleye" -> "littleye" [level=0.0];
+   /* "anandbabu" */
+   "anandbabu" -> "proclus" [level=1.0];
+   /* "seadragons" */
+   /* "hambr" */
+   /* "tal" */
+   "tal" -> "tal" [level=0.8];
+   /* "terrycojones" */
+   /* "volsung" */
+   "volsung" -> "volsung" [level=0.6];
+   /* "delong" */
+   /* "methx" */
+   /* "ender" */
+   /* "alexgirao" */
+   "alexgirao" -> "alexgirao" [level=0.0];
+   /* "laszlof" */
+   "laszlof" -> "laszlof" [level=0.0];
+   /* "MikeCamel" */
+   "MikeCamel" -> "ErikLevy" [level=1.0];
+   "MikeCamel" -> "stevej" [level=0.8];
+   "MikeCamel" -> "MikeCamel" [level=0.8];
+   "MikeCamel" -> "Godot" [level=0.0];
+   "MikeCamel" -> "Malx" [level=0.8];
+   "MikeCamel" -> "renster" [level=0.8];
+   "MikeCamel" -> "raph" [level=1.0];
+   "MikeCamel" -> "Zooko" [level=0.8];
+   "MikeCamel" -> "BrucePerens" [level=1.0];
+   "MikeCamel" -> "skypher" [level=0.6];
+   "MikeCamel" -> "davej" [level=1.0];
+   "MikeCamel" -> "andrewsj" [level=0.8];
+   "MikeCamel" -> "Denny" [level=0.6];
+   "MikeCamel" -> "alan" [level=1.0];
+   "MikeCamel" -> "SteveMallett" [level=0.6];
+   "MikeCamel" -> "CryoBob" [level=0.6];
+   "MikeCamel" -> "salmoni" [level=0.8];
+   "MikeCamel" -> "Bram" [level=0.8];
+   "MikeCamel" -> "dutky" [level=0.8];
+   "MikeCamel" -> "Raphael" [level=1.0];
+   "MikeCamel" -> "xkranda" [level=0.6];
+   "MikeCamel" -> "adp" [level=0.6];
+   /* "plankers" */
+   "plankers" -> "plankers" [level=0.6];
+   /* "edwin" */
+   "edwin" -> "edwin" [level=0.8];
+   "edwin" -> "gelderen" [level=0.8];
+   "edwin" -> "iang" [level=0.8];
+   "edwin" -> "ben" [level=1.0];
+   "edwin" -> "pw" [level=0.6];
+   "edwin" -> "pelleb" [level=0.6];
+   /* "davemayall" */
+   "davemayall" -> "davemayall" [level=0.6];
+   /* "arams" */
+   "arams" -> "jhill" [level=0.8];
+   /* "drewlondon" */
+   /* "lololix" */
+   "lololix" -> "lololix" [level=1.0];
+   "lololix" -> "pelcastre" [level=1.0];
+   /* "rrp" */
+   /* "kilroy" */
+   /* "Tabitha" */
+   "Tabitha" -> "Itsik" [level=1.0];
+   /* "pyrotknix" */
+   /* "venu" */
+   /* "olorin" */
+   /* "jredburn" */
+   "jredburn" -> "jredburn" [level=0.6];
+   /* "tcsradio" */
+   "tcsradio" -> "tcsradio" [level=0.0];
+   /* "ZeeblebroX" */
+   "ZeeblebroX" -> "ZeeblebroX" [level=0.8];
+   /* "yakob" */
+   "yakob" -> "yakob" [level=0.8];
+   /* "agordy" */
+   /* "gheet" */
+   "gheet" -> "acme" [level=1.0];
+   "gheet" -> "gman" [level=1.0];
+   "gheet" -> "TheBonsai" [level=0.6];
+   "gheet" -> "lerdsuwa" [level=0.8];
+   "gheet" -> "Uraeus" [level=1.0];
+   "gheet" -> "calum" [level=1.0];
+   "gheet" -> "andersca" [level=1.0];
+   "gheet" -> "malcolm" [level=1.0];
+   "gheet" -> "jamesh" [level=1.0];
+   "gheet" -> "jdub" [level=1.0];
+   /* "exal" */
+   /* "insom" */
+   "insom" -> "insom" [level=0.6];
+   "insom" -> "krow" [level=1.0];
+   "insom" -> "jallison" [level=1.0];
+   "insom" -> "ssb" [level=1.0];
+   "insom" -> "xach" [level=0.8];
+   "insom" -> "ianb" [level=0.8];
+   "insom" -> "mattb" [level=0.8];
+   "insom" -> "gstein" [level=1.0];
+   "insom" -> "mrsbrisby" [level=0.8];
+   "insom" -> "Fefe" [level=1.0];
+   /* "ataridatacenter" */
+   "ataridatacenter" -> "ataridatacenter" [level=1.0];
+   "ataridatacenter" -> "nullity" [level=1.0];
+   "ataridatacenter" -> "krause" [level=0.8];
+   "ataridatacenter" -> "eikeon" [level=0.8];
+   "ataridatacenter" -> "olandgren" [level=0.6];
+   "ataridatacenter" -> "srl" [level=0.8];
+   "ataridatacenter" -> "terral" [level=0.8];
+   "ataridatacenter" -> "sfllaw" [level=0.8];
+   "ataridatacenter" -> "lordsutch" [level=0.8];
+   "ataridatacenter" -> "dlehn" [level=1.0];
+   "ataridatacenter" -> "ErikLevy" [level=0.8];
+   "ataridatacenter" -> "dres" [level=0.8];
+   "ataridatacenter" -> "Trakker" [level=0.8];
+   "ataridatacenter" -> "halcy0n" [level=1.0];
+   "ataridatacenter" -> "technik" [level=0.6];
+   "ataridatacenter" -> "superuser" [level=0.6];
+   "ataridatacenter" -> "ploppy" [level=1.0];
+   "ataridatacenter" -> "AilleCat" [level=0.8];
+   "ataridatacenter" -> "async" [level=0.8];
+   "ataridatacenter" -> "gorgo" [level=0.8];
+   "ataridatacenter" -> "madhatter" [level=0.6];
+   "ataridatacenter" -> "Stab" [level=0.8];
+   "ataridatacenter" -> "tarzeau" [level=0.6];
+   "ataridatacenter" -> "amars" [level=0.8];
+   "ataridatacenter" -> "monkeyiq" [level=0.8];
+   "ataridatacenter" -> "lalo" [level=0.8];
+   "ataridatacenter" -> "logic" [level=0.8];
+   "ataridatacenter" -> "jcm" [level=1.0];
+   "ataridatacenter" -> "Cardinal" [level=0.6];
+   "ataridatacenter" -> "Centove" [level=0.8];
+   "ataridatacenter" -> "zx80user" [level=0.8];
+   "ataridatacenter" -> "bombadil" [level=0.8];
+   "ataridatacenter" -> "auspex" [level=0.8];
+   "ataridatacenter" -> "maelstrom" [level=0.6];
+   "ataridatacenter" -> "jtjm" [level=0.8];
+   "ataridatacenter" -> "miniver" [level=0.8];
+   "ataridatacenter" -> "flaggz" [level=0.8];
+   "ataridatacenter" -> "monniaux" [level=0.8];
+   "ataridatacenter" -> "chbm" [level=0.8];
+   "ataridatacenter" -> "mslicker" [level=1.0];
+   "ataridatacenter" -> "RickMuller" [level=0.8];
+   "ataridatacenter" -> "matias" [level=0.8];
+   "ataridatacenter" -> "sand" [level=0.8];
+   "ataridatacenter" -> "scromp" [level=0.8];
+   "ataridatacenter" -> "bneely" [level=0.6];
+   "ataridatacenter" -> "Slimer" [level=0.8];
+   "ataridatacenter" -> "cm" [level=0.6];
+   "ataridatacenter" -> "Johnath" [level=0.6];
+   "ataridatacenter" -> "mnot" [level=0.8];
+   "ataridatacenter" -> "maelstorm" [level=0.8];
+   "ataridatacenter" -> "riggwelter" [level=0.8];
+   "ataridatacenter" -> "ade" [level=0.8];
+   "ataridatacenter" -> "conrad" [level=1.0];
+   "ataridatacenter" -> "mrcsparker" [level=0.6];
+   "ataridatacenter" -> "danpat" [level=0.6];
+   "ataridatacenter" -> "menesis" [level=0.8];
+   "ataridatacenter" -> "PureFiction" [level=0.8];
+   "ataridatacenter" -> "michel" [level=0.8];
+   "ataridatacenter" -> "shaleh" [level=0.8];
+   "ataridatacenter" -> "nils" [level=0.8];
+   "ataridatacenter" -> "mike750" [level=0.8];
+   "ataridatacenter" -> "egad" [level=1.0];
+   "ataridatacenter" -> "polak" [level=0.8];
+   "ataridatacenter" -> "pretzelgod" [level=0.8];
+   "ataridatacenter" -> "slef" [level=0.8];
+   "ataridatacenter" -> "Kay" [level=0.8];
+   "ataridatacenter" -> "Kouran" [level=0.8];
+   "ataridatacenter" -> "Fare" [level=0.8];
+   "ataridatacenter" -> "quad" [level=0.8];
+   "ataridatacenter" -> "proski" [level=1.0];
+   "ataridatacenter" -> "gregorrothfuss" [level=0.8];
+   "ataridatacenter" -> "rw" [level=0.8];
+   "ataridatacenter" -> "rw2" [level=0.8];
+   "ataridatacenter" -> "jbs" [level=1.0];
+   "ataridatacenter" -> "linn" [level=0.8];
+   "ataridatacenter" -> "Thias" [level=0.8];
+   "ataridatacenter" -> "rupert" [level=0.8];
+   "ataridatacenter" -> "clubfan" [level=0.8];
+   "ataridatacenter" -> "ishamael" [level=0.8];
+   "ataridatacenter" -> "MartySchrader" [level=0.8];
+   "ataridatacenter" -> "kimusan" [level=0.8];
+   "ataridatacenter" -> "seeS" [level=0.8];
+   "ataridatacenter" -> "brouhaha" [level=0.8];
+   "ataridatacenter" -> "mlsm" [level=0.8];
+   "ataridatacenter" -> "xmldoc" [level=0.8];
+   "ataridatacenter" -> "aes" [level=0.8];
+   "ataridatacenter" -> "starshine" [level=0.8];
+   "ataridatacenter" -> "mstone" [level=0.8];
+   "ataridatacenter" -> "asuffield" [level=0.8];
+   "ataridatacenter" -> "taral" [level=0.8];
+   "ataridatacenter" -> "Rockwalrus" [level=0.8];
+   "ataridatacenter" -> "alejandro" [level=0.8];
+   "ataridatacenter" -> "NetHunter" [level=0.8];
+   "ataridatacenter" -> "mpr" [level=0.6];
+   "ataridatacenter" -> "rkrishnan" [level=0.8];
+   "ataridatacenter" -> "mishan" [level=0.8];
+   "ataridatacenter" -> "plundis" [level=0.8];
+   /* "MaciDoido" */
+   "MaciDoido" -> "MaciDoido" [level=1.0];
+   /* "thanhtuan" */
+   /* "vinn" */
+   "vinn" -> "vinn" [level=0.6];
+   /* "srw" */
+   /* "tjl" */
+   "tjl" -> "ajk" [level=0.8];
+   "tjl" -> "pudge" [level=0.8];
+   /* "ivnisevic" */
+   /* "swc" */
+   "swc" -> "swc" [level=0.6];
+   /* "rince" */
+   "rince" -> "rince" [level=0.6];
+   "rince" -> "cord" [level=0.8];
+   "rince" -> "ToJe" [level=0.6];
+   /* "pads" */
+   /* "josiah" */
+   /* "DaveMalcolm" */
+   /* "nejucomo" */
+   /* "ralf" */
+   "ralf" -> "ralf" [level=0.8];
+   "ralf" -> "riel" [level=1.0];
+   "ralf" -> "acme" [level=0.8];
+   "ralf" -> "alan" [level=1.0];
+   "ralf" -> "miguel" [level=1.0];
+   "ralf" -> "clausen" [level=1.0];
+   "ralf" -> "quintela" [level=0.8];
+   "ralf" -> "thiagom" [level=0.8];
+   "ralf" -> "radtke" [level=0.8];
+   "ralf" -> "marcelo" [level=1.0];
+   "ralf" -> "Albrecht" [level=0.6];
+   "ralf" -> "ladis" [level=0.8];
+   "ralf" -> "zwane" [level=1.0];
+   "ralf" -> "davej" [level=1.0];
+   "ralf" -> "Telsa" [level=0.8];
+   "ralf" -> "yosh" [level=1.0];
+   "ralf" -> "jes" [level=1.0];
+   "ralf" -> "rmk" [level=1.0];
+   "ralf" -> "jgarzik" [level=1.0];
+   "ralf" -> "minipanda" [level=0.6];
+   "ralf" -> "ricmm" [level=0.6];
+   /* "duncan" */
+   "duncan" -> "jamesh" [level=1.0];
+   "duncan" -> "shawn" [level=0.8];
+   "duncan" -> "ssb" [level=1.0];
+   "duncan" -> "notzed" [level=0.8];
+   "duncan" -> "jsh" [level=1.0];
+   "duncan" -> "miguel" [level=1.0];
+   "duncan" -> "timj" [level=1.0];
 }

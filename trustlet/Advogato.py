@@ -5,7 +5,7 @@ from networkx.xdigraph import XDiGraph
 import os
 
 class Advogato(Network):
-    def __init__(self, load_dataset = True):
+    def __init__(self, option = True):
         Network.__init__(self)
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
@@ -16,7 +16,9 @@ class Advogato(Network):
         if not os.path.exists(self.numbersfilepath):
             self.convert_dot_names_into_numbers()
 
-        if load_dataset:
+        if option == "tiny":
+            self.get_graph_dot("tiny_graph.dot")
+        elif option:
             self.get_graph_dot()
 
     def download(self, only_if_needed = False):
