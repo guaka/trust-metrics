@@ -121,8 +121,27 @@ def intersection_tm(G, a, b):
         # now take the maximum of the minimum
         return max(map(lambda i: min(outa[i], inb[i]), intersection))
 
-def moletrust_tm():
-    pass
+def moletrust_tm(G,a,b):
+    from networkx import path
+    horizon = 3
+
+    # Remember to remove all the edges with value < 0.6
+    dict_of_paths = path.single_source_shortest_path_length(G,a,horizon)
+    list_of_node_dist = map(lambda x: (dict_of_paths[x], x), dict_of_paths)
+    list_of_node_dist.sort()
+
+    dist_map = [{a: 1.0}]
+    for (dist, node) in list_of_node_dist[1:]:
+        print node, dist
+        #get all the edges G.in_edges(node) and at distance dist-1
+
+        in_edges = dict(map(lambda x: (x[0], trust_on_edge(x)), (advogato.in_edges(node))))
+        useful_incoming_edges = Set(in_edges).intersection(dist_map[dist-1]
+        
+        dist_map[dist] = (node, trust_value)
+        
+
+    return 0
 
 def advogato_global_tm(graph, a, b):
     pass
