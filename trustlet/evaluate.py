@@ -1,7 +1,10 @@
 from Advogato import Advogato
 from sets import Set
+from networkx import path
+from pprint import pprint
+import random
 
-def evaluate(trustmetric, graph):
+def evaluate(graph, trustmetric):
     #error_graph = graph.get_nodes() # same nodes, no edges
 
     abs_error = 0
@@ -46,8 +49,12 @@ def evaluate(trustmetric, graph):
 
     num_edges = graph.number_of_edges()
     coverage = (num_edges - not_predicted_edges) / num_edges
-    print "name:", trustmetric.__name__, "accuracy=", abs_error / num_edges
 
+    return (trustmetric.__name__, abs_error / num_edges)
+
+
+def evaluator(graph, tm_list):
+    return map(lambda tm: evaluate(graph, tm), tm_list)
 
 ###############################################
 #
@@ -83,10 +90,10 @@ def intersection_tm(G, a, b):
         #somehow outa_tm up to now :)
         return outa_tm(G, a, b)
     else:
-        dict_a = dict(map(lambda x: (x[1], float(x[2]['level'])), G.edges(a)))
-        dict_b = dict(map(lambda x: (x[0], float(x[2]['level'])), G.in_edges(b)))
+        outa = dict(map(lambda x: (x[1], float(x[2]['level'])), G.edges(a)))
+        inb = dict(map(lambda x: (x[0], float(x[2]['level'])), G.in_edges(b)))
         # now take the maximum of the minimum
-        return max(map(lambda i: min(dict_a[i], dict_b[i]), intersection))
+        return max(map(lambda i: min(outa[i], inb[i]), intersection))
 
 def moletrust_tm():
     pass
@@ -108,19 +115,19 @@ if __name__ == "__main__":
     else:
         advogato = Advogato()
 
-    import random
+    evaluations = evaluator(advogato, [intersection_tm,
+                                       ebay_tm,
+                                       outa_tm,
+                                       outb_tm])
+    pprint(evaluations)
 
-    if False:
-        # For extended testing
-        evaluate(lambda G,a,b: random.random(), advogato)
-        evaluate(lambda G,a,b: random.choice([0, 0.6, 0.8, 1]), advogato)
-        evaluate(lambda G,a,b: 0, advogato)
-        evaluate(lambda G,a,b: 0.6, advogato)
-        evaluate(lambda G,a,b: 0.8, advogato)
-        evaluate(lambda G,a,b: 0.9, advogato)
+    simple_tms = [lambda G,a,b: random.random(),
+                  lambda G,a,b: random.choice([0, 0.6, 0.8, 1]),
+                  lambda G,a,b: 0,
+                  lambda G,a,b: 0.6,
+                  lambda G,a,b: 0.8,
+                  lambda G,a,b: 0.9
+                  ]
 
-    evaluate(intersection_tm, advogato) # 0.128261310511
-    evaluate(ebay_tm, advogato)
-    evaluate(outa_tm, advogato)  # this is the best from these "funny" trust metrics
-    evaluate(outb_tm, advogato)
-
+    evals = evaluator(advogato, simple_tms)
+    pprint(evals)
