@@ -50,20 +50,20 @@ from certs import DictCertifications
 
 
 def advogato():
-	from trustlet.Advogato import get_graph_dot
-	G = get_graph_dot()
+	from trustlet.Advogato import Advogato
+	adv_graph = Advogato()
 
 	p = Profiles(Profile, DictCertifications)
 
-	for n in G:
+	for n in adv_graph:
 		p.add_profile(n)
-		for e in G.edges(n):
+		for e in adv_graph.edges(n):
 			p.add_cert(e[0], 'like', e[1], e[2]['level'])
 	print "Finished creating profiles"
 
 	t = TrustMetric(AdvogatoCertInfo(), p)
 	#r = t.tmetric_calc('like', ['raph', 'federico'])
-	seeds = ['raph', 'federico', 'alan', 'miguel']
+	seeds = ['raph'] #, 'federico', 'alan', 'miguel']
         r = t.tmetric_calc('like', seeds)
 	# the alternative way is to just run the trust metric and set the seeds in AdvogatoCertInfo, self.info['seeds']: ['raph', 'federico']
 
