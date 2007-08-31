@@ -1,4 +1,4 @@
-from trustlet.Advogato import get_graph_dot, Advogato
+from Advogato import Advogato
 
 
 def evaluate(trustmetric, graph):
@@ -81,7 +81,7 @@ def advogato_global_tm(graph, a, b):
 def advogato_local_tm(graph, a, b):
     pass
 
-class Pagerank_tm:
+def Pagerank_tm(G, a, b):
     pass
 
 def ebay_tm(G, a, b):
@@ -91,17 +91,16 @@ def ebay_tm(G, a, b):
 
 
 if __name__ == "__main__":
-    import networkx
-    a = Advogato()
-    graph = networkx.read_dot(a.numbersfilepath)
+    advogato = Advogato()
+    advogato.get_graph_dot(advogato.numbersfilepath)
 
     import random
-    evaluate(lambda G,a,b: random.random(), graph)
-    evaluate(lambda G,a,b: random.choice([0, 0.6, 0.8, 1]), graph)
-    evaluate(lambda G,a,b: 0, graph)
-    evaluate(lambda G,a,b: 0.6, graph)
-    evaluate(lambda G,a,b: 0.8, graph)
-    evaluate(lambda G,a,b: 0.9, graph)
-    evaluate(outa_tm, graph)  # this is the best from these "funny" trust metrics
-    evaluate(outb_tm, graph)
+    evaluate(lambda G,a,b: random.random(), advogato)
+    evaluate(lambda G,a,b: random.choice([0, 0.6, 0.8, 1]), advogato)
+    evaluate(lambda G,a,b: 0, advogato)
+    evaluate(lambda G,a,b: 0.6, advogato)
+    evaluate(lambda G,a,b: 0.8, advogato)
+    evaluate(lambda G,a,b: 0.9, advogato)
+    evaluate(outa_tm, advogato)  # this is the best from these "funny" trust metrics
+    evaluate(outb_tm, advogato)
 

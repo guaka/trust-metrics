@@ -10,16 +10,18 @@ class Advogato(Network):
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
         self.filepath = os.path.join(self.path, self.file)
-        self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot')
         self.download(only_if_needed = True)
+
+        self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot')
+        if not os.path.exists(self.numbersfilepath):
+            self.convert_dot_names_into_numbers()
+
 
     def download(self, only_if_needed = False):
         if only_if_needed and os.path.exists(self.filepath):
             return
         self.download_file(self.url, self.file)
         self.fix_graphdot()
-        # it's really fast, so we just do this as well
-        self.numbersfilepath = self.convert_dot_names_into_numbers()
 
     def load(self):
         import pydot
@@ -87,7 +89,6 @@ def get_graph_dot():
     
 if __name__ == "__main__":
     adv = Advogato()
-    # adv.get_graph_dot("tiny_graph.dot")
+    adv.get_graph_dot("tiny_graph.dot")
 
-    # adv.convert_dot_names_into_numbers()
             
