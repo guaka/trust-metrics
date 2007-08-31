@@ -32,7 +32,7 @@ def evaluate(graph, trustmetric):
             num_unpredicted_edges += 1
         else:
             #add predicted_trust as the value on edge (A,B)
-            abs_error += abs(predicted_trust - float(edge[2]['level']))
+            abs_error += abs(predicted_trust - trust_on_edge(edge))
 
             """
             Maybe it's also interesting to keep track of an error
@@ -116,32 +116,43 @@ def intersection_tm(G, a, b):
     if not intersection:
         return edges_a_tm(G, a, b)
     else:
-        outa = dict(map(lambda x: (x[1], float(x[2]['level'])), G.out_edges(a)))
-        inb = dict(map(lambda x: (x[0], float(x[2]['level'])), G.in_edges(b)))
+        outa = dict(map(lambda x: (x[1], trust_on_edge(x)), G.out_edges(a)))
+        inb = dict(map(lambda x: (x[0], trust_on_edge(x)), G.in_edges(b)))
         # now take the maximum of the minimum
         return max(map(lambda i: min(outa[i], inb[i]), intersection))
 
 def moletrust_tm(G,a,b):
     from networkx import path
-    horizon = 3
+    horizon = 1
 
     # Remember to remove all the edges with value < 0.6
     dict_of_paths = path.single_source_shortest_path_length(G,a,horizon)
     list_of_node_dist = map(lambda x: (dict_of_paths[x], x), dict_of_paths)
     list_of_node_dist.sort()
 
-    dist_map = [{a: 1.0}]
+    dist_map = [{a: 1.0},
+                {},
+                {},
+                {},
+                {}]
+    trust_value = 0
     for (dist, node) in list_of_node_dist[1:]:
-        print node, dist
         #get all the edges G.in_edges(node) and at distance dist-1
 
-        in_edges = dict(map(lambda x: (x[0], trust_on_edge(x)), (advogato.in_edges(node))))
-        useful_incoming_edges = Set(in_edges).intersection(dist_map[dist-1]
+        in_edges = dict(map(lambda x: (x[0], trust_on_edge(x)), (G.in_edges(node))))
+        useful_incoming_edges = Set(in_edges).intersection(dist_map[dist-1])
         
-        dist_map[dist] = (node, trust_value)
-        
-
-    return 0
+        print useful_incoming_edges
+        if useful_incoming_edges:
+            products = map(lambda x: in_edges[x] * dist_map[dist-1][x],
+                           useful_incoming_edges)
+            trust_value = (sum(products) /
+                           (sum(map(lambda x: in_edges[x], useful_incoming_edges)) or 1))
+        else:
+            trust_value = 0
+        dist_map[dist][node] = trust_value
+        print trust_value
+    return trust_value
 
 def advogato_global_tm(graph, a, b):
     pass
@@ -161,8 +172,7 @@ if __name__ == "__main__":
         advogato = Advogato()
 
     evaluations = evaluator(advogato,
-                            [# edges_a_tm,
-                             # edges_b_tm,
+                            [moletrust_tm,
                              outa_tm,
                              outb_tm,
                              intersection_tm,
