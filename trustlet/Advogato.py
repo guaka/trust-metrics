@@ -5,7 +5,7 @@ from networkx.xdigraph import XDiGraph
 import os
 
 class Advogato(Network):
-    def __init__(self):
+    def __init__(self, load_dataset = True):
         Network.__init__(self)
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
@@ -16,6 +16,8 @@ class Advogato(Network):
         if not os.path.exists(self.numbersfilepath):
             self.convert_dot_names_into_numbers()
 
+        if load_dataset:
+            self.get_graph_dot()
 
     def download(self, only_if_needed = False):
         if only_if_needed and os.path.exists(self.filepath):
@@ -67,7 +69,7 @@ class Advogato(Network):
     def get_graph_dot(self, filepath = None):
         import networkx
         if not filepath:
-            filepath = self.filepath
+            filepath = self.numbersfilepath
         print "Reading", filepath, "as a NetworkX graph"
         graph = networkx.read_dot(filepath)
 
@@ -78,17 +80,8 @@ class Advogato(Network):
             self.add_edge(edge)
 
 
-def get_graph_dot():
-    """DEPRECATED! Use the force of the method instead!"""
-    import networkx
-    adv = Advogato()
-    print "Reading", adv.filepath, "as a NetworkX graph"
-    graph = networkx.read_dot(adv.filepath)
-    return graph
-
-    
 if __name__ == "__main__":
-    adv = Advogato()
+    adv = Advogato(False)
     adv.get_graph_dot("tiny_graph.dot")
 
             

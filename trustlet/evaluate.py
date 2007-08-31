@@ -48,31 +48,35 @@ def evaluate(trustmetric, graph):
     coverage = (num_edges - not_predicted_edges) / num_edges
     print "accuracy=",abs_error / num_edges
 
-# in ipython use:
-# reload(evaluate); evaluate.evaluate(Random_tm, graph)
 
 
+###############################################
+#
+#
+# helper functions
+trust_on_edge = lambda x: float(x[2]['level'])
+
+def avg_or_zero(l):
+    if l:
+        return sum(l) / len(l)
+    else:
+        return 0
+
+#####################
+# The trust metric functions
+#
 
 def outa_tm(G, a, b):
     #average outgoing links of a
-    trust_list = map(lambda x: float(x[2]['level']), G.edges(a))
-    if trust_list:
-        return sum(trust_list) / len(trust_list)
-    else:
-        return 0
+    return avg_or_zero(map(trust_on_edge, G.edges(a)))
 
 def outb_tm(G, a, b):
     #average outgoing links of b
-    trust_list = map(lambda x: float(x[2]['level']), G.edges(b))
-    if trust_list:
-        return sum(trust_list) / len(trust_list)
-    else:
-        return 0
+    return avg_or_zero(map(trust_on_edge, G.edges(b)))
 
 ## check the Jesus/Gandhi paradox: Jesus/Gandhi were good but too trustful, i.e. they were trusting also bad people and so do you if you trust their judgements.
 
-
-def MoleTrust_tm():
+def moletrust_tm():
     pass
 
 def advogato_global_tm(graph, a, b):
@@ -85,22 +89,23 @@ def Pagerank_tm(G, a, b):
     pass
 
 def ebay_tm(G, a, b):
-    #predicted_trust(a,b)=average incoming links(b) # a does not matter
-    pass
-
-
+    return avg_or_zero(map(trust_on_edge, G.in_edges(b)))
 
 if __name__ == "__main__":
     advogato = Advogato()
-    advogato.get_graph_dot(advogato.numbersfilepath)
 
     import random
-    evaluate(lambda G,a,b: random.random(), advogato)
-    evaluate(lambda G,a,b: random.choice([0, 0.6, 0.8, 1]), advogato)
-    evaluate(lambda G,a,b: 0, advogato)
-    evaluate(lambda G,a,b: 0.6, advogato)
-    evaluate(lambda G,a,b: 0.8, advogato)
-    evaluate(lambda G,a,b: 0.9, advogato)
+
+    if False:
+        # For extended testing
+        evaluate(lambda G,a,b: random.random(), advogato)
+        evaluate(lambda G,a,b: random.choice([0, 0.6, 0.8, 1]), advogato)
+        evaluate(lambda G,a,b: 0, advogato)
+        evaluate(lambda G,a,b: 0.6, advogato)
+        evaluate(lambda G,a,b: 0.8, advogato)
+        evaluate(lambda G,a,b: 0.9, advogato)
+
+    evaluate(ebay_tm, advogato)
     evaluate(outa_tm, advogato)  # this is the best from these "funny" trust metrics
     evaluate(outb_tm, advogato)
 
