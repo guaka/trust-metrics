@@ -8,7 +8,7 @@ def evaluate(graph, trustmetric):
     #error_graph = graph.get_nodes() # same nodes, no edges
 
     abs_error = 0
-    not_predicted_edges = 0
+    num_unpredicted_edges = 0
 
     # tm=TrustMetric() # clever to pass the graph here, just once the TM is instantiated? 
 
@@ -29,7 +29,7 @@ def evaluate(graph, trustmetric):
         predicted_trust = trustmetric(graph, edge[0], edge[1])
 
         if predicted_trust == None:
-            not_predicted_edges += 1
+            num_unpredicted_edges += 1
         else:
             #add predicted_trust as the value on edge (A,B)
             abs_error += abs(predicted_trust - float(edge[2]['level']))
@@ -48,10 +48,13 @@ def evaluate(graph, trustmetric):
     # print "Error=",abs_error
 
     num_edges = graph.number_of_edges()
-    coverage = (num_edges - not_predicted_edges) / num_edges
+    num_predicted_edges = num_edges - num_unpredicted_edges
+    coverage = (num_predicted_edges * 1.0) / num_edges
+    accuracy =  abs_error / (num_predicted_edges or 1)
 
-    print (trustmetric.__name__, abs_error / num_edges)
-    return (trustmetric.__name__, abs_error / num_edges)
+    output=(trustmetric.__name__, accuracy, coverage)
+    pprint(output)
+    return output 
 
 
 def evaluator(graph, tm_list):
@@ -69,27 +72,44 @@ def avg_or_zero(l):
     else:
         return 0
 
+def avg_or_none(l):
+    if l:
+        return sum(l) / len(l)
+    else:
+        return None
+
+def trust_avg(a,b):
+    if a is None:
+        if b is None:
+            return None
+        else:
+            return b
+    else:
+        if b is None:
+            return a
+        else:
+            return (a + b) / 2
+            
 #####################
 # The trust metric functions
 #
 
 def outa_tm(G, a, b):
     #average outgoing links of a
-    return avg_or_zero(map(trust_on_edge, G.out_edges(a)))
+    return avg_or_none(map(trust_on_edge, G.out_edges(a)))
 
 def outb_tm(G, a, b):
     #average outgoing links of b
-    return avg_or_zero(map(trust_on_edge, G.out_edges(b)))
+    return avg_or_none(map(trust_on_edge, G.out_edges(b)))
 
 def edges_a_tm(G, a, b):
-    return avg_or_zero(map(trust_on_edge, G.edges(a) + G.in_edges(a)))
+    return avg_or_none(map(trust_on_edge, G.edges(a) + G.in_edges(a)))
 
 def edges_b_tm(G, a, b):
-    return avg_or_zero(map(trust_on_edge, G.edges(b) + G.in_edges(b)))
+    return avg_or_none(map(trust_on_edge, G.edges(b) + G.in_edges(b)))
 
 def ebay_tm(G, a, b):
-    return avg_or_zero(map(trust_on_edge, G.in_edges(b)))
-
+    return avg_or_none(map(trust_on_edge, G.in_edges(b)))
 
 def intersection_tm(G, a, b):
     intersection = Set(G[a]).intersection(Set(map(lambda x: x[0], G.in_edges(b))))
@@ -127,7 +147,7 @@ if __name__ == "__main__":
                              outa_tm,
                              outb_tm,
                              intersection_tm,
-                             lambda g,a,b: (edges_a_tm(g,a,b) + intersection_tm(g,a,b))/2,
+                             lambda g,a,b: (trust_avg(edges_a_tm(g,a,b), intersection_tm(g,a,b))),
                              ebay_tm,
                              ])
     pprint(evaluations)
