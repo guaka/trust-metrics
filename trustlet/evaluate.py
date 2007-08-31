@@ -10,7 +10,15 @@ def evaluate(trustmetric, graph):
     # tm=TrustMetric() # clever to pass the graph here, just once the TM is instantiated? 
 
     i = 0
-    #Attention. Edges that are self loops might be problematic
+    """
+    Attention: Edges that are self loops might be problematic
+    
+    Problem: This only evaluates the trust metric for where there was
+    an edge already. We should probably add another evaluation,
+    e.g. the 'distrust' evaluation, on all possible edges where there
+    was no edge already.
+
+    """
     for edge in graph.edges():
         #print "edge=",edge,
         graph.delete_edge(edge)
@@ -89,6 +97,7 @@ if __name__ == "__main__":
 
     import random
     evaluate(lambda G,a,b: random.random(), graph)
+    evaluate(lambda G,a,b: random.choice([0, 0.6, 0.8, 1]), graph)
     evaluate(lambda G,a,b: 0, graph)
     evaluate(lambda G,a,b: 0.6, graph)
     evaluate(lambda G,a,b: 0.8, graph)
