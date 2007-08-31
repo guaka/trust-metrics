@@ -50,6 +50,7 @@ def evaluate(graph, trustmetric):
     num_edges = graph.number_of_edges()
     coverage = (num_edges - not_predicted_edges) / num_edges
 
+    print (trustmetric.__name__, abs_error / num_edges)
     return (trustmetric.__name__, abs_error / num_edges)
 
 
@@ -74,11 +75,17 @@ def avg_or_zero(l):
 
 def outa_tm(G, a, b):
     #average outgoing links of a
-    return avg_or_zero(map(trust_on_edge, G.edges(a)))
+    return avg_or_zero(map(trust_on_edge, G.out_edges(a)))
 
 def outb_tm(G, a, b):
     #average outgoing links of b
-    return avg_or_zero(map(trust_on_edge, G.edges(b)))
+    return avg_or_zero(map(trust_on_edge, G.out_edges(b)))
+
+def edges_a_tm(G, a, b):
+    return avg_or_zero(map(trust_on_edge, G.edges(a) + G.in_edges(a)))
+
+def edges_b_tm(G, a, b):
+    return avg_or_zero(map(trust_on_edge, G.edges(b) + G.in_edges(b)))
 
 def ebay_tm(G, a, b):
     return avg_or_zero(map(trust_on_edge, G.in_edges(b)))
@@ -87,10 +94,9 @@ def ebay_tm(G, a, b):
 def intersection_tm(G, a, b):
     intersection = Set(G[a]).intersection(Set(map(lambda x: x[0], G.in_edges(b))))
     if not intersection:
-        #somehow outa_tm up to now :)
-        return outa_tm(G, a, b)
+        return edges_a_tm(G, a, b)
     else:
-        outa = dict(map(lambda x: (x[1], float(x[2]['level'])), G.edges(a)))
+        outa = dict(map(lambda x: (x[1], float(x[2]['level'])), G.out_edges(a)))
         inb = dict(map(lambda x: (x[0], float(x[2]['level'])), G.in_edges(b)))
         # now take the maximum of the minimum
         return max(map(lambda i: min(outa[i], inb[i]), intersection))
@@ -115,10 +121,15 @@ if __name__ == "__main__":
     else:
         advogato = Advogato()
 
-    evaluations = evaluator(advogato, [intersection_tm,
-                                       ebay_tm,
-                                       outa_tm,
-                                       outb_tm])
+    evaluations = evaluator(advogato,
+                            [# edges_a_tm,
+                             # edges_b_tm,
+                             outa_tm,
+                             outb_tm,
+                             intersection_tm,
+                             lambda g,a,b: (edges_a_tm(g,a,b) + intersection_tm(g,a,b))/2,
+                             ebay_tm,
+                             ])
     pprint(evaluations)
 
     simple_tms = [lambda G,a,b: random.random(),
@@ -129,5 +140,5 @@ if __name__ == "__main__":
                   lambda G,a,b: 0.9
                   ]
 
-    evals = evaluator(advogato, simple_tms)
-    pprint(evals)
+    # evals = evaluator(advogato, simple_tms)
+    # pprint(evals)
