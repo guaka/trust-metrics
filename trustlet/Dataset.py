@@ -3,8 +3,9 @@
 
 import os
 import urllib
+from networkx.xdigraph import XDiGraph
 
-class Network:
+class Network(XDiGraph):
     """
     This should probably extend NetworkX.XGraph
 
@@ -13,6 +14,8 @@ class Network:
 
     def __init__(self):
         '''Create directory for class name if needed'''
+
+        XDiGraph.__init__(self)
         self.path = os.path.join(self.dataset_dir(), self.__class__.__name__)
         if not os.path.exists(self.path):
             os.mkdir(self.path)

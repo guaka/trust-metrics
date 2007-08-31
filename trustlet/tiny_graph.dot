@@ -1,0 +1,35 @@
+digraph "G" {
+   /* "dbarth" */
+   "dbarth" -> "mikl" [level="Journeyer"];
+   /* "simonbaro" */
+   "simonbaro" -> "alan" [level="Master"];
+   "simonbaro" -> "mako" [level="Master"];
+   "simonbaro" -> "fxn" [level="Master"];
+   "simonbaro" -> "raph" [level="Master"];
+   "simonbaro" -> "zbowling" [level="Master"];
+   "simonbaro" -> "Telsa" [level="Master"];
+   "simonbaro" -> "dhd" [level="Master"];
+   "simonbaro" -> "werner" [level="Master"];
+   "simonbaro" -> "dria" [level="Master"];
+   "simonbaro" -> "zab" [level="Master"];
+   "simonbaro" -> "cbbrowne" [level="Master"];
+   "simonbaro" -> "jbuck" [level="Master"];
+   "simonbaro" -> "rbultje" [level="Master"];
+   "simonbaro" -> "sjburges" [level="Master"];
+   "simonbaro" -> "RossBurton" [level="Master"];
+   "simonbaro" -> "csv" [level="Journeyer"];
+   "simonbaro" -> "rodrigo" [level="Journeyer"];
+   "simonbaro" -> "jci" [level="Journeyer"];
+   "simonbaro" -> "azz" [level="Journeyer"];
+   "simonbaro" -> "tanis" [level="Journeyer"];
+   "simonbaro" -> "xsa" [level="Journeyer"];
+   "simonbaro" -> "linn" [level="Journeyer"];
+   "simonbaro" -> "rupert" [level="Journeyer"];
+   "simonbaro" -> "ishamael" [level="Journeyer"];
+   "simonbaro" -> "kimusan" [level="Journeyer"];
+   "simonbaro" -> "mascot" [level="Journeyer"];
+   "simonbaro" -> "kmself" [level="Journeyer"];
+   "simonbaro" -> "ths" [level="Journeyer"];
+   "simonbaro" -> "washort" [level="Journeyer"];
+   "simonbaro" -> "AlanShutko" [level="Journeyer"];
+}

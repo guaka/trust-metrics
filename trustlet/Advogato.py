@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
-import Dataset
+from Dataset import Network
+from networkx.xdigraph import XDiGraph
 import os
 
-class Advogato(Dataset.Network):
+class Advogato(Network):
     def __init__(self):
-        Dataset.Network.__init__(self)
+        Network.__init__(self)
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
         self.filepath = os.path.join(self.path, self.file)
@@ -61,7 +62,22 @@ class Advogato(Dataset.Network):
         newfile.close()
         return newfilename
 
+    def get_graph_dot(self, filepath = None):
+        import networkx
+        if not filepath:
+            filepath = self.filepath
+        print "Reading", filepath, "as a NetworkX graph"
+        graph = networkx.read_dot(filepath)
+
+        #beh, read_dot should be method of self, so we can avoid this dirty loop shit
+        for node in graph.nodes():
+            self.add_node(node)
+        for edge in graph.edges():
+            self.add_edge(edge)
+
+
 def get_graph_dot():
+    """DEPRECATED! Use the force of the method instead!"""
     import networkx
     adv = Advogato()
     print "Reading", adv.filepath, "as a NetworkX graph"
@@ -71,5 +87,7 @@ def get_graph_dot():
     
 if __name__ == "__main__":
     adv = Advogato()
+    # adv.get_graph_dot("tiny_graph.dot")
+
     # adv.convert_dot_names_into_numbers()
             
