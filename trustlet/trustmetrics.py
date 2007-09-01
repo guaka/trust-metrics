@@ -1,12 +1,15 @@
 from sets import Set
 
 '''
+done:
+-- ebay like (simple unpersonalized average)
+-- predict always "master"
+-- moletrust (the trivial one I proposed, I can do this)
+-- guakamole
+
 to implement:
 -- advogato trust metric (or use the one available from site
 -- pagerank (find adaptation)
--- moletrust (the trivial one I proposed, I can do this)
--- ebay like (simple unpersonalized average)
--- predict always "master"
 -- more?
 '''                          
 
