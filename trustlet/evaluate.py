@@ -18,24 +18,28 @@ from trustmetrics import *
 """
 
 
-def evaluate(graph, trustmetric, debug_interval = 1000):
+def evaluate(graph, trustmetric, debug_interval = 1000, max_edges = 0):
     #error_graph = graph.get_nodes() # same nodes, no edges
 
     num_unpredicted_edges = abs_err = sqr_err = count = 0
     start_time = prev_time = time.time()
     for edge in graph.edges():
         graph.delete_edge(edge)
-
-        predicted_trust = trustmetric(graph, edge[0], edge[1])
+        a, b, dummy = edge
+        real_trust = trust_on_edge(edge)
+        predicted_trust = trustmetric(graph, a, b)
 
         #error_graph.add_edge(predicted_trust as the value on edge (a, b))
-        if predicted_trust == None:
+        if predicted_trust is None:
             num_unpredicted_edges += 1
         else:
-            abs_err += abs(predicted_trust - trust_on_edge(edge))
-            sqr_err += (lambda x:x*x)(abs(predicted_trust - trust_on_edge(edge)))
+            abs_err += abs(predicted_trust - real_trust)
+            sqr_err += (lambda x:x*x)(predicted_trust - real_trust)
             
         count += 1.
+        if debug_interval == 1:
+            print edge, predicted_trust
+
         if divmod(count, debug_interval)[1] == 0:
             t = time.time()
             acc = abs_err / count
@@ -44,8 +48,10 @@ def evaluate(graph, trustmetric, debug_interval = 1000):
             print 'cnt', int(count), 'acc', acc, 'acc2', acc2, 'unpredicted', unpredicted, "avg time:", (t - start_time) / count
             prev_time = t
         graph.add_edge(edge)
+        if max_edges == count:
+            break
 
-    num_edges = graph.number_of_edges()
+    num_edges = count #max_edges or graph.number_of_edges()
     num_predicted_edges = num_edges - num_unpredicted_edges
     coverage = (num_predicted_edges * 1.0) / num_edges
     accuracy =  abs_err / (num_predicted_edges or 1)

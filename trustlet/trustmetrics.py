@@ -1,4 +1,6 @@
+from networkx import path
 from sets import Set
+import random
 
 '''
 done:
@@ -37,7 +39,13 @@ def avg_or_none(l):
     else:
         return None
 
-
+def overlap(main_tm, fallback_tm):
+    """overlap main_tm with fallback_tm
+    
+    """
+    def overlap_tm(G, a, b):
+        return main_tm(G, a, b) or fallback_tm(G, a, b)
+    return overlap_tm
 
 def weighted_average(l):
     """
@@ -76,6 +84,7 @@ def ebay_tm(G, a, b):
     return avg_or_none(map(trust_on_edge, G.in_edges(b)))
 
 def intersection_tm(G, a, b):
+    # probably nicer with a filter:
     intersection = Set(G[a]).intersection(Set(map(lambda x: x[0], G.in_edges(b))))
     if not intersection:
         return edges_a_tm(G, a, b)
@@ -89,10 +98,11 @@ def intersection_tm(G, a, b):
 
 def moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.4):
     def moletrust_tm(G, a, b):
-        debug = False
+        debug = True
         if debug:
             print "predict trust from", a, "to", b
 
+        # path_length_dict and trust_map should be cached in a very smart way
         path_length_dict = path.single_source_shortest_path_length(G, a, horizon)
         if not b in path_length_dict or path_length_dict[b] > horizon:
             return None
@@ -132,9 +142,13 @@ def moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_thres
         return None
     return moletrust_tm
 
-paolo_moletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0)
-guaka_moletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.5)
 
+
+paolo_moletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0)
+
+guakamoletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.5)
+
+guakamole_full_tm = overlap(guakamoletm, outa_tm)
 
 # we already have guakamole now!
 def advogato_global_tm(graph, a, b):
