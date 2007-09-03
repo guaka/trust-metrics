@@ -1,0 +1,11 @@
+
+List of stuff todo:
+
+* integrate pagerank into trustlet
+* integrate pymmetry into trustlet
+* caching for moletrust?
+* visualization
+** pygraph
+** RT evaluation plotter
+** visualize error graph
+* network information related to trust values?
