@@ -65,10 +65,10 @@ def advogato_tm(G, a, b):
         r = t.tmetric_calc('like', seeds)
 
 	#pprint(r)
-	trust_value = 0.0
 	if b in r.keys():
-		trust_value = r[b]
-	return trust_value
+		return float(r[b])
+	else:
+		return None
 
 
 def test(): 
