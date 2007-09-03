@@ -184,7 +184,7 @@ class TrustMetric(Debug):
 		for i in range(self.max_levels):
 			flow = NetFlow()
 			self.flows.append(flow)
-			flow.set_debuglevel(1)
+			# flow.set_debuglevel(1)
 
 		self.result = {}
 
