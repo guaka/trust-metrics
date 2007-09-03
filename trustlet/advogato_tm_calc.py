@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 from pprint import pprint
-from profile import Profiles, Profile
-from certs import DictCertifications
-from net_flow import *
-from tm_calc import *
+from pymmetry.profile import Profiles, Profile
+from pymmetry.certs import DictCertifications
+from pymmetry.net_flow import *
+from pymmetry.tm_calc import *
 
-from certs import CertInfo
+from pymmetry.certs import CertInfo
 
 class AdvogatoCertInfo(CertInfo):
 	def __init__(self):
@@ -18,16 +18,6 @@ class AdvogatoCertInfo(CertInfo):
 								 'type': 'to'
 								}
 		
-		#		self.info['hate'] = {'levels':
-		#								  ['none', "don't care", 'dislike',
-		#								  'looks CAN kill'],
-		#								 'seeds': ['heather', 10],
-		#								 'min level': 'none',
-		#								 'default level': "don't care",
-		#								 'type': 'to'
-
-		#								}
-
        	def cert_seeds(self, idxn):
 		return self.info[idxn]['seeds']
 	
@@ -44,14 +34,21 @@ class AdvogatoCertInfo(CertInfo):
 		return self.info[idxn]['type']
 
 
-from pprint import pprint
-from profile import Profiles, Profile
-from certs import DictCertifications
+class AdvogatoCertInfoNumbers(CertInfo):
+	def __init__(self):
+		self.info = {}
+		self.info['like'] = {'levels': ['0.4', '0.6', '0.8','1.0'],
+								 #'seeds': ['raph', 'federico'],
+								 'min level': '0.4',
+								 'default level': '0.4',
+								 'type': 'to'
+								}
+		
 
 
 def advogato():
 	from trustlet.Advogato import Advogato
-	adv_graph = Advogato()
+	adv_graph = Advogato("tiny")
 
 	p = Profiles(Profile, DictCertifications)
 

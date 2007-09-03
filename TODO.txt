@@ -9,3 +9,5 @@ List of stuff todo:
 ** RT evaluation plotter
 ** visualize error graph
 * network information related to trust values?
+
+
