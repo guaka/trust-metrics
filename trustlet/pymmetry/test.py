@@ -109,7 +109,7 @@ def orig_test():
 
 
 if __name__ == '__main__':
-    if False:
+    if True:
         orig_test()
     else:
         a = Advogato()

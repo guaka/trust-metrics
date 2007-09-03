@@ -34,7 +34,7 @@ class AdvogatoCertInfo(CertInfo):
 		return self.info[idxn]['type']
 
 
-class AdvogatoCertInfoNumbers(CertInfo):
+class AdvogatoCertInfoNumbers(AdvogatoCertInfo):
 	def __init__(self):
 		self.info = {}
 		self.info['like'] = {'levels': ['0.4', '0.6', '0.8','1.0'],
@@ -45,26 +45,31 @@ class AdvogatoCertInfoNumbers(CertInfo):
 								}
 		
 
-
 def advogato():
 	from trustlet.Advogato import Advogato
 	adv_graph = Advogato("tiny")
+	print advogato_tm(adv_graph, "gwm", "rms")
 
+def advogato_tm(G, a, b):
 	p = Profiles(Profile, DictCertifications)
 
-	for n in adv_graph:
+	for n in G:
 		p.add_profile(n)
-		for e in adv_graph.edges(n):
+		for e in G.edges(n):
 			p.add_cert(e[0], 'like', e[1], e[2]['level'])
 	print "Finished creating profiles"
 
-	t = TrustMetric(AdvogatoCertInfo(), p)
+	t = TrustMetric(AdvogatoCertInfoNumbers(), p)
 	#r = t.tmetric_calc('like', ['raph', 'federico'])
-	seeds = ['raph'] #, 'federico', 'alan', 'miguel']
+	seeds = [a] #, 'federico', 'alan', 'miguel']
         r = t.tmetric_calc('like', seeds)
 	# the alternative way is to just run the trust metric and set the seeds in AdvogatoCertInfo, self.info['seeds']: ['raph', 'federico']
 
-	pprint(r)
+	#pprint(r)
+	trust_value = 0.
+	if b in r.keys():
+		trust_value = r[b]
+	return trust_value
 
 
 def test(): 

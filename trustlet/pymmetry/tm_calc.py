@@ -115,13 +115,14 @@ class TrustMetric(Debug):
 				level_str = certs[cert_subj]
 			except:
 				level_str = None
-			self.debug(str(level_str))
+			self.debug('level: '+str(level_str))
 			try:
 				level = self.levels.index(level_str)
 			except:
-				self.warning("level not found! %s %s %s" % \
-					(idxn, level_str, str(self.levels)))
-				raise "level not found!"
+				war = "level not found! %s %s %s" % \
+					(idxn, level_str, str(self.levels))
+				self.warning(war)
+				raise war #"level not found!"
 
 			self.debug("%s %s" % (str(level_str), str(level)))
 

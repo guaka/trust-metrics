@@ -87,7 +87,7 @@ digraph "G" {
    /* "animesh" */
    "animesh" -> "animesh" [level=1.0];
    /* "pac4854" */
-   "pac4854" -> "mrorganic" [level=0.0];
+   "pac4854" -> "mrorganic" [level=0.4];
    /* "corran" */
    "corran" -> "mwh" [level=0.8];
    "corran" -> "gward" [level=0.8];
@@ -126,7 +126,7 @@ digraph "G" {
    "rachel" -> "Telsa" [level=1.0];
    /* "form" */
    /* "littleye" */
-   "littleye" -> "littleye" [level=0.0];
+   "littleye" -> "littleye" [level=0.4];
    /* "anandbabu" */
    "anandbabu" -> "proclus" [level=1.0];
    /* "seadragons" */
@@ -140,14 +140,14 @@ digraph "G" {
    /* "methx" */
    /* "ender" */
    /* "alexgirao" */
-   "alexgirao" -> "alexgirao" [level=0.0];
+   "alexgirao" -> "alexgirao" [level=0.4];
    /* "laszlof" */
-   "laszlof" -> "laszlof" [level=0.0];
+   "laszlof" -> "laszlof" [level=0.4];
    /* "MikeCamel" */
    "MikeCamel" -> "ErikLevy" [level=1.0];
    "MikeCamel" -> "stevej" [level=0.8];
    "MikeCamel" -> "MikeCamel" [level=0.8];
-   "MikeCamel" -> "Godot" [level=0.0];
+   "MikeCamel" -> "Godot" [level=0.4];
    "MikeCamel" -> "Malx" [level=0.8];
    "MikeCamel" -> "renster" [level=0.8];
    "MikeCamel" -> "raph" [level=1.0];
@@ -193,7 +193,7 @@ digraph "G" {
    /* "jredburn" */
    "jredburn" -> "jredburn" [level=0.6];
    /* "tcsradio" */
-   "tcsradio" -> "tcsradio" [level=0.0];
+   "tcsradio" -> "tcsradio" [level=0.4];
    /* "ZeeblebroX" */
    "ZeeblebroX" -> "ZeeblebroX" [level=0.8];
    /* "yakob" */
