@@ -6,15 +6,18 @@ import random
 done:
 -- ebay like (simple unpersonalized average)
 -- predict always "master"
--- moletrust (the trivial one I proposed, I can do this)
 -- guakamole
 
+to verify:
+-- moletrust (the trivial one I proposed, I can do this)
+-- advogato
+
 to implement:
--- advogato trust metric (or use the one available from site
 -- pagerank (find adaptation)
 -- more?
 '''                          
 
+from advogato_tm import advogato_tm
 
 
 ###############################################

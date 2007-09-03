@@ -53,6 +53,7 @@ def advogato():
 def advogato_tm(G, a, b):
 	p = Profiles(Profile, DictCertifications)
 
+	print "Starting creating profiles - this should be recoded damnit"
 	for n in G:
 		p.add_profile(n)
 		for e in G.edges(n):

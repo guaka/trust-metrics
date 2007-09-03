@@ -23,6 +23,7 @@ def evaluate(graph, trustmetric, debug_interval = 1000, max_edges = 0):
 
     num_unpredicted_edges = abs_err = sqr_err = count = 0
     start_time = prev_time = time.time()
+    print "start time:", start_time
     for edge in graph.edges():
         graph.delete_edge(edge)
         a, b, dummy = edge
@@ -73,7 +74,8 @@ if __name__ == "__main__":
         advogato = Advogato()
             
     evaluations = evaluator(advogato,
-                            [ # moletrust_tm,
+                            [advogato_tm,
+                             # moletrust_tm,
                              outa_tm,
                              outb_tm,
                              intersection_tm,
