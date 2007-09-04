@@ -18,7 +18,7 @@ from trustmetrics import *
 """
 
 
-def evaluate(graph, trustmetric, debug_interval = 1000, max_edges = 0):
+def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
     #error_graph = graph.get_nodes() # same nodes, no edges
 
     num_unpredicted_edges = abs_err = sqr_err = count = 0

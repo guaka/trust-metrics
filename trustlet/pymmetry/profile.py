@@ -80,10 +80,17 @@ class Profiles:
 		self.info[name] = profile
 		return profile
 
+	def add_profiles_from_graph(self, G):
+		for n in G.nodes():
+			self.add_profile(n)
+		for e in G.edges():
+			# 'l' was 'like', should be removed from this code!
+			self.add_cert(e[0], 'like', e[1], e[2]['level'])
+
 	def get_profile(self, name):
-		if self.create_profile_if_needed and not name in self.info.keys():
-			# print "creating new node:", name 
-			self.add_profile(name)
+		#if self.create_profile_if_needed and not name in self.info.keys():
+		#	# print "creating new node:", name 
+		#	self.add_profile(name)
 		return self.info[name]
 
 	def get_profile_keys(self):

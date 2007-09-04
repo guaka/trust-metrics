@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import time
 from pprint import pprint
 from pymmetry.profile import Profiles, Profile
 from pymmetry.certs import DictCertifications
@@ -53,12 +54,10 @@ def advogato():
 def advogato_tm(G, a, b):
 	p = Profiles(Profile, DictCertifications)
 
-	print "Starting creating profiles - this should be recoded damnit"
-	for n in G:
-		p.add_profile(n)
-		for e in G.edges(n):
-			p.add_cert(e[0], 'like', e[1], e[2]['level'])
-	print "Finished creating profiles"
+	t = time.time()
+	print "Start creating profiles"
+	p.add_profiles_from_graph(G)
+	print "Finished creating profiles", time.time() - t
 
 	t = TrustMetric(AdvogatoCertInfoNumbers(), p)
 	seeds = [a]
@@ -116,9 +115,9 @@ def test():
 	p.add_cert('fleas', 'like', 'little fleas', 'Apprentice')
 	p.add_cert('robbie the old crock pony', 'like', 'fleas', 'Journeyer')
 	
-	#		p.add_cert('heather', 'hate', 'bob', 'dislike' )
+	#		p.add_cert('heather', 'hate', 'bob', 'disl' )
 	#		p.add_cert('heather', 'hate', 'fleas', 'looks CAN kill' )
-	#		p.add_cert('fleas', 'hate', 'mary', 'dislike')
+	#		p.add_cert('fleas', 'hate', 'mary', 'disl')
 	
 	
 	t = TrustMetric(AdvogatoCertInfo(), p)
