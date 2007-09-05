@@ -2,12 +2,17 @@
 List of stuff todo:
 
 * integrate pagerank into trustlet
+** check out networkx/doc/examples/eigenvalues.py
+
 * integrate pymmetry into trustlet
+
 * caching for moletrust?
 * visualization
-** pygraph
+** networkx, pygraph
+** pymol?
 ** RT evaluation plotter
 ** visualize error graph
+
 * network information related to trust values?
 
 

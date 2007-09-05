@@ -109,16 +109,13 @@ class NetFlowPriv(Debug):
 		"""
 
 		for i in nf.succs.keys():
-
 			self.node_sink[i] = 0
 			self.node_flow[i] = 0
 			self.node_in_edges[i] = []
 			self.node_out_edges[i] = []
 
 		for src in nf.succs.keys():
-
 			for dst in nf.succs[src]:
-
 				if src == dst: # exclude all node self-references
 					continue
 

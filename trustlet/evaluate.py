@@ -3,8 +3,6 @@ import os, sys, time
 from pprint import pprint
 
 from Advogato import Advogato
-from networkx import path
-
 from trustmetrics import *
 
 """

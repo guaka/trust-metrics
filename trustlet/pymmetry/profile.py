@@ -68,12 +68,9 @@ class Profile:
 class Profiles:
 
 	def __init__(self, ProfileClass=Profile, CertClass=Certifications):
-
 		self.info = {}
 		self.ProfileClass = ProfileClass
 		self.CertClass = CertClass
-		# adding this to make it easier to import datasets
-		self.create_profile_if_needed = True
 
 	def add_profile(self, name):
 		profile = self.ProfileClass(name, self.CertClass)

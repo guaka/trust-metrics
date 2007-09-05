@@ -101,14 +101,10 @@ class TrustMetric(Debug):
 			return
 
 		for cert_subj in certs.keys():
-
 			self.debug("cert_subj: " + str(cert_subj))
-
 			self.tmetric_find_node(idxn, self.result, un)
-
 			if cert_subj is None:
 				continue
-
 			self.tmetric_find_node(idxn, self.result, cert_subj)
 
 			try:
