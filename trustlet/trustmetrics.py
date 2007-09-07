@@ -105,6 +105,13 @@ def moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_thres
         if debug:
             print "predict trust from", a, "to", b
 
+        # Do something with connected_components here
+        # UG = G.to_undirected()
+        # subgraphs = connected_component_subgraphs(UG)
+        # find a
+        # if not b in subgraph_with_a:
+        #   return None
+        
         # path_length_dict and trust_map should be cached in a very smart way
         path_length_dict = path.single_source_shortest_path_length(G, a, horizon)
         if not b in path_length_dict or path_length_dict[b] > horizon:

@@ -4,6 +4,7 @@ from pprint import pprint
 
 from Advogato import Advogato
 from trustmetrics import *
+from pylab import *
 
 """
     Attention: Edges that are self loops might be problematic
