@@ -16,10 +16,10 @@ class AdvogatoCertInfo(CertInfo):
 		self.info = {}
 		self.info['like'] = {'levels': ['Observer', 'Journeyer', 'Apprentice','Master'],
 								 #'seeds': ['raph', 'federico'],
-								 'min level': 'Observer',
-								 'default level': 'Observer',
-								 'type': 'to'
-								}
+				     'min level': 'Observer',
+				     'default level': 'Observer',
+				     'type': 'to'
+				     }
 		
        	def cert_seeds(self, idxn):
 		return self.info[idxn]['seeds']

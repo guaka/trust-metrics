@@ -16,6 +16,13 @@ from pylab import *
 
 """
 
+def hms(t):
+    t = int(t)
+    m, s = divmod(t, 60)
+    h, m = divmod(m, 60)
+    return str(h)+'h'+str(m)+'m'+str(s)+'s'
+
+
 
 def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
     #error_graph = graph.get_nodes() # same nodes, no edges
@@ -23,7 +30,9 @@ def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
     num_unpredicted_edges = abs_err = sqr_err = count = 0
     start_time = prev_time = time.time()
     print "start time:", start_time
-    for edge in graph.edges():
+    edges = graph.edges()
+    max_edges = max_edges or len(edges)
+    for edge in edges:
         graph.delete_edge(edge)
         a, b, dummy = edge
         real_trust = trust_on_edge(edge)
@@ -45,15 +54,16 @@ def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
             acc = abs_err / count
             acc2 = sqr_err / count
             unpredicted = num_unpredicted_edges / count
-            print 'cnt', int(count), 'acc', acc, 'acc2', acc2, 'unpredicted', unpredicted, "avg time:", (t - start_time) / count
+            avg_t = (t - start_time) / count
+            eta = avg_t * (max_edges - count)
+            print 'cnt', int(count), 'acc', acc, 'acc2', acc2, 'unpredicted', unpredicted, "avg time:", avg_t, "ETA", hms(eta)
             prev_time = t
         graph.add_edge(edge)
         if max_edges == count:
             break
 
-    num_edges = count #max_edges or graph.number_of_edges()
-    num_predicted_edges = num_edges - num_unpredicted_edges
-    coverage = (num_predicted_edges * 1.0) / num_edges
+    num_predicted_edges = max_edges - num_unpredicted_edges
+    coverage = (num_predicted_edges * 1.0) / max_edges
     accuracy =  abs_err / (num_predicted_edges or 1)
 
     output = (trustmetric.__name__, accuracy, coverage)
@@ -73,8 +83,9 @@ if __name__ == "__main__":
         advogato = Advogato()
             
     evaluations = evaluator(advogato,
-                            [advogato_tm,
-                             # moletrust_tm,
+                            [
+                             paolo_moletm,
+                             guakamoletm,
                              outa_tm,
                              outb_tm,
                              intersection_tm,
