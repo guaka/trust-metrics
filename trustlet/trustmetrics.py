@@ -50,6 +50,17 @@ def overlap(main_tm, fallback_tm):
         return main_tm(G, a, b) or fallback_tm(G, a, b)
     return overlap_tm
 
+def rounder(tm):
+    """round off trust values to 0.0, 0.2, 0.4, 0.6, 0.8, 1.0"""
+    return tm
+    def rounder_tm(G, a, b):
+        trust = tm(G, a, b)
+        if trust is None:
+            return None
+        return round(trust * 5)/5.
+    return rounder_tm
+
+
 def weighted_average(l):
     """
     >>> weighted_average(map(lambda x: (1.0 * x, x*x), range(10)))
@@ -101,7 +112,7 @@ def intersection_tm(G, a, b):
 
 def moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.4):
     def moletrust_tm(G, a, b):
-        debug = True
+        debug = False
         if debug:
             print "predict trust from", a, "to", b
 
@@ -158,7 +169,7 @@ paolo_moletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult
 
 guakamoletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.5)
 
-guakamole_full_tm = overlap(guakamoletm, outa_tm)
+guakamole_full_tm = overlap(guakamoletm, intersection_tm)
 
 # we already have guakamole now!
 def advogato_global_tm(graph, a, b):

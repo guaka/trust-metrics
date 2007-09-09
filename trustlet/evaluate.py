@@ -82,7 +82,8 @@ if __name__ == "__main__":
     else:
         advogato = Advogato()
             
-    evaluations = evaluator(advogato,
+    if False:
+        evaluations = evaluator(advogato,
                             [
                              paolo_moletm,
                              guakamoletm,
@@ -92,6 +93,14 @@ if __name__ == "__main__":
                              lambda g,a,b: (avg_or_none([edges_a_tm(g,a,b), intersection_tm(g,a,b)])),
                              ebay_tm,
                              ])
+    evaluations = evaluator(advogato, [
+                                       rounder(ebay_tm),
+                                       rounder(outa_tm),
+                                       rounder(guakamoletm),
+                                       rounder(intersection_tm),
+                                       guakamole_full_tm,
+                                       rounder(guakamole_full_tm),
+                                       ])
     pprint(evaluations)
 
     simple_tms = [lambda G,a,b: random.random(),
