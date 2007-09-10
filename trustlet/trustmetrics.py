@@ -52,7 +52,6 @@ def overlap(main_tm, fallback_tm):
 
 def rounder(tm):
     """round off trust values to 0.0, 0.2, 0.4, 0.6, 0.8, 1.0"""
-    return tm
     def rounder_tm(G, a, b):
         trust = tm(G, a, b)
         if trust is None:
