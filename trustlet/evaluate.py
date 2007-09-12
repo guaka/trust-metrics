@@ -80,7 +80,7 @@ if __name__ == "__main__":
     if syntax_debugging:
         advogato = Advogato("tiny")
     else:
-        advogato = Advogato()
+        advogato = Advogato(comp_threshold = 3)
             
     if False:
         evaluations = evaluator(advogato,

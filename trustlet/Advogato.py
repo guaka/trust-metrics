@@ -2,10 +2,11 @@
 
 from Dataset import Network
 from networkx.xdigraph import XDiGraph
+from networkx import component
 import os
 
 class Advogato(Network):
-    def __init__(self, option = True):
+    def __init__(self, option = True, comp_threshold = 0):
         Network.__init__(self)
         self.url = "http://www.advogato.org/person/graph.dot"
         self.file = 'graph.dot'
@@ -21,6 +22,22 @@ class Advogato(Network):
         elif option:
             self.get_graph_dot()
 
+        if comp_threshold:
+            self.ditch_components(comp_threshold)
+
+    def ditch_components(self, threshold = 3):
+        UG = self.to_undirected()
+        concom_subgraphs = component.connected_component_subgraphs(UG)[1:]
+        n_remove = 0
+        for sg in concom_subgraphs:
+            if len(sg) <= threshold:
+                for n in sg:
+                    n_remove += 1
+                    # print n,
+                    self.delete_node(n)
+        print "Thrown out", n_remove, "nodes, fraction: ", 1.0 * n_remove / len(UG)
+
+        
     def download(self, only_if_needed = False):
         if only_if_needed and os.path.exists(self.filepath):
             return
