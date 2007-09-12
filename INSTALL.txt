@@ -25,8 +25,7 @@ could be worth it to to try the bleeding edge from subversion.
 Since you will need a whole lot of other stuff. It is suggested to
 install easy_install. Try:
 
-  wget http://peak.telecommunity.com/dist/ez_setup.py
-  python ez_setup.py
+  wget http://peak.telecommunity.com/dist/ez_setup.py && sudo python ez_setup.py
 
 
 === Importing dot files ===
