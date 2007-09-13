@@ -1,5 +1,5 @@
 
-"""Abstraction class for Network."""
+__doc__ = """Abstraction class for Network dataset."""
 
 import os
 import urllib
@@ -34,3 +34,4 @@ class Network(XDiGraph):
         filepath = os.path.join(self.path, file)
         print "Downloading %s to %s " % (url, filepath)
         p = urllib.urlretrieve(url, filepath)
+

@@ -1,19 +1,25 @@
 #!/usr/bin/env python
 
+__doc__ = """
+This is a module implementing the Advogato datasets. There are also
+classes to get other datasets based on the mod_virgule code.
+"""
+
+
 from Dataset import Network
 from networkx.xdigraph import XDiGraph
 from networkx import component
 import os
 
 class Advogato(Network):
+    url = "http://www.advogato.org/person/graph.dot"
+    dotfile = 'graph.dot'
     def __init__(self, option = True, comp_threshold = 0):
         Network.__init__(self)
-        self.url = "http://www.advogato.org/person/graph.dot"
-        self.file = 'graph.dot'
-        self.filepath = os.path.join(self.path, self.file)
+        self.filepath = os.path.join(self.path, self.dotfile)
         self.download(only_if_needed = True)
 
-        self.numbersfilepath = os.path.join(self.path, 'graph.numbers.dot')
+        self.numbersfilepath = os.path.join(self.path, self.dotfile.replace('graph.dot', 'numbers.graph.dot'))
         if not os.path.exists(self.numbersfilepath):
             self.convert_dot_names_into_numbers()
 
@@ -41,7 +47,7 @@ class Advogato(Network):
     def download(self, only_if_needed = False):
         if only_if_needed and os.path.exists(self.filepath):
             return
-        self.download_file(self.url, self.file)
+        self.download_file(self.url, self.dotfile)
         self.fix_graphdot()
 
     def load(self):
@@ -99,8 +105,45 @@ class Advogato(Network):
             self.add_edge(edge)
 
 
+
+"""
+
+There are other communities which use the same advogato software
+(mod_virgule) and so they have the same trust levels and system and
+publish the trust graph.  We created classes for some of them here.
+
+More to add:
+ * persone.softwarelibero.org  
+      Paolo can probably easily obtain the dataset that is not
+      downloadable at the standard person/graph.dot location)
+
+"""
+
+class RobotsNet(Advogato):
+    """
+    See http://trustlet.org/wiki/Robots.net
+    Problem: spaces and .s in graph.dot
+    """
+    url = "http://robots.net/person/graph.dot"
+    def __init__(self, option = True, comp_threshold = 0):
+        Advogato.__init__(self, option, comp_threshold)
+
+class SqueakFoundation(Advogato):
+    """Squeak Foundation dataset"""
+    url = "http://people.squeakfoundation.org/person/graph.dot"
+    def __init__(self, option = True, comp_threshold = 0):
+        Advogato.__init__(self, option, comp_threshold)
+
+class Kaitiaki(Advogato):
+    url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
+    def __init__(self, option = True, comp_threshold = 0):
+        Advogato.__init__(self, option, comp_threshold)
+    
+
+
 if __name__ == "__main__":
-    adv = Advogato(False)
-    adv.get_graph_dot("tiny_graph.dot")
+    # rob = RobotsNet()
+    sq = SqueakFoundation()
+    # kai = Kaitiaki()
 
             
