@@ -23,8 +23,6 @@ from advogato_tm import advogato_tm
 ###############################################
 #
 #
-# helper functions
-trust_on_edge = lambda x: float(x[2]['level'])
 
 def avg_or_none(l):
     """Return the average of a list, or None in case the
@@ -81,20 +79,20 @@ def weighted_average(l):
 
 def outa_tm(G, a, b):
     #average outgoing links of a
-    return avg_or_none(map(trust_on_edge, G.out_edges(a)))
+    return avg_or_none(map(G.trust_on_edge, G.out_edges(a)))
 
 def outb_tm(G, a, b):
     #average outgoing links of b
-    return avg_or_none(map(trust_on_edge, G.out_edges(b)))
+    return avg_or_none(map(G.trust_on_edge, G.out_edges(b)))
 
 def edges_a_tm(G, a, b):
-    return avg_or_none(map(trust_on_edge, G.edges(a) + G.in_edges(a)))
+    return avg_or_none(map(G.trust_on_edge, G.edges(a) + G.in_edges(a)))
 
 def edges_b_tm(G, a, b):
-    return avg_or_none(map(trust_on_edge, G.edges(b) + G.in_edges(b)))
+    return avg_or_none(map(G.trust_on_edge, G.edges(b) + G.in_edges(b)))
 
 def ebay_tm(G, a, b):
-    return avg_or_none(map(trust_on_edge, G.in_edges(b)))
+    return avg_or_none(map(G.trust_on_edge, G.in_edges(b)))
 
 def intersection_tm(G, a, b):
     # probably nicer with a filter:
@@ -102,8 +100,8 @@ def intersection_tm(G, a, b):
     if not intersection:
         return edges_a_tm(G, a, b)
     else:
-        outa = dict(map(lambda x: (x[1], trust_on_edge(x)), G.out_edges(a)))
-        inb = dict(map(lambda x: (x[0], trust_on_edge(x)), G.in_edges(b)))
+        outa = dict(map(lambda x: (x[1], G.trust_on_edge(x)), G.out_edges(a)))
+        inb = dict(map(lambda x: (x[0], G.trust_on_edge(x)), G.in_edges(b)))
         # now take the maximum of the minimum
         return max(map(lambda i: min(outa[i], inb[i]), intersection))
 
@@ -138,14 +136,14 @@ def moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_thres
             
             # We have to benchmark this, it could be a lot faster?
             #if len(useful_in_edges) == 1:
-            #    pred_trust = trust_on_edge(useful_in_edges[0])
+            #    pred_trust = G.trust_on_edge(useful_in_edges[0])
 
             # not considering the negative trust statements, very good for our accuracy! yay! big hugs!
-            useful_in_edges = filter(lambda x: trust_on_edge(x) >= difficult_case_threshold, useful_in_edges)
+            useful_in_edges = filter(lambda x: G.trust_on_edge(x) >= difficult_case_threshold, useful_in_edges)
             
             for edge in useful_in_edges:
                 if debug: print "useful edge:", edge, "predecessor tvalue", trust_map[dist-1][edge[0]]
-            pred_trust = weighted_average(map(lambda x: (trust_on_edge(x),
+            pred_trust = weighted_average(map(lambda x: (G.trust_on_edge(x),
                                                          trust_map[dist-1][x[0]]),
                                               useful_in_edges))
             # sys.stdin.read()

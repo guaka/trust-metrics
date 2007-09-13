@@ -36,7 +36,7 @@ def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
     for edge in edges:
         graph.delete_edge(edge)
         a, b, dummy = edge
-        real_trust = trust_on_edge(edge)
+        real_trust = graph.trust_on_edge(edge)
         predicted_trust = trustmetric(graph, a, b)
 
         #error_graph.add_edge(predicted_trust as the value on edge (a, b))

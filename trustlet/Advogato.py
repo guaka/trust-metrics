@@ -31,6 +31,9 @@ class Advogato(Network):
         if comp_threshold:
             self.ditch_components(comp_threshold)
 
+    def trust_on_edge(self, edge):
+        return float(edge[2]['level'])
+
     def ditch_components(self, threshold = 3):
         UG = self.to_undirected()
         concom_subgraphs = component.connected_component_subgraphs(UG)[1:]
@@ -122,11 +125,29 @@ More to add:
 class RobotsNet(Advogato):
     """
     See http://trustlet.org/wiki/Robots.net
-    Problem: spaces and .s in graph.dot
+    Problem: spaces in graph.dot
     """
     url = "http://robots.net/person/graph.dot"
     def __init__(self, option = True, comp_threshold = 0):
         Advogato.__init__(self, option, comp_threshold)
+
+
+    def fix_graphdot(self):
+        """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
+        import re
+        
+        print 'Fixing graph.dot'
+        
+        f = open(self.filepath, 'r')
+        l_names = f.readlines()
+        f.close()
+        p = re.compile(' ([\w+.-])')  #does not handle spaces yet
+        l_fixed = map(lambda s: p.sub(r' "\1"', s), l_names)
+
+        f = open(self.filepath + 'test', 'w')
+        f.writelines(l_fixed)
+        f.close()
+        return self.filepath
 
 class SqueakFoundation(Advogato):
     """Squeak Foundation dataset"""
@@ -139,6 +160,20 @@ class Kaitiaki(Advogato):
     def __init__(self, option = True, comp_threshold = 0):
         Advogato.__init__(self, option, comp_threshold)
     
+    def trust_on_edge(self, edge):
+        color = edge[2]['color']
+        # just some uneducated guesses here:
+        if color == 'green':
+            return 0.8
+        elif color == 'blue':
+            return 0.6
+        elif color == 'gray':
+            return 0.2
+        elif color == 'violet':
+            return 0.4
+        return 0.0
+
+        
 
 
 if __name__ == "__main__":
