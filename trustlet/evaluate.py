@@ -2,9 +2,10 @@ import random
 import os, sys, time
 from pprint import pprint
 
-from Advogato import Advogato
+from Advogato import *
 from trustmetrics import *
 from pylab import *
+from networkx import *
 
 """
     Attention: Edges that are self loops might be problematic
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     if syntax_debugging:
         advogato = Advogato("tiny")
     else:
-        advogato = Advogato(comp_threshold = 3)
+        advogato = Kaitiaki(comp_threshold = 3)
             
     if False:
         evaluations = evaluator(advogato,

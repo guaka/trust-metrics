@@ -20,6 +20,9 @@ class graph_properties:
 
         print "degree histogram:", degree_histogram(G)[:15]
 
+def analyze(G):
+    graph_props = graph_properties(G)
+
 if __name__ == "__main__":
     from Advogato import Advogato
     advogato = Advogato('t', comp_threshold = 0)

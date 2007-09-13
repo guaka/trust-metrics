@@ -142,8 +142,10 @@ class Kaitiaki(Advogato):
 
 
 if __name__ == "__main__":
+    import analysis
     # rob = RobotsNet()
     sq = SqueakFoundation()
-    # kai = Kaitiaki()
-
+    analysis.analyze(sq)
+    kai = Kaitiaki()
+    analysis.analyze(kai)
             
