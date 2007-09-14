@@ -19,6 +19,10 @@ class Advogato(Network):
         self.filepath = os.path.join(self.path, self.dotfile)
         self.download(only_if_needed = True)
 
+        # ugly, temp workaround: RobotsNet isn't parsing properly yet
+        if (self.__class__.__name__ == "RobotsNet"):
+            self.fix_graphdot()
+
         self.numbersfilepath = os.path.join(self.path, self.dotfile.replace('graph.dot', 'numbers.graph.dot'))
         if not os.path.exists(self.numbersfilepath):
             self.convert_dot_names_into_numbers()
@@ -141,13 +145,19 @@ class RobotsNet(Advogato):
         f = open(self.filepath, 'r')
         l_names = f.readlines()
         f.close()
-        p = re.compile(' ([\w+.-])')  #does not handle spaces yet
-        l_fixed = map(lambda s: p.sub(r' "\1"', s), l_names)
+        p_fixspace = re.compile('(\w) (\w)')
+        l_names_spacefix = map(lambda s: p_fixspace.sub(r'\1___\2', s).replace(".", "dot"), l_names)
+
+        p = re.compile(' ([\w\-_]+)')
+        l_fixed = map(lambda s: p.sub(r' "\1"', s), l_names_spacefix)
+
+        import pprint
+        pprint.pprint (l_fixed)
 
         f = open(self.filepath + 'test', 'w')
         f.writelines(l_fixed)
         f.close()
-        return self.filepath
+        return self.filepath + 'test'
 
 class SqueakFoundation(Advogato):
     """Squeak Foundation dataset"""
@@ -178,9 +188,4 @@ class Kaitiaki(Advogato):
 
 if __name__ == "__main__":
     import analysis
-    # rob = RobotsNet()
-    sq = SqueakFoundation()
-    analysis.analyze(sq)
-    kai = Kaitiaki()
-    analysis.analyze(kai)
-            
+    rob = RobotsNet()
