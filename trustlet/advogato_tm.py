@@ -73,6 +73,7 @@ def advogato_tm(G, a, b):
 
 	
 if __name__ == "__main__":
-	advogato()
-
-            
+	from Advogato import *
+	G = Advogato()
+	G.ditch_components(threshold = 7)
+	print advogato_tm(G, "God", "rms")
