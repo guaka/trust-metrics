@@ -76,42 +76,17 @@ def evaluator(graph, tm_list):
     return map(lambda tm: evaluate(graph, tm), tm_list)
 
 
+
+
 if __name__ == "__main__":
-    syntax_debugging = False
-    if syntax_debugging:
-        advogato = Advogato("tiny")
-    else:
-        advogato = Kaitiaki(comp_threshold = 3)
+    G = Advogato(comp_threshold = 3)
             
     if False:
-        evaluations = evaluator(advogato,
-                            [
-                             paolo_moletm,
-                             guakamoletm,
-                             outa_tm,
-                             outb_tm,
-                             intersection_tm,
-                             lambda g,a,b: (avg_or_none([edges_a_tm(g,a,b), intersection_tm(g,a,b)])),
-                             ebay_tm,
-                             ])
-    evaluations = evaluator(advogato, [
-                                       rounder(ebay_tm),
-                                       rounder(outa_tm),
-                                       rounder(guakamoletm),
-                                       rounder(intersection_tm),
-                                       guakamole_full_tm,
-                                       rounder(guakamole_full_tm),
-                                       ])
+        evaluations = evaluator(G,  [paolo_moletm, guakamoletm, outa_tm, outb_tm, intersection_tm,
+                                     lambda g,a,b: (avg_or_none([edges_a_tm(g,a,b), intersection_tm(g,a,b)])), ebay_tm])
+    evaluations = evaluator(G, [advogato_tm])
+    
     pprint(evaluations)
 
-    simple_tms = [lambda G,a,b: random.random(),
-                  lambda G,a,b: random.choice([0, 0.6, 0.8, 1]),
-                  lambda G,a,b: 0,
-                  lambda G,a,b: 0.6,
-                  lambda G,a,b: 0.8,
-                  lambda G,a,b: 0.9
-                  ]
 
-    # evals = evaluator(advogato, simple_tms)
-    # pprint(evals)
    

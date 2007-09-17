@@ -10,8 +10,7 @@ G = Advogato("tiny")
 analyze(G)
 evaluate(G, ebay_tm)
 
-G = SqueakFoundation(comp_threshold = 0)
-analyze(G)
-evaluate(G, ebay_tm)
-
+# G = Kaitiaki(comp_threshold = 0)
+# analyze(G)
+# evaluate(G, advogato_tm)
 

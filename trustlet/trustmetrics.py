@@ -77,6 +77,13 @@ def weighted_average(l):
 # The trust metric functions
 #
 
+random_tm = lambda G,a,b: random.random()
+choice_tm = lambda l: (lambda G,a,b: random.choice(l))
+constant_tm = lambda c: (lambda G,a,b: c)
+
+never_tm = constant_tm(0)
+always_tm = constant_tm(1)
+
 def outa_tm(G, a, b):
     #average outgoing links of a
     return avg_or_none(map(G.trust_on_edge, G.out_edges(a)))

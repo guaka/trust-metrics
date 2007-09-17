@@ -14,7 +14,7 @@ else:
 class AdvogatoCertInfo(CertInfo):
 	def __init__(self):
 		self.info = {}
-		self.info['like'] = {'levels': ['Observer', 'Journeyer', 'Apprentice','Master'],
+		self.info['like'] = {'levels': ['Observer', 'Journeyer', 'Apprentice', 'Master'],
 								 #'seeds': ['raph', 'federico'],
 				     'min level': 'Observer',
 				     'default level': 'Observer',
@@ -47,11 +47,6 @@ class AdvogatoCertInfoNumbers(AdvogatoCertInfo):
 								 'type': 'to'
 								}
 		
-
-def advogato():
-	from trustlet.Advogato import Advogato
-	adv_graph = Advogato("tiny")
-	print advogato_tm(adv_graph, "gwm", "rms")
 
 def advogato_tm(G, a, b):
 	p = Profiles(Profile, DictCertifications)
