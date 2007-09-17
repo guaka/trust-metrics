@@ -3,15 +3,15 @@ __doc__ = """Abstraction class for Network dataset."""
 
 import os
 import urllib
+from networkx import component
 from networkx.xdigraph import XDiGraph
 
 class Network(XDiGraph):
     """
-    This should probably extend NetworkX.XGraph
-
-    see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XGraph-class.html
+    Network dataset, extending networkx.xdigraph.XDiGraph
+    see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
-
+    
     def __init__(self):
         '''Create directory for class name if needed'''
 
@@ -34,4 +34,16 @@ class Network(XDiGraph):
         filepath = os.path.join(self.path, file)
         print "Downloading %s to %s " % (url, filepath)
         p = urllib.urlretrieve(url, filepath)
+
+    def ditch_components(self, threshold = 3):
+        """Ditch components with less than [threshold] nodes"""
+        UG = self.to_undirected()
+        concom_subgraphs = component.connected_component_subgraphs(UG)[1:]
+        n_remove = 0
+        for sg in concom_subgraphs:
+            if len(sg) <= threshold:
+                for n in sg:
+                    n_remove += 1
+                    self.delete_node(n)
+        print "Thrown out", n_remove, "nodes, fraction: ", 1.0 * n_remove / len(UG)
 

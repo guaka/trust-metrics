@@ -12,15 +12,18 @@ else:
 	from pymmetry.all_in_one import *
 
 class AdvogatoCertInfo(CertInfo):
-	def __init__(self):
+	def __init__(self, levels = None, minlvl = None, maxlvl = None):
+		levels = levels or ['Observer', 'Journeyer', 'Apprentice', 'Master']
+		minlvl = minlvl or levels[0]
+		maxlvl = maxlvl or levels[-1]
 		self.info = {}
-		self.info['like'] = {'levels': ['Observer', 'Journeyer', 'Apprentice', 'Master'],
-								 #'seeds': ['raph', 'federico'],
-				     'min level': 'Observer',
-				     'default level': 'Observer',
+		self.info['like'] = {'levels': levels,
+				     #'seeds': ['raph', 'federico'],
+				     'min level': minlvl,
+				     'default level': maxlvl,
 				     'type': 'to'
 				     }
-		
+
        	def cert_seeds(self, idxn):
 		return self.info[idxn]['seeds']
 	
@@ -37,15 +40,6 @@ class AdvogatoCertInfo(CertInfo):
 		return self.info[idxn]['type']
 
 
-class AdvogatoCertInfoNumbers(AdvogatoCertInfo):
-	def __init__(self):
-		self.info = {}
-		self.info['like'] = {'levels': ['0.4', '0.6', '0.8','1.0'],
-								 #'seeds': ['raph', 'federico'],
-								 'min level': '0.4',
-								 'default level': '0.4',
-								 'type': 'to'
-								}
 		
 
 def advogato_tm(G, a, b):
@@ -56,7 +50,11 @@ def advogato_tm(G, a, b):
 	p.add_profiles_from_graph(G)
 	print "Finished creating profiles", time.time() - t
 
-	t = TrustMetric(AdvogatoCertInfoNumbers(), p)
+	levels = G.level_map.items()
+	levels.sort(lambda a,b: cmp(a[1], b[1]))
+	levels = map((lambda x: x[0]), levels)
+	print levels, p
+	t = TrustMetric(AdvogatoCertInfo(levels), p)
 	seeds = [a]
         r = t.tmetric_calc('like', seeds)
 

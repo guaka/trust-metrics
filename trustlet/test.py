@@ -8,7 +8,7 @@ from evaluate import *
 
 G = Advogato("tiny")
 analyze(G)
-evaluate(G, ebay_tm)
+evaluate(G, advogato_tm)
 
 # G = Kaitiaki(comp_threshold = 0)
 # analyze(G)

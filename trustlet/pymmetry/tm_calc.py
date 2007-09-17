@@ -232,6 +232,7 @@ class TrustMetric(Debug):
 		levels = certinfo.cert_levels(idxn)
 		self.levels = levels
 		self.max_levels = len(levels)
+		print "certinfo.cert_level_min:", certinfo.cert_level_min(idxn)
 		self.min_level = levels.index(certinfo.cert_level_min(idxn))
 		self.default_level = levels.index(certinfo.cert_level_default(idxn))
 		tmetric_type = certinfo.cert_tmetric_type(idxn)
