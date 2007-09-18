@@ -2,6 +2,8 @@
 from networkx.spectrum import *
 from networkx.xdigraph import XDiGraph
 
+# http://localhost/src/networkx/reference/public/networkx.generators.classic-module.html
+
 def pagerank_tm(G, a, b):
     H = XDiGraph()
     nodes = G.nodes()

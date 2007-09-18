@@ -71,9 +71,55 @@ def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
     pprint (output)
     return output 
 
+def classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
+    #error_graph = graph.get_nodes() # same nodes, no edges
 
-def evaluator(graph, tm_list):
-    return map(lambda tm: evaluate(graph, tm), tm_list)
+    num_unpredicted_edges = abs_err = sqr_err = count = 0
+    start_time = prev_time = time.time()
+    print "start time:", start_time
+    edges = G.edges()
+    tm = TM(G)
+    max_edges = max_edges or len(edges)
+    for edge in edges:
+        # G.delete_edge(edge)
+        # a, b, dummy = edge
+        real_trust = G.trust_on_edge(edge)
+        predicted_trust = tm.calc(edge)
+
+        #error_graph.add_edge(predicted_trust as the value on edge (a, b))
+        if predicted_trust is None:
+            num_unpredicted_edges += 1
+        else:
+            abs_err += abs(predicted_trust - real_trust)
+            sqr_err += (lambda x:x*x)(predicted_trust - real_trust)
+            
+        count += 1.
+        if debug_interval == 1:
+            print edge, predicted_trust
+
+        if divmod(count, debug_interval)[1] == 0:
+            t = time.time()
+            acc = abs_err / count
+            acc2 = sqr_err / count
+            unpredicted = num_unpredicted_edges / count
+            avg_t = (t - start_time) / count
+            eta = avg_t * (max_edges - count)
+            print 'cnt', int(count), 'acc', acc, 'acc2', acc2, 'unpredicted', unpredicted, "avg time:", avg_t, "ETA", hms(eta)
+            prev_time = t
+        G.add_edge(edge)
+        if max_edges == count:
+            break
+
+    num_predicted_edges = max_edges - num_unpredicted_edges
+    coverage = (num_predicted_edges * 1.0) / max_edges
+    accuracy =  abs_err / (num_predicted_edges or 1)
+
+    output = (TM.__name__, accuracy, coverage)
+    pprint (output)
+    return output 
+
+def evaluator(G, tm_list):
+    return map(lambda tm: evaluate(G, tm), tm_list)
 
 
 

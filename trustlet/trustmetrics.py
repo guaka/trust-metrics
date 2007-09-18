@@ -3,8 +3,8 @@ from sets import Set
 import random
 
 
-from advogato_tm import advogato_tm
-from pagerank_tm import pagerank_tm
+from advogato_tm import *
+from pagerank_tm import *
 
 '''
 done:
@@ -21,10 +21,8 @@ to implement:
 -- more?
 '''                          
 
-
-
 ###############################################
-#
+# helpers
 #
 
 def avg_or_none(l):
@@ -178,17 +176,43 @@ guakamoletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_
 
 guakamole_full_tm = overlap(guakamoletm, intersection_tm)
 
-# we already have guakamole now!
-def advogato_global_tm(graph, a, b):
-    pass
-
-def advogato_local_tm(graph, a, b):
-    pass
-
-def PageRank_tm(G, a, b):
-    pass
 
 
+
+###############################################
+# classier way of dealing with this
+#
+# 
+# OBSERVATION: When calculating tm(G,a,b) it's not actually needed to
+# pass the graph all the time, edge(a,b) can be removed in the trust
+# metric class. For simple trust metrics this won't matter, but for
+# more "advanced" ones like Advogato and PageRank this might
+# considerably speed up things.
+
+
+class TrustMetric:
+    """A generic trust metric class"""
+    def __init__(self, G):
+        """Use this to plug in functional trust metrics"""
+        self.G = G
+
+    def calc(self, e):
+        G = self.G
+        # e = filter(lambda x: x[1] == b, G.edges(a))
+        G.delete_edge(e)
+        print self.trustmetric
+        trust_value = self.trustmetric(G, e[0], e[1])
+        G.add_edge(e)
+        return trust_value
+
+class GuakaMoleTM(TrustMetric):
+    def __init__(self, G):
+        self.G = G
+        self.trustmetric = guakamoletm
+
+
+
+###################3
 
 def _test():
     import doctest

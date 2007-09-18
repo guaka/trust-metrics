@@ -8,9 +8,13 @@ from analysis import *
 from evaluate import *
 from networkx.spectrum import *
 
-G = Advogato("tiny", comp_threshold = 7)
+G = Advogato(comp_threshold = 7)
 analyze(G)
-evaluate(G, pagerank_tm)
+# evaluate(G, pagerank_tm)
+
+e2 = classy_evaluate(G, GuakaMoleTM)
+e1 = evaluate(G, guakamoletm)
+
 
 # evaluate(G, advogato_tm)
 
