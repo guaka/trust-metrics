@@ -2,6 +2,10 @@ from networkx import path
 from sets import Set
 import random
 
+
+from advogato_tm import advogato_tm
+from pagerank_tm import pagerank_tm
+
 '''
 done:
 -- ebay like (simple unpersonalized average)
@@ -17,7 +21,6 @@ to implement:
 -- more?
 '''                          
 
-from advogato_tm import advogato_tm
 
 
 ###############################################
