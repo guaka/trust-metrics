@@ -364,7 +364,10 @@ class NetFlowPriv(Debug):
 							queue.append(src)
 							queue_dir.append(True)
 							pred.append(q_beg)
-							self.debug("add %do to queue" % src)
+							try:
+								self.debug("add %do to queue" % src)
+							except:
+								print "ERROR! src:", src
 							visited_out[src] = True
 
 			q_beg += 1
