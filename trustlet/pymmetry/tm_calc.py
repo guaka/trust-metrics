@@ -197,10 +197,11 @@ class TrustMetric(Debug):
 
 		# calculate maximum flow
 		for i in range(self.min_level, self.max_levels):
-
 			flow = self.flows[i].netflow_max_flow_extract(dn_seed, caps)
+			# print "flow", flow
 			for idx in self.result.keys():
-				if flow[idx] > 0:
+				# print "idx", idx
+				if flow.has_key(idx) and flow[idx] > 0:
 					self.result[idx] = i
 
 		del self.flows
@@ -232,7 +233,7 @@ class TrustMetric(Debug):
 		levels = certinfo.cert_levels(idxn)
 		self.levels = levels
 		self.max_levels = len(levels)
-		print "certinfo.cert_level_min:", certinfo.cert_level_min(idxn)
+		# print "certinfo.cert_level_min:", certinfo.cert_level_min(idxn)
 		self.min_level = levels.index(certinfo.cert_level_min(idxn))
 		self.default_level = levels.index(certinfo.cert_level_default(idxn))
 		tmetric_type = certinfo.cert_tmetric_type(idxn)

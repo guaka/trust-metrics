@@ -45,22 +45,23 @@ class AdvogatoCertInfo(CertInfo):
 def advogato_tm(G, a, b):
 	p = Profiles(Profile, DictCertifications)
 
+	G.adv_profiles = p  # for testing
+
 	t = time.time()
 	print "Start creating profiles"
 	p.add_profiles_from_graph(G)
 	print "Finished creating profiles", time.time() - t
 
 	levels = G.level_map.items()
-	levels.sort(lambda a,b: cmp(a[1], b[1]))
+	levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 	levels = map((lambda x: x[0]), levels)
-	print levels, p
 	t = TrustMetric(AdvogatoCertInfo(levels), p)
 	seeds = [a]
         r = t.tmetric_calc('like', seeds)
 
-	#pprint(r)
+	G.results = r  # for testing
 	if b in r.keys():
-		return float(r[b])
+		return G.level_map[r[b]]
 	else:
 		return None
 
