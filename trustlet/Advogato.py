@@ -126,14 +126,17 @@ class RobotsNet(Advogato):
 class SqueakFoundation(Advogato):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
-    level_map = {
+    level_map = {  # do these values make sense?
         'violet': 0.4,
         'blue': 0.6,
         'green': 0.8,
         'gray': 1.0
         }
 
-class Kaitiaki(Advogato):
+    def trust_on_edge(self, edge):
+        return self.level_map[edge[2]['color']]
+
+class Kaitiaki(SqueakFoundation):
     """Kaitaki dataset"""
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     level_map = {
@@ -142,6 +145,8 @@ class Kaitiaki(Advogato):
         'green': 0.8,
         'gray': 1.0
         }
+
+
 
 if __name__ == "__main__":
     import analysis
