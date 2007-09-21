@@ -93,7 +93,7 @@ def classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
         pred_path = os.path.join(gtm_path, "pred_graph.dot")
         print "Saving error graph as", pred_path
         G.G = pred_graph
-        write_dot(pred_graph, G)
+        write_dot(pred_graph, pred_path)
 
     pred_graph = XDiGraph()
     for n in G.nodes():
@@ -107,7 +107,7 @@ def classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
     for edge in G.edges():
         predicted_trust = tm.leave_one_out(edge)
         print predicted_trust
-        pred_graph.add_edge(edge[0], edge[1], {'predtrust': predicted_trust})
+        pred_graph.add_edge(edge[0], edge[1], {'predtrust': str(predicted_trust)})
         if predicted_trust is None:
             num_unpredicted_edges += 1
         else:
