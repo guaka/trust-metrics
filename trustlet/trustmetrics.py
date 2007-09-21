@@ -196,7 +196,7 @@ class TrustMetric:
         """Use this to plug in functional trust metrics"""
         self.G = G
 
-    def calc(self, e):
+    def leave_one_out(self, e):
         G = self.G
         # e = filter(lambda x: x[1] == b, G.edges(a))
         G.delete_edge(e)

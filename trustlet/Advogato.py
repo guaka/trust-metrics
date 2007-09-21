@@ -139,13 +139,6 @@ class SqueakFoundation(Advogato):
 class Kaitiaki(SqueakFoundation):
     """Kaitaki dataset"""
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
-    level_map = {
-        'violet': 0.4,
-        'blue': 0.6,
-        'green': 0.8,
-        'gray': 1.0
-        }
-
 
 
 if __name__ == "__main__":
