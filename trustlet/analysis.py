@@ -6,7 +6,7 @@ Basic and less basic analysis of graphs.
 from networkx import *
 
 class graph_properties:
-    def __init__(self, G):
+    def __init__(self, G, slow_stuff = False):
         print "graph size:", len(G)
         print "edges:", len(G.edges())
 
@@ -36,18 +36,24 @@ class graph_properties:
 
         print "transitivity:", cluster.transitivity(G)
 
-        #not yet in my networkx revision
-        #print "number_of_cliques", cliques.number_of_cliques(G)
+        if slow_stuff:
+            #not yet in my networkx revision  -- try try except
+            print "number_of_cliques", cliques.number_of_cliques(G)
 
-        #this return a dict with the betweenness centrality of every node, maybe we want to compute the average betweenness centrality but before it is important to understand which measures usually are usually reported in papers as peculiar for capturing the characteristics and structure of a directed graph.
-        #print "betweenness_centrality:", centrality.betweenness_centrality(G)
+            """this returns a dict with the betweenness centrality of every node,
+            maybe we want to compute the average betweenness
+            centrality but before it is important to understand which
+            measures usually are usually reported in papers as
+            peculiar for capturing the characteristics and structure
+            of a directed graph."""
+            print "betweenness_centrality:", centrality.betweenness_centrality(G)
 
 def analyze(G):
     graph_props = graph_properties(G)
 
 if __name__ == "__main__":
     from Advogato import Advogato
-    advogato = Advogato('t', comp_threshold = 0)
+    advogato = Advogato(comp_threshold = 0)
     graph_props = graph_properties(advogato)
 
 
