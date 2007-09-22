@@ -1,0 +1,29 @@
+Trust metric testbed
+30 Mar 2002
+
+This is a testbed implementation of attack-resistant trust metrics.
+Two trust metrics are provided: Advogato's network flow based metric,
+and the PageRank algorithm, an eigenvector-based metric.
+
+Edit main.c to tweak parameters. Yes, I know they should be runtime
+settable, but this is a testbed.
+
+The input format is graph.dot as produced by mod_virgule. If you're
+creating your own, each edge is of the form:
+
+   from -> to [color="color"];
+
+where color is set to one of "green", "blue", or "violet". The present
+implementation ignores color.
+
+While this implementation is released under the GPL, the intellectual
+property of the underlying trust metric algorithms is likely to be
+different. The ideas (not the code) behind the Advogato trust metric
+are in the public domain. The PageRank algorithm is probably patented
+by Google; I'm not sure. Please check with a competent lawyer before
+using PageRank for any purpose other than research.
+
+Attack resistant trust metrics are the topic of my thesis-in-progress.
+For the latest snapshot, see http://www.levien.com/thesis/
+
+Raph Levien
