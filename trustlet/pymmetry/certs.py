@@ -59,7 +59,7 @@ class DictCertifications(Certifications):
 
 	def remove(self, type, name):
 		if self.info.has_key(type) and \
-		   self.info.type.has_key(name):
+		   self.info[type].has_key(name):
 			del self.info[type][name]
 		
 	def cert_level(self, type, name):

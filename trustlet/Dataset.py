@@ -38,12 +38,15 @@ class Network(XDiGraph):
     def ditch_components(self, threshold = 3):
         """Ditch components with less than [threshold] nodes"""
         UG = self.to_undirected()
-        concom_subgraphs = component.connected_component_subgraphs(UG)[1:]
-        n_remove = 0
-        for sg in concom_subgraphs:
-            if len(sg) <= threshold:
-                for n in sg:
-                    n_remove += 1
-                    self.delete_node(n)
-        print "Thrown out", n_remove, "nodes, fraction: ", 1.0 * n_remove / len(UG)
+        if len(UG):
+            concom_subgraphs = component.connected_component_subgraphs(UG)[1:]
+            n_remove = 0
+            for sg in concom_subgraphs:
+                if len(sg) <= threshold:
+                    for n in sg:
+                        n_remove += 1
+                        self.delete_node(n)
+            print "Thrown out", n_remove, "nodes, fraction: ", 1.0 * n_remove / len(UG)
+        else:
+            print "Empty graph, no components to ditch"
 

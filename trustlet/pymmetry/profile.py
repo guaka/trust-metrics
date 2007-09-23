@@ -36,10 +36,10 @@ class Profile:
 		self._certs_by_subj.add(type, name, level)
 
 	def del_cert_issuer(self, name, type, level):
-		self._certs_by_issuer.remove(type, name, level)
+		self._certs_by_issuer.remove(type, name) #, level)
 
 	def del_cert_subj(self, name, type, level):
-		self._certs_by_subj.remove(type, name, level)
+		self._certs_by_subj.remove(type, name) #, level)
 
 	def get_certs_issuer(self, type):
 		try:
@@ -94,8 +94,9 @@ class Profiles:
 		self.get_profile(subj).add_cert_subj(issuer, type, level)
 
 	def del_cert(self, subj, type, issuer, level):
-		get_profile(issuer).del_cert_issuer(self, subj, type, level)
-		get_profile(subj).del_cert_subj(self, issuer, type, level)
+		self.get_profile(issuer).del_cert_issuer(subj, type, level)
+		self.get_profile(subj).del_cert_subj(issuer, type, level)
+
 
 def test():
 	print "hmm..."

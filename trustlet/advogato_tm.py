@@ -79,20 +79,20 @@ class AdvogatoTM(TrustMetric):
 		levels = G.level_map.items()
 		levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 		levels = map((lambda x: x[0]), levels)
-		self.t = TrustMetric(AdvogatoCertInfo(levels), p)
+		self.t = TrustMetric(AdvogatoCertInfo(levels), self.p)
 
-	def calc(self, e):
-		G = self.G
-		t.delete_edge(e)  # needs to be implemented...
+	def leave_one_out(self, e):
+		a, b, level = e
+		level = level['level']
+		self.p.del_cert(a, 'like', b, level)
 		r = self.t.tmetric_calc('like', [e[0]])
-		t.add_edge(e)
+		self.p.add_cert(a, 'like', b, level)
+		
 		if b in r.keys():
 			return self.G.level_map[r[b]]
 		else:
 			return None
 
-
-		
 	
 if __name__ == "__main__":
 	from Advogato import *
