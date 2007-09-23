@@ -198,12 +198,9 @@ class TrustMetric:
         self._set_tm()
         
     def leave_one_out(self, e):
-        G = self.G
-        # e = filter(lambda x: x[1] == b, G.edges(a))
-        G.delete_edge(e)
-        print self.trustmetric
-        trust_value = self.trustmetric(G, e[0], e[1])
-        G.add_edge(e)
+        self.G.delete_edge(e)
+        trust_value = self.trustmetric(self.G, e[0], e[1])
+        self.G.add_edge(e)
         return trust_value
 
 class GuakaMoleTM(TrustMetric):
@@ -218,6 +215,9 @@ class PaoloMoleTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = paolomole_tm
 
+class IntersectionTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = intersection_tm
 
 
 ###################3
