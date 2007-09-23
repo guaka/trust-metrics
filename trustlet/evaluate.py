@@ -71,6 +71,8 @@ def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
     pprint (output)
     return output 
 
+
+
 def classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
     def output():
         if debug_interval == 1:
@@ -136,13 +138,14 @@ def evaluator(G, tm_list):
 
 
 if __name__ == "__main__":
-    G = Advogato(comp_threshold = 3)
+    G = Kaitiaki(comp_threshold = 3)
             
-    if False:
+    if True:
         evaluations = evaluator(G,
                             [paolo_moletm, guakamoletm, outa_tm, outb_tm, intersection_tm,
                              lambda g,a,b: (avg_or_none([edges_a_tm(g,a,b), intersection_tm(g,a,b)])), ebay_tm])
-    evaluations = evaluator(G, [advogato_tm])
+    else:
+        evaluations = evaluator(G, [advogato_tm])
     pprint(evaluations)
 
 

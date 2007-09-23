@@ -12,13 +12,14 @@ from networkx.spectrum import *
 #analyze(G)
 # evaluate(G, pagerank_tm)
 
-G = Kaitiaki(comp_threshold = 0)
+G = SqueakFoundation(comp_threshold = 0)
 analyze(G)
 # evaluate(G, advogato_tm)
 
 
-e2 = classy_evaluate(G, GuakaMoleTM)
-#e1 = evaluate(G, guakamoletm)
+for TM in [GuakaMoleTM, GuakaMoleFullTM]:
+    e2 = classy_evaluate(G, TM)
+#e1 = evaluate(G, guakamole_tm)
 
 
 # evaluate(G, advogato_tm)

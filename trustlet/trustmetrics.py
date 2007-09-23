@@ -170,11 +170,11 @@ def moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_thres
 
 
 
-paolo_moletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0)
+paolomole_tm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0)
 
-guakamoletm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.5)
+guakamole_tm = moletrust_generator(horizon = 3, trust_threshold = 0.5, difficult_case_threshold = 0.5)
 
-guakamole_full_tm = overlap(guakamoletm, intersection_tm)
+guakamole_full_tm = overlap(guakamole_tm, intersection_tm)
 
 
 
@@ -195,7 +195,8 @@ class TrustMetric:
     def __init__(self, G):
         """Use this to plug in functional trust metrics"""
         self.G = G
-
+        self._set_tm()
+        
     def leave_one_out(self, e):
         G = self.G
         # e = filter(lambda x: x[1] == b, G.edges(a))
@@ -206,9 +207,16 @@ class TrustMetric:
         return trust_value
 
 class GuakaMoleTM(TrustMetric):
-    def __init__(self, G):
-        self.G = G
-        self.trustmetric = guakamoletm
+    def _set_tm(self):
+        self.trustmetric = guakamole_tm
+
+class GuakaMoleFullTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = guakamole_full_tm
+
+class PaoloMoleTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = paolomole_tm
 
 
 
