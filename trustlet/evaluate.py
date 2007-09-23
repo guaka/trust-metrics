@@ -25,19 +25,19 @@ def hms(t):
 
 
 
-def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
+def evaluate(G, trustmetric, debug_interval = 1, max_edges = 0):
     #error_graph = graph.get_nodes() # same nodes, no edges
 
     num_unpredicted_edges = abs_err = sqr_err = count = 0
     start_time = prev_time = time.time()
     print "start time:", start_time
-    edges = graph.edges()
+    edges = G.edges()
     max_edges = max_edges or len(edges)
     for edge in edges:
-        graph.delete_edge(edge)
+        G.delete_edge(edge)
         a, b, dummy = edge
-        real_trust = graph.trust_on_edge(edge)
-        predicted_trust = trustmetric(graph, a, b)
+        real_trust = G.trust_on_edge(edge)
+        predicted_trust = trustmetric(G, a, b)
 
         #error_graph.add_edge(predicted_trust as the value on edge (a, b))
         if predicted_trust is None:
@@ -59,7 +59,7 @@ def evaluate(graph, trustmetric, debug_interval = 1, max_edges = 0):
             eta = avg_t * (max_edges - count)
             print 'cnt', int(count), 'acc', acc, 'acc2', acc2, 'unpredicted', unpredicted, "avg time:", avg_t, "ETA", hms(eta)
             prev_time = t
-        graph.add_edge(edge)
+        G.add_edge(edge)
         if max_edges == count:
             break
 

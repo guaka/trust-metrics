@@ -95,7 +95,7 @@ def stochastic(G,inplace=False):
 
     # exposing graph/digraph internals here
     for n in W:
-        # print W.adj[n]
+        print "W.adj[n].values():", W.adj[n].values()
         deg=float(sum(W.adj[n].values()))
         for p in W.adj[n]: 
             W.adj[n][p]/=deg

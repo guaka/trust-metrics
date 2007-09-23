@@ -16,7 +16,7 @@ We could (should) use this for a test framework.
 """
 
 
-import networkxfuture.page_rank as page_rank
+import page_rank
 import numpy
 
 NX = page_rank.NX
