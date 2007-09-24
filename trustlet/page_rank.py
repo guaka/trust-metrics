@@ -48,7 +48,10 @@ def page_rank(G,alpha=0.85,max_iter=100,tol=1.0e-4,nstart=None):
     nnodes=W.number_of_nodes()
     # "dangling" nodes, no links out from them
 
-    dangle=[n for n in W if sum(W.adj[n])==0.0]  # XGraph internals exposed   
+    def mysum(l):
+        print l
+        return sum(l.values())
+    dangle=[n for n in W if mysum(W.adj[n])==0.0]  # XGraph internals exposed   
     # pagerank power iteration: make up to max_iter iterations        
     for i in range(max_iter):
         xlast=x
@@ -66,7 +69,8 @@ def page_rank(G,alpha=0.85,max_iter=100,tol=1.0e-4,nstart=None):
         for n in x: x[n]*=s
         # check convergence, l1 norm            
         err=sum([abs(x[n]-xlast[n]) for n in x])
-        if err < n*tol:
+        print "Why n*tol?", n, tol
+        if err < tol: # if err < n*tol:
             return x
 
     raise NetworkXError("page_rank: power iteration failed to converge in %d iterations."%(i+1))

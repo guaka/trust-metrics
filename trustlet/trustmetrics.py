@@ -219,6 +219,19 @@ class IntersectionTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = intersection_tm
 
+class PageRankTM(TrustMetric):
+    def __init__(self, G_orig):
+        self.G = value_on_edges(G_orig)
+        
+    def leave_one_out(self, e_orig):
+        edge = [e for e in self.G.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
+        self.G.delete_edge(edge)
+        trust_value = pagerank_tm(self.G, e[1])
+        self.G.add_edge(edge)
+        return trust_value
+
+
+
 
 ###################3
 

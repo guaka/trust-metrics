@@ -42,26 +42,41 @@ def randomgraph():
     G.add_edges_from(edges)
     return G
 
+def pr(f,G):
+    r = f(G)
+    print f.__name__,
+    print len(r), r
+    return r
+
+def value_on_edges(G):
+    H = XDiGraph()
+    for e in G.edges():
+        H.add_edge(e[0], e[1], G.trust_on_edge(e))
+    return H
+
 def test():
     G = Advogato("tiny")
-    for e in G.edges():
-        G.delete_edge(e)
-        G.add_edge(e[0], e[1], G.trust_on_edge(e))
+    G = value_on_edges(G)
     # pprint (G.edges())
 
-    print "networkx", NXPR(G)
-    print "numpy   ", numpyPR(G)
-    print "scipy   ", scipyPR(G)
-    print "exact   ", exactPR(G)
+    # pr(NXPR, G)
+    prank = pr(numpyPR, G)
+    # pr(scipyPR, G)
+    prank
+    print len(G)
+    # print "exact   ", exactPR(G) # too slow
 
 if __name__ == '__main__':
     test()
 
 
+"""
+TODO: local pagerank!
+"""
+
+def pagerank_tm(G, node):
+    pr = numpyPR(G)
+    nodes = G.nodes()
+    return pr[nodes.index(node)]
 
 
-
-def pagerank_tm(G, a, b):
-    pr = page_rank.page_rank(G, alpha=0.9, tol=1.0e-8)
-    print pr.values()
-    
