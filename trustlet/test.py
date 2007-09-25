@@ -8,7 +8,7 @@ from analysis import *
 from evaluate import *
 from networkx.spectrum import *
 
-G = Advogato(comp_threshold = 7)
+G = Advogato('tiny', comp_threshold = 7)
 
 for TM in [PageRankTM]:
     e2 = classy_evaluate(G, TM)
