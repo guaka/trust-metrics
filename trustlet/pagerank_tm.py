@@ -77,6 +77,7 @@ TODO: local pagerank!
 def pagerank_tm(G, node):
     pr = numpyPR(G)
     nodes = G.nodes()
-    return pr[nodes.index(node)]
+    print min(pr)
+    return pr[nodes.index(node)] / max(pr)  #this is totally silly
 
 

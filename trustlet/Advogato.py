@@ -67,18 +67,10 @@ class Advogato(Network):
         return self.filepath
 
     def get_graph_dot(self, filepath = None):
-        import networkx
         if not filepath:
             filepath = self.filepath
         print "Reading", filepath, "as a NetworkX graph"
-        graph = networkx.read_dot(filepath)
-
-        #beh, read_dot should be method of self, so we can avoid this dirty loop shit
-        for node in graph.nodes():
-            self.add_node(node)
-        for edge in graph.edges():
-            self.add_edge(edge)
-
+        self._read_dot(filepath)
 
 """
 

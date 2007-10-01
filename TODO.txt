@@ -2,9 +2,6 @@
 List of stuff todo:
 
 * integrate pagerank into trustlet
-** check out networkx/doc/examples/eigenvalues.py
-
-* integrate pymmetry into trustlet
 
 * caching for moletrust?
 * visualization

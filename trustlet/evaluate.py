@@ -134,9 +134,7 @@ def classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
 def evaluator(G, tm_list):
     return map(lambda tm: evaluate(G, tm), tm_list)
 
-
-
-
+        
 if __name__ == "__main__":
     G = Kaitiaki(comp_threshold = 3)
             
