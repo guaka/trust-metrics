@@ -144,9 +144,9 @@ def page_rank_numpy(G,alpha=0.85,max_iter=100,tol=1.0e-4,nodelist=None):
 
     """
     import numpy
-    M=google_matrix(G,alpha,nodelist)   
+    M=google_matrix(G, alpha, nodelist)
     (n,m)=M.shape # should be square
-    x=numpy.ones((n))/n
+    x = numpy.ones((n))/n
     for i in range(max_iter):
         xlast=x
         x=numpy.dot(x,M)

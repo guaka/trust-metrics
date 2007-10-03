@@ -17,11 +17,14 @@ class TrustMetric:
         self._set_tm()
         
     def leave_one_out(self, e):
+        """The leave-one-out algorithm, for some trust metrics it's
+        much better to subclass this."""
         self.G.delete_edge(e)
         trust_value = self.trustmetric(self.G, e[0], e[1])
         self.G.add_edge(e)
         return trust_value
 
+# turning functions into classes, I wish I could do 
 class GuakaMoleTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = guakamole_tm
