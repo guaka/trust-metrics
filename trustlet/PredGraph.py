@@ -3,12 +3,15 @@ from Dataset import *
 from evaluate import *
 from helpers import *
 
-
+import math
 
 class PredGraph(Network):
     """Sorry, but, PredNetwork just sounds stupid"""
     def __init__(self, dataset, TM, recreate = False):
         Network.__init__(self, make_base_path = False)
+
+        self.dataset = dataset
+        self.TM = TM
         
         filepath = reduce(os.path.join, [dataset_dir(), get_name(dataset), get_name(TM), 'pred_graph.dot'])
         if not recreate and os.path.exists(filepath):
@@ -16,6 +19,40 @@ class PredGraph(Network):
         else:
             _classy_evaluate(dataset, TM)
 
+    def abs_error(self):
+        def mapper(val):
+            val = val[2]['predtrust']
+            if val == 'None':
+                return -100
+            else:
+                return float(val)
+
+        pred_trust = self._edge_array(mapper)
+        orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
+
+        undefined = sum(pred_trust < 0)
+        defined = len(orig_trust) - undefined
+        abs_error = (pred_trust >= -1) * abs(pred_trust - orig_trust)
+        
+        return sum(abs_error) / defined, 100.0 - (100.0 * undefined / len(orig_trust))
+
+    def sqr_error(self):
+        # definitely need to refactor some shit out of here
+        def mapper(val):
+            val = val[2]['predtrust']
+            if val == 'None':
+                return -100
+            else:
+                return float(val)
+
+        pred_trust = self._edge_array(mapper)
+        orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
+
+        undefined = sum(pred_trust < 0)
+        defined = len(orig_trust) - undefined
+        sqr_error = (pred_trust >= -1) * (lambda x: (x*x))(pred_trust - orig_trust)
+
+        return math.sqrt(sum(sqr_error) / defined), 100.0 - (100.0 * undefined / len(orig_trust))
 
 
 def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
@@ -79,8 +116,6 @@ def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
 
 
 if __name__ == "__main__":
-    
-
     if False:
         # for later
         scale = (0.4, 1)

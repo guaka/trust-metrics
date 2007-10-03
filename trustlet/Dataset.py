@@ -73,9 +73,10 @@ class Network(XDiGraph):
         e.sort()
         return e
 
-    def _edge_array(self, fieldname = 'trust'):
+    def _edge_array(self, mapper):
+        # problem when predtrust == None
         e = self._sorted_edges()
-        a = array(map(lambda x: float(x[2][fieldname]), e))
+        a = array(map(mapper, e))
         return a
 
         

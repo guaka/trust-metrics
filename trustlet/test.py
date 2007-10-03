@@ -19,7 +19,9 @@ from PredGraph import *
 
 G = SqueakFoundation()
 
-for TM in [GuakaMoleTM, IntersectionTM, GuakaMoleFullTM, PageRankTM]:
-    e1 = PredGraph(G, TM)
-    # e2 = classy_evaluate(G, TM)
+pga = map(lambda tm: PredGraph(G, tm),
+          [GuakaMoleTM, IntersectionTM, GuakaMoleFullTM])
 
+for p in pga:
+    print p.abs_error()
+    print p.sqr_error()
