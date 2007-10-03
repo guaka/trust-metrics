@@ -8,6 +8,7 @@
 # more "advanced" ones like Advogato and PageRank this might
 # considerably speed up things.
 
+from trustmetrics import *
 
 class TrustMetric:
     """A generic trust metric class"""
@@ -43,7 +44,7 @@ class IntersectionTM(TrustMetric):
 
 class PageRankTM(TrustMetric):
     def __init__(self, G_orig):
-        self.G = value_on_edges(G_orig)
+        self.G = G_orig  # beh, need to do something here
         
     def leave_one_out(self, e_orig):
         edge = [e for e in self.G.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]

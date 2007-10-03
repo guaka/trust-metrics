@@ -9,7 +9,7 @@ from networkx.xdigraph import XDiGraph
 from numpy import *
 
 
-def _dataset_dir():
+def dataset_dir():
     '''Create datasets/ directory if needed'''
     if os.environ.has_key('HOME'):
         home = os.environ['HOME']
@@ -30,7 +30,7 @@ class Network(XDiGraph):
 
         XDiGraph.__init__(self)
         if make_base_path:
-            self.path = os.path.join(_dataset_dir(), self.__class__.__name__)
+            self.path = os.path.join(dataset_dir(), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
 
@@ -43,6 +43,9 @@ class Network(XDiGraph):
     def _read_dot(self, filepath):
         import networkx
         graph = networkx.read_dot(filepath)
+        self._paste_graph(graph)
+        
+    def _paste_graph(self, graph):
         for node in graph.nodes():
             self.add_node(node)
         for edge in graph.edges():
@@ -65,6 +68,7 @@ class Network(XDiGraph):
             print "Empty graph, no components to ditch"
 
     def _sorted_edges(self):
+        """sorted edges"""
         e = self.edges()
         e.sort()
         return e
@@ -74,21 +78,5 @@ class Network(XDiGraph):
         a = array(map(lambda x: float(x[2][fieldname]), e))
         return a
 
-class PredGraph(Network):
-    def __init__(self, dataset, tm):
-        jpath = os.path.join
-        Network.__init__(self, make_base_path = False)
         
-        filepath = reduce(jpath, [_dataset_dir(), dataset, tm, 'pred_graph.dot'])
-        self._read_dot(filepath)
-        
-
-if __name__ == "__main__":
-    scale = (0.4, 1)
-    pg = PredGraph("Kaitiaki", "PageRankTM")
-    pr = pg._edge_array('predtrust')
-    pr_normalized = (pr - min(pr)) / (max(pr) - min(pr))
-    pr_scaled = scale[0] + pr_normalized * (scale[1] - scale[0])
-
-
 

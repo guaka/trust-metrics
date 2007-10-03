@@ -1,20 +1,25 @@
+"""
+Constantly evolving test stuff.
+
+It will often reflect what guaka was working on in a specific
+revision.  It might be removed in the future if trustlet ever reaches
+a beta stage.
+
+"""
 
 from pprint import pprint
 from Advogato import *
-from trustmetrics import *
+from TrustMetric import *
 from pylab import *
 from networkx import *
 from analysis import *
 from evaluate import *
 from networkx.spectrum import *
+from PredGraph import *
 
-G = Kaitiaki(comp_threshold = 7)
+G = SqueakFoundation()
 
-for TM in [PageRankTM]:
-    e2 = classy_evaluate(G, TM)
-#e1 = evaluate(G, guakamole_tm)
-
-
-# evaluate(G, advogato_tm)
-
+for TM in [GuakaMoleTM, IntersectionTM, GuakaMoleFullTM, PageRankTM]:
+    e1 = PredGraph(G, TM)
+    # e2 = classy_evaluate(G, TM)
 

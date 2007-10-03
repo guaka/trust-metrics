@@ -5,7 +5,7 @@ import random
 
 from advogato_tm import *
 from pagerank_tm import *
-from TrustMetric import *
+
 
 __doc__ = '''
 These are implementations of relatively simple trust metrics and some
