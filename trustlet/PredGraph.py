@@ -25,9 +25,9 @@ class PredGraph(Network):
         self.orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
         self.pred_trust = self._trust_array()
 
-        self.num_undefined = sum(pred_trust == UNDEFINED)
-        self.num_defined = len(pred_trust) - self.num_undefined
-        self.coverage = 1.0 - (1.0 * undefined / len(self.orig_trust))
+        self.undef_mask = self.pred_trust == UNDEFINED
+        self.num_undefined = sum(self.undef_mask)
+        self.num_defined = len(self.pred_trust) - self.num_undefined
 
     def _trust_array(self):
         def mapper(val):
@@ -38,18 +38,22 @@ class PredGraph(Network):
                 return float(val)
         return self._edge_array(mapper)
 
+    def coverage(self):
+        return 1.0 - (1.0 * self.num_undefined / len(self.orig_trust))
+
     def abs_error(self):
-        abs_error = (self.pred_trust >= -1) * abs(self.pred_trust - self.orig_trust)
+        abs_error = self.undef_mask * abs(self.pred_trust - self.orig_trust)
         return sum(abs_error) / self.num_defined
 
     def sqr_error(self):
-        sqr_error = (self.pred_trust >= -1) * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
+        sqr_error = self.undef_mask * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
         return math.sqrt(sum(sqr_error) / self.num_defined)
 
     def evaluate(self):
-        for f in [self.abs_error, self.sqr_error]:
-            print f.__name__
-            print f()
+        evals = [get_name(self.dataset), get_name(self.TM)]
+        for f in [self.coverage, self.abs_error, self.sqr_error]:
+            evals.append((f.__name__, f()))
+        return evals
 
 
 def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
@@ -99,17 +103,8 @@ def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
         output()
         if max_edges == count:
             break
-
-    num_predicted_edges = max_edges - num_unpredicted_edges
-    coverage = (num_predicted_edges * 1.0) / max_edges
-    accuracy = abs_err / (num_predicted_edges or 1)
-
-    output = (TM.__name__, accuracy, coverage)
-    pprint (output)
-    
     save_pred_graph()
 
-    return output 
 
 
 if __name__ == "__main__":

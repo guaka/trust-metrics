@@ -22,6 +22,7 @@ class Advogato(Network):
         'Journeyer': 0.8,
         'Master': 1.0
         }
+    # todo: http://phauly.bzaar.net/advogato_files/
     def __init__(self, filename = None, comp_threshold = 0):
         Network.__init__(self)
         self.filepath = os.path.join(self.path, self.dotfile)
@@ -118,11 +119,11 @@ class RobotsNet(Advogato):
 class SqueakFoundation(Advogato):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
-    level_map = {  # do these values make sense?
-        'violet': 0.4,
-        'blue': 0.6,
-        'green': 0.8,
-        'gray': 1.0
+    level_map = {
+        'violet': 1.0, #master
+        'blue': 0.8,   #journeyer
+        'green': 0.6,  #apprentice
+        'gray': 0.4,   #observer
         }
 
     def trust_on_edge(self, edge):

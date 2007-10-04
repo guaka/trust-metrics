@@ -19,10 +19,10 @@ from pprint import pprint
 
 # from evaluate import * DEPRECATED
 
-G = SqueakFoundation()
+G = Advogato()
 
 pga = map(lambda tm: PredGraph(G, tm),
           [GuakaMoleTM, IntersectionTM, GuakaMoleFullTM])
 
 for p in pga:
-    p.evaluate()
+    pprint (p.evaluate())
