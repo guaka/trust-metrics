@@ -1,3 +1,13 @@
+"""
+
+TrustMetric classes
+
+These are initiated with the dataset that they're supposed to measure
+trust on.
+
+"""
+
+
 ###############################################
 # classier way of dealing with this
 #
@@ -17,6 +27,15 @@ class TrustMetric:
         self.G = G
         self._set_tm()
         
+    def __getattr__(self, name):
+        if name == "name":
+            if hasattr(self, name):
+                return self.name
+            else:
+                return "ni"
+            
+        raise AttributeError
+
     def leave_one_out(self, e):
         """The leave-one-out algorithm, for some trust metrics it's
         much better to subclass this."""
