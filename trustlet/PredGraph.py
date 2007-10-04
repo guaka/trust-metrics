@@ -1,9 +1,10 @@
 
 from Dataset import *
-from evaluate import *
 from helpers import *
 
 import math
+import time
+from networkx import write_dot
 
 UNDEFINED = -37 * 37
 
@@ -21,11 +22,13 @@ class PredGraph(Network):
             self._read_dot(filepath)
         else:
             _classy_evaluate(dataset, TM)
+            self._read_dot(filepath)  #should get the predgraph from _classy_evaluate instead
 
         self.orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
         self.pred_trust = self._trust_array()
 
         self.undef_mask = self.pred_trust == UNDEFINED
+        self.def_mask = self.pred_trust != UNDEFINED
         self.num_undefined = sum(self.undef_mask)
         self.num_defined = len(self.pred_trust) - self.num_undefined
 
@@ -42,11 +45,11 @@ class PredGraph(Network):
         return 1.0 - (1.0 * self.num_undefined / len(self.orig_trust))
 
     def abs_error(self):
-        abs_error = self.undef_mask * abs(self.pred_trust - self.orig_trust)
+        abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
         return sum(abs_error) / self.num_defined
 
     def sqr_error(self):
-        sqr_error = self.undef_mask * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
+        sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
         return math.sqrt(sum(sqr_error) / self.num_defined)
 
     def evaluate(self):
@@ -56,13 +59,11 @@ class PredGraph(Network):
         return evals
 
 
-def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
+def _classy_evaluate(G, TM, debug_interval = 100, max_edges = 0):
     """this should be part of PredGraph class"""
     def output():
-        if debug_interval == 1:
-            print edge, predicted_trust
-
         if divmod(count, debug_interval)[1] == 0:
+            print edge, predicted_trust
             t = time.time()
             acc = abs_err / count
             # acc2 = sqr_err / count
@@ -87,12 +88,12 @@ def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
 
     num_unpredicted_edges = abs_err = sqr_err = count = 0
     start_time = prev_time = time.time()
-    print "start time:", start_time
+
     tm = TM(G)
     max_edges = max_edges or len(G.edges())
     for edge in G.edges():
         predicted_trust = tm.leave_one_out(edge)
-        print predicted_trust
+        # print predicted_trust
         pred_graph.add_edge(edge[0], edge[1], {'predtrust': str(predicted_trust)})
         if predicted_trust is None:
             num_unpredicted_edges += 1

@@ -17,12 +17,15 @@ from analysis import *
 from pprint import pprint
 
 
-# from evaluate import * DEPRECATED
+def ev(G):
+    return map(lambda tm: PredGraph(G, tm),
+               [IntersectionTM,
+                GuakaMoleTM,
+                GuakaMoleFullTM,
+                PaoloMoleTM])
 
-G = Advogato()
-
-pga = map(lambda tm: PredGraph(G, tm),
-          [GuakaMoleTM, IntersectionTM, GuakaMoleFullTM])
+G = Kaitiaki()
+pga = ev(G)
 
 for p in pga:
     pprint (p.evaluate())
