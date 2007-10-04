@@ -7,16 +7,14 @@ a beta stage.
 
 """
 
-from pprint import pprint
 
-from Advogato import *
-from TrustMetric import *
-from PredGraph import *
-
+from __init__ import *
 
 from pylab import *
 from networkx import *
 from analysis import *
+
+from pprint import pprint
 
 
 # from evaluate import * DEPRECATED

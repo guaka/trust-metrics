@@ -29,5 +29,7 @@ Using
 
 __version__ = '0.1.0'
 
-import Advogato, trustmetrics, analysis, evaluate
 
+from Advogato import *
+from TrustMetric import *
+from PredGraph import *
