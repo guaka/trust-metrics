@@ -5,6 +5,9 @@ from helpers import *
 
 import math
 
+UNDEFINED = -37 * 37
+
+
 class PredGraph(Network):
     """Sorry, but, PredNetwork just sounds stupid"""
     def __init__(self, dataset, TM, recreate = False):
@@ -19,40 +22,34 @@ class PredGraph(Network):
         else:
             _classy_evaluate(dataset, TM)
 
-    def abs_error(self):
+        self.orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
+        self.pred_trust = self._trust_array()
+
+        self.num_undefined = sum(pred_trust == UNDEFINED)
+        self.num_defined = len(pred_trust) - self.num_undefined
+        self.coverage = 1.0 - (1.0 * undefined / len(self.orig_trust))
+
+    def _trust_array(self):
         def mapper(val):
             val = val[2]['predtrust']
             if val == 'None':
-                return -100
+                return UNDEFINED
             else:
                 return float(val)
+        return self._edge_array(mapper)
 
-        pred_trust = self._edge_array(mapper)
-        orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
-
-        undefined = sum(pred_trust < 0)
-        defined = len(orig_trust) - undefined
-        abs_error = (pred_trust >= -1) * abs(pred_trust - orig_trust)
-        
-        return sum(abs_error) / defined, 100.0 - (100.0 * undefined / len(orig_trust))
+    def abs_error(self):
+        abs_error = (self.pred_trust >= -1) * abs(self.pred_trust - self.orig_trust)
+        return sum(abs_error) / self.num_defined
 
     def sqr_error(self):
-        # definitely need to refactor some shit out of here
-        def mapper(val):
-            val = val[2]['predtrust']
-            if val == 'None':
-                return -100
-            else:
-                return float(val)
+        sqr_error = (self.pred_trust >= -1) * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
+        return math.sqrt(sum(sqr_error) / self.num_defined)
 
-        pred_trust = self._edge_array(mapper)
-        orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
-
-        undefined = sum(pred_trust < 0)
-        defined = len(orig_trust) - undefined
-        sqr_error = (pred_trust >= -1) * (lambda x: (x*x))(pred_trust - orig_trust)
-
-        return math.sqrt(sum(sqr_error) / defined), 100.0 - (100.0 * undefined / len(orig_trust))
+    def evaluate(self):
+        for f in [self.abs_error, self.sqr_error]:
+            print f.__name__
+            print f()
 
 
 def _classy_evaluate(G, TM, debug_interval = 1, max_edges = 0):
