@@ -48,18 +48,11 @@ class PredGraph(Dataset.Network):
     def _trust_array(self, which_one = 'pred'):
         def mapper(val):
             val = val[2][which_one]
-            if val == 'None':
-                return UNDEFINED
-            else:
-                return float(val)
+            return (val == 'None') and UNDEFINED or float(val)
         return self._edge_array(mapper)
 
     def coverage(self):
         return 1.0 - (1.0 * self.num_undefined / len(self.orig_trust))
-
-    def mask_coverage(self):
-        pass
-    
 
     def abs_error(self):
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
