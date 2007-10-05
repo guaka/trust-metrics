@@ -61,7 +61,7 @@ class IntersectionTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = intersection_tm
 
-class PageRankTM(TrustMetric):
+class PageRankTM0(TrustMetric):
     def __init__(self, G_orig):
         self.G = G_orig  # beh, need to do something here
         
