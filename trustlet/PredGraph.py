@@ -1,23 +1,24 @@
 
-from Dataset import *
+import Dataset
 from helpers import *
 
+import os
 import math
 import time
-from networkx import write_dot
+from networkx import write_dot, XDiGraph
 
 UNDEFINED = -37 * 37
 
 
-class PredGraph(Network):
+class PredGraph(Dataset.Network):
     """Sorry, but, PredNetwork just sounds stupid"""
     def __init__(self, dataset, TM, recreate = False):
-        Network.__init__(self, make_base_path = False)
+        Dataset.Network.__init__(self, make_base_path = False)
 
         self.dataset = dataset
         self.TM = TM
         
-        filepath = reduce(os.path.join, [dataset_dir(), get_name(dataset), get_name(TM), 'pred_graph.dot'])
+        filepath = reduce(os.path.join, [Dataset.dataset_dir(), get_name(dataset), get_name(TM), 'pred_graph.dot'])
         if not recreate and os.path.exists(filepath):
             self._read_dot(filepath)
         else:
@@ -28,7 +29,7 @@ class PredGraph(Network):
         self.pred_trust = self._trust_array()
 
         self.undef_mask = self.pred_trust == UNDEFINED
-        self.def_mask = self.pred_trust != UNDEFINED
+        self.def_mask = map(lambda x: not x, p.undef_mask)
         self.num_undefined = sum(self.undef_mask)
         self.num_defined = len(self.pred_trust) - self.num_undefined
 

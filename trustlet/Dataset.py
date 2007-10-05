@@ -73,7 +73,8 @@ class Network(XDiGraph):
         e.sort()
         return e
 
-    def _edge_array(self, mapper):
+    def _edge_array(self, mapper = None):
+        """array of sorted edges, mapper is an optional function that will be applied to the edges"""
         # problem when predtrust == None
         e = self._sorted_edges()
         a = array(map(mapper, e))
