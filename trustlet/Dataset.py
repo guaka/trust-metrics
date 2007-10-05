@@ -28,7 +28,7 @@ class Network(XDiGraph):
     def __init__(self, make_base_path = True):
         '''Create directory for class name if needed'''
 
-        XDiGraph.__init__(self)
+        XDiGraph.__init__(self, multiedges = False)
         if make_base_path:
             self.path = os.path.join(dataset_dir(), self.__class__.__name__)
             if not os.path.exists(self.path):

@@ -7,7 +7,7 @@ import math
 import time
 from networkx import write_dot, XDiGraph
 
-UNDEFINED = -37 * 37
+UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
 
 class PredGraph(Dataset.Network):
@@ -25,17 +25,29 @@ class PredGraph(Dataset.Network):
             _classy_evaluate(dataset, TM)
             self._read_dot(filepath)  #should get the predgraph from _classy_evaluate instead
 
-        self.orig_trust = self.dataset._edge_array(self.dataset.trust_on_edge)
+        if len(self.edges()) != len(self.dataset.edges()):
+            raise "TROUBLE: #edges in dataset != #edges in predgraph!"
+
+        # add orig trust value into self
+        for e in self.dataset.edges():
+            # for some RTFMing reason get_edge gives an ItemAttribute, not
+            # dict, so we do some casting work here
+            t = dict(self.get_edge(e[0], e[1]))
+            t['orig'] = self.dataset.trust_on_edge(e)
+            t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
+            self.add_edge(e[0], e[1], t)
+        
+        self.orig_trust = self._trust_array('orig') #WAS: dataset._edge_array(self.dataset.trust_on_edge)
         self.pred_trust = self._trust_array()
 
         self.undef_mask = self.pred_trust == UNDEFINED
-        self.def_mask = map(lambda x: not x, p.undef_mask)
+        self.def_mask = map(lambda x: not x, self.undef_mask)
         self.num_undefined = sum(self.undef_mask)
         self.num_defined = len(self.pred_trust) - self.num_undefined
 
-    def _trust_array(self):
+    def _trust_array(self, which_one = 'pred'):
         def mapper(val):
-            val = val[2]['predtrust']
+            val = val[2][which_one]
             if val == 'None':
                 return UNDEFINED
             else:
@@ -44,6 +56,10 @@ class PredGraph(Dataset.Network):
 
     def coverage(self):
         return 1.0 - (1.0 * self.num_undefined / len(self.orig_trust))
+
+    def mask_coverage(self):
+        pass
+    
 
     def abs_error(self):
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
@@ -95,7 +111,7 @@ def _classy_evaluate(G, TM, debug_interval = 100, max_edges = 0):
     for edge in G.edges():
         predicted_trust = tm.leave_one_out(edge)
         # print predicted_trust
-        pred_graph.add_edge(edge[0], edge[1], {'predtrust': str(predicted_trust)})
+        pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
         if predicted_trust is None:
             num_unpredicted_edges += 1
         else:
@@ -114,7 +130,7 @@ if __name__ == "__main__":
         # for later
         scale = (0.4, 1)
         pg = PredGraph("Kaitiaki", "PageRankTM")
-        pr = pg._edge_array('predtrust')
+        pr = pg._edge_array('pred')
         pr_normalized = (pr - min(pr)) / (max(pr) - min(pr))
         pr_scaled = scale[0] + pr_normalized * (scale[1] - scale[0])
 

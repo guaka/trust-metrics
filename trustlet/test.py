@@ -24,7 +24,8 @@ def ev(G):
                 GuakaMoleFullTM,
                 PaoloMoleTM])
 
-G = Kaitiaki()
+# G = Kaitiaki()
+G = SqueakFoundation()
 pga = ev(G)
 
 for p in pga:
