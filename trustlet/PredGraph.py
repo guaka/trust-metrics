@@ -63,9 +63,9 @@ class PredGraph(Dataset.Network):
         return math.sqrt(sum(sqr_error) / self.num_defined)
 
     def evaluate(self):
-        evals = [get_name(self.dataset), get_name(self.TM)]
-        for f in [self.coverage, self.abs_error, self.sqr_error]:
-            evals.append((f.__name__, f()))
+        evals = [(f.__name__, f())
+                 for f in [self.coverage, self.abs_error, self.sqr_error]]
+        evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
 
 
