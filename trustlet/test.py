@@ -30,3 +30,7 @@ pga = ev(G)
 
 for p in pga:
     pprint (p.evaluate())
+
+p=pga[1]
+p.coverage_with_condition(every_edge)
+

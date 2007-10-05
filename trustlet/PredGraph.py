@@ -51,6 +51,17 @@ class PredGraph(Dataset.Network):
             return (val == 'None') and UNDEFINED or float(val)
         return self._edge_array(mapper)
 
+    def coverage_with_condition(self,condition_on_edge):
+        num_predicted_edges = 0
+        num_edges = 0
+        for e in self.edges_iter():
+            if condition_on_edge(e):
+                num_edges+=1
+                if e[2]['pred'] != UNDEFINED:
+                    num_predicted_edges+=1
+
+        return num_edges and float(num_predicted_edges)/num_edges
+
     def coverage(self):
         return 1.0 - (1.0 * self.num_undefined / len(self.orig_trust))
 
@@ -67,7 +78,6 @@ class PredGraph(Dataset.Network):
                  for f in [self.coverage, self.abs_error, self.sqr_error]]
         evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
-
 
 def _classy_evaluate(G, TM, debug_interval = 100, max_edges = 0):
     """this should be part of PredGraph class"""
@@ -116,6 +126,8 @@ def _classy_evaluate(G, TM, debug_interval = 100, max_edges = 0):
             break
     save_pred_graph()
 
+def every_edge(edge):
+    return True
 
 
 if __name__ == "__main__":
