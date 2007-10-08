@@ -17,20 +17,28 @@ from analysis import *
 from pprint import pprint
 
 
-def ev(G):
-    return map(lambda tm: PredGraph(G, tm),
-               [IntersectionTM,
+
+def ev(CG, G):
+    return map(lambda tm: CG(G, tm),
+               [PageRankTM0, #AdvogatoTM,
+                IntersectionTM,
                 GuakaMoleTM,
                 GuakaMoleFullTM,
                 PaoloMoleTM])
 
-# G = Kaitiaki()
-G = SqueakFoundation()
-pga = ev(G)
+K = Kaitiaki()
+S = SqueakFoundation()
+
+
+#pg = PredGraph(K, PageRankTM0, recreate = True)
+
+
+pga = ev(TotalGraph, K)
+
 
 for p in pga:
-    pprint (p.evaluate())
+   pprint (p.evaluate())
 
-p=pga[1]
-p.coverage_with_condition(every_edge)
+#p=pga[1]
+#p.coverage_with_condition(every_edge)
 

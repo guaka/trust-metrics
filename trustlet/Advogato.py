@@ -70,7 +70,6 @@ class Advogato(Network):
     def get_graph_dot(self, filepath = None):
         if not filepath:
             filepath = self.filepath
-        print "Reading", filepath, "as a NetworkX graph"
         self._read_dot(filepath)
 
 """

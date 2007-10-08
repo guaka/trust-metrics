@@ -81,7 +81,9 @@ class Profiles:
 		for n in G.nodes():
 			self.add_profile(n)
 		for e in G.edges():
-			self.add_cert(e[0], 'like', e[1], e[2]['level'])
+			val = e[2].values()[0]
+			print e, val
+			self.add_cert(e[0], 'like', e[1], val)
 
 	def get_profile(self, name):
 		return self.info[name]

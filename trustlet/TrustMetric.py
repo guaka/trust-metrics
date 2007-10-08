@@ -22,6 +22,9 @@ from trustmetrics import *
 
 class TrustMetric:
     """A generic trust metric class"""
+
+    # rescale the prediction graph, useful for PageRank
+    rescale = False
     def __init__(self, G):
         """Use this to plug in functional trust metrics"""
         self.G = G
@@ -36,11 +39,14 @@ class TrustMetric:
             
         raise AttributeError
 
+    def calc(self, n1, n2):
+        return self.trustmetric(self.G, n1, n2)
+
     def leave_one_out(self, e):
         """The leave-one-out algorithm, for some trust metrics it's
-        much better to subclass this."""
+        more efficient to subclass this."""
         self.G.delete_edge(e)
-        trust_value = self.trustmetric(self.G, e[0], e[1])
+        trust_value = self.calc(e[0], e[1])
         self.G.add_edge(e)
         return trust_value
 
@@ -62,9 +68,15 @@ class IntersectionTM(TrustMetric):
         self.trustmetric = intersection_tm
 
 class PageRankTM0(TrustMetric):
+    rescale = True
+    
     def __init__(self, G_orig):
         self.G = G_orig  # beh, need to do something here
         
+    def calc(self, n1, n2):
+        # this should be much better!
+        return pagerank_tm(self.G, n2)
+
     def leave_one_out(self, e_orig):
         edge = [e for e in self.G.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
         self.G.delete_edge(edge)

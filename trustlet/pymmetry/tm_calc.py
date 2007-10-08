@@ -107,10 +107,8 @@ class TrustMetric(Debug):
 				continue
 			self.tmetric_find_node(idxn, self.result, cert_subj)
 
-			try:
-				level_str = certs[cert_subj]
-			except:
-				level_str = None
+			level_str = certs[cert_subj]
+			#print un, level_str
 			self.debug('level: '+str(level_str))
 			try:
 				level = self.levels.index(level_str)
@@ -118,7 +116,8 @@ class TrustMetric(Debug):
 				war = "level not found! %s %s %s" % \
 					(idxn, level_str, str(self.levels))
 				self.warning(war)
-				raise war #"level not found!"
+				# raise war #"level not found!"
+				level = len(self.levels)-1   # THIS IS BAD!
 
 			self.debug("%s %s" % (str(level_str), str(level)))
 

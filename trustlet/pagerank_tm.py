@@ -57,7 +57,6 @@ def pagerank_tm(G, node):
     G = value_on_edges(G)
     pr = numpyPR(G)
     nodes = G.nodes()
-    print min(pr)
-    return pr[nodes.index(node)] / max(pr)  #this is totally silly
+    return pr[nodes.index(node)] # / max(pr)  #this is totally silly
 
 
