@@ -36,7 +36,7 @@ class CalcGraph(Dataset.Network):
         print "Init took", hms(time.time() - self.start_time)
 
     def _rescale(self):
-        scale = (0.4, 1)
+        scale = (0.4, 1)  # probably for the dataset
         pt = self.pred_trust
         min_pt, max_pt = min(pt), max(pt)
         print "rescaling:", (min_pt, max_pt), "to", scale
@@ -85,11 +85,11 @@ class CalcGraph(Dataset.Network):
         evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
 
-    def _time_indicator(self, count):
+    def _time_indicator(self, count, moreinfo = ""):
         # print edge, predicted_trust
         avg_t = (time.time() - self.start_time) / count
         eta = avg_t * (len(self.dataset.edges()) - count)
-        print 'cnt', int(count), "avg time:", avg_t, "ETA", hms(eta)
+        print '#', int(count), "avg time:", avg_t, "ETA", hms(eta), moreinfo
         
 
 class TotalGraph(CalcGraph):
@@ -144,6 +144,27 @@ class PredGraph(CalcGraph):
         
         self.orig_trust = self._trust_array('orig')
 
+    def _predict_existing(self):
+        """Predict existing nodes by leaving out the edge"""
+        pred_graph = XDiGraph()
+        for n in self.dataset.nodes():
+            pred_graph.add_node(n)
+
+        count = 0
+        tm = self.TM(self.dataset)
+        for edge in self.dataset.edges_iter():
+            predicted_trust = tm.leave_one_out(edge)
+            pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
+            count += 1.
+            if divmod(count, 100)[1] == 0:
+                self._time_indicator(count, (edge, predicted_trust))
+        return pred_graph
+
+    def edges_cond_iter(self, condition):
+        """Yield edges that satisfy condition"""
+        for e in self.edges_iter():
+            if condition(e):
+                yield e
 
     def coverage_cond(self, condition):
         """Coverage of edges that satisfy condition"""
@@ -162,11 +183,6 @@ class PredGraph(CalcGraph):
                 num_edges += 1
         return num_edges and abs_error / num_edges
 
-    def edges_cond_iter(self, condition):
-        """Yield edges that satisfy condition"""
-        for e in self.edges_iter():
-            if condition(e):
-                yield e
 
     def abs_error(self):
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
@@ -186,20 +202,6 @@ class PredGraph(CalcGraph):
         evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
 
-    def _predict_existing(self):
-        pred_graph = XDiGraph()
-        for n in self.dataset.nodes():
-            pred_graph.add_node(n)
-
-        count = 0
-        tm = self.TM(self.dataset)
-        for edge in self.dataset.edges_iter():
-            predicted_trust = tm.leave_one_out(edge)
-            pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
-            count += 1.
-            if divmod(count, 100)[1] == 0:
-                self._time_indicator(count)
-        return pred_graph
 
 def every_edge(edge):
     return True
