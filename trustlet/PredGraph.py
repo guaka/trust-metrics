@@ -7,7 +7,10 @@ import math
 import time
 from networkx import write_dot, XDiGraph
 
-import scipy
+try:
+    import scipy
+except:
+    print "damn! no scipy!"
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
