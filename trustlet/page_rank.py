@@ -119,6 +119,23 @@ def google_matrix(G,alpha=0.85,nodelist=None):
     P=alpha*M+(1-alpha)*numpy.ones((n,n))/n
     return P
     
+def google_matrix_weighted(G,alpha=0.85,nodelist=None):
+    """when the graph G is weighted (for example there are trust relationship values on edges) the google transition matrix has to be changed accordingly.
+    For example, let us suppose there are 2 outgoing links from node A (A in B and A in C). In the traditional formulation of Pagerank the transition matrix will have alpha*0.5 and alpha*0.5 for these two nodes. In the case of weighted graph this is not enough, we need to take into account also the weight on the two edges. Let us suppose that weight(A,B)=0.8 and weight(A,C)=0.6. Then the cells of the transition matrix will be: alpha*0.8/(0.8+0.6) and alpha*0.6/(0.8+0.6) so that they keep summing to alpha*1
+    """
+    import numpy
+    M=NX.to_numpy_matrix(G,nodelist=nodelist)
+    (n,m)=M.shape # should be square
+    # add constant to dangling nodes' row
+    dangling=numpy.where(M.sum(axis=1)==0)
+    for d in dangling[0]:
+        M[d]=1.0/n
+    # normalize
+    M=M/M.sum(axis=1)
+    # add "teleportation"
+    P=alpha*M+(1-alpha)*numpy.ones((n,n))/n
+    return P
+    
 def page_rank_exact_numpy(G,alpha=0.85,nodelist=None):
     """PageRank using numpy and call to LAPACK eig()."""
     import numpy

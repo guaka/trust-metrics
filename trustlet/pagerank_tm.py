@@ -47,14 +47,16 @@ def randomgraph():
 TODO: local pagerank!
 """
 
+
 def value_on_edges(G):
+    """Convert the graph so that on the edges there is only the value of trust and not the dict containing the trust value"""
     H = XDiGraph()
     for e in G.edges():
         H.add_edge(e[0], e[1], G.trust_on_edge(e))
     return H
 
 def pagerank_tm(G, node):
-    G = value_on_edges(G)
+    G = value_on_edges(G) #get a graph with, on edges, only the trust values and not the dict so we can pass it to functions that compute pagerank
     pr = numpyPR(G)
     nodes = G.nodes()
     return pr[nodes.index(node)] # / max(pr)  #this is totally silly
