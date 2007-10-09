@@ -126,7 +126,7 @@ class TotalGraph(CalcGraph):
 
 
 class PredGraph(CalcGraph):
-    """Sorry, but, PredNetwork just sounds stupid"""
+    """This class contains a trust network with the original nodes and edges. But the original edges have been modified so that for example on the edge (a-->b) there is both the original trust (orig) value from a to b but also the predicted trust (pred) value predicted by the trust metric for a-->b. If a prediction was not possible, pred_trust is None"""
     def _generate(self):
         pg = self._predict_existing()
         self._paste_graph(pg)

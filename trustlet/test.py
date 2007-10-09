@@ -32,9 +32,7 @@ S = SqueakFoundation()
 
 #pg = PredGraph(K, PageRankTM0, recreate = True)
 
-
-pga = ev(TotalGraph, K)
-
+pga = ev(PredGraph, K)
 
 for p in pga:
    pprint (p.evaluate())
