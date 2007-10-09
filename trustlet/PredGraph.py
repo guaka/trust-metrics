@@ -16,7 +16,10 @@ UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
 
 class CalcGraph(Dataset.Network):
+    """Generic calculation graph class"""
+
     def __init__(self, dataset, TM, recreate = False):
+        """Create object from dataset using TM as trustmetric."""
         Dataset.Network.__init__(self, make_base_path = False)
 
         self.dataset, self.TM = dataset, TM
@@ -72,6 +75,7 @@ class CalcGraph(Dataset.Network):
         write_dot(pred_graph, self.filepath)
 
     def mean_std(self):
+        """Calculate mean and standard deviation."""
         only_def = []
         for e in self.pred_trust:
             if e != UNDEFINED:
@@ -79,9 +83,11 @@ class CalcGraph(Dataset.Network):
         return scipy.mean(only_def), scipy.std(only_def)
 
     def coverage(self):
+        """Return coverage, part of the graph that is defined."""
         return 1.0 - (1.0 * self.num_undefined / len(self.edges()))
 
     def evaluate(self):
+        """Evaluate the graph."""
         evals = [(f.__name__, f())
                  for f in [self.coverage, self.mean_std]
                  ]
@@ -126,7 +132,13 @@ class TotalGraph(CalcGraph):
 
 
 class PredGraph(CalcGraph):
-    """This class contains a trust network with the original nodes and edges. But the original edges have been modified so that for example on the edge (a-->b) there is both the original trust (orig) value from a to b but also the predicted trust (pred) value predicted by the trust metric for a-->b. If a prediction was not possible, pred_trust is None"""
+    """Prediction graph, it contains a trust network with the original
+    nodes and edges.  On an edge (a, b) there is both the original
+    trust value ['orig'] from a to b but also the predicted trust
+    value ['pred'] predicted by the trust metric for (a, b), by
+    leaving out edge (a, b). If a prediction was not possible, the
+    predicted trust is None."""
+
     def _generate(self):
         pg = self._predict_existing()
         self._paste_graph(pg)
@@ -164,13 +176,13 @@ class PredGraph(CalcGraph):
         return pred_graph
 
     def edges_cond_iter(self, condition):
-        """Yield edges that satisfy condition"""
+        """Yield edges that satisfy condition."""
         for e in self.edges_iter():
             if condition(e):
                 yield e
 
     def coverage_cond(self, condition):
-        """Coverage of edges that satisfy condition"""
+        """Coverage of edges that satisfy condition."""
         num_predicted_edges = num_edges = 0
         for e in self.edges_cond(condition):
             num_edges+=1
@@ -179,6 +191,7 @@ class PredGraph(CalcGraph):
         return num_edges and float(num_predicted_edges)/num_edges
 
     def abs_error_cond(self, condition):
+        """Absolute error of edges satisfying condition."""
         abs_error = num_edges = 0
         for e in self.edges_cond_iter(condition):
             if e[2]['pred'] != UNDEFINED:
@@ -186,8 +199,8 @@ class PredGraph(CalcGraph):
                 num_edges += 1
         return num_edges and abs_error / num_edges
 
-
     def abs_error(self):
+        """Absolute error."""
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
         return sum(abs_error) / self.num_defined
 
