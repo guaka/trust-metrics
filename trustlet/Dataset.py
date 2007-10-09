@@ -75,10 +75,38 @@ class Network(XDiGraph):
         return e
 
     def _edge_array(self, mapper = None):
-        """array of sorted edges, mapper is an optional function that will be applied to the edges"""
+        """array of sorted edges, mapper is an optional function that
+        will be applied to the edges"""
         e = self._sorted_edges()
         a = array(map(mapper, e))
         return a
 
+
+class Dummy(Network):
+    """A dummy dataset used for testing purposes, actually the dataset
+    with 8 nodes discussed in
+    http://www.ams.org/featurecolumn/archive/pagerank.html"""
+    def __init__(self):
+        Network.__init__(self)
+        edges=[(1,2),
+               (1,3),
+               (2,4),
+               (3,2),
+               (3,5),
+               (4,2),
+               (4,5),
+               (4,6),
+               (5,6),
+               (5,7),
+               (5,8),
+               (6,8),
+               (7,1),
+               (7,5),
+               (7,8),
+               (8,6),
+               (8,7),
+               ]
+        for e in edges:
+            self.add_edge(e[0],e[1],1.0)    
         
 
