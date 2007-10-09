@@ -5,10 +5,10 @@ This is a module implementing the Advogato datasets. There are also
 classes to get other datasets based on the mod_virgule code.
 """
 
-
 from Dataset import Network
 from networkx.xdigraph import XDiGraph
 import os
+
 
 class Advogato(Network):
     """The Advogato dataset"""
