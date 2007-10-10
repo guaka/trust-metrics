@@ -92,7 +92,7 @@ class PageRankTMfakeLeave1out(TrustMetric):
     def __init__(self, G_orig):
         self.G = G_orig  # beh, need to do something here
         # here it should calculate the PR values for all nodes
-        raise "not yet implemented"
+        raise NotImplemented
         
     def calc(self, n1, n2):
         # this should use precalculated values

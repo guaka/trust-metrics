@@ -134,9 +134,10 @@ class Kaitiaki(SqueakFoundation):
 
 class AdvogatoPast(Advogato):
     def __init__(self, date):
-        http://phauly.bzaar.net/advogato_files/
+        raise NotImplemented
 
 """
+        http://phauly.bzaar.net/advogato_files/
         graph20041028154056.dot 27-Aug-2007 06:19   2.2M
         graph20051111035647.dot 27-Aug-2007 06:19   2.5M
         graph20060211110033.dot 27-Aug-2007 06:19   3.0M

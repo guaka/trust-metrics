@@ -17,10 +17,10 @@ Rows:
 * always 1
 
 Columns:
+* coverage
 * mean_abs_error
 * root_mean_squared_error
 * mean_abs_error on [0.4, 0.6, 0.8, 1.0]
-
 
 for datasets: Kaitiaki, SqueakFoundation, Advogato
 
@@ -33,3 +33,16 @@ from networkx import *
 from analysis import *
 
 from pprint import pprint
+
+
+G = Kaitiaki()
+
+ev_methods = ['coverage', 'abs_error', 'abs_error_map', 'sqr_error', 'mean_std']
+
+for tm in [GuakaMoleTM, IntersectionTM, PageRankTM, AdvogatoTM]:
+    pg = PredGraph(G, tm)
+    print pg.coverage()
+    evals = [(f, getattr(pg, f)())
+             for f in ev_methods]
+
+        
