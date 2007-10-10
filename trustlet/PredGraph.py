@@ -218,6 +218,10 @@ class PredGraph(CalcGraph):
         evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
 
+def edge_to_connected_node(number=5):
+    def gen_func(G,edge):
+        return G.in_degree(edge[1])>=number
+    return gen_func
 
 def every_edge(edge):
     return True
@@ -233,3 +237,4 @@ def journeyer_edge(edge):
 
 def observer_edge(edge):
     return edge[2]['orig']==0.4
+
