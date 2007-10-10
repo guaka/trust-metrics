@@ -184,7 +184,7 @@ class PredGraph(CalcGraph):
     def coverage_cond(self, condition):
         """Coverage of edges that satisfy condition."""
         num_predicted_edges = num_edges = 0
-        for e in self.edges_cond(condition):
+        for e in self.edges_cond_iter(condition):
             num_edges+=1
             if e[2]['pred'] != UNDEFINED:
                 num_predicted_edges+=1
@@ -206,7 +206,7 @@ class PredGraph(CalcGraph):
 
     def abs_error_map(self):
         return [self.abs_error_cond(lambda e: e[2]['orig'] == orig)
-                for orig in  [0.4, 0.6, 0.8, 1.0]] # should be level_map or something
+                for orig in  [0.4, 0.6, 0.8, 1.0]] # should be level_map or something # or calling trust_on_edge()
 
     def sqr_error(self):
         sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
@@ -222,3 +222,14 @@ class PredGraph(CalcGraph):
 def every_edge(edge):
     return True
 
+def master_edge(edge):
+    return edge[2]['orig']==1.0
+
+def apprentice_edge(edge):
+    return edge[2]['orig']==0.8
+
+def journeyer_edge(edge):
+    return edge[2]['orig']==0.6
+
+def observer_edge(edge):
+    return edge[2]['orig']==0.4
