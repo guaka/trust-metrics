@@ -132,6 +132,17 @@ class Kaitiaki(SqueakFoundation):
     """Kaitaki dataset"""
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
 
+class AdvogatoPast(Advogato):
+    def __init__(self, date):
+        http://phauly.bzaar.net/advogato_files/
+
+"""
+        graph20041028154056.dot 27-Aug-2007 06:19   2.2M
+        graph20051111035647.dot 27-Aug-2007 06:19   2.5M
+        graph20060211110033.dot 27-Aug-2007 06:19   3.0M
+        graph20060520065443.dot 27-Aug-2007 06:20   3.1M
+        graph20070827.dot       27-Aug-2007 06:20   2.5M  
+"""
 
 if __name__ == "__main__":
     import analysis

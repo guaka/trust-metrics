@@ -71,10 +71,11 @@ class PageRankTM0(TrustMetric):
     rescale = True
     
     def __init__(self, G_orig):
-        self.G = G_orig  # beh, need to do something here
+        self.G = G_orig
+        # here it should calculate the PR values for all nodes
         
     def calc(self, n1, n2):
-        # this should be much better!
+        # this should use precalculated values
         return pagerank_tm(self.G, n2)
 
     def leave_one_out(self, e_orig):
@@ -85,4 +86,25 @@ class PageRankTM0(TrustMetric):
         return trust_value
 
 
+class PageRankTMfakeLeave1out(TrustMetric):
+    rescale = True
+    
+    def __init__(self, G_orig):
+        self.G = G_orig  # beh, need to do something here
+        # here it should calculate the PR values for all nodes
+        raise "not yet implemented"
+        
+    def calc(self, n1, n2):
+        # this should use precalculated values
+        return pagerank_tm(self.G, n2)
+
+    def leave_one_out(self, e_orig):
+        # here it should just fetch the PR value for e_orig
+
+        # the following stuff can be avoided
+        edge = [e for e in self.G.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
+        self.G.delete_edge(edge)
+        trust_value = pagerank_tm(self.G, e[1])
+        self.G.add_edge(edge)
+        return trust_value
 
