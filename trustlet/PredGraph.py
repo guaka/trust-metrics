@@ -37,7 +37,7 @@ class CalcGraph(Dataset.Network):
             self._write_pred_graph_dot(graph)
         self._set_arrays()
         self._prepare()
-        if self.TM.rescale:
+        if hasattr(self.TM, 'rescale') and self.TM.rescale:
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
 
