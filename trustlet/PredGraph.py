@@ -178,8 +178,12 @@ class PredGraph(CalcGraph):
     def edges_cond_iter(self, condition):
         """Yield edges that satisfy condition."""
         for e in self.edges_iter():
-            if condition(e):
+            if condition(self, e):
                 yield e
+
+    def edges_cond(self, condition):
+        """Return list of edges that satisfy condition."""
+        return [e for e in self.edges_cond_iter(condition)]
 
     def coverage_cond(self, condition):
         """Coverage of edges that satisfy condition."""
@@ -197,7 +201,7 @@ class PredGraph(CalcGraph):
             if e[2]['pred'] != UNDEFINED:
                 abs_error += abs(e[2]['orig'] - e[2]['pred'])
                 num_edges += 1
-        return num_edges and abs_error / num_edges
+        return num_edges and (num_edges, abs_error / num_edges)
 
     def abs_error(self):
         """Absolute error."""
@@ -205,7 +209,7 @@ class PredGraph(CalcGraph):
         return sum(abs_error) / self.num_defined
 
     def abs_error_map(self):
-        return [self.abs_error_cond(lambda e: e[2]['orig'] == orig)
+        return [self.abs_error_cond(lambda pg, e: e[2]['orig'] == orig)
                 for orig in  [0.4, 0.6, 0.8, 1.0]] # should be level_map or something # or calling trust_on_edge()
 
     def sqr_error(self):
@@ -219,22 +223,31 @@ class PredGraph(CalcGraph):
         return evals
 
 def edge_to_connected_node(number=5):
-    def gen_func(G,edge):
-        return G.in_degree(edge[1])>=number
-    return gen_func
+    return lambda pg, edge: pg.in_degree(edge[1])>=number
 
-def every_edge(edge):
-    return True
+every_edge = lambda pg, edge: True
+master = lambda pg, edge: edge[2]['orig'] == 1.0
+journeyer = lambda pg, edge: edge[2]['orig'] == 0.8
+apprentice = lambda pg, edge: edge[2]['orig'] == 0.6
+observer = lambda pg, edge: edge[2]['orig'] == 0.4
 
-def master_edge(edge):
-    return edge[2]['orig']==1.0
+def and_cond(cond1, cond2):
+    return lambda pg, edge: cond1(pg, edge) and cond2(pg, edge)
+    
+def or_cond(cond1, cond2):
+    return lambda pg, edge: cond1(pg, edge) or cond2(pg, edge)
 
-def apprentice_edge(edge):
-    return edge[2]['orig']==0.8
+def not_cond(cond):
+    return lambda pg, edge: not cond(pg, edge)
 
-def journeyer_edge(edge):
-    return edge[2]['orig']==0.6
-
-def observer_edge(edge):
-    return edge[2]['orig']==0.4
-
+if __name__ == "__main__":
+    import Advogato, TrustMetric
+    G = Advogato.SqueakFoundation() #Advogato()
+    pg = PredGraph(G, TrustMetric.PaoloMoleTM)
+    print pg.abs_error_cond(every_edge)
+    print pg.abs_error_cond(master)
+    print [pg.abs_error_cond(edge_to_connected_node(n)) for n in range(5)]
+    print pg.abs_error_cond(and_cond(master, edge_to_connected_node(5)))
+    print pg.abs_error_cond(and_cond(master, not_cond(edge_to_connected_node(5))))
+    print pg.abs_error_cond(and_cond(not_cond(master), edge_to_connected_node(5)))
+    
