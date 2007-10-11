@@ -3,7 +3,6 @@ __doc__ = """Abstraction class for Network dataset."""
 
 import os
 import urllib
-from networkx import component
 from networkx.xdigraph import XDiGraph
 
 from numpy import *
@@ -55,6 +54,8 @@ class Network(XDiGraph):
 
     def ditch_components(self, threshold = 3):
         """Ditch components with less than [threshold] nodes"""
+        from networkx import component
+
         UG = self.to_undirected()
         if len(UG):
             concom_subgraphs = component.connected_component_subgraphs(UG)[1:]
