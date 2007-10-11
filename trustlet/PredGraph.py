@@ -74,13 +74,23 @@ class CalcGraph(Dataset.Network):
         print "-", len(pred_graph.nodes()), "nodes", len(pred_graph.edges()), "edges"
         write_dot(pred_graph, self.filepath)
 
-    def mean_std(self):
-        """Calculate mean and standard deviation."""
+    def _defined_list(self):
         only_def = []
         for e in self.pred_trust:
             if e != UNDEFINED:
                 only_def.append(e)
-        return scipy.mean(only_def), scipy.std(only_def)
+        return only_def
+
+    def mean_std(self):
+        """Calculate mean and standard deviation. DEPRECATED!"""
+        dl = self._defined_list()
+        return scipy.mean(dl), scipy.std(dl)
+
+    def mean(self):
+        return scipy.mean(self._defined_list())
+
+    def std(self):
+        return scipy.std(self._defined_list())
 
     def coverage(self):
         """Return coverage, part of the graph that is defined."""
@@ -205,6 +215,18 @@ class PredGraph(CalcGraph):
                 abs_error += abs(e[2]['orig'] - e[2]['pred'])
                 num_edges += 1
         return num_edges and (num_edges, abs_error / num_edges)
+
+    def mean_cond(self, condition):
+        """Mean of edges satisfying condition."""
+        # TODO: std_cond
+        num_edges = 0
+        l = []
+        # ugly
+        for e in self.edges_cond_iter(condition):
+            if e[2]['pred'] != UNDEFINED:
+                l.append(e[2]['pred'])
+                num_edges += 1
+        return num_edges and (num_edges, scipy.mean(l))
 
     def abs_error(self):
         """Absolute error."""

@@ -32,18 +32,53 @@ from pylab import *
 from networkx import *
 from analysis import *
 
-from pprint import pprint
+
+def display(methods, evals):
+    import std_table
+    tbl = std_table.Table([18] + [20] * len(methods))
+    tbl.printHdr([" "] + methods)
+    tbl.printSep()
+
+    def display_what(thing):
+        if type(thing) == float:
+            return "%f" % thing
+        if thing == 0:
+            return 0
+        else:
+            return "%f %i" % (thing[1], thing[0])
+
+    for tm in evals:
+        tbl.printRow([tm] + map(display_what, evals[tm]))
+
+def somemethods(G):
+    ev_methods = ['coverage', 'abs_error', 'sqr_error', 'mean', 'std']
+
+    evals = {}
+    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, AdvogatoTM]:
+        pg = PredGraph(G, tm)
+        evals[get_name(tm)] = [getattr(pg, f)()
+                               for f in ev_methods]
+    return ev_methods, evals
 
 
+def evals_with_conds(G, method_cond):
+    conds = ['and_cond(master, edge_to_connected_node(5))',
+             'and_cond(master, not_cond(edge_to_connected_node(5)))',
+             'and_cond(not_cond(master), edge_to_connected_node(5))']
+    
+    evals = {}
+    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, AdvogatoTM]:
+        pg = PredGraph(G, tm)
+        evals[get_name(tm)] = [getattr(pg, method_cond)(c)
+                               for c in conds]
+    return conds, evals
+    
 G = Kaitiaki()
+#methods, evals = somemethods(G)
+#display(methods, evals)
 
-ev_methods = ['coverage', 'abs_error', 'abs_error_map', 'sqr_error', 'mean_std']
+ev_methods = ['coverage_cond', 'abs_error_cond', 'mean_cond']
+for m in ev_methods:
+    conds, evals = evals_with_conds(G, m)
+    display(conds, evals)
 
-evals = {}
-for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, AdvogatoTM]:
-    pg = PredGraph(G, tm)
-    evals[get_name(tm)] = [(f, getattr(pg, f)())
-                           for f in ev_methods]
-
-pprint (evals)
-        
