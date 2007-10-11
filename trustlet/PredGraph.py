@@ -176,7 +176,10 @@ class PredGraph(CalcGraph):
         return pred_graph
 
     def edges_cond_iter(self, condition):
-        """Yield edges that satisfy condition."""
+        """Yield edges that satisfy condition, you can pass the
+        condition as code or as a string if you please to do so."""
+        if type(condition) == str:
+            condition = eval(condition)
         for e in self.edges_iter():
             if condition(self, e):
                 yield e
@@ -208,10 +211,6 @@ class PredGraph(CalcGraph):
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
         return sum(abs_error) / self.num_defined
 
-    def abs_error_map(self):
-        return [self.abs_error_cond(lambda pg, e: e[2]['orig'] == orig)
-                for orig in  [0.4, 0.6, 0.8, 1.0]] # should be level_map or something # or calling trust_on_edge()
-
     def sqr_error(self):
         sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
         return math.sqrt(sum(sqr_error) / self.num_defined)
@@ -221,6 +220,18 @@ class PredGraph(CalcGraph):
                  for f in [self.coverage, self.abs_error, self.abs_error_map, self.sqr_error, self.mean_std]]
         evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
+
+
+    def abs_error_map(self):
+        """Deprecated"""
+        return [self.abs_error_cond(lambda pg, e: e[2]['orig'] == orig)
+                for orig in  [0.4, 0.6, 0.8, 1.0]] # should be level_map or something # or calling trust_on_edge()
+
+    def abs_error_for_different_orig_nodes(self):
+        return [(cond, self.abs_error_cond(cond)) for cond in
+                ['master', 'journeyor', 'apprentice', 'observer']]
+
+
 
 def edge_to_connected_node(number=5):
     return lambda pg, edge: pg.in_degree(edge[1])>=number
@@ -240,14 +251,16 @@ def or_cond(cond1, cond2):
 def not_cond(cond):
     return lambda pg, edge: not cond(pg, edge)
 
+
 if __name__ == "__main__":
     import Advogato, TrustMetric
-    G = Advogato.SqueakFoundation() #Advogato()
-    pg = PredGraph(G, TrustMetric.PaoloMoleTM)
-    print pg.abs_error_cond(every_edge)
-    print pg.abs_error_cond(master)
-    print [pg.abs_error_cond(edge_to_connected_node(n)) for n in range(5)]
-    print pg.abs_error_cond(and_cond(master, edge_to_connected_node(5)))
-    print pg.abs_error_cond(and_cond(master, not_cond(edge_to_connected_node(5))))
-    print pg.abs_error_cond(and_cond(not_cond(master), edge_to_connected_node(5)))
+    # G = Advogato.SqueakFoundation()
+    G = Advogato.Advogato()
+    pg = PredGraph(G, TrustMetric.GuakaMoleTM)
+    l = ['master',
+         'and_cond(master, edge_to_connected_node(5))',
+         'and_cond(master, not_cond(edge_to_connected_node(5)))',
+         'and_cond(not_cond(master), edge_to_connected_node(5))']
+    for c in l:
+        print c, pg.abs_error_cond(c)
     
