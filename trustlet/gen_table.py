@@ -39,12 +39,11 @@ G = Kaitiaki()
 
 ev_methods = ['coverage', 'abs_error', 'abs_error_map', 'sqr_error', 'mean_std']
 
-evals = []
+evals = {}
 for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, AdvogatoTM]:
     pg = PredGraph(G, tm)
-    print pg.coverage()
-    evals.append([(f, getattr(pg, f)())
-                  for f in ev_methods])
+    evals[get_name(tm)] = [(f, getattr(pg, f)())
+                           for f in ev_methods]
 
 pprint (evals)
         
