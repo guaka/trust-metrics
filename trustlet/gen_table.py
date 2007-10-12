@@ -28,7 +28,10 @@ for datasets: Kaitiaki, SqueakFoundation, Advogato
 
 from __init__ import *
 
-from pylab import *
+try:
+    from pylab import *
+except:
+    print "no pylab"
 from networkx import *
 from analysis import *
 

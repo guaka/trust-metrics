@@ -64,8 +64,9 @@ class CalcGraph(Dataset.Network):
 
         
     def _trust_array(self, which_one = 'pred'):
-        def mapper(val):
-            val = val[2][which_one]
+        """Return numpy array of pred (default) or orig values."""
+        def mapper(edge):
+            val = edge[2][which_one]
             return (val == 'None') and UNDEFINED or float(val)
         return self._edge_array(mapper)
 
