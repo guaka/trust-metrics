@@ -76,14 +76,14 @@ class AdvogatoTM(TrustMetric):
 		self.p = Profiles(Profile, DictCertifications)
 		self.p.add_profiles_from_graph(G)
 
-		levels = G.level_map.items()
-		levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
-		levels = map((lambda x: x[0]), levels)
-		self.t = TrustMetric(AdvogatoCertInfo(levels), self.p)
+		self.levels = G.level_map.items()
+		self.levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
+		self.levels = map((lambda x: x[0]), self.levels)
+		self.t = TrustMetric(AdvogatoCertInfo(self.levels), self.p)
 
 	def leave_one_out(self, e):
 		a, b, level = e
-		level = level['level']
+		level = level.values()[0]
 		self.p.del_cert(a, 'like', b, level)
 		r = self.t.tmetric_calc('like', [e[0]])
 		self.p.add_cert(a, 'like', b, level)
