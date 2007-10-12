@@ -34,8 +34,8 @@ from analysis import *
 
 
 def display(methods, evals):
-    import std_table
-    tbl = std_table.Table([18] + [20] * len(methods))
+    from Table import Table
+    tbl = Table([18] + [20] * len(methods))
     tbl.printHdr([" "] + methods)
     tbl.printSep()
 
