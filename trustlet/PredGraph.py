@@ -18,11 +18,14 @@ UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 class CalcGraph(Dataset.Network):
     """Generic calculation graph class"""
 
-    def __init__(self, dataset, TM, recreate = False):
-        """Create object from dataset using TM as trustmetric."""
+    def __init__(self, dataset, TM, recreate = False, predict_ratio = 1.0):
+        """Create object from dataset using TM as trustmetric.
+        predict_ratio is the part of the edges that will randomly be
+        picked for prediction."""
         Dataset.Network.__init__(self, make_base_path = False)
-
+        
         self.dataset, self.TM = dataset, TM
+        self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
         self.path = reduce(os.path.join, [Dataset.dataset_dir(), get_name(dataset), get_name(TM)])
@@ -40,6 +43,12 @@ class CalcGraph(Dataset.Network):
         if hasattr(self.TM, 'rescale') and self.TM.rescale:
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
+
+    def get_name(self):
+        s = self.__class__.__name__
+        if self.predict_ratio != 1.0:
+            s += "r" + str(self.predict_ratio)
+        return s
 
     def _rescale(self):
         scale = (0.4, 1)  # probably for the dataset
@@ -128,6 +137,8 @@ class TotalGraph(CalcGraph):
         pass
 
     def _predict_all(self):
+        if self.predict_ratio != 1.0:
+            raise NotImplemented, "for predict_ratio != 1.0"
         count = 0
         pred_graph = XDiGraph()
         tm = self.TM(self.dataset)
@@ -172,19 +183,33 @@ class PredGraph(CalcGraph):
 
     def _predict_existing(self):
         """Predict existing nodes by leaving out the edge"""
-        pred_graph = XDiGraph()
+        pred_graph = XDiGraph()  # could be avoided when working on self
         for n in self.dataset.nodes():
             pred_graph.add_node(n)
 
-        count = 0
-        tm = self.TM(self.dataset)
-        for edge in self.dataset.edges_iter():
-            predicted_trust = tm.leave_one_out(edge)
-            pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
-            count += 1.
-            if divmod(count, 100)[1] == 0:
-                self._time_indicator(count, (edge, predicted_trust))
+        if self.predict_ratio == 1.0:
+            count = 0
+            tm = self.TM(self.dataset)
+            for edge in self.dataset.edges_iter():
+                predicted_trust = tm.leave_one_out(edge)
+                pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
+                count += 1.
+                if divmod(count, 100)[1] == 0:
+                    self._time_indicator(count, (edge, predicted_trust))
+        else:
+            number_to_pred = self.predict_ratio * self.num_edges()
+
+            raise NotImplemented
+            count = 0
+            tm = self.TM(self.dataset)
+            for edge in self.dataset.edges_iter():
+                predicted_trust = tm.leave_one_out(edge)
+                pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
+                count += 1.
+                if divmod(count, 100)[1] == 0:
+                    self._time_indicator(count, (edge, predicted_trust))
         return pred_graph
+        
 
     def edges_cond_iter(self, condition):
         """Yield edges that satisfy condition, you can pass the

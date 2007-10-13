@@ -15,6 +15,8 @@ def get_name(obj):
     if hasattr(obj, "__name__"):
         return obj.__name__
     if hasattr(obj, "__class__"):
+        if hasattr(obj, "get_name"):
+            return obj.get_name()
         return get_name(obj.__class__)
     else:
         raise "Can't find name"
