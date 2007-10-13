@@ -57,7 +57,7 @@ def somemethods(G):
     ev_methods = ['coverage', 'abs_error', 'sqr_error', 'mean', 'std']
 
     evals = {}
-    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, AdvogatoTM]:
+    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, PageRankGlobalTM, AdvogatoTM]:
         pg = PredGraph(G, tm)
         evals[get_name(tm)] = [getattr(pg, f)()
                                for f in ev_methods]
@@ -70,7 +70,7 @@ def evals_with_conds(G, method_cond):
              'and_cond(not_cond(master), edge_to_connected_node(5))']
     
     evals = {}
-    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, AdvogatoTM]:
+    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, PageRankGlobalTM, AdvogatoTM, AdvogatoGlobalTM]:
         pg = PredGraph(G, tm)
         evals[get_name(tm)] = [getattr(pg, method_cond)(c)
                                for c in conds]
@@ -84,4 +84,4 @@ ev_methods = ['coverage_cond', 'abs_error_cond', 'mean_cond']
 for m in ev_methods:
     conds, evals = evals_with_conds(G, m)
     display(conds, evals)
-
+    
