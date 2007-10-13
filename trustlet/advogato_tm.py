@@ -69,7 +69,7 @@ def advogato_tm(G, a, b):
 
 
 class AdvogatoTM(TrustMetric):
-	"""The advogato trust metric"""
+	"""The advogato trust metric."""
 
 	def __init__(self, G):
 		self.G = G
@@ -93,9 +93,38 @@ class AdvogatoTM(TrustMetric):
 		else:
 			return None
 
+
+class AdvogatoGlobalTM(TrustMetric):
+	"""The advogato trust metric, global, seeds: the 4 masters of advogato."""
+
+	def __init__(self, G):
+	    self.G = G
+	    self.p = Profiles(Profile, DictCertifications)
+	    self.p.add_profiles_from_graph(G)
 	
+	    levels = G.level_map.items()
+	    levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
+	    levels = map((lambda x: x[0]), levels)
+	    self.t = TrustMetric(AdvogatoCertInfo(levels), self.p)
+	    for s in self.G.advogato_seeds:
+	        assert s in G
+	    self.pred_trust = self.t.tmetric_calc('like', self.G.advogato_seeds)
+	    
+	    self.pred_trust_keys = self.pred_trust.keys()
+
+	def leave_one_out(self, e):
+	    a, b, level = e
+	    # level = level['level']
+	    if b in self.pred_trust_keys:
+	        return self.G.level_map[self.pred_trust[b]]
+	    else:
+	        return None
+
+
 if __name__ == "__main__":
-	from Advogato import *
-	G = Advogato()
-	G.ditch_components(threshold = 7)
-	print advogato_tm(G, "God", "rms")
+    import Advogato, PredGraph
+    
+    G = Advogato.Advogato()
+    pg = PredGraph.PredGraph(G, AdvogatoGlobalTM, True)
+    import scipy
+    print scipy.mean(pg.pred_trust), scipy.std(pg.pred_trust)

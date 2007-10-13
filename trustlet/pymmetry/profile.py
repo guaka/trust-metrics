@@ -82,7 +82,7 @@ class Profiles:
 			self.add_profile(n)
 		for e in G.edges():
 			val = e[2].values()[0]
-			print e, val
+			# print e, val
 			self.add_cert(e[0], 'like', e[1], val)
 
 	def get_profile(self, name):

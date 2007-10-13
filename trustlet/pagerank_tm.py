@@ -49,16 +49,39 @@ TODO: local pagerank!
 
 
 def value_on_edges(G):
-    """Convert the graph so that on the edges there is only the value of trust and not the dict containing the trust value"""
+    """Convert the graph: edges will have trust value, not a dict containing it."""
     H = XDiGraph()
     for e in G.edges():
         H.add_edge(e[0], e[1], G.trust_on_edge(e))
     return H
 
+class BasicPageRank:
+    """Basic PageRank class."""
+    def __init__(self, H):
+        self.G = value_on_edges(H) #get a graph with, on edges, only the trust values and not the dict so we can pass it to functions that compute pagerank
+        self.pr = numpyPR(self.G)
+        self.nodes = self.G.nodes()
+
+    def __getitem__(self, node):
+        """Now you can do
+
+        >>> PR = OurPageRank(G)
+        >>> for n in G.nodes()
+        >>>     PR[n]
+        """
+        return self.pr[self.nodes.index(node)]
+
+
 def pagerank_tm(G, node):
-    G = value_on_edges(G) #get a graph with, on edges, only the trust values and not the dict so we can pass it to functions that compute pagerank
-    pr = numpyPR(G)
-    nodes = G.nodes()
-    return pr[nodes.index(node)] # / max(pr)  #this is totally silly
+    pr = BasicPageRank(G)
+    return pr[node]
 
 
+if __name__ == "__main__":
+    import Advogato, TrustMetric, PredGraph
+    G = Advogato.Kaitiaki()
+    PR = BasicPageRank(G)
+    for n in G.nodes():
+        print PR[n]
+    pg = PredGraph.PredGraph(G, TrustMetric.PageRankTM0, True)
+    

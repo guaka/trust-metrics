@@ -3,6 +3,8 @@ A simple Table class for the console.
 
 Based on code written by Bob Gailer bgailer at alum.rpi.edu, found at
 http://mail.python.org/pipermail/python-list/2003-September/223145.html
+used with permission.
+
 """
 
 class Table:

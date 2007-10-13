@@ -22,6 +22,9 @@ class Advogato(Network):
         'Journeyer': 0.8,
         'Master': 1.0
         }
+
+    # seeds for global advogato TM
+    advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
     # todo: http://phauly.bzaar.net/advogato_files/
     def __init__(self, filename = None, comp_threshold = 0):
         Network.__init__(self)
@@ -125,12 +128,17 @@ class SqueakFoundation(Advogato):
         'gray': 0.4,   #observer
         }
 
+    # seeds for global advogato TM
+    advogato_seeds = ['mas', 'karrl']
     def trust_on_edge(self, edge):
         return self.level_map[edge[2]['color']]
+
 
 class Kaitiaki(SqueakFoundation):
     """Kaitaki dataset"""
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
+    advogato_seeds = ['susan', 'lucyt']
+
 
 class AdvogatoPast(Advogato):
     def __init__(self, date):

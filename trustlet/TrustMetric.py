@@ -20,6 +20,7 @@ trust on.
 
 from trustmetrics import *
 
+
 class TrustMetric:
     """A generic trust metric class"""
 
@@ -50,22 +51,27 @@ class TrustMetric:
         self.G.add_edge(e)
         return trust_value
 
+
 # turning functions into classes, I wish I could do 
 class GuakaMoleTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = guakamole_tm
 
+
 class GuakaMoleFullTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = guakamole_full_tm
+
 
 class PaoloMoleTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = paolomole_tm
 
+
 class IntersectionTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = intersection_tm
+
 
 class PageRankTM0(TrustMetric):
     rescale = True
@@ -108,3 +114,25 @@ class PageRankTMfakeLeave1out(TrustMetric):
         self.G.add_edge(edge)
         return trust_value
 
+class PageRankGlobalTM(TrustMetric):
+    rescale = True
+    
+    def __init__(self, G):
+        from pagerank_tm import BasicPageRank
+        self.pagerank = BasicPageRank(G)
+        
+    def calc(self, n1, n2):
+        return self.pagerank[n2]
+
+    def leave_one_out(self, e_orig):
+        """This is just a dummy."""
+        return self.calc(None, e_orig[1])
+
+
+if __name__ == "__main__":
+    import Advogato, PredGraph
+    
+    G = Advogato.Advogato()
+    pg = PredGraph.PredGraph(G, PageRankGlobalTM)
+    
+    

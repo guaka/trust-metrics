@@ -367,7 +367,7 @@ class NetFlowPriv(Debug):
 							try:
 								self.debug("add %do to queue" % src)
 							except:
-								print "ERROR! src:", src
+								pass # we no care about no fkng self.debug print "ERROR! src:", src
 							visited_out[src] = True
 
 			q_beg += 1
