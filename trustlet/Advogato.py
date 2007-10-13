@@ -12,6 +12,22 @@ import os
 
 class Advogato(Network):
     """The Advogato dataset"""
+
+    # todo:
+    #   - maybe change the name into Advogato_dataset?
+    #   - maybe add a flag for expressing the format: color="violet" or
+    #   level="Apprentice" so that the same dataset class can read
+    #   files with different formats. The alternative is just to
+    #   convert every read file into the "level" format.
+    #   - modify the
+    #   class so that it is able to read files with a date as
+    #   well (AdvogatoPast is an attempt to do this but maybe there is another way).
+    #   For example, in future we might want to store daily a
+    #   copy of advogato graph.dot and save it on
+    #   http://trustlet.org/datasets/advogato/ ) as graph20071012.dot
+    #   (for now some files taken from archive.org are in
+    #   http://phauly.bzaar.net/advogato_files/ )
+    # 
     
     url = "http://www.advogato.org/person/graph.dot"
     dotfile = 'graph.dot'
@@ -25,7 +41,7 @@ class Advogato(Network):
 
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
-    # todo: http://phauly.bzaar.net/advogato_files/
+
     def __init__(self, filename = None, comp_threshold = 0):
         Network.__init__(self)
         self.filepath = os.path.join(self.path, self.dotfile)
