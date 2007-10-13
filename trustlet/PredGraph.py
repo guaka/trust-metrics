@@ -190,6 +190,7 @@ class PredGraph(CalcGraph):
 
         count = 0
         tm = self.TM(self.dataset)
+        predicted_trust = None
         for edge in self.dataset.edges_iter():
             if (self.predict_ratio == 1.0 or
                 random() <= self.predict_ratio):
@@ -294,7 +295,7 @@ if __name__ == "__main__":
     import Advogato, TrustMetric
     # G = Advogato.SqueakFoundation()
     G = Advogato.Advogato()
-    pg = PredGraph(G, TrustMetric.GuakaMoleTM, predict_ratio = 0.0001)
+    pg = PredGraph(G, TrustMetric.GuakaMoleTM, predict_ratio = 0.01)
     l = ['master',
          'and_cond(master, edge_to_connected_node(5))',
          'and_cond(master, not_cond(edge_to_connected_node(5)))',
