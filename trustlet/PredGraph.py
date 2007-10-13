@@ -4,6 +4,7 @@ from helpers import *
 
 import os
 import math
+from random import random
 import time
 from networkx import write_dot, XDiGraph
 
@@ -47,7 +48,7 @@ class CalcGraph(Dataset.Network):
     def get_name(self):
         s = self.__class__.__name__
         if self.predict_ratio != 1.0:
-            s += "r" + str(self.predict_ratio)
+            s += "-r" + str(self.predict_ratio)
         return s
 
     def _rescale(self):
@@ -187,27 +188,16 @@ class PredGraph(CalcGraph):
         for n in self.dataset.nodes():
             pred_graph.add_node(n)
 
-        if self.predict_ratio == 1.0:
-            count = 0
-            tm = self.TM(self.dataset)
-            for edge in self.dataset.edges_iter():
+        count = 0
+        tm = self.TM(self.dataset)
+        for edge in self.dataset.edges_iter():
+            if (self.predict_ratio == 1.0 or
+                random() <= self.predict_ratio):
                 predicted_trust = tm.leave_one_out(edge)
                 pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
-                count += 1.
-                if divmod(count, 100)[1] == 0:
-                    self._time_indicator(count, (edge, predicted_trust))
-        else:
-            number_to_pred = self.predict_ratio * self.num_edges()
-
-            raise NotImplemented
-            count = 0
-            tm = self.TM(self.dataset)
-            for edge in self.dataset.edges_iter():
-                predicted_trust = tm.leave_one_out(edge)
-                pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
-                count += 1.
-                if divmod(count, 100)[1] == 0:
-                    self._time_indicator(count, (edge, predicted_trust))
+            count += 1.
+            if divmod(count, 100)[1] == 0:
+                self._time_indicator(count, (edge, predicted_trust))
         return pred_graph
         
 
@@ -304,7 +294,7 @@ if __name__ == "__main__":
     import Advogato, TrustMetric
     # G = Advogato.SqueakFoundation()
     G = Advogato.Advogato()
-    pg = PredGraph(G, TrustMetric.GuakaMoleTM)
+    pg = PredGraph(G, TrustMetric.GuakaMoleTM, predict_ratio = 0.0001)
     l = ['master',
          'and_cond(master, edge_to_connected_node(5))',
          'and_cond(master, not_cond(edge_to_connected_node(5)))',
