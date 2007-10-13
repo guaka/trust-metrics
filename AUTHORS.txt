@@ -1,5 +1,5 @@
 
-instigators of this project:
+Instigators and main contributors of this project:
 
 Kasper Souren <souren@itc.it>
 Paolo Massa <massa@itc.it>
@@ -8,4 +8,10 @@ Paolo Massa <massa@itc.it>
 
 Some code has totally been written by other people, but has been added
 to this project because of the appropriate license and for ease of
-use.
+use. Here we should keep track of this and list the people that
+contributed or whose work we are building on.
+
+
+
+
+* Bob Gailer <bgailer AT alum.rpi.edu> first version of Table.py code
