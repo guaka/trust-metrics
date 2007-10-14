@@ -168,7 +168,7 @@ class PredGraph(CalcGraph):
         return pg
         
     def _prepare(self):
-        ratio = 1.0 * self.num_edges() / self.dataset.num_edges()
+        ratio = 1.0 * len(self.edges()) / len(self.dataset.edges())
         if ratio == 1.0:
             print "TROUBLE: #edges in dataset != #edges in predgraph!"
             print "actual ratio: ", ratio
