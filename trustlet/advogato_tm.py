@@ -46,7 +46,8 @@ class AdvogatoCertInfo(CertInfo):
 
 def advogato_tm(G, a, b):
 	p = Profiles(Profile, DictCertifications)
-
+	
+	
 	# G.adv_profiles = p  # for testing
 
 	t = time.time()
@@ -57,7 +58,7 @@ def advogato_tm(G, a, b):
 	levels = G.level_map.items()
 	levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 	levels = map((lambda x: x[0]), levels)
-	t = TrustMetric(AdvogatoCertInfo(levels), p)
+	t = PymTrustMetric(AdvogatoCertInfo(levels), p)
 	seeds = [a]
         r = t.tmetric_calc('like', seeds)
 
@@ -79,7 +80,7 @@ class AdvogatoTM(TrustMetric):
 		self.levels = G.level_map.items()
 		self.levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 		self.levels = map((lambda x: x[0]), self.levels)
-		self.t = TrustMetric(AdvogatoCertInfo(self.levels), self.p)
+		self.t = PymTrustMetric(AdvogatoCertInfo(self.levels), self.p)
 
 	def leave_one_out(self, e):
 		a, b, level = e
@@ -105,7 +106,7 @@ class AdvogatoGlobalTM(TrustMetric):
 	    levels = G.level_map.items()
 	    levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 	    levels = map((lambda x: x[0]), levels)
-	    self.t = TrustMetric(AdvogatoCertInfo(levels), self.p)
+	    self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
 	    for s in self.G.advogato_seeds:
 	        assert s in G
 	    self.pred_trust = self.t.tmetric_calc('like', self.G.advogato_seeds)

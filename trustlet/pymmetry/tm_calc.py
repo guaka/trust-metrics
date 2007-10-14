@@ -30,7 +30,7 @@
 
 	p = Profiles(ProfileClass, CertificationsClass)
 	c = CertInfoClass()
-	t = TrustMetric(c, p)
+	t = PymTrustMetric(c, p)
 	r = t.tmetric_calc(certification_type_name, [optional seed list])
 
 	Please see the README.txt for a detailed explanation.
@@ -44,8 +44,8 @@ import traceback
 # as the SUPERSINK.
 SUPERSINK = None
 
-class TrustMetric(Debug):
-	"""	TrustMetric.  first cut at porting tm_calc.c to python.
+class PymTrustMetric(Debug):
+	"""	PymTrustMetric.  first cut at porting tm_calc.c to python.
 
 		object-orientated-wise, it's a little clumsy.
 		but it works :)
@@ -352,7 +352,7 @@ def test():
 	p.add_cert('fleas', 'hate', 'mary', 'dislike')
 	p.add_cert(10, 'hate', 55, 'looks CAN kill')
 
-	t = TrustMetric(TestCertInfo(), p)
+	t = PymTrustMetric(TestCertInfo(), p)
 	r = t.tmetric_calc('like')
 	pprint(r)
 

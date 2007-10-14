@@ -244,7 +244,7 @@ class FileCertInfo(CertInfo):
 def test():
 
 	from profile import Profiles
-	from tm_calc import TrustMetric
+	from tm_calc import PymTrustMetric
 	from pprint import pprint
 
 	f = FileCertInfo()
@@ -321,7 +321,7 @@ def test():
 	p.add_cert('fleas', 'hate', 'mary', 'dislike')
 	p.add_cert('10', 'hate', '55', 'looks CAN kill')
 
-	t = TrustMetric(f, p)
+	t = PymTrustMetric(f, p)
 	r = t.tmetric_calc('like')
 	pprint(r)
 
