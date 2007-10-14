@@ -67,6 +67,45 @@ class PaoloMoleTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = paolomole_tm
 
+class MoletrustTM_horizon1_threshold0(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor1_threshold0
+
+class MoletrustTM_horizon2_threshold0(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor2_threshold0
+
+class MoletrustTM_horizon3_threshold0(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor3_threshold0
+
+class MoletrustTM_horizon4_threshold0(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor4_threshold0
+
+class MoletrustTM_horizon5_threshold0(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor5_threshold0
+
+class MoletrustTM_horizon1_threshold05(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor1_threshold05
+
+class MoletrustTM_horizon2_threshold05(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor2_threshold05
+
+class MoletrustTM_horizon3_threshold05(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor3_threshold05
+
+class MoletrustTM_horizon4_threshold05(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor4_threshold05
+
+class MoletrustTM_horizon5_threshold05(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = moletrust_tm_hor5_threshold05
 
 class IntersectionTM(TrustMetric):
     def _set_tm(self):
