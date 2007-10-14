@@ -169,7 +169,7 @@ class PredGraph(CalcGraph):
         
     def _prepare(self):
         if len(self.edges()) != len(self.dataset.edges()):
-            raise "TROUBLE: #edges in dataset != #edges in predgraph!"
+            print "TROUBLE: #edges in dataset != #edges in predgraph!"
 
         # add orig trust value into self
         for e in self.dataset.edges():
