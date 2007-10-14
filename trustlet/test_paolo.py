@@ -24,10 +24,23 @@ def ev(CG, G):
 #S = SqueakFoundation()
 A = Advogato()
 
+G=A
+
 #pg = PredGraph(A, PageRankTM0, recreate = True, predict_ratio=0.01)
-pg = PredGraph(A, MoletrustTM_horizon1_threshold0, recreate = True, predict_ratio=1.0)
 #pg = PredGraph(A, AdvogatoGlobalTM, recreate = True, predict_ratio=0.0001)
 #pg = PredGraph(A, AdvogatoTM, recreate = True, predict_ratio=0.01)
+
+pg10 = PredGraph(G, MoletrustTM_horizon1_threshold0, recreate = True, predict_ratio=1.0)
+#pg20 = PredGraph(G, MoletrustTM_horizon2_threshold0, recreate = True, predict_ratio=1.0)
+#pg30 = PredGraph(G, MoletrustTM_horizon3_threshold0, recreate = True, predict_ratio=1.0)
+#pg40 = PredGraph(G, MoletrustTM_horizon4_threshold0, recreate = True, predict_ratio=1.0)
+#pg50 = PredGraph(G, MoletrustTM_horizon5_threshold0, recreate = True, predict_ratio=1.0)
+
+#pg105 = PredGraph(G, MoletrustTM_horizon1_threshold05, recreate = True, predict_ratio=1.0)
+#pg205 = PredGraph(G, MoletrustTM_horizon2_threshold05, recreate = True, predict_ratio=1.0)
+#pg305 = PredGraph(G, MoletrustTM_horizon3_threshold05, recreate = True, predict_ratio=1.0)
+#pg405 = PredGraph(G, MoletrustTM_horizon4_threshold05, recreate = True, predict_ratio=1.0)
+#pg505 = PredGraph(G, MoletrustTM_horizon5_threshold05, recreate = True, predict_ratio=1.0)
 
 #pga = ev(PredGraph, K, predict_ratio=0.1)
 
