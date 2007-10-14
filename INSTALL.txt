@@ -34,6 +34,9 @@ In case you have troubles installing graphviz, try:
 
   easy_install pyparsing
 
+====pydot====
+pydot is very slow, and you should not use it for big datasets.
+
 pydot (http://dkbza.org/pydot.html) is quite active, so maybe it's
 good to use the most current version for now.  It's licensed under the
 MIT license.
