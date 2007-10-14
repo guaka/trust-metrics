@@ -168,18 +168,29 @@ class PredGraph(CalcGraph):
         return pg
         
     def _prepare(self):
-        if len(self.edges()) != len(self.dataset.edges()):
+        ratio = 1.0 * self.num_edges() / self.dataset.num_edges()
+        if ratio == 1.0:
             print "TROUBLE: #edges in dataset != #edges in predgraph!"
+            print "actual ratio: ", ratio
 
-        # add orig trust value into self
-        for e in self.dataset.edges():
-            # for some RTFMing reason get_edge gives an ItemAttribute, not
-            # dict, so we do some casting work here
-            t = dict(self.get_edge(e[0], e[1]))
-            t['orig'] = self.dataset.trust_on_edge(e)
-            t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
-            self.add_edge(e[0], e[1], t)
-        
+        if True:  # check if self has orig
+            if ratio == 1.0:
+                # add orig trust value into self
+                for e in self.dataset.edges_iter():
+                    # for some RTFMing reason get_edge gives an ItemAttribute, not
+                    # dict, so we do some casting work here
+                    t = dict(self.get_edge(e[0], e[1]))
+                    t['orig'] = self.dataset.trust_on_edge(e)
+                    t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
+                    self.add_edge(e[0], e[1], t)
+            else:
+                print "should implement something here!"
+                if False:
+                    for e in self.edges_iter():
+                        t = dict(self.get_edge(e[0], e[1]))
+                        t['orig'] = self.dataset.trust_on_edge(e)
+                        t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
+                        self.add_edge(e[0], e[1], t)
         self.orig_trust = self._trust_array('orig')
 
     def _predict_existing(self):
@@ -196,6 +207,7 @@ class PredGraph(CalcGraph):
                 random() <= self.predict_ratio):
                 predicted_trust = tm.leave_one_out(edge)
                 pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
+                                    #, 'orig': str(self.dataset.trust_on_edge(edge)})
             count += 1.
             if divmod(count, 100)[1] == 0:
                 self._time_indicator(count, (edge, predicted_trust))
