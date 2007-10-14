@@ -183,6 +183,7 @@ class PredGraph(CalcGraph):
                     t['orig'] = self.dataset.trust_on_edge(e)
                     t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
                     self.add_edge(e[0], e[1], t)
+                self.orig_trust = self._trust_array('orig')
             else:
                 print "should implement something here!"
                 if False:
@@ -191,7 +192,6 @@ class PredGraph(CalcGraph):
                         t['orig'] = self.dataset.trust_on_edge(e)
                         t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
                         self.add_edge(e[0], e[1], t)
-        self.orig_trust = self._trust_array('orig')
 
     def _predict_existing(self):
         """Predict existing nodes by leaving out the edge"""
