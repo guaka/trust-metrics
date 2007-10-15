@@ -111,10 +111,47 @@ class AlwaysMaster(TrustMetric):
     def _set_tm(self):
         self.trustmetric = always_master
 
+class AlwaysJourneyer(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_journeyer
+
+class AlwaysApprentice(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_apprentice
+
+class AlwaysObserver(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_observer
+
+class RandomTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = random_tm
+
 class IntersectionTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = intersection_tm
 
+class EbayTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = ebay_tm
+
+class OutA_TM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = outa_tm
+
+class OutB_TM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = outb_tm
+
+class EdgesA_TM(TrustMetric):
+    """Average of outgoing and incoming edges of a"""
+    def _set_tm(self):
+        self.trustmetric = edges_a_tm
+
+class EdgesB_TM(TrustMetric):
+    """Average of outgoing and incoming edges of b"""
+    def _set_tm(self):
+        self.trustmetric = edges_b_tm
 
 class PageRankTM0(TrustMetric):
     rescale = True

@@ -115,6 +115,22 @@ def always_master(G, a, b):
     """Always return 1.0 (i.e. Master)"""
     return 1.0
 
+def always_journeyer(G, a, b):
+    """Always return 0.8 (i.e. Journeyer)"""
+    return 0.8
+
+def always_apprentice(G, a, b):
+    """Always return 0.6 (i.e. Apprentice)"""
+    return 0.6
+
+def always_observer(G, a, b):
+    """Always return 1.0 (i.e. Observer)"""
+    return 0.4
+
+def random_tm(G, a, b):
+    """Return a random value between 0.4 and 1.0"""
+    return random.random()*0.6+0.4
+
 def intersection_tm(G, a, b):
     """Find the intersection (nodes between a and b, say ni), and
     return the maximum of the minimum of the trust on the edges, i.e.
