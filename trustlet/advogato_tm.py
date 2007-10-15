@@ -69,57 +69,6 @@ def advogato_tm(G, a, b):
 		return None
 
 
-class AdvogatoTM(TrustMetric):
-	"""The advogato trust metric."""
-
-	def __init__(self, G):
-		self.G = G
-		self.p = Profiles(Profile, DictCertifications)
-		self.p.add_profiles_from_graph(G)
-
-		self.levels = G.level_map.items()
-		self.levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
-		self.levels = map((lambda x: x[0]), self.levels)
-		self.t = PymTrustMetric(AdvogatoCertInfo(self.levels), self.p)
-
-	def leave_one_out(self, e):
-		a, b, level = e
-		level = level.values()[0]
-		self.p.del_cert(a, 'like', b, level)
-		r = self.t.tmetric_calc('like', [e[0]])
-		self.p.add_cert(a, 'like', b, level)
-		
-		if b in r.keys():
-			return self.G.level_map[r[b]]
-		else:
-			return None
-
-
-class AdvogatoGlobalTM(TrustMetric):
-	"""The advogato trust metric, global, seeds: the 4 masters of advogato."""
-
-	def __init__(self, G):
-	    self.G = G
-	    self.p = Profiles(Profile, DictCertifications)
-	    self.p.add_profiles_from_graph(G)
-	
-	    levels = G.level_map.items()
-	    levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
-	    levels = map((lambda x: x[0]), levels)
-	    self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
-	    for s in self.G.advogato_seeds:
-	        assert s in G
-	    self.pred_trust = self.t.tmetric_calc('like', self.G.advogato_seeds)
-	    
-	    self.pred_trust_keys = self.pred_trust.keys()
-
-	def leave_one_out(self, e):
-	    a, b, level = e
-	    # level = level['level']
-	    if b in self.pred_trust_keys:
-	        return self.G.level_map[self.pred_trust[b]]
-	    else:
-	        return None
 
 
 if __name__ == "__main__":
