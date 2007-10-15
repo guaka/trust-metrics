@@ -208,9 +208,9 @@ class PredGraph(CalcGraph):
                 predicted_trust = tm.leave_one_out(edge)
                 pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
                                     #, 'orig': str(self.dataset.trust_on_edge(edge)})
-            count += 1.
-            if divmod(count, 100)[1] == 0:
-                self._time_indicator(count, (edge, predicted_trust))
+                count += 1
+                if divmod(count, 100)[1] == 0:
+                    self._time_indicator(count, (edge, predicted_trust))
         return pred_graph
         
 
