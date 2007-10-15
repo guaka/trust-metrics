@@ -54,14 +54,14 @@ class CalcGraph(Dataset.Network):
     def _rescale(self):
         scale = (0.4, 1)  # probably for the dataset
         pt = self.pred_trust
-        min_pt, max_pt = min(pt), max(pt)
-        print "rescaling:", (min_pt, max_pt), "to", scale
-        mult =  (scale[1] - scale[0]) / (max_pt - min_pt)
-        pt_scaled = scale[0] + (pt - min_pt) * mult
-        self.pred_trust = pt_scaled
+        rescaler = eval(self.TM.rescale)
+        rescaled = rescale_array(rescaler(pt), scale)
+        self.pred_trust = rescaled
         for e in self.edges_iter():
             t = dict(self.get_edge(e[0], e[1]))
-            t['pred'] = scale[0] + (float(t['pred']) - min_pt) * mult
+            idx = pt.tolist().index(t['pred'])
+            # print idx, t['pred'], rescaled[idx]
+            t['pred'] = rescaled[idx]
             self.add_edge(e[0], e[1], t)
 
 

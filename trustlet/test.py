@@ -23,11 +23,12 @@ from pprint import pprint
 
 def ev(CG, G):
     return map(lambda tm: CG(G, tm),
-               [PageRankTM0, #AdvogatoTM,
+               [
                 IntersectionTM,
                 GuakaMoleTM,
                 GuakaMoleFullTM,
-                PaoloMoleTM])
+                PaoloMoleTM,
+                PageRankTM0])
 
 K = Kaitiaki()
 S = SqueakFoundation()
@@ -35,7 +36,7 @@ S = SqueakFoundation()
 
 #pg = PredGraph(K, PageRankTM0, recreate = True)
 
-pga = ev(PredGraph, K)
+pga = ev(PredGraph, S)
 
 for p in pga:
    pprint (p.evaluate())

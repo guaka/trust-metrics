@@ -19,7 +19,7 @@ trust on.
 # considerably speed up things.
 
 from trustmetrics import *
-
+from helpers import *
 
 class TrustMetric:
     """A generic trust metric class"""
@@ -154,7 +154,7 @@ class EdgesB_TM(TrustMetric):
         self.trustmetric = edges_b_tm
 
 class PageRankTM0(TrustMetric):
-    rescale = True
+    rescale = "recur_log_rescale"
     
     def __init__(self, G_orig):
         self.G = G_orig
@@ -173,7 +173,7 @@ class PageRankTM0(TrustMetric):
 
 
 class PageRankTMfakeLeave1out(TrustMetric):
-    rescale = True
+    rescale = "recur_log_rescale"
     
     def __init__(self, G_orig):
         self.G = G_orig  # beh, need to do something here
@@ -195,7 +195,7 @@ class PageRankTMfakeLeave1out(TrustMetric):
         return trust_value
 
 class PageRankGlobalTM(TrustMetric):
-    rescale = True
+    rescale = "recur_log_rescale"
     
     def __init__(self, G):
         from pagerank_tm import BasicPageRank
