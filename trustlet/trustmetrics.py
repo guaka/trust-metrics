@@ -111,6 +111,10 @@ def ebay_tm(G, a, b):
     """Average of incoming edges of b"""
     return avg_or_none(map(G.trust_on_edge, G.in_edges(b)))
 
+def always_master(G, a, b):
+    """Always return 1.0 (i.e. Master)"""
+    return 1.0
+
 def intersection_tm(G, a, b):
     """Find the intersection (nodes between a and b, say ni), and
     return the maximum of the minimum of the trust on the edges, i.e.

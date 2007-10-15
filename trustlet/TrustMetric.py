@@ -107,6 +107,10 @@ class MoletrustTM_horizon5_threshold05(TrustMetric):
     def _set_tm(self):
         self.trustmetric = moletrust_tm_hor5_threshold05
 
+class AlwaysMaster(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_master
+
 class IntersectionTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = intersection_tm
