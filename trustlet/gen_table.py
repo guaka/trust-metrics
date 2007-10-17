@@ -74,18 +74,21 @@ if __name__ == "__main__":
     G = SqueakFoundation() # Advogato()
 
     evaluated_trust_metrics = [EbayTM, OutA_TM]
-    #evaluated_trust_metrics = [EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,MoletrustTM_horizon1_threshold0, MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0]
+    #evaluated_trust_metrics = [AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
+    #                           RandomTM,
+    #                           EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,
+    #                           MoletrustTM_horizon1_threshold0, MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
+    #                           MoletrustTM_horizon1_threshold05, MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05,
+    #                           MoletrustTM_horizon4_threshold05,
+    #                           AdvogatoGlobalTM, AdvogatoTM,
+    #                           PageRankGlobalTM, PageRankTM0,
+    #                           GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM,
+    #                           ]
+    
     eval_measures = ['coverage_cond', 'abs_error_cond']
     conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
                       'and_cond(master, not_cond(edge_to_connected_node(5)))',
                       'and_cond(not_cond(master), edge_to_connected_node(5))']
-    #evaluated_trust_metrics = [GuakaMoleTM, IntersectionTM, PageRankGlobalTM, AdvogatoGlobalTM]
-    # choose!
-    #AdvogatoGlobalTM  EdgesB_TM        MoletrustTM_horizon1_threshold0   MoletrustTM_horizon4_threshold0   OutB_TM
-    #AdvogatoTM        MoletrustTM_horizon2_threshold0   MoletrustTM_horizon4_threshold05  PageRankGlobalTM
-    #AlwaysMaster      GuakaMoleFullTM  MoletrustTM_horizon2_threshold05  MoletrustTM_horizon5_threshold0   PageRankTM0
-    #EbayTM            GuakaMoleTM      MoletrustTM_horizon3_threshold0   MoletrustTM_horizon5_threshold05  PaoloMoleTM
-    #EdgesA_TM         IntersectionTM   MoletrustTM_horizon3_threshold05  OutA_TM                           RandomTM
 
     pred_graphs = map(lambda tm: PredGraph(G,tm), evaluated_trust_metrics)
 
