@@ -5,7 +5,6 @@ Well, and me too actually.
 
 http://www.trustlet.org/wiki/A_comparison_of_trust_metrics_on_Advogato_social_network
 
-
 For a certain dataset we want to have a table in which the rows are
 the different trust metrics and the columns the evaluation techniques.
 
@@ -36,10 +35,10 @@ from networkx import *
 from analysis import *
 
 
-def display(methods, evals):
+def display(eval_measure, methods, evals):
     from Table import Table
     tbl = Table([18] + [20] * len(methods))
-    tbl.printHdr([" "] + methods)
+    tbl.printHdr([" " + eval_measure] + methods)
     tbl.printSep()
 
     def display_what(thing):
@@ -64,26 +63,36 @@ def somemethods(G):
     return ev_methods, evals
 
 
-def evals_with_conds(G, method_cond,conds_on_edges):
+def evals_with_conds(G, pred_graphs, eval_measure ,conds_on_edges):
     evals = {}
-    for tm in [GuakaMoleTM, IntersectionTM, PageRankGlobalTM, AdvogatoGlobalTM]:
-        pg = PredGraph(G, tm)
-        evals[get_name(tm)] = [getattr(pg, method_cond)(c)
-                               for c in conds]
-    return conds, evals
+    for pg in pred_graphs:
+        evals[get_name(pg.TM)] = [getattr(pg, eval_measure)(c)
+                                  for c in conds_on_edges]
+    return conds_on_edges, evals
 
 if __name__ == "__main__":
-    G = Advogato()
+    G = SqueakFoundation()    
+    #G = Advogato()
 
+    evaluated_trust_metrics = [EbayTM, OutA_TM]
+    #evaluated_trust_metrics = [EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,MoletrustTM_horizon1_threshold0, MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0]
     eval_measures = ['coverage_cond', 'abs_error_cond']
     conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
                       'and_cond(master, not_cond(edge_to_connected_node(5)))',
                       'and_cond(not_cond(master), edge_to_connected_node(5))']
+    #evaluated_trust_metrics = [GuakaMoleTM, IntersectionTM, PageRankGlobalTM, AdvogatoGlobalTM]
+    # choose!
+    #AdvogatoGlobalTM  EdgesB_TM        MoletrustTM_horizon1_threshold0   MoletrustTM_horizon4_threshold0   OutB_TM
+    #AdvogatoTM        MoletrustTM_horizon2_threshold0   MoletrustTM_horizon4_threshold05  PageRankGlobalTM
+    #AlwaysMaster      GuakaMoleFullTM  MoletrustTM_horizon2_threshold05  MoletrustTM_horizon5_threshold0   PageRankTM0
+    #EbayTM            GuakaMoleTM      MoletrustTM_horizon3_threshold0   MoletrustTM_horizon5_threshold05  PaoloMoleTM
+    #EdgesA_TM         IntersectionTM   MoletrustTM_horizon3_threshold05  OutA_TM                           RandomTM
+
+    pred_graphs = map(lambda tm: PredGraph(G,tm), evaluated_trust_metrics)
 
     for eval_measure in eval_measures:
-        conds, evals = evals_with_conds(G, eval_measure, conds_on_edges)
-        display(conds, evals)
+        conds, evals = evals_with_conds(G, pred_graphs, eval_measure, conds_on_edges)
+        display(eval_measure,conds, evals)
         
     #methods, evals = somemethods(G)
     #display(methods, evals)
-    
