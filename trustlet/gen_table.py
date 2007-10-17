@@ -38,7 +38,7 @@ from analysis import *
 def display(eval_measure, methods, evals):
     from Table import Table
     tbl = Table([18] + [20] * len(methods))
-    tbl.printHdr([" " + eval_measure] + methods)
+    tbl.printHdr([eval_measure] + methods)
     tbl.printSep()
 
     def display_what(thing):
