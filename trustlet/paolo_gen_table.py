@@ -1,7 +1,7 @@
 from gen_table import *
 
-G = SqueakFoundation()    
-#G = Advogato()
+#G = SqueakFoundation()    
+G = Advogato()
 
 evaluated_trust_metrics = [
                            AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
@@ -10,13 +10,27 @@ evaluated_trust_metrics = [
                            MoletrustTM_horizon1_threshold0, MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
                            MoletrustTM_horizon1_threshold05, MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05, MoletrustTM_horizon4_threshold05,
                            #AdvogatoGlobalTM, AdvogatoTM,
-                           #PageRankGlobalTM, PageRankTM0,
+                           PageRankGlobalTM,
+                           #PageRankTM0,
                            #GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM, 
                           ]
 eval_measures = ['coverage_cond', 'abs_error_cond']
-conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
-                  'and_cond(master, not_cond(edge_to_connected_node(5)))',
-                  'and_cond(not_cond(master), edge_to_connected_node(5))']
+
+#conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
+#                  'and_cond(master, not_cond(edge_to_connected_node(5)))',
+#                  'and_cond(not_cond(master), edge_to_connected_node(5))']
+conds_on_edges = ['every_edge',
+                  'edge_to_connected_node(5)',
+                  'edge_to_connected_node(15)',
+                  'edge_to_connected_node(25)',
+                  'edge_to_connected_node(35)',
+                  #'edge_to_controversial_node()',
+                  'master',
+                  'observer',
+                  'journeyer',
+                  'apprentice',
+                  ]
+
 
 pred_graphs = map(lambda tm: PredGraph(G,tm), evaluated_trust_metrics)
 
