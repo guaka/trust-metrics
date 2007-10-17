@@ -1,0 +1,12 @@
+* Advogato trust metric is essential for our paper.
+** Understand advogato trust metric (based on Levien formulation)
+** Understand if pymmetry does precisely the same
+** Run Advogato trust metric on Advogato dataset (maybe even on a subset of the edges)
+** Create tables for it
+
+* Complete the description of the dataset in the paper with information about datasets included for instance in Newman's paper
+
+* Check the evaluations table and define the thesis of the paper
+** write down this on the paper "Section # 5.2 Trust metrics evaluation"
+
+* Write the rest of the paper (but section 5.2)
