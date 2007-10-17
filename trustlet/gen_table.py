@@ -65,23 +65,26 @@ def somemethods(G):
 
 
 def evals_with_conds(G, method_cond):
-    conds = ['and_cond(master, edge_to_connected_node(5))',
+    conds = [''
+             'and_cond(master, edge_to_connected_node(5))',
              'and_cond(master, not_cond(edge_to_connected_node(5)))',
              'and_cond(not_cond(master), edge_to_connected_node(5))']
     
     evals = {}
-    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, PageRankGlobalTM, AdvogatoTM, AdvogatoGlobalTM]:
+    for tm in [GuakaMoleTM, IntersectionTM, PageRankGlobalTM, AdvogatoGlobalTM]:
         pg = PredGraph(G, tm)
         evals[get_name(tm)] = [getattr(pg, method_cond)(c)
                                for c in conds]
     return conds, evals
-    
-G = Kaitiaki()
-#methods, evals = somemethods(G)
-#display(methods, evals)
 
-ev_methods = ['coverage_cond', 'abs_error_cond', 'mean_cond']
-for m in ev_methods:
-    conds, evals = evals_with_conds(G, m)
-    display(conds, evals)
+
+if __name__ == "__main__":
+    G = Advogato()
+    #methods, evals = somemethods(G)
+    #display(methods, evals)
+
+    ev_methods = ['coverage_cond', 'abs_error_cond', 'mean_cond']
+    for m in ev_methods:
+        conds, evals = evals_with_conds(G, m)
+        display(conds, evals)
     
