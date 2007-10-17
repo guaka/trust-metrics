@@ -53,17 +53,15 @@ class CalcGraph(Dataset.Network):
 
     def _rescale(self):
         scale = (0.4, 1)  # probably for the dataset
-        pt = self.pred_trust
         rescaler = eval(self.TM.rescale)
-        rescaled = rescale_array(rescaler(pt), scale)
-        self.pred_trust = rescaled
+        rescaled = rescale_array(rescaler(self.pred_trust), scale)
+        scale_dict = dict(zip(self.pred_trust[i], rescaled[i]))
         for e in self.edges_iter():
             t = dict(self.get_edge(e[0], e[1]))
-            idx = pt.tolist().index(t['pred'])
             # print idx, t['pred'], rescaled[idx]
-            t['pred'] = rescaled[idx]
+            t['pred'] = scale_dict[t['pred']]
             self.add_edge(e[0], e[1], t)
-
+        self.pred_trust = rescaled
 
     def _set_arrays(self):
         self.pred_trust = self._trust_array()
@@ -163,13 +161,14 @@ class PredGraph(CalcGraph):
     predicted trust is None."""
 
     def _generate(self):
+        print "Generating", self.filepath
         pg = self._predict_existing()
         self._paste_graph(pg)
         return pg
         
     def _prepare(self):
-        ratio = 1.0 * len(self.edges()) / len(self.dataset.edges())
-        if ratio == 1.0:
+        ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
+        if ratio < 1.0:
             print "TROUBLE: #edges in dataset != #edges in predgraph!"
             print "actual ratio: ", ratio
 
