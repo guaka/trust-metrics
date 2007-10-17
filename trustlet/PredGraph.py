@@ -281,10 +281,21 @@ class PredGraph(CalcGraph):
         return [(cond, self.abs_error_cond(cond)) for cond in
                 ['master', 'journeyor', 'apprentice', 'observer']]
 
-
-
 def edge_to_connected_node(number=5):
+    """True if the node which is target of the edge received at least 'number' incoming trust statements"""
     return lambda pg, edge: pg.in_degree(edge[1])>=number
+
+def edge_to_controversial_node(number=10,minimum_trust=0.5):
+    """True if the node target of the edge received at least 'number' incoming trust statements and their """
+    edges_in_target = pg.in_edges(edge[1])
+    if len(edges_in_target) < number:
+        return lambda pg, edge: False
+    import scipy
+    avg_orig_trust_in_node = scipy.average(map(lambda e:e[2]['orig'],edges_in_target))
+    if avg_orig_trust_in_node >= minimum_trust:
+        return lambda pg, edge: False
+    else:
+        return lambda pg, edge: True
 
 every_edge = lambda pg, edge: True
 master = lambda pg, edge: edge[2]['orig'] == 1.0
