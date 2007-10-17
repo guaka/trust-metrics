@@ -37,7 +37,7 @@ from analysis import *
 
 def display(eval_measure, methods, evals):
     from Table import Table
-    tbl = Table([18] + [20] * len(methods))
+    tbl = Table([32] + [20] * len(methods))
     tbl.printHdr([eval_measure] + methods)
     tbl.printSep()
 
@@ -71,8 +71,7 @@ def evals_with_conds(G, pred_graphs, eval_measure ,conds_on_edges):
     return conds_on_edges, evals
 
 if __name__ == "__main__":
-    G = SqueakFoundation()    
-    #G = Advogato()
+    G = SqueakFoundation() # Advogato()
 
     evaluated_trust_metrics = [EbayTM, OutA_TM]
     #evaluated_trust_metrics = [EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,MoletrustTM_horizon1_threshold0, MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0]
