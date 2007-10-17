@@ -1,3 +1,7 @@
+* check that the condition "edge_to_controversial_node" is not buggy
+** run paolo_gen_table.py with a lot of parameters on that
+** add the results to the wiki
+
 * Advogato trust metric is essential for our paper.
 ** Understand advogato trust metric (based on Levien formulation)
 ** Understand if pymmetry does precisely the same
