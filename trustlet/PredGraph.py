@@ -55,7 +55,7 @@ class CalcGraph(Dataset.Network):
         scale = (0.4, 1)  # probably for the dataset
         rescaler = eval(self.TM.rescale)
         rescaled = rescale_array(rescaler(self.pred_trust), scale)
-        scale_dict = dict(zip(self.pred_trust[i], rescaled[i]))
+        scale_dict = dict(zip(self.pred_trust, rescaled))
         for e in self.edges_iter():
             t = dict(self.get_edge(e[0], e[1]))
             # print idx, t['pred'], rescaled[idx]
