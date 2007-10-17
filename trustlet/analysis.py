@@ -51,9 +51,17 @@ class graph_properties:
 def analyze(G):
     graph_props = graph_properties(G)
 
+
+def mean_shortest_path_length(G):
+    apspl = path.all_pairs_shortest_path_length(G)
+    s = sum([sum(apspl[n].values()) for n in apspl])
+    n = sum(map(len, apspl.values()))
+    return float(s) / n
+
 if __name__ == "__main__":
     from Advogato import Advogato
-    advogato = Advogato(comp_threshold = 0)
-    graph_props = graph_properties(advogato)
+    A = Advogato()
+    print "mean shortest path length: ", mean_shortest_path_length(A)
+    graph_props = graph_properties(A)
 
 
