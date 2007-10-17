@@ -1,15 +1,15 @@
 """
 A simple Table class for the console.
 
-Based on code written by Bob Gailer bgailer at alum.rpi.edu, found at
-http://mail.python.org/pipermail/python-list/2003-September/223145.html
-used with permission.
+Based on code written by Bob Gailer <bgailer at alum.rpi.edu>, found
+at http://mail.python.org/pipermail/python-list/2003-September/223145.html
+and used with permission.
 
 """
 
 class Table:
     """A simple Table class for the console."""
-    seps = '- +|'
+    seps = '-|+|'
     
     def __init__(self, columnWidths):
         if columnWidths:
@@ -25,7 +25,7 @@ class Table:
         self.rowFormat = format2 % ((self.seps[3], )*self.nSeps)
 
     def printHdr(self, heading):
-        print self.hdrFormat % tuple(heading)
+        print self.hdrFormat % tuple([s[:w] for w,s in zip(self.columnWidths, heading)])
 
     def printSep(self):
         print self.sepFormat % tuple([self.seps[0]*w for w in self.columnWidths])
