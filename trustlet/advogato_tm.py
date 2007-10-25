@@ -15,7 +15,10 @@ from helpers import hms
 
 class AdvogatoCertInfo(CertInfo):
     def __init__(self, levels = None, minlvl = None, maxlvl = None):
-        levels = levels or ['Observer', 'Journeyer', 'Apprentice', 'Master']
+        #maybe the order is not correct?
+        #levels = levels or ['Observer', 'Journeyer', 'Apprentice', 'Master']
+        levels = levels or ['Observer', 'Apprentice', 'Journeyer', 'Master']
+
         minlvl = minlvl or levels[0]
         #maxlvl should not be the maximum, otherwise we get that almost all the users are at the maximum level
         #maxlvl = maxlvl or levels[-1]
