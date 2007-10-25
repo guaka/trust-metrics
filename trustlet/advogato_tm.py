@@ -17,7 +17,10 @@ class AdvogatoCertInfo(CertInfo):
     def __init__(self, levels = None, minlvl = None, maxlvl = None):
         levels = levels or ['Observer', 'Journeyer', 'Apprentice', 'Master']
         minlvl = minlvl or levels[0]
-        maxlvl = maxlvl or levels[-1]
+        #maxlvl should not be the maximum, otherwise we get that almost all the users are at the maximum level
+        #maxlvl = maxlvl or levels[-1]
+        #let's try with the min
+        maxlvl = maxlvl or levels[0]
         self.info = {}
         self.info['like'] = {'levels': levels,
 			     #'seeds': ['raph', 'federico'],
