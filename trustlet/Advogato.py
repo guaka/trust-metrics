@@ -1,33 +1,38 @@
 #!/usr/bin/env python
 
-__doc__ = """
-This is a module implementing the Advogato datasets. There are also
-classes to get other datasets based on the mod_virgule code.
+"""
+This is a module implementing the Advogato datasets.
+
+
+There are other communities which use the same advogato software
+(mod_virgule) and so they have the same trust levels and system and
+publish the trust graph.  We created classes for some of them here,
+such as Kaitiaki and SqueakFoundation.
+
+More to add:
+ * persone.softwarelibero.org  
+      Paolo can probably easily obtain the dataset that is not
+      downloadable at the standard person/graph.dot location)
+
 """
 
 from Dataset import Network
-from networkx.xdigraph import XDiGraph
 import os
-
+import re
 
 class Advogato(Network):
-    """The Advogato dataset"""
+    """The Advogato dataset."""
 
-    # todo:
-    #   - maybe change the name into Advogato_dataset?
-    #   - maybe add a flag for expressing the format: color="violet" or
-    #   level="Apprentice" so that the same dataset class can read
-    #   files with different formats. The alternative is just to
-    #   convert every read file into the "level" format.
-    #   - modify the
-    #   class so that it is able to read files with a date as
-    #   well (AdvogatoPast is an attempt to do this but maybe there is another way).
-    #   For example, in future we might want to store daily a
-    #   copy of advogato graph.dot and save it on
+    # TODO:
+    #   * maybe change the name into Advogato_dataset?
+    #
+    #   * read files with a date as well (AdvogatoPast is an attempt
+    #   to do this but maybe there is another way).  For example, in
+    #   future we might want to store daily a copy of advogato
+    #   graph.dot and save it on
     #   http://trustlet.org/datasets/advogato/ ) as graph20071012.dot
     #   (for now some files taken from archive.org are in
     #   http://phauly.bzaar.net/advogato_files/ )
-    # 
     
     url = "http://www.advogato.org/person/graph.dot"
     dotfile = 'graph.dot'
@@ -62,9 +67,11 @@ class Advogato(Network):
             self.ditch_components(comp_threshold)
 
     def trust_on_edge(self, edge):
+        """Trust level on edge."""
         return self.level_map[edge[2]['level']]
 
     def download(self, only_if_needed = False):
+        """Download dataset."""
         if only_if_needed and os.path.exists(self.filepath):
             return
         self.download_file(self.url, self.dotfile)
@@ -72,37 +79,24 @@ class Advogato(Network):
 
     def fix_graphdot(self):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
-        import re
-        
         print 'Fixing graph.dot'
-        f = open(self.filepath, 'r')
-        l_names = f.readlines()
-        f.close()
-        p = re.compile(' (\w+)')
-        l_fixed = map(lambda s: p.sub(r' "\1"', s), l_names)
+        graph_file = open(self.filepath, 'r')
+        l_names = graph_file.readlines()
+        graph_file.close()
+        re_fix = re.compile(' (\w+)')
+        fixed_lines = map(lambda s: re_fix.sub(r' "\1"', s), l_names)
 
-        f = open(self.filepath, 'w')
-        f.writelines(l_fixed)
-        f.close()
+        writefile = open(self.filepath, 'w')
+        writefile.writelines(fixed_lines)
+        writefile.close()
         return self.filepath
 
     def get_graph_dot(self, filepath = None):
+        """Read graph.dot file into object."""
         if not filepath:
             filepath = self.filepath
         self._read_dot(filepath)
 
-"""
-
-There are other communities which use the same advogato software
-(mod_virgule) and so they have the same trust levels and system and
-publish the trust graph.  We created classes for some of them here.
-
-More to add:
- * persone.softwarelibero.org  
-      Paolo can probably easily obtain the dataset that is not
-      downloadable at the standard person/graph.dot location)
-
-"""
 
 class RobotsNet(Advogato):
     """
@@ -113,25 +107,20 @@ class RobotsNet(Advogato):
 
     def fix_graphdot(self):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
-        import re
-        
         print 'Fixing graph.dot'
         
-        f = open(self.filepath, 'r')
-        l_names = f.readlines()
-        f.close()
-        p_fixspace = re.compile('(\w) (\w)')
-        l_names_spacefix = map(lambda s: p_fixspace.sub(r'\1___\2', s).replace(".", "dot"), l_names)
+        l_names = open(self.filepath, 'r').readlines()
+        re_space = re.compile('(\w) (\w)')
+        l_names_spacefix = map(lambda s:
+                               re_space.sub(r'\1___\2', s).replace(".", "dot"),
+                               l_names)
 
-        p = re.compile(' ([\w\-_]+)')
-        l_fixed = map(lambda s: p.sub(r' "\1"', s), l_names_spacefix)
-
+        pfix = re.compile(' ([\w\-_]+)')
+        fixed_lines = map(lambda s: pfix.sub(r' "\1"', s), l_names_spacefix)
         import pprint
-        pprint.pprint (l_fixed)
+        pprint.pprint (fixed_lines)
 
-        f = open(self.filepath + 'test', 'w')
-        f.writelines(l_fixed)
-        f.close()
+        open(self.filepath + 'test', 'w').writelines(fixed_lines)
         return self.filepath + 'test'
 
 class SqueakFoundation(Advogato):
@@ -147,6 +136,7 @@ class SqueakFoundation(Advogato):
     # seeds for global advogato TM
     advogato_seeds = ['mas', 'karrl']
     def trust_on_edge(self, edge):
+        """For Squeak it's color."""
         return self.level_map[edge[2]['color']]
 
 
@@ -170,5 +160,4 @@ class AdvogatoPast(Advogato):
 """
 
 if __name__ == "__main__":
-    import analysis
-    rob = RobotsNet()
+    ROB = RobotsNet()

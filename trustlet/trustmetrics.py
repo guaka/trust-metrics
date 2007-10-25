@@ -1,23 +1,26 @@
+"""
+These are implementations of relatively simple trust metrics and
+some helper functions. All of these work tm(G,a,b) calculates the
+trust that a can have in b. For global trust metrics a will be
+ignored.
+"""
+
+
 from networkx import path
 from sets import Set
 import random
-
 
 from advogato_tm import *
 from pagerank_tm import *
 
 
-__doc__ = '''
-These are implementations of relatively simple trust metrics and some
-helper functions. All of these work tm(G,a,b) calculates the
-trust that a can have in b. For global trust metrics a will be ignored.
-'''                          
+
 
 ###############################################
 # helpers
 #
 
-def avg_or_none(l):
+def avg_or_none(list):
     """Return the average of a list, or None in case the
     list is empty or a list of Nones
 
@@ -27,9 +30,11 @@ def avg_or_none(l):
     >>> print avg_or_none([None] * 6)
     None
     """
-    l = filter(lambda x: (x is not None), l)
-    if l:
-        return float(sum(l)) / len(l)
+    filt_list = [e
+                 for e in list
+                 if e is not None]
+    if filt_list:
+        return float(sum(filt_list)) / len(filt_list)
     else:
         return None
 
@@ -41,13 +46,14 @@ def overlap(main_tm, fallback_tm):
         return main_tm(G, a, b) or fallback_tm(G, a, b)
     return overlap_tm
 
-def rounder(tm):
-    """round off trust values to 0.0, 0.2, 0.4, 0.6, 0.8, 1.0"""
+
+def rounder(tm, steps = 5):
+    """Round off trust values to 0.0, 0.2, 0.4, 0.6, 0.8, 1.0."""
     def rounder_tm(G, a, b):
         trust = tm(G, a, b)
         if trust is None:
             return None
-        return round(trust * 5)/5.
+        return round(trust * steps) / float(steps)
     return rounder_tm
 
 
@@ -131,6 +137,7 @@ def random_tm(G, a, b):
     """Return a random value between 0.4 and 1.0"""
     return random.random()*0.6+0.4
 
+
 def intersection_tm(G, a, b):
     """Find the intersection (nodes between a and b, say ni), and
     return the maximum of the minimum of the trust on the edges, i.e.
@@ -147,7 +154,8 @@ def intersection_tm(G, a, b):
         return max(map(lambda i: min(outa[i], inb[i]), intersection))
 
 
-def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0.4):
+def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
+                        edge_trust_threshold = 0.4):
     """Generate moletrust trust metric functions.
 
     Parameters:
@@ -179,7 +187,7 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5, edge_trust
         if not b in path_length_dict or path_length_dict[b] > horizon:
             return None
         
-        path_length_list = map(lambda x: (path_length_dict[x], x), path_length_dict)
+        path_length_list = map(lambda (x,y): (y,x), path_length_dict.items())
         path_length_list.sort()  # order by distance
 
         # initialize trust map with node a and a bunch of empty dicts
@@ -201,11 +209,6 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5, edge_trust
             pred_trust = weighted_average(map(lambda x: (G.trust_on_edge(x),
                                                          trust_map[dist-1][x[0]]),
                                               useful_in_edges))
-            # sys.stdin.read()
-        
-            if debug:
-                print "pred trust of", node, ":", pred_trust
-
             if node == b:
                 return pred_trust
 
@@ -214,6 +217,9 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5, edge_trust
                 trust_map[dist][node] = pred_trust
         return None
     return moletrust_tm
+
+
+# The following is butt ugly and should not be happening in Python:
 
 #moletrust with threshold 0 (all trust statements are accepted) and different propagation horizons
 moletrust_tm_hor1_threshold0 = moletrust_generator(horizon = 1, pred_node_trust_threshold = 0.0, edge_trust_threshold = 0)

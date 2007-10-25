@@ -8,7 +8,8 @@ a beta stage.
 """
 
 
-from __init__ import *
+from PredGraph import PredGraph, TotalGraph
+from Advogato import Kaitiaki, SqueakFoundation, Advogato
 
 recreate = True
 
@@ -22,7 +23,7 @@ def generate_tms(CG, G):
                 PaoloMoleTM])
 
 
-for G in [Kaitiaki(), SqueakFoundation(), AdvogatoTM]:
+for G in [Kaitiaki(), SqueakFoundation(), Advogato()]:
     pg = generate_tms(PredGraph, G)
     tg = generate_tms(TotalGraph, G)
 

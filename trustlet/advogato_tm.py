@@ -1,80 +1,75 @@
 #!/usr/bin/env python
 
+"""Wrapper thing around pymmetry."""
+
 import time
 from pprint import pprint
 
-if True:
-	from pymmetry.profile import Profiles, Profile
-	from pymmetry.certs import DictCertifications, CertInfo
-	from pymmetry.net_flow import *
-	from pymmetry.tm_calc import *
-else:
-	from pymmetry.all_in_one import *
+from pymmetry.profile import Profiles, Profile
+from pymmetry.certs import DictCertifications, CertInfo
+from pymmetry.net_flow import *
+from pymmetry.tm_calc import *
+
+from helpers import hms
+
 
 class AdvogatoCertInfo(CertInfo):
-	def __init__(self, levels = None, minlvl = None, maxlvl = None):
-		levels = levels or ['Observer', 'Journeyer', 'Apprentice', 'Master']
-		minlvl = minlvl or levels[0]
-		maxlvl = maxlvl or levels[-1]
-		self.info = {}
-		self.info['like'] = {'levels': levels,
-				     #'seeds': ['raph', 'federico'],
-				     'min level': minlvl,
-				     'default level': maxlvl,
-				     'type': 'to'
-				     }
+    def __init__(self, levels = None, minlvl = None, maxlvl = None):
+        levels = levels or ['Observer', 'Journeyer', 'Apprentice', 'Master']
+        minlvl = minlvl or levels[0]
+        maxlvl = maxlvl or levels[-1]
+        self.info = {}
+        self.info['like'] = {'levels': levels,
+			     #'seeds': ['raph', 'federico'],
+			     'min level': minlvl,
+			     'default level': maxlvl,
+			     'type': 'to'
+			     }
 
-       	def cert_seeds(self, idxn):
-		return self.info[idxn]['seeds']
-	
-	def cert_levels(self, idxn):
-		return self.info[idxn]['levels']
-	
-	def cert_level_default(self, idxn):
-		return self.info[idxn]['default level']
-	
-	def cert_level_min(self, idxn):
-		return self.info[idxn]['min level']
-	
-	def cert_tmetric_type(self, idxn):
-		return self.info[idxn]['type']
+    def cert_seeds(self, idxn):
+        return self.info[idxn]['seeds']
+        
+    def cert_levels(self, idxn):
+        return self.info[idxn]['levels']
 
-
+    def cert_level_default(self, idxn):
+        return self.info[idxn]['default level']
+        
+    def cert_level_min(self, idxn):
+        return self.info[idxn]['min level']
+        
+    def cert_tmetric_type(self, idxn):
+        return self.info[idxn]['type']
 
 
-		
 
-def advogato_tm(G, a, b):
-	p = Profiles(Profile, DictCertifications)
-	
-	
-	# G.adv_profiles = p  # for testing
+def advogato_tm(graph, src, dst):
+    profiles = Profiles(Profile, DictCertifications)
+    # graph.adv_profiles = p  # for testing
+    
+    start_time = time.time()
+    print "Start creating profiles"
+    profiles.add_profiles_from_graph(graph)
+    print "Finished creating profiles", hms(time.time() - start_time)
 
-	t = time.time()
-	print "Start creating profiles"
-	p.add_profiles_from_graph(G)
-	print "Finished creating profiles", time.time() - t
-
-	levels = G.level_map.items()
-	levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
-	levels = map((lambda x: x[0]), levels)
-	t = PymTrustMetric(AdvogatoCertInfo(levels), p)
-	seeds = [a]
-        r = t.tmetric_calc('like', seeds)
-
-	# G.results = r  # for testing
-	if b in r.keys():
-		return G.level_map[r[b]]
-	else:
-		return None
-
-
+    levels = graph.level_map.items()
+    levels.sort(lambda a, b: cmp(a[1], b[1]))  # sort on trust value
+    levels = map((lambda x: x[0]), levels)
+    pymtrustmetric = PymTrustMetric(AdvogatoCertInfo(levels), profiles)
+    seeds = [src]
+    results = pymtrustmetric.tmetric_calc('like', seeds)
+    
+    if dst in results.keys():
+        return graph.level_map[results[dst]]
+    else:
+        return None
 
 
 if __name__ == "__main__":
     import Advogato, PredGraph
+    import TrustMetric
     
-    G = Advogato.Advogato()
-    pg = PredGraph.PredGraph(G, AdvogatoGlobalTM, True)
+    G = Advogato.Kaitiaki() #Advogato()
+    pg = PredGraph.PredGraph(G, TrustMetric.AdvogatoGlobalTM, True)
     import scipy
     print scipy.mean(pg.pred_trust), scipy.std(pg.pred_trust)

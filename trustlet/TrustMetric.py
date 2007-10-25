@@ -264,7 +264,7 @@ class AdvogatoGlobalTM(TrustMetric):
 if __name__ == "__main__":
     import Advogato, PredGraph
     
-    G = Advogato.Advogato()
-    pg = PredGraph.PredGraph(G, PageRankGlobalTM)
+    GRAPH = Advogato.Advogato()
+    PREDGRAPHS = PredGraph.PredGraph(GRAPH, PageRankGlobalTM)
     
     

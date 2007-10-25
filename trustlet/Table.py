@@ -11,27 +11,27 @@ class Table:
     """A simple Table class for the console."""
     seps = '-|+|'
     
-    def __init__(self, columnWidths):
-        if columnWidths:
-             self._setWidths(tuple(columnWidths))
+    def __init__(self, column_widths):
+        if column_widths:
+            self._setWidths(tuple(column_widths))
 
-    def _setWidths(self, columnWidths):
-        self.columnWidths = columnWidths
-        format1 = ("%%%%-%ss%%s"*len(columnWidths))[:-3]
-        format2 = format1 % columnWidths
-        self.nSeps = len(columnWidths) - 1
-        self.hdrFormat = format2 % ((self.seps[1], )*self.nSeps)
-        self.sepFormat = format2 % ((self.seps[2], )*self.nSeps)
-        self.rowFormat = format2 % ((self.seps[3], )*self.nSeps)
+    def _setWidths(self, column_widths):
+        self.column_widths = column_widths
+        format1 = ("%%%%-%ss%%s"*len(column_widths))[:-3]
+        format2 = format1 % column_widths
+        self.nSeps = len(column_widths) - 1
+        self.hdr_format = format2 % ((self.seps[1],) * self.nSeps)
+        self.sep_format = format2 % ((self.seps[2],) * self.nSeps)
+        self.row_format = format2 % ((self.seps[3],) * self.nSeps)
 
     def printHdr(self, heading):
-        print self.hdrFormat % tuple([s[:w] for w,s in zip(self.columnWidths, heading)])
+        print self.hdr_format % tuple([s[:w] for w,s in zip(self.column_widths, heading)])
 
     def printSep(self):
-        print self.sepFormat % tuple([self.seps[0]*w for w in self.columnWidths])
+        print self.sep_format % tuple([self.seps[0]*w for w in self.column_widths])
 
     def printRow(self, items):
-        print self.rowFormat % tuple(items)
+        print self.row_format % tuple(items)
 
 if __name__ == "__main__":
     tbl = Table((12, 12, 16))

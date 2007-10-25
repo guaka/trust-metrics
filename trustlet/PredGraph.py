@@ -1,4 +1,8 @@
 
+"""
+Prediction Graph.
+"""
+
 import Dataset
 from helpers import *
 
@@ -29,7 +33,10 @@ class CalcGraph(Dataset.Network):
         self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
-        self.path = reduce(os.path.join, [Dataset.dataset_dir(), get_name(dataset), get_name(TM)])
+        self.path = reduce(os.path.join,
+                           [Dataset.dataset_dir(),
+                            get_name(dataset),
+                            get_name(TM)])
         if not os.path.exists(self.path):
             os.mkdir(self.path)
         self.filepath = os.path.join(self.path, get_name(self) + '.dot')
@@ -46,12 +53,14 @@ class CalcGraph(Dataset.Network):
         print "Init took", hms(time.time() - self.start_time)
 
     def get_name(self):
-        s = self.__class__.__name__
+        """Override get_name."""
+        name = self.__class__.__name__
         if self.predict_ratio != 1.0:
-            s += "-r" + str(self.predict_ratio)
-        return s
+            name += "-r" + str(self.predict_ratio)
+        return name
 
     def _rescale(self):
+        """Rescale if needed."""
         scale = (0.4, 1)  # probably for the dataset
         rescaler = eval(self.TM.rescale)
         rescaled = rescale_array(rescaler(self.pred_trust), scale)
@@ -64,13 +73,13 @@ class CalcGraph(Dataset.Network):
         self.pred_trust = rescaled
 
     def _set_arrays(self):
+        """Set some numpy arrays."""
         self.pred_trust = self._trust_array()
         self.undef_mask = self.pred_trust == UNDEFINED
         self.def_mask = map(lambda x: not x, self.undef_mask)
         self.num_undefined = sum(self.undef_mask)
         self.num_defined = len(self.pred_trust) - self.num_undefined
 
-        
     def _trust_array(self, which_one = 'pred'):
         """Return numpy array of pred (default) or orig values."""
         def mapper(edge):
@@ -79,15 +88,18 @@ class CalcGraph(Dataset.Network):
         return self._edge_array(mapper)
 
     def _write_pred_graph_dot(self, pred_graph):
+        """Write PredGraph.dot."""
         print "Writing", self.filepath,
-        print "-", len(pred_graph.nodes()), "nodes", len(pred_graph.edges()), "edges"
+        print "-", len(pred_graph.nodes()),
+        print "nodes", len(pred_graph.edges()), "edges"
         write_dot(pred_graph, self.filepath)
 
     def _defined_list(self):
+        """List of defined predictions."""
         only_def = []
-        for e in self.pred_trust:
-            if e != UNDEFINED:
-                only_def.append(e)
+        for edge in self.pred_trust:
+            if edge != UNDEFINED:
+                only_def.append(edge)
         return only_def
 
     def mean_std(self):
@@ -96,13 +108,15 @@ class CalcGraph(Dataset.Network):
         return scipy.mean(dl), scipy.std(dl)
 
     def mean(self):
+        """Mean value of predictions."""
         return scipy.mean(self._defined_list())
 
     def std(self):
+        """Standard deviation of predictions."""
         return scipy.std(self._defined_list())
 
     def coverage(self):
-        """Return coverage, part of the graph that is defined."""
+        """Coverage, part of the graph that is defined."""
         return 1.0 - (1.0 * self.num_undefined / len(self.edges()))
 
     def evaluate(self):
@@ -114,10 +128,11 @@ class CalcGraph(Dataset.Network):
         return evals
 
     def _time_indicator(self, count, moreinfo = ""):
+        """Indicate time."""
         # print edge, predicted_trust
         avg_t = (time.time() - self.start_time) / count
         eta = avg_t * (len(self.dataset.edges()) - count)
-        print '#', int(count), "avg time:", avg_t, "ETA", hms(eta), moreinfo
+        print '#', int(count), "avg time:", avg_t, "ETA", est_datetime_arr(eta), moreinfo
         
 
 class TotalGraph(CalcGraph):
@@ -147,7 +162,7 @@ class TotalGraph(CalcGraph):
                 predicted_trust = tm.calc(n1, n2)
                 pred_graph.add_edge(n1, n2, {'pred': str(predicted_trust)})
             count += 1.
-            if divmod(count, 100)[1] == 0:
+            if divmod(count, 100)[1] == 0 :
                 self._time_indicator(count)
         return pred_graph
 
@@ -176,8 +191,9 @@ class PredGraph(CalcGraph):
             if ratio == 1.0:
                 # add orig trust value into self
                 for e in self.dataset.edges_iter():
-                    # for some RTFMing reason get_edge gives an ItemAttribute, not
-                    # dict, so we do some casting work here
+                    # for some RTFMing reason get_edge gives an
+                    # ItemAttribute, not dict, so we do some casting
+                    # work here
                     t = dict(self.get_edge(e[0], e[1]))
                     t['orig'] = self.dataset.trust_on_edge(e)
                     t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
@@ -189,7 +205,8 @@ class PredGraph(CalcGraph):
                     for e in self.edges_iter():
                         t = dict(self.get_edge(e[0], e[1]))
                         t['orig'] = self.dataset.trust_on_edge(e)
-                        t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
+                        t['pred'] = ((t['pred'] == 'None') and
+                                     UNDEFINED or float(t['pred']))
                         self.add_edge(e[0], e[1], t)
 
     def _predict_existing(self):
@@ -230,9 +247,9 @@ class PredGraph(CalcGraph):
         """Coverage of edges that satisfy condition."""
         num_predicted_edges = num_edges = 0
         for e in self.edges_cond_iter(condition):
-            num_edges+=1
+            num_edges += 1
             if e[2]['pred'] != UNDEFINED:
-                num_predicted_edges+=1
+                num_predicted_edges += 1
         return num_edges and float(num_predicted_edges)/num_edges
 
     def abs_error_cond(self, condition):
@@ -262,20 +279,24 @@ class PredGraph(CalcGraph):
         return sum(abs_error) / self.num_defined
 
     def sqr_error(self):
-        sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust - self.orig_trust)
+        """Root mean squared error."""
+        sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust -
+                                                      self.orig_trust)
         return math.sqrt(sum(sqr_error) / self.num_defined)
 
     def evaluate(self):
+        """A bunch of evaluations."""
         evals = [(f.__name__, f())
-                 for f in [self.coverage, self.abs_error, self.abs_error_map, self.sqr_error, self.mean_std]]
+                 for f in [self.coverage, self.abs_error,
+                           self.abs_error_map, self.sqr_error, self.mean_std]]
         evals.insert(0, (get_name(self.dataset), get_name(self.TM)))
         return evals
-
 
     def abs_error_map(self):
         """Deprecated"""
         return [self.abs_error_cond(lambda pg, e: e[2]['orig'] == orig)
-                for orig in  [0.4, 0.6, 0.8, 1.0]] # should be level_map or something # or calling trust_on_edge()
+                for orig in  [0.4, 0.6, 0.8, 1.0]]
+        # should be level_map or something # or calling trust_on_edge()
 
     def abs_error_for_different_orig_nodes(self):
         return [(cond, self.abs_error_cond(cond)) for cond in
@@ -304,19 +325,22 @@ apprentice = lambda pg, edge: edge[2]['orig'] == 0.6
 observer = lambda pg, edge: edge[2]['orig'] == 0.4
 
 def and_cond(cond1, cond2):
+    """cond1 and cond2"""
     return lambda pg, edge: cond1(pg, edge) and cond2(pg, edge)
     
 def or_cond(cond1, cond2):
+    """cond1 or cond2"""
     return lambda pg, edge: cond1(pg, edge) or cond2(pg, edge)
 
 def not_cond(cond):
+    """not cond"""
     return lambda pg, edge: not cond(pg, edge)
 
 
 if __name__ == "__main__":
     import Advogato, TrustMetric
-    # G = Advogato.SqueakFoundation()
-    G = Advogato.Advogato()
+    G = Advogato.SqueakFoundation()
+    # G = Advogato.Advogato()
     pg = PredGraph(G, TrustMetric.GuakaMoleTM, predict_ratio = 0.01)
     l = ['master',
          'and_cond(master, edge_to_connected_node(5))',

@@ -1,9 +1,7 @@
 """
-Generate table to make Paolo happy.
+Generate some tables on the console.
 
-Well, and me too actually.
-
-http://www.trustlet.org/wiki/A_comparison_of_trust_metrics_on_Advogato_social_network
+For http://trustlet.org/wiki/A_comparison_of_trust_metrics_on_Advogato_social_network
 
 For a certain dataset we want to have a table in which the rows are
 the different trust metrics and the columns the evaluation techniques.
@@ -25,17 +23,11 @@ for datasets: Kaitiaki, SqueakFoundation, Advogato
 
 """ 
 
-from __init__ import *
-
-try:
-    from pylab import *
-except:
-    print "no pylab"
-from networkx import *
-from analysis import *
+from helpers import get_name
 
 
 def display(eval_measure, methods, evals):
+    """Display evaluations in table."""
     from Table import Table
     tbl = Table([32] + [20] * len(methods))
     tbl.printHdr([eval_measure] + methods)
@@ -49,52 +41,48 @@ def display(eval_measure, methods, evals):
         else:
             return "%f %i" % (thing[1], thing[0])
 
-    for tm in evals:
-        tbl.printRow([tm] + map(display_what, evals[tm]))
+    for trust_metric in evals:
+        tbl.printRow([trust_metric] + map(display_what, evals[trust_metric]))
 
-def somemethods(G):
-    ev_methods = ['coverage', 'abs_error', 'sqr_error', 'mean', 'std']
 
+def evals_with_conds(pred_graphs, eval_measure, conds_on_edges):
+    """Evaluation with conditions."""
     evals = {}
-    for tm in [GuakaMoleTM, IntersectionTM, PageRankTM0, PageRankGlobalTM, AdvogatoTM]:
-        pg = PredGraph(G, tm)
-        evals[get_name(tm)] = [getattr(pg, f)()
-                               for f in ev_methods]
-    return ev_methods, evals
-
-
-def evals_with_conds(G, pred_graphs, eval_measure ,conds_on_edges):
-    evals = {}
-    for pg in pred_graphs:
-        evals[get_name(pg.TM)] = [getattr(pg, eval_measure)(c)
-                                  for c in conds_on_edges]
+    for pred_graph in pred_graphs:
+        evals[get_name(pred_graph.TM)] = [getattr(pred_graph, eval_measure)(cond)
+                                          for cond in conds_on_edges]
     return conds_on_edges, evals
 
 if __name__ == "__main__":
-    G = SqueakFoundation() # Advogato()
+    from Advogato import Advogato, SqueakFoundation, Kaitiaki
+    from PredGraph import PredGraph
+    from TrustMetric import EbayTM, OutA_TM
+    GRAPH = SqueakFoundation() # Advogato()
 
-    evaluated_trust_metrics = [EbayTM, OutA_TM]
-    #evaluated_trust_metrics = [AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
-    #                           RandomTM,
-    #                           EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,
-    #                           MoletrustTM_horizon1_threshold0, MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
-    #                           MoletrustTM_horizon1_threshold05, MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05,
-    #                           MoletrustTM_horizon4_threshold05,
-    #                           AdvogatoGlobalTM, AdvogatoTM,
-    #                           PageRankGlobalTM, PageRankTM0,
-    #                           GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM,
-    #                           ]
+    EVALUATED_TRUST_METRICS = [EbayTM, OutA_TM]
+    #evaluated_trust_metrics = [AlwaysMaster, AlwaysJourneyer,
+    #AlwaysApprentice, AlwaysObserver, RandomTM, EbayTM, OutA_TM,
+    #OutB_TM, EdgesB_TM, EdgesA_TM, MoletrustTM_horizon1_threshold0,
+    #MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0,
+    #MoletrustTM_horizon4_threshold0,
+    #MoletrustTM_horizon1_threshold05,
+    #MoletrustTM_horizon2_threshold05,
+    #MoletrustTM_horizon3_threshold05,
+    #MoletrustTM_horizon4_threshold05, AdvogatoGlobalTM, AdvogatoTM,
+    #PageRankGlobalTM, PageRankTM0, GuakaMoleFullTM, GuakaMoleTM,
+    #PaoloMoleTM, IntersectionTM, ]
     
-    eval_measures = ['coverage_cond', 'abs_error_cond']
-    conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
+    EVAL_MEASURES = ['coverage_cond', 'abs_error_cond']
+    CONDS_ON_EDGES = ['and_cond(master, edge_to_connected_node(5))',
                       'and_cond(master, not_cond(edge_to_connected_node(5)))',
                       'and_cond(not_cond(master), edge_to_connected_node(5))']
 
-    pred_graphs = map(lambda tm: PredGraph(G,tm), evaluated_trust_metrics)
+    PRED_GRAPHS = map(lambda tm: PredGraph(GRAPH, tm), EVALUATED_TRUST_METRICS)
 
-    for eval_measure in eval_measures:
-        conds, evals = evals_with_conds(G, pred_graphs, eval_measure, conds_on_edges)
-        display(eval_measure,conds, evals)
+    for EVAL_MEASURE in EVAL_MEASURES:
+        CONDS, EVALS = evals_with_conds(PRED_GRAPHS,
+                                        EVAL_MEASURE, CONDS_ON_EDGES)
+        display(EVAL_MEASURE, CONDS, EVALS)
         
-    #methods, evals = somemethods(G)
-    #display(methods, evals)
+
+
