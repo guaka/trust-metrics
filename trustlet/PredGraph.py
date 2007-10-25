@@ -337,6 +337,7 @@ def not_cond(cond):
     return lambda pg, edge: not cond(pg, edge)
 
 
+
 if __name__ == "__main__":
     import Advogato, TrustMetric
     G = Advogato.SqueakFoundation()

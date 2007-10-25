@@ -89,6 +89,8 @@ class Dummy(Network):
     """A dummy dataset used for testing purposes, actually the dataset
     with 8 nodes discussed in
     http://www.ams.org/featurecolumn/archive/pagerank.html"""
+
+    advogato_seeds = [1]
     def __init__(self):
         Network.__init__(self)
         edges = [(1, 2),
