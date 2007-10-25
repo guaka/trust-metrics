@@ -28,16 +28,17 @@ G=A
 
 #pg = PredGraph(A, PageRankTM0, recreate = False, predict_ratio=0.01)
 #pg = PredGraph(G, AlwaysMaster, recreate = True, predict_ratio=1.0)
-pg = PredGraph(G, AlwaysJourneyer, recreate = True, predict_ratio=1.0)
-pg = PredGraph(G, AlwaysApprentice, recreate = True, predict_ratio=1.0)
-pg = PredGraph(G, AlwaysObserver, recreate = True, predict_ratio=1.0)
-pg = PredGraph(G, RandomTM, recreate = True, predict_ratio=1.0)
-
 pg = PredGraph(G, EbayTM, recreate = True, predict_ratio=1.0)
 pg = PredGraph(G, OutA_TM, recreate = True, predict_ratio=1.0)
 pg = PredGraph(G, OutB_TM, recreate = True, predict_ratio=1.0)
 pg = PredGraph(G, EdgesA_TM, recreate = True, predict_ratio=1.0)
 pg = PredGraph(G, EdgesB_TM, recreate = True, predict_ratio=1.0)
+
+pg = PredGraph(G, AlwaysJourneyer, recreate = True, predict_ratio=1.0)
+pg = PredGraph(G, AlwaysApprentice, recreate = True, predict_ratio=1.0)
+pg = PredGraph(G, AlwaysObserver, recreate = True, predict_ratio=1.0)
+pg = PredGraph(G, RandomTM, recreate = True, predict_ratio=1.0)
+
 
 #pg = PredGraph(G, AdvogatoTM, recreate = False, predict_ratio=0.01)
 
