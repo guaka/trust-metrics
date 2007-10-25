@@ -248,7 +248,7 @@ class AdvogatoGlobalTM(TrustMetric):
 	    levels = map((lambda x: x[0]), levels)
 	    self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
 	    for s in self.G.advogato_seeds:
-	        assert s in G
+	        assert s in G, "the seed node %s is not in the graph and this is not allowed" % s
 	    self.pred_trust = self.t.tmetric_calc('like', self.G.advogato_seeds)
 	    
 	    self.pred_trust_keys = self.pred_trust.keys()
