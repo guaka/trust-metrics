@@ -14,11 +14,8 @@ from pprint import pprint
 
 def ev(CG, G):
     return map(lambda tm: CG(G, tm),
-               [PageRankTM0, #AdvogatoTM,
-                IntersectionTM,
-                GuakaMoleTM,
-                GuakaMoleFullTM,
-                PaoloMoleTM])
+               [AdvogatoTM,
+                AdvogatoGlobalTM])
 
 #K = Kaitiaki()
 #S = SqueakFoundation()
@@ -27,7 +24,7 @@ A = Advogato()
 G=A
 
 #pg = PredGraph(A, PageRankTM0, recreate = False, predict_ratio=0.01)
-pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=0.1)
+pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=0.01)
 #pg = PredGraph(G, AdvogatoTM, recreate = False, predict_ratio=0.01)
 
 #pg10 = PredGraph(G, MoletrustTM_horizon1_threshold0, recreate = False, predict_ratio=1.0)
@@ -49,4 +46,3 @@ pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=0.1)
 
 #p=pga[1]
 #p.coverage_with_condition(every_edge)
-
