@@ -134,7 +134,7 @@ class SqueakFoundation(Advogato):
         }
 
     # seeds for global advogato TM
-    advogato_seeds = ['mas', 'karrl']
+    advogato_seeds = ['Yoda', 'luciano']
     def trust_on_edge(self, edge):
         """For Squeak it's color."""
         return self.level_map[edge[2]['color']]
