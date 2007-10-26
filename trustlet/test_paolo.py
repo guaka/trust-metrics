@@ -17,15 +17,15 @@ def ev(CG, G):
                [AdvogatoTM,
                 AdvogatoGlobalTM])
 
-#K = Kaitiaki()
-#S = SqueakFoundation()
-A = Advogato()
+#G = K = Kaitiaki()
+#G = S = SqueakFoundation()
+G = A = Advogato()
 
-G=A
 
 #pg = PredGraph(A, PageRankTM0, recreate = False, predict_ratio=0.01)
-pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=0.01)
-#pg = PredGraph(G, AdvogatoTM, recreate = False, predict_ratio=0.01)
+#pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=0.01)
+#pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=1.0)
+pg = PredGraph(G, AdvogatoTM, recreate = True, predict_ratio=0.011)
 
 #pg10 = PredGraph(G, MoletrustTM_horizon1_threshold0, recreate = False, predict_ratio=1.0)
 #pg20 = PredGraph(G, MoletrustTM_horizon2_threshold0, recreate = False, predict_ratio=0.01)
