@@ -261,9 +261,18 @@ class PredGraph(CalcGraph):
                 num_edges += 1
         return num_edges and (num_edges, abs_error / num_edges)
 
+    def root_mean_squared_error_cond(self, condition):
+        """Root Mean Squared error of edges satisfying condition."""
+        abs_error = num_edges = 0.0
+        for e in self.edges_cond_iter(condition):
+            if e[2]['pred'] != UNDEFINED:
+                abs_error += numpy.power(e[2]['orig'] - e[2]['pred'],2)
+                num_edges += 1
+        return num_edges and (num_edges, numpy.sqrt(abs_error / num_edges))
+
     def yes_no_error_cond(self, condition):
         """1 if the predicted edge is the same as the real edge, 0 if not"""
-        yes_no_error = num_edges = 0
+        yes_no_error = num_edges = 0.0
         for e in self.edges_cond_iter(condition):
             if e[2]['pred'] != UNDEFINED:
                 if e[2]['orig'] == e[2]['pred']:
