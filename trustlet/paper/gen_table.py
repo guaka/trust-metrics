@@ -23,6 +23,8 @@ for datasets: Kaitiaki, SqueakFoundation, Advogato
 
 """ 
 
+import sys
+sys.path.append('..')
 from helpers import get_name
 
 
