@@ -86,7 +86,7 @@ def reciprocity(graph):
     """Calculate reciprocity of graph, i.e. the ratio of the edges in
     one direction that have and edge going in the other direction."""
     return sum([graph.has_edge(e[1], e[0]) 
-                for e in S.edges_iter()]) / float(graph.number_of_edges())
+                for e in graph.edges_iter()]) / float(graph.number_of_edges())
 
 
 def _trust_val(graph, a, b):

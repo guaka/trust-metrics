@@ -79,33 +79,6 @@ def all_paths(G, start = 'source', end = 'supersink'):
     return all_paths
 
 
-def all_paths_iter(G, src = 'source', end = 'supersink', init_path = None):
-    """Find all paths from start to end.  Here a path is defined as a
-    consecutive list of nodes, with edges from one node to the next,
-    where all nodes are different.
-
-    There _is_ a better way to do it.
-
-    Damn, recursive generator doesn't work!
-    """
-
-    print "called with:", src, end, init_path
-
-    init_path = init_path or [src]
-    for u,v,x in G.out_edges_iter(src):
-        if v not in init_path:
-            p = init_path + [v]
-            print p
-            if v == end:
-                # now here I would like to do a yield for the outer function
-                #print p
-                yield p
-            else:
-                print 'call again with',
-                print v, end, p
-                all_paths_iter(G, v, end, p)
-        else:
-            print "httht"
 
 
 
@@ -143,14 +116,49 @@ def nodes_with_flow(G):
                       G.edges_iter()))
 
 
+def all_paths_iter(G, src = 'source', end = 'supersink', init_path = None):
+    """Find all paths from start to end.  Here a path is defined as a
+    consecutive list of nodes, with edges from one node to the next,
+    where all nodes are different.
+    """
+
+    init_path = init_path or [src]
+    for u,v,x in G.out_edges_iter(src):
+        if v not in init_path:
+            p = init_path + [v]
+            if v == end:
+                yield p
+            else:
+                for r in all_paths_iter(G, v, end, p):
+                    yield r
+                
+
+def all_paths_iter(G, src = 'source', end = 'supersink', init_path = None):
+    """Find all paths from start to end.  Here a path is defined as a
+    consecutive list of nodes, with edges from one node to the next,
+    where all nodes are different.
+    """
+    init_path = init_path or [src]
+    for u,v,x in G.out_edges_iter(src):
+        if v not in init_path:
+            p = init_path + [v]
+            if v == end:
+                yield p
+            else:
+                for r in all_paths_iter(G, v, end, p):
+                    yield r
+
+
+
+D = Dataset.Dummy()
+Df = build_adv_flow_graph(D)
+
 K = Advogato.Kaitiaki()
 Kf = build_adv_flow_graph(K) 
 
 #S = Advogato.SqueakFoundation()
 #Sf = build_adv_flow_graph(S, lambda e: e[2]['level'] == 'Master')
 
-print [p for p in all_paths_iter(Kf)]
+l = list(all_paths_iter(Df))
 
-if False:
-    ford_fulkerson(Kf)
 
