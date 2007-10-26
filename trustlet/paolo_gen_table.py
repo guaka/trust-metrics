@@ -6,14 +6,14 @@ import Advogato
 #G = Kaitiaki() #SqueakFoundation()    
 
 evaluated_trust_metrics = [
+                           AdvogatoGlobalTM, #AdvogatoTM,
+                           PageRankGlobalTM,
+                           #PageRankTM0,
                            AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
                            RandomTM,
                            EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,
                            MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
                            MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05, MoletrustTM_horizon4_threshold05,
-                           #AdvogatoGlobalTM, AdvogatoTM,
-                           PageRankGlobalTM,
-                           #PageRankTM0,
                            #GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM, 
                           ]
 eval_measures = ['coverage_cond', 'abs_error_cond']
@@ -52,7 +52,7 @@ conds_on_edges = ['every_edge',
 pred_graphs = map(lambda tm: PredGraph.PredGraph(G,tm), evaluated_trust_metrics)
 
 for eval_measure in eval_measures:
-    conds, evals = evals_with_conds(G, pred_graphs, eval_measure, conds_on_edges)
+    conds, evals = evals_with_conds(pred_graphs, eval_measure, conds_on_edges)
     display(eval_measure,conds, evals)
     
 #methods, evals = somemethods(G)
