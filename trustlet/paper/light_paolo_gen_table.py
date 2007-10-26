@@ -19,7 +19,7 @@ evaluated_trust_metrics = [
                           ]
 eval_measures = [#'coverage_cond',
                  #'abs_error_cond',
-                 'yes_no_error_cond'
+                 'yes_no_error_cond',
                  'root_mean_squared_error_cond',
                  ]
 
