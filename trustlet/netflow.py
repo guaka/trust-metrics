@@ -6,18 +6,23 @@ from pprint import pprint
 # see also 
 
 
+class AdvFlowGraph:
+    """To make it easier to reinit, and to reuse."""
+    pass
 
-def build_adv_flow_graph(G):
+
+def build_adv_flow_graph(G, cond = None):
     """Build a flow graph from a graph, as described in the Advogato
     trust metric paper:
 
     * add supersink
-    * for every node: add node- and node+
-    *
+    * for every node: add N_node and P_node
+    * set initial flow to 0
     """
     sources = G.advogato_seeds
-    
-    neg, pos = lambda n: "N_" + str(n), lambda n: "P_" + str(n)
+
+    # This also ensures that there are no nodes named "source" or "supersink"
+    neg, pos = lambda n: "N" + str(n), lambda n: "P" + str(n)
 
     G_flow = networkx.XDiGraph()
     G_flow.add_node("source")
@@ -26,58 +31,28 @@ def build_adv_flow_graph(G):
         G_flow.add_node(neg(n))
         G_flow.add_node(pos(n))
         cap_value = 2   # need to use distance to source here!
+        for s in sources:
+            for s2 in G[s]:
+                if s2 == n:
+                    cap_value = 200
+                else:
+                    for s3 in G[s2]:
+                        if s3 == n:
+                            cap_value = 50
+                        else:
+                            cap_value = 10
         if n in sources:
             # it's not clear yet if this is actually what is happening
             # in tmetric.c
-            G_flow.add_edge("source", neg(n))
+            G_flow.add_edge("source", neg(n), {'flow': 0})
             cap_value = 800
-        G_flow.add_edge(neg(n), pos(n), { 'cap': cap_value - 1 })  
-        G_flow.add_edge(neg(n), "supersink", { 'cap': 1 })
-
+        G_flow.add_edge(neg(n), pos(n), {'cap': cap_value - 1, 'flow': 0})
+        G_flow.add_edge(neg(n), "supersink", {'cap': 1, 'flow': 0})
     for e in G.edges_iter():
-        G_flow.add_edge(pos(e[0]), neg(e[1]))
+        if not cond or cond(e):
+            G_flow.add_edge(pos(e[0]), neg(e[1]), {'flow': 0})
 
     return G_flow
-
-
-
-
-def ford_fulkerson(G):
-    """Ford-Fulkerson, as found in
-    http://en.wikipedia.org/wiki/Ford-Fulkerson_algorithm."""
-    
-    # init: set flow to 0
-    for e in G.edges_iter():
-        pass #e[2]['flow'] = 0
-
-    dfs_succs = search.dfs_successor(G, 'source')
-    node = 'source'
-
-    def good_path_iter(node):
-        for succ in dfs_succs[node]:
-            if succ == 'supersink':
-                yield [node, succ]
-            yield [succ]
-        
-
-
-
-    while queue:
-        n = queue.pop(0)
-        for succ in n.successors_iter():
-            queue.push
-
-        p = path_with_capacity(G, paths_s_to_t)
-
-        min_cap = min_cap_along_path(p)
-        for u,v in p:
-            f[u][v] = f[u][v] + min_cap
-            f[v][u] = f[v][u] - min_cap
-          
-
-#G_orig = Advogato.Kaitiaki()
-G_orig = Dataset.Dummy()
-G_flow = build_adv_flow_graph(G_orig) 
 
 
 def all_paths(G, start = 'source', end = 'supersink'):
@@ -85,28 +60,97 @@ def all_paths(G, start = 'source', end = 'supersink'):
     consecutive list of nodes, with edges from one node to the next,
     where all nodes are different.
 
-    There's probably a cleaner way to do it."""
+    There _is_ a better way to do it."""
 
     def _paths(src, init_path = None):
-        if not init_path:
-            init_path = [src]
-        path_list = []
-        for e in G.out_edges(src):
-            n = e[1]
-            if n not in init_path:
-                # print "path:", init_path + [n]
-                if n == end:
+        init_path = init_path or [src]
+        for u,v,x in G.out_edges_iter(src):
+            if v not in init_path:
+                p = init_path + [v]
+                if v == end:
                     # now here I would like to do a yield for the outer function
-                    all_paths.append(init_path + [n])  
-                path_list += ([init_path + remaining_path + [n]
-                               for remaining_path in _paths(n, init_path + [n])])
-        # print "ret path_list", path_list
-        return path_list
+                    #print p
+                    all_paths.append(p)
+                print p
+                _paths(v, p)
+
     all_paths = []
     _paths(start)
     return all_paths
 
 
-p = all_paths(G_flow, 'source', 'supersink')
-pprint (p)
-#print ford_fulkerson(G_flow)
+def all_paths_iter(G, src = 'source', end = 'supersink', init_path = None):
+    """Find all paths from start to end.  Here a path is defined as a
+    consecutive list of nodes, with edges from one node to the next,
+    where all nodes are different.
+
+    There _is_ a better way to do it.
+
+    Damn, recursive generator doesn't work!
+    """
+
+    print "called with:", src, end, init_path
+
+    init_path = init_path or [src]
+    for u,v,x in G.out_edges_iter(src):
+        if v not in init_path:
+            p = init_path + [v]
+            print p
+            if v == end:
+                # now here I would like to do a yield for the outer function
+                #print p
+                yield p
+            else:
+                print 'call again with',
+                print v, end, p
+                all_paths_iter(G, v, end, p)
+        else:
+            print "httht"
+
+
+
+def ford_fulkerson(G, source = 'source', sink = 'supersink'):
+    """Ford-Fulkerson, (more or less) as found in
+    http://en.wikipedia.org/wiki/Ford-Fulkerson_algorithm."""
+
+    path_edges = lambda p: zip(p[:-1], p[1:])
+    def change_flow(u, v, df):
+        """Change flow on edge."""
+        x = dict(G.get_edge(u, v) or {})
+        x['flow'] += df
+        G.add_edge(u, v, x)
+
+    for p in all_paths(G, 'source', 'supersink'):
+        print p
+        cap_flow = [c for c in
+                    filter(lambda x: x and x.has_key('cap'),
+                           [G.get_edge(u, v) for u,v in path_edges(p)])]
+        print cap_flow
+    
+        min_cap = min([c['cap'] - c['flow'] for c in cap_flow])
+        if min_cap > 0:
+            for u, v in path_edges(p):
+                change_flow(u, v, min_cap)
+                if G.has_edge(v, u):
+                    change_flow(v, u, -min_cap)
+                    
+def nodes_with_flow(G):
+    return map(lambda x: x[0][1:],
+               filter(lambda x:
+                      x[2].has_key('cap') and
+                      x[2]['flow'] and
+                      x[1] != 'supersink',
+                      G.edges_iter()))
+
+
+K = Advogato.Kaitiaki()
+Kf = build_adv_flow_graph(K) 
+
+#S = Advogato.SqueakFoundation()
+#Sf = build_adv_flow_graph(S, lambda e: e[2]['level'] == 'Master')
+
+print [p for p in all_paths_iter(Kf)]
+
+if False:
+    ford_fulkerson(Kf)
+
