@@ -25,7 +25,7 @@ G = A = Advogato()
 #pg = PredGraph(A, PageRankTM0, recreate = False, predict_ratio=0.01)
 #pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=0.01)
 #pg = PredGraph(G, AdvogatoGlobalTM, recreate = True, predict_ratio=1.0)
-pg = PredGraph(G, AdvogatoTM, recreate = True, predict_ratio=0.011)
+pg = PredGraph(G, AdvogatoTM, recreate = True, predict_ratio=0.02)
 
 #pg10 = PredGraph(G, MoletrustTM_horizon1_threshold0, recreate = False, predict_ratio=1.0)
 #pg20 = PredGraph(G, MoletrustTM_horizon2_threshold0, recreate = False, predict_ratio=0.01)
