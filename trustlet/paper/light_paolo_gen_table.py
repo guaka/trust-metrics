@@ -17,10 +17,10 @@ evaluated_trust_metrics = [
                            #PageRankTM0,
                            #GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM, 
                           ]
-eval_measures = ['coverage_cond', 'abs_error_cond']
+eval_measures = ['coverage_cond', 'abs_error_cond', 'yes_no_error_cond']
 
-G = Advogato.Advogato()
-#G = Kaitiaki() #SqueakFoundation()    
+#G = Advogato.Advogato()
+G = Kaitiaki() #SqueakFoundation()    
 
 #conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
 #                  'and_cond(master, not_cond(edge_to_connected_node(5)))',
