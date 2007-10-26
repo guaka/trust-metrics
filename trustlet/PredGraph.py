@@ -163,7 +163,7 @@ class TotalGraph(CalcGraph):
                 pred_graph.add_edge(n1, n2, {'pred': str(predicted_trust)})
             count += 1.
             if divmod(count, 100)[1] == 0 :
-                self._time_indicator(count)
+                self._time_indicator(count / self.predict_ratio)
         return pred_graph
 
 
