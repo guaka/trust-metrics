@@ -56,12 +56,14 @@ for evaluated_trust_metric in evaluated_trust_metrics:
     pred_graph = PredGraph.PredGraph(G,evaluated_trust_metric)
     conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
     display(eval_measure,conds, evals)
+    pred_graph = None #possibly freeing the memory
 
 eval_measure=eval_measures[0]
 for evaluated_trust_metric in evaluated_trust_metrics:
     pred_graph = PredGraph.PredGraph(G,evaluated_trust_metric)
     conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
     display(eval_measure,conds, evals)
+    pred_graph = None #possibly freeing the memory
 
 #pred_graphs = map(lambda tm: PredGraph.PredGraph(G,tm), evaluated_trust_metrics)
 
