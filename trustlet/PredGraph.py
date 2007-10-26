@@ -261,6 +261,16 @@ class PredGraph(CalcGraph):
                 num_edges += 1
         return num_edges and (num_edges, abs_error / num_edges)
 
+    def yes_no_error_cond(self, condition):
+        """1 if the predicted edge is the same as the real edge, 0 if not"""
+        yes_no_error = num_edges = 0
+        for e in self.edges_cond_iter(condition):
+            if e[2]['pred'] != UNDEFINED:
+                if e[2]['orig'] == e[2]['pred']:
+                    yes_no_error += 1
+                num_edges += 1
+        return num_edges and (num_edges, yes_no_error / num_edges)
+
     def mean_cond(self, condition):
         """Mean of edges satisfying condition."""
         # TODO: std_cond
