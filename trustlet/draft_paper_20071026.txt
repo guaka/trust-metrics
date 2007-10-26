@@ -146,9 +146,24 @@ Out[10]: 0.11594019745822683
       A coefficient for the whole graph is the average C = avg(c_i)
 -->.
 
-About the values of trust on edges: what is the distribution? How many Master edges, Apprentice, Observer, Journeyer? '''COMPLETE THIS!'''
+About the values of trust on edges: what is the distribution? How many Master edges, Apprentice, Observer, Journeyer?
+<!--
+In [5]: map(lambda s: len([e for e in A.edges_iter() if e[2]['level'] == s]), ['Master', 'Journeyer', 'Apprentice', 'Observer'])
+Out[5]: [17489, 21977, 8817, 4698]
+-->
+There are 17489 Master judgments, 21977 for Journeyer, 8817 for Apprentice and 4698 for Observers.
 
-What is the number of users who received only one kind of trust values? For example, users who were judged only as "master" by everyone, or only as "apprentice", .... (These users are not at all controversial, all the community agree about them and so they are not hard to predict). The same question but limiting to users with 5 or more incoming trust edges. '''COMPLETE THIS!'''
+
+What is the number of users who received only one kind of trust values? For example, users who were judged only as "master" by everyone, or only as "apprentice", .... (These users are not at all controversial, all the community agree about them and so they are not hard to predict). The same question but limiting to users with 5 or more incoming trust edges.
+<!--
+In [22]: all_equal = lambda l: l[1:] == l[:-1]; len(filter(lambda n: all_equal([e[2]['level'] for e in A.in_edges_iter(n)]), A.nodes_iter()))
+Out[22]: 4607
+
+In [54]: all_equal = lambda l: l[1:] == l[:-1];  len(filter(lambda n: all_equal([e[2]['level'] for e in A.in_edges_iter(n)]), filter(lambda n: len(A.in_edges(n)) >= 5, A.nodes_iter())))
+Out[54]: 183
+-->
+There are 4607 users who have received only one kind of trust value. There are 183 users with 5 or more trust edges that all have the same value.
+
 
 We found that the Advogato trust network obeys the power law distribution ''(how to find exponent?)''. '''COMPLETE THIS!''' (what about the trust network only considering Master edges? Only Journeyer? ...) '''COMPLETE THIS!'''
 
