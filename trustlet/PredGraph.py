@@ -191,23 +191,21 @@ class PredGraph(CalcGraph):
                 # for some RTFMing reason get_edge gives an
                 # ItemAttribute, not dict, so we do some casting
                 # work here
-                t = dict(self.get_edge(e[0], e[1]))
-                t['orig'] = self.dataset.trust_on_edge(e)
-                t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
-                self.add_edge(e[0], e[1], t)
+                x = dict(self.get_edge(e[0], e[1]))
+                x['orig'] = self.dataset.trust_on_edge(e)
+                x['pred'] = (x['pred'] == 'None') and UNDEFINED or float(x['pred'])
+                self.add_edge(e[0], e[1], x)
             self.orig_trust = self._trust_array('orig')
         else:
-            print "TROUBLE: #edges in dataset != #edges in predgraph!"
+            print "#edges in dataset != #edges in predgraph!"
             print "actual ratio: ", ratio
-            print "should implement something here!"
             for e in self.edges_iter():
-                print e,
-                t = dict(self.get_edge(e[0], e[1]))
-                t['orig'] = self.dataset.trust_on_edge(e)
-                t['pred'] = ((t['pred'] == 'None') and
-                             UNDEFINED or float(t['pred']))
-                print t
-                self.add_edge(e[0], e[1], t)
+                x = dict(self.get_edge(e[0], e[1]))
+                # for some reason the upper line (which is neater) doesn't work here
+                x['orig'] = self.dataset.level_map[self.dataset.get_edge(e[0], e[1]).values()[0]]
+                x['pred'] = ((x['pred'] == 'None') and
+                             UNDEFINED or float(x['pred']))
+                self.add_edge(e[0], e[1], x)
 
     def _predict_existing(self):
         """Predict existing nodes by leaving out the edge"""
