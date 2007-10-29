@@ -2,19 +2,19 @@ from gen_table import *
 from TrustMetric import *
 import PredGraph
 import Advogato
-import ThresholdTM
+from ThresholdTM import thresholder
 
 evaluated_trust_metrics = [
     #AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
-                           ThrRandomTM,
-                           ThrEbayTM,
-                           ThrOutA_TM, ThrOutB_TM, ThrEdgesB_TM, ThrEdgesA_TM,
-                           ThrMoletrustTM_horizon2_threshold0,
-                           ThrMoletrustTM_horizon3_threshold0, ThrMoletrustTM_horizon4_threshold0,
+                           RandomTM,
+                           EbayTM,
+                           OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,
+                           MoletrustTM_horizon2_threshold0,
+                           MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
                            #MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05, MoletrustTM_horizon4_threshold05,
-                           ThrAdvogatoGlobalTM,
+                           AdvogatoGlobalTM,
                            #AdvogatoTM,
-                           ThrPageRankGlobalTM,
+                           PageRankGlobalTM,
                            #PageRankTM0,
                            #GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM, 
                           ]
@@ -59,7 +59,7 @@ conds_on_edges = ['every_edge',
 
 for eval_measure in eval_measures:
     for evaluated_trust_metric in evaluated_trust_metrics:
-        pred_graph = PredGraph.PredGraph(G,evaluated_trust_metric)
+        pred_graph = PredGraph.PredGraph(G, thresholder(evaluated_trust_metric))
         conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
         display(eval_measure,conds, evals)
         pred_graph = None #possibly freeing the memory

@@ -64,7 +64,6 @@ class CalcGraph(Dataset.Network):
         rescaler = eval(self.TM.rescale)
         # rescaled = rescale_array(rescaler(self.pred_trust), scale)
         rescaled = rescaler(self.pred_trust)
-        print "Maybe we should rescale here in some cases."
         scale_dict = dict(zip(self.pred_trust, rescaled))
         for e in self.edges_iter():
             t = dict(self.get_edge(e[0], e[1]))

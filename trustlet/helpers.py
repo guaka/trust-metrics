@@ -63,12 +63,31 @@ def threshold(arr):
     for i, v in enumerate(arr):
         if v == UNDEFINED:
             pass
+        elif v >= 0.9 and v < 1.0:
+            t_arr[i] = 1.0
+        elif v >= 0.7 and v < 0.9:
+            t_arr[i] = 0.8
+        elif v >= 0.5 and v < 0.7:
+            t_arr[i] = 0.6
+        elif v < 0.5:
+            t_arr[i] = 0.4
+    return t_arr
+
+def thresholdPR(arr):
+    """Should use scaling here."""
+    arr = recur_log_rescale(arr)
+    t_arr = arr.copy()
+    for i, v in enumerate(arr):
+        if v == UNDEFINED:
+            pass
         elif v > 0.8 and v < 1.0:
             t_arr[i] = 1.0
         elif v > 0.6 and v < 0.8:
             t_arr[i] = 0.8
         elif v > 0.4 and v < 0.6:
             t_arr[i] = 0.6
+        elif v < 0.4:
+            t_arr[i] = 0.4
     return t_arr
 
 

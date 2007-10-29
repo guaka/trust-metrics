@@ -10,18 +10,31 @@ def thresholder(TM_class, thr_function = 'threshold'):
 
     class Threshold(TM_class):
         rescale = 'threshold'
-        name = "thr" + TM_class.__name__
+        # not even: name = TM_class.__name__
+        name = TM_class.__name__
 
     return Threshold
 
 
-
-
-                
 ThrGuakeMoleTM = thresholder(TrustMetric.GuakaMoleTM)
-ThrPageRankTM = thresholder(TrustMetric.PageRankTM0, 'lambda x: threshold(recur_log_rescale(x)))')
+ThrPageRankTM = thresholder(TrustMetric.PageRankTM0, 'thresholdPR')
 
-K = Advogato.Kaitiaki()
+"""
+better done in thr_table.py!
 
-pg0 = PredGraph.PredGraph(K, ThrGuakeMoleTM)
-pg1 = PredGraph.PredGraph(K, ThrPageRankTM)
+ThrRandomTM = thresholder(TrustMetric.RandomTM)
+ThrEbayTM = thresholder(TrustMetric.EbayTM)
+ThrOutA_TM = thresholder(TrustMetric.OutA_TM)
+ThrOutB_TM = thresholder(TrustMetric.OutB_TM)
+ThrEdgesA_TM = thresholder(TrustMetric.EdgesA_TM)
+ThrEdgesB_TM = thresholder(TrustMetric.EdgesB_TM)
+ThrMoletrustTM_horizon2_threshold0 = thresholder(TrustMetric.MoletrustTM_horizon2_threshold0)
+ThrMoletrustTM_horizon3_threshold0 = thresholder(TrustMetric.MoletrustTM_horizon3_threshold0)
+ThrMoletrustTM_horizon4_threshold0 = thresholder(TrustMetric.MoletrustTM_horizon4_threshold0)
+ThrAdvogatoGlobalTM = thresholder(
+"""
+
+if __name__ == "main":
+    K = Advogato.Kaitiaki()
+    pg0 = PredGraph.PredGraph(K, ThrGuakeMoleTM)
+    pg1 = PredGraph.PredGraph(K, ThrPageRankTM)
