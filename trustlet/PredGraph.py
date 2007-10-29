@@ -17,7 +17,6 @@ try:
 except:
     print "damn! no scipy!"
 
-UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
 
 class CalcGraph(Dataset.Network):
@@ -61,9 +60,11 @@ class CalcGraph(Dataset.Network):
 
     def _rescale(self):
         """Rescale if needed."""
-        scale = (0.4, 1)  # probably for the dataset
+        # scale = (0.4, 1)  # probably for the dataset
         rescaler = eval(self.TM.rescale)
-        rescaled = rescale_array(rescaler(self.pred_trust), scale)
+        # rescaled = rescale_array(rescaler(self.pred_trust), scale)
+        rescaled = rescaler(self.pred_trust)
+        print "Maybe we should rescale here in some cases."
         scale_dict = dict(zip(self.pred_trust, rescaled))
         for e in self.edges_iter():
             t = dict(self.get_edge(e[0], e[1]))

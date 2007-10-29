@@ -8,6 +8,11 @@ try:
 except:
     print "no scipy"
 
+UNDEFINED = -37 * 37  #mayby use numpy.NaN?
+
+
+
+
 
 def hms(t_sec):
     """Convert time in seconds into Hour Minute Second format.
@@ -38,6 +43,8 @@ def get_name(obj):
     datetime
     """
     if hasattr(obj, "__name__"):
+        if hasattr(obj, "name"):
+            return obj.name
         return obj.__name__
     if hasattr(obj, "__class__"):
         if hasattr(obj, "get_name"):
@@ -48,6 +55,22 @@ def get_name(obj):
 
 
 mean_std = lambda x: (scipy.mean(x), scipy.std(x))
+
+
+def threshold(arr):
+    """Should use scaling here."""
+    t_arr = arr.copy()
+    for i, v in enumerate(arr):
+        if v == UNDEFINED:
+            pass
+        elif v > 0.8 and v < 1.0:
+            t_arr[i] = 1.0
+        elif v > 0.6 and v < 0.8:
+            t_arr[i] = 0.8
+        elif v > 0.4 and v < 0.6:
+            t_arr[i] = 0.6
+    return t_arr
+
 
 def rescale_array(orig_array, scale = (0, 1)):
     """Linearly rescale an array.
@@ -80,6 +103,7 @@ def recur_log_rescale(arr):
     while scipy.mean(arr) <= 0.5 and count < 20:
         arr = numpy.log2(arr + 1)
         count += 1
+    arr = rescale_array(arr, (0.4, 1.0))
     return arr
         
 

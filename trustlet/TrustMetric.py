@@ -67,6 +67,17 @@ class PaoloMoleTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = paolomole_tm
 
+
+
+# The following should be rewritten into a more generic class
+# generator, e.g.
+#
+# def MoletrustTM_hor_thr(horizon, threshold):
+#     class ClassThing
+#         def getname(self):
+#             return MoletrustTM_horizon1_threshold0
+#     return ClassThing
+
 class MoletrustTM_horizon1_threshold0(TrustMetric):
     def _set_tm(self):
         self.trustmetric = moletrust_tm_hor1_threshold0
