@@ -61,7 +61,7 @@ class CalcGraph(Dataset.Network):
     def _rescale(self):
         """Rescale if needed."""
         # scale = (0.4, 1)  # probably for the dataset
-        rescaler = eval(self.TM.rescale)
+        rescaler = eval(self.TM.rescale)  
         # rescaled = rescale_array(rescaler(self.pred_trust), scale)
         rescaled = rescaler(self.pred_trust)
         scale_dict = dict(zip(self.pred_trust, rescaled))
@@ -183,31 +183,31 @@ class PredGraph(CalcGraph):
         
     def _prepare(self):
         ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
-        if ratio < 1.0:
+
+        # if True:  # check if self has orig
+        if ratio == 1.0:
+            # add orig trust value into self
+            for e in self.dataset.edges_iter():
+                # for some RTFMing reason get_edge gives an
+                # ItemAttribute, not dict, so we do some casting
+                # work here
+                t = dict(self.get_edge(e[0], e[1]))
+                t['orig'] = self.dataset.trust_on_edge(e)
+                t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
+                self.add_edge(e[0], e[1], t)
+            self.orig_trust = self._trust_array('orig')
+        else:
             print "TROUBLE: #edges in dataset != #edges in predgraph!"
             print "actual ratio: ", ratio
-
-        if True:  # check if self has orig
-            if ratio == 1.0:
-                # add orig trust value into self
-                for e in self.dataset.edges_iter():
-                    # for some RTFMing reason get_edge gives an
-                    # ItemAttribute, not dict, so we do some casting
-                    # work here
-                    t = dict(self.get_edge(e[0], e[1]))
-                    t['orig'] = self.dataset.trust_on_edge(e)
-                    t['pred'] = (t['pred'] == 'None') and UNDEFINED or float(t['pred'])
-                    self.add_edge(e[0], e[1], t)
-                self.orig_trust = self._trust_array('orig')
-            else:
-                print "should implement something here!"
-                if False:
-                    for e in self.edges_iter():
-                        t = dict(self.get_edge(e[0], e[1]))
-                        t['orig'] = self.dataset.trust_on_edge(e)
-                        t['pred'] = ((t['pred'] == 'None') and
-                                     UNDEFINED or float(t['pred']))
-                        self.add_edge(e[0], e[1], t)
+            print "should implement something here!"
+            for e in self.edges_iter():
+                print e,
+                t = dict(self.get_edge(e[0], e[1]))
+                t['orig'] = self.dataset.trust_on_edge(e)
+                t['pred'] = ((t['pred'] == 'None') and
+                             UNDEFINED or float(t['pred']))
+                print t
+                self.add_edge(e[0], e[1], t)
 
     def _predict_existing(self):
         """Predict existing nodes by leaving out the edge"""
