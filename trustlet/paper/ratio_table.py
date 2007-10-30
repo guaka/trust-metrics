@@ -44,7 +44,8 @@ conds_on_edges = ['every_edge',
                   'apprentice',
                   ]
 
-for evaluated_trust_metric in [AdvogatoGlobalTM, thresholder(AdvogatoGlobalTM)]:
+#for evaluated_trust_metric in [AdvogatoGlobalTM, thresholder(AdvogatoGlobalTM)]:
+for evaluated_trust_metric in [AdvogatoTM, thresholder(AdvogatoTM)]:
     pred_graph = PredGraph.PredGraph(G, evaluated_trust_metric, predict_ratio = 0.02)
     for eval_measure in eval_measures:
         conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
