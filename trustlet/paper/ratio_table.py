@@ -4,20 +4,7 @@ import PredGraph
 import Advogato
 from ThresholdTM import thresholder
 
-evaluated_trust_metrics = [
-    #AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
-                           RandomTM,
-                           EbayTM,
-                           OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,
-                           MoletrustTM_horizon2_threshold0,
-                           MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
-                           #MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05, MoletrustTM_horizon4_threshold05,
-                           AdvogatoGlobalTM,
-                           #AdvogatoTM,
-                           PageRankGlobalTM,
-                           #PageRankTM0,
-                           #GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM, 
-                          ]
+
 eval_measures = [
                  'yes_no_error_cond',
                  'root_mean_squared_error_cond',
@@ -57,11 +44,9 @@ conds_on_edges = ['every_edge',
                   'apprentice',
                   ]
 
-for eval_measure in eval_measures:
-    for evaluated_trust_metric in evaluated_trust_metrics:
-        pred_graph = PredGraph.PredGraph(G, thresholder(evaluated_trust_metric))
+for evaluated_trust_metric in [AdvogatoGlobalTM, thresholder(AdvogatoGlobalTM)]:
+    pred_graph = PredGraph.PredGraph(G, evaluated_trust_metric, predict_ratio = 0.02)
+    for eval_measure in eval_measures:
         conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
         display(eval_measure,conds, evals)
-        # pred_graph = None #possibly freeing the memory
-        del pred_graph # more possibly freeing the memory
-        
+    del pred_graph
