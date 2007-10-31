@@ -36,8 +36,12 @@ class TrustMetric:
             if hasattr(self, name):
                 return self.name
             else:
-                return "ni"
-            
+                raise AttributeError
+        if name == "path_name":
+            if hasattr(self, name):
+                return self.path_name
+            else:
+                return self.name
         raise AttributeError
 
     def calc(self, n1, n2):

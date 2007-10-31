@@ -11,8 +11,10 @@ def thresholder(TM_class, thr_function = 'threshold'):
     class Threshold(TM_class):
         rescale = 'threshold'
         # not even: name = TM_class.__name__
-        name = TM_class.__name__
 
+        name = "Thresh" + TM_class.__name__
+        path_name = TM_class.__name__
+        
     return Threshold
 
 

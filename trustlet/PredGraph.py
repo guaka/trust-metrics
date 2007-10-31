@@ -35,7 +35,7 @@ class CalcGraph(Dataset.Network):
         self.path = reduce(os.path.join,
                            [Dataset.dataset_dir(),
                             get_name(dataset),
-                            get_name(TM)])
+                            TM.path_name])
         if not os.path.exists(self.path):
             os.mkdir(self.path)
         self.filepath = os.path.join(self.path, get_name(self) + '.dot')
