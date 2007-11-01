@@ -5,8 +5,11 @@ from helpers import get_name
 
 
 
-def thresholder(TM_class, thr_function = 'threshold'):
+def thresholder(TM_class):
     """Create new trust metric, based on old, but with thresholds."""
+
+    if TM_class.rescale == "recur_log_rescale":
+        thr_function = 'thresholdPR'
 
     class Threshold(TM_class):
         rescale = thr_function
@@ -21,4 +24,4 @@ def thresholder(TM_class, thr_function = 'threshold'):
 if __name__ == "__main__":
     G = Advogato.Advogato()
     # pg0 = PredGraph.PredGraph(G, ThrGuakeMoleTM)
-    pg = PredGraph.PredGraph(G, thresholder(TrustMetric.PageRankGlobalTM, 'thresholdPR'))
+    pg = PredGraph.PredGraph(G, thresholder(TrustMetric.PageRankGlobalTM))
