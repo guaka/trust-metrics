@@ -70,6 +70,7 @@ class CalcGraph(Dataset.Network):
             # print idx, t['pred'], rescaled[idx]
             t['pred'] = scale_dict[t['pred']]
             self.add_edge(e[0], e[1], t)
+        self.prescaled = self.pred_trust
         self.pred_trust = rescaled
 
     def _set_arrays(self):

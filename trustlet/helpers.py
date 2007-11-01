@@ -78,6 +78,7 @@ def thresholdPR(arr):
     arr = recur_log_rescale(arr)
     t_arr = arr.copy()
     for i, v in enumerate(arr):
+        # print i,v
         if v == UNDEFINED:
             pass
         elif v > 0.8 and v < 1.0:

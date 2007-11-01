@@ -9,7 +9,7 @@ def thresholder(TM_class, thr_function = 'threshold'):
     """Create new trust metric, based on old, but with thresholds."""
 
     class Threshold(TM_class):
-        rescale = 'threshold'
+        rescale = thr_function
         # not even: name = TM_class.__name__
 
         name = "Thresh" + TM_class.__name__
@@ -18,11 +18,7 @@ def thresholder(TM_class, thr_function = 'threshold'):
     return Threshold
 
 
-ThrGuakeMoleTM = thresholder(TrustMetric.GuakaMoleTM)
-ThrPageRankTM = thresholder(TrustMetric.PageRankTM0, 'thresholdPR')
-
-
 if __name__ == "__main__":
     G = Advogato.Advogato()
-    pg0 = PredGraph.PredGraph(G, ThrGuakeMoleTM)
-    # pg1 = PredGraph.PredGraph(G, ThrPageRankTM)
+    # pg0 = PredGraph.PredGraph(G, ThrGuakeMoleTM)
+    pg = PredGraph.PredGraph(G, thresholder(TrustMetric.PageRankGlobalTM, 'thresholdPR'))
