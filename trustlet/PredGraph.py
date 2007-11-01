@@ -35,7 +35,7 @@ class CalcGraph(Dataset.Network):
         self.path = reduce(os.path.join,
                            [Dataset.dataset_dir(),
                             get_name(dataset),
-                            TM.path_name])
+                            path_name(TM)])
         if not os.path.exists(self.path):
             os.mkdir(self.path)
         self.filepath = os.path.join(self.path, get_name(self) + '.dot')
@@ -355,14 +355,18 @@ def not_cond(cond):
     """not cond"""
     return lambda pg, edge: not cond(pg, edge)
 
+def in_edges_cond(node):
+    return lambda pg, edge: edge[1] == node
 
 
 if __name__ == "__main__":
     import Advogato, TrustMetric
     G = Advogato.SqueakFoundation()
     # G = Advogato.Advogato()
-    pg = PredGraph(G, TrustMetric.GuakaMoleTM, predict_ratio = 0.01)
+    pg = PredGraph(G, TrustMetric.GuakaMoleTM)
     l = ['master',
+         'in_edges_cond("Yoda")',
+         'in_edges_cond("luciano")',
          'and_cond(master, edge_to_connected_node(5))',
          'and_cond(master, not_cond(edge_to_connected_node(5)))',
          'and_cond(not_cond(master), edge_to_connected_node(5))']

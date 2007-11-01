@@ -54,6 +54,12 @@ def get_name(obj):
         raise "Can't find name."
 
 
+def path_name(obj):
+    if hasattr(obj, "path_name"):
+        return obj.path_name
+    else:
+        return get_name(obj)
+
 mean_std = lambda x: (scipy.mean(x), scipy.std(x))
 
 

@@ -274,7 +274,7 @@ class AdvogatoGlobalTM(TrustMetric):
 	    if b in self.pred_trust_keys:
 	        return self.G.level_map[self.pred_trust[b]]
 	    else:
-	        return None
+	        return 0.4 # should depend on G.level_map
 
 if __name__ == "__main__":
     import Advogato, PredGraph

@@ -8,6 +8,7 @@ from helpers import get_name
 def thresholder(TM_class):
     """Create new trust metric, based on old, but with thresholds."""
 
+    thr_function = 'threshold'
     if TM_class.rescale == "recur_log_rescale":
         thr_function = 'thresholdPR'
 
