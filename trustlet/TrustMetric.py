@@ -276,14 +276,12 @@ class AdvogatoGlobalTM(TrustMetric):
 	    else:
 	        return 0.4 # should depend on G.level_map
 
-class AdvogatoTMDefaultObserver(TrustMetric):
-    def __init__(self,G):
-        raise "Need to implement this correctly!"
+class AdvogatoTMDefaultObserver(AdvogatoTM):
+    pass
 
 
-class AdvogatoGlobalTMDefaultObserver(TrustMetric):
-    def __init__(self,G):
-        raise "Need to implement this correctly!"
+class AdvogatoGlobalTMDefaultObserver(AdvogatoGlobalTM):
+    pass
 
 
 if __name__ == "__main__":
