@@ -276,6 +276,16 @@ class AdvogatoGlobalTM(TrustMetric):
 	    else:
 	        return 0.4 # should depend on G.level_map
 
+class AdvogatoTMDefaultObserver(TrustMetric):
+    def __init__(self,G):
+        raise "Need to implement this correctly!"
+
+
+class AdvogatoGlobalTMDefaultObserver(TrustMetric):
+    def __init__(self,G):
+        raise "Need to implement this correctly!"
+
+
 if __name__ == "__main__":
     import Advogato, PredGraph
     
