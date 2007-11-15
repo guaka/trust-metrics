@@ -10,7 +10,12 @@ import os
 import math
 from random import random
 import time
-from networkx import write_dot, XDiGraph
+
+from networkx import XDiGraph
+try:
+    from networkx import write_dot
+except:
+    print "No networkx.write_dot, consider install pygraphviz"
 
 try:
     import scipy
