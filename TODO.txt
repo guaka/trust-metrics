@@ -44,11 +44,13 @@ have such a method.
 -- or it could be that "directed dataset" has a method
 computeReciprocation while undirected don't
 -- or it could be that "directed dataset" has a method
-getLargestStronglyConnectedComponent while undirected don't (Strongly
-Conn comp take into account directions of edges and it is computable
+getLargestStronglyConnectedComponent while undirected doesn't (strongly
+connected components take into account directions of edges and it is computable
 only for directed datasets)
+
 One possibility could be to design a bunch of superclasses and make
 different datasets inherit from them, such as
+
                                Dataset
                                   |
        ---------------------------+------------------------------+----------------------------------+
@@ -66,23 +68,35 @@ DatasetWithPrediction.
 Or feel free to come up with a different solution, of course!
 
 
+NetworkX already has networkx.Graph, networkx.DiGraph and
+networkx.XDiGraph (which are subsequent subclasses). In trustlet we
+simply subclass XDiGraph. Kasper doesn't think it's necessary to
+distinguish at this point. It's always possible to raise an error if a
+certain method _really_ needs weighted and/or directed edges.
+
+
+
 # Define a large bunch of methods for the database class, for example
-computeReciprocity ...
-and at least all the methods that corresponds to characteristics of
-the dataset as shown in papers by Newman
+computeReciprocity. At least all the methods that corresponds to
+characteristics of the dataset as shown in papers by Newman:
+#* power-law exponent
+#* please add more...
 
 
 # PredGraph
-The way in which data about predgraph are stored has to be changed completely.
-We were speaking about placing on the same edge both the real value
-and the predicted value of trust, so that
-for isntance computing the differences would be faster. Moreover, it
-will work also if we try to predict only a fraction of the edges
-(for example only 10% because the code is very slow).
+The way in which data about predgraph are stored has to be changed
+completely.  We were speaking about placing on the same edge both the
+real value and the predicted value of trust, so that for instance
+computing the differences would be faster. Moreover, it will work also
+if we try to predict only a fraction of the edges (for example only
+10% because the code is very slow).
+
+NOTE: Both the predicted and the original value are already on the
+edges.
 
 
 # Trust metrics code
-## check if the structure is consistend an refactor, for example there
+## check if the structure is consistent and refactor, for example there
 is a better way of dealing with leave-one-out thing? Should it be a
 different class such as TrustMetricEvaluation? Which methods should
 the class TrustMetric export?
