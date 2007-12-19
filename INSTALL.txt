@@ -27,6 +27,8 @@ install easy_install. Try:
 
   wget http://peak.telecommunity.com/dist/ez_setup.py && sudo python ez_setup.py
 
+  for $p in networkx pygraphviz pyparsing numpy ipython; do easy_install $p; done
+
 
 === Importing dot files ===
 
@@ -52,7 +54,7 @@ MIT license.
 
 This might be enough:
 
-  apt-get install ipython python-scipy python-pyparsing python-networkx python-pydot
+  apt-get install ipython python-scipy python-pygraphviz python-pyparsing python-networkx python-pydot
 
 === Ubuntu Dapper ===
 

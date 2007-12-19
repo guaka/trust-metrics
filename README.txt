@@ -1,16 +1,16 @@
-TrustLet.org is a project to analyze trust metrics on social networks.
+trustlet.org is a project to analyze trust metrics on social networks.
 
-The code is written in Python, and will hopefully be based on a lot of
-existing projects, such as:
+The code is written in Python, and is be based a few existing free
+software projects, such as:
 
- * NetworkX (graphviz)
- * scipy
- * numpy
+ * Pymmetry: http://pymmetry.sf.net
+ * NetworkX and graphviz: https://networkx.lanl.gov/wiki
+ * SciPy and NumPy: http://scipy.org
 
 
-== License ==
 
-It's currently available under the GPLv2+ but we're considering using the affero GPLv3.
+The code is currently available under the GPLv2+ but we're considering
+using the affero GPLv3.
 
 
 == Links ==
