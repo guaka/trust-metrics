@@ -6,6 +6,8 @@ from networkx import cluster
 import numpy
 import scipy
 
+from Table import Table
+
 def dataset_dir():
     """Create datasets/ directory if needed."""
     if os.environ.has_key('HOME'):
@@ -36,22 +38,26 @@ class Network(XDiGraph):
         print "Std deviation of in-degree:", scipy.std(([len(self.in_edges(n)) for n in self.nodes()]))
         print "Std deviation of out-degree:", scipy.std(([len(self.out_edges(n)) for n in self.nodes()]))
         print "Average clustering coefficient:", cluster.average_clustering(self)
+        print "Ratio of edges reciprocated:", self.link_reciprocity()
         # todo: power-law exponent
+
+    def link_reciprocity(self):
+        return 1.0 * sum([self.has_successor(e[1], e[0]) for e in self.edges_iter()]) / self.number_of_edges()
 
     def in_degree_hist(self):
         """in-degree histogram, minor adaptation from networkx.function.degree_histogram"""
-        degseq=self.in_degree()
-        dmax=max(degseq)+1
-        freq= [ 0 for d in xrange(dmax) ]
+        degseq = self.in_degree()
+        dmax = max(degseq)+1
+        freq = [0 for d in xrange(dmax)]
         for d in degseq:
             freq[d] += 1
         return freq
 
     def out_degree_hist(self):
         """out-degree histogram, minor adaptation from networkx.function.degree_histogram"""
-        degseq=self.out_degree()
-        dmax=max(degseq)+1
-        freq= [ 0 for d in xrange(dmax) ]
+        degseq = self.out_degree()
+        dmax = max(degseq)+1
+        freq = [0 for d in xrange(dmax)]
         for d in degseq:
             freq[d] += 1
         return freq
@@ -107,5 +113,44 @@ class Network(XDiGraph):
         """numpy array of sorted edges, mapper is an optional function
         that will be applied to the edges"""
         return numpy.array(map(mapper, self._sorted_edges()))
+
+
+
+class WeightedNetwork(Network):
+    """A weighted network.
+
+    Things to arrange:
+    * weights can be discrete or continuous
+    """
+    
+    def __init__(self, weights, is_discrete = True):
+        Network.__init__(self)
+        self.weights = weights
+        self.is_discrete = is_discrete
+        
+    def info(self):
+        Network.info(self)
+        if self.is_discrete:
+            recp_tbl = self.reciprocity_table()
+            tbl = Table([12] + [12] * len(self.weights))
+            tbl.printHdr(['reciprocity'] + self.weights.keys())
+            tbl.printSep()
+            for k,v in recp_tbl.items():
+                tbl.printRow([k] + v)
+
+    def reciprocity_table(self):
+        """Generate a reciprocity table (which is actually a dict)."""
+        if self.is_discrete:
+            table = {}
+            for v in self.weights.keys():
+                line = []
+                for w in self.weights.keys():
+                    line.append(sum([self.get_edge(e[1], e[0]).values()[0] == w
+                                     for e in self.edges_iter()
+                                     if self.has_edge(e[1], e[0]) and e[2].values()[0] == v]))
+                table[v] = line
+            return table
+        else:
+            raise NotImplemented
 
 

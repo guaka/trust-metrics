@@ -16,11 +16,11 @@ More to add:
 
 """
 
-from Dataset import Network
+from Dataset.Network import WeightedNetwork
 import os
 import re
 
-class Advogato(Network):
+class Advogato(WeightedNetwork):
     """The Advogato dataset."""
 
     # TODO:
@@ -48,7 +48,7 @@ class Advogato(Network):
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
     def __init__(self, filename = None, comp_threshold = 0):
-        Network.__init__(self)
+        WeightedNetwork.__init__(self, weights = self.level_map)
         self.filepath = os.path.join(self.path, self.dotfile)
         self.download(only_if_needed = True)
 
@@ -71,7 +71,7 @@ class Advogato(Network):
         return self.level_map[edge[2]['level']]
 
     def info(self):
-        Network.info(self)
+        WeightedNetwork.info(self)
         print "Level distribution:"
         for l in self.level_distribution():
             print l
