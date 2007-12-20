@@ -1,7 +1,7 @@
 
 Instigators and main contributors of this project:
 
-Kasper Souren <souren@itc.it>
+Kasper Souren <kasper.souren@gmail.com>
 Paolo Massa <massa@itc.it>
 
 

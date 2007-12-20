@@ -1,49 +1,52 @@
 
 List of stuff todo:
 
-== Documentation ==
+Documentation
+=============
 
 Write a lot of documentation, especially for getting started with the
 system after you download the code.
 
-# epydoc -> make doc
-# write textual comments on every single method
-# more examples/*.py
+- epydoc
+- write textual comments on every single method
+- more examples/*.py
 
 
-== Dataset classes ==
 
-Classes containing the database should be rethought from scratch.
+Dataset module
+==============
 
-- think functionalities for importing from different formats (readDot,
-readGMML, readPajek, ...)  exporting to different formats (writeDot,
-writeGMML, writePajek, ...)
+* functions for reading and writing Dot, GMML and Pajek
 
-- the reading of file should be according to a certain pattern (feel
-free to propose one) that depends on the file system structure on
-trustlet.org
+* the reading of file should be according to a certain pattern (feel
+  free to propose one) that depends on the file system structure on
+  trustlet.org?
+  
+  such as http://www.trustlet.org/datasets/advogato/
 
-such as http://www.trustlet.org/datasets/advogato/
 
 Example file that should be read by a constructor at
 http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-21.dot
 Constructor might ask the date of the file to be loaded (all
-references should be moved from
+references should be moved from (?)
 
 See more at http://www.trustlet.org/datasets/
 
-- modularize the database class depending on whether a certain
-dataset is directed or undirected, weighted or unweighted, (sparse or
-not sparse)
--- for example it could be that "weighted dataset" has a method
-getReciprocationMatrix (like in the paper), while unweighted don't
-have such a method.
--- or it could be that "directed dataset" has a method
-computeReciprocation while undirected don't
--- or it could be that "directed dataset" has a method
-getLargestStronglyConnectedComponent while undirected doesn't (strongly
-connected components take into account directions of edges and it is computable
-only for directed datasets)
+* modularize the dataset class depending on whether a certain dataset
+  is directed or undirected, weighted or unweighted, (sparse or not
+  sparse)
+
+** for example it could be that "weighted dataset" has a method
+   getReciprocationMatrix (like in the paper), while unweighted don't
+   have such a method.
+
+** or it could be that "directed dataset" has a method
+   computeReciprocation while undirected don't
+
+** or it could be that "directed dataset" has a method
+   getLargestStronglyConnectedComponent while undirected doesn't
+   (strongly connected components take into account directions of
+   edges and it is computable only for directed datasets)
 
 One possibility could be to design a bunch of superclasses and make
 different datasets inherit from them, such as
@@ -73,33 +76,32 @@ certain method _really_ needs weighted and/or directed edges.
 
 
 
-# object.info():
- * computeReciprocity
- * at least all the methods that corresponds to characteristics of the
-   dataset as shown in papers by Newman:
- * power-law exponent
- * please add more...
+- object.info():
+  - at least all the methods that corresponds to characteristics of the
+    dataset as shown in papers by Newman:
+  - power-law exponent
+  - please add more...
 
 
-# PredGraph
-The way in which data about predgraph are stored has to be changed
-completely.  We were speaking about placing on the same edge both the
-real value and the predicted value of trust, so that for instance
-computing the differences would be faster. Moreover, it will work also
-if we try to predict only a fraction of the edges (for example only
-10% because the code is very slow).
+- PredGraph
 
-NOTE: Both the predicted and the original value are already on the
-edges.
+  - in case of only some edges predicted (ratio): add all original
+    values and mark edges NOT_PREDICTED (find good name, wrt UNDEFINED)
 
 
-# Trust metrics code
-## check if the structure is consistent and refactor, for example there
-is a better way of dealing with leave-one-out thing? Should it be a
-different class such as TrustMetricEvaluation? Which methods should
-the class TrustMetric export?
-## correct code for trust metrics, try to make it more efficient,
-write comments about them
+- Trust metrics code
+
+  - check if structure is consistent and refactor, 
+
+    for example there is a better way of dealing with leave-one-out
+    thing?  Should it be a different class such as
+    TrustMetricEvaluation?  Which methods should the class TrustMetric
+    export?
+
+  - correct code for trust metrics, try to make it more efficient,
+
+  - write comments about them
+
 ## about advogato trust metric
 ### understand code of pymmetry for advogato trust metric
 ### understand how to use code of pymmetry
@@ -112,11 +114,13 @@ used in pymmetry
 description in th relevant paper).
 
 
-# Tables
+
+Tables
+======
+
 As we have seen writing the paper, it is very important to be able to
 easily and quickly generate the tables of results that you need, when
-you need it.
-This means being able to call methods such as
+you need it.  This means being able to call methods such as
 
 predGraph.getPredictionTable(rows=[array of trust
 metrics],columns=[array of evaluation measures],multiplicity=array of
@@ -178,7 +182,11 @@ First, think about the methods and how we need them (and for what),
 then implement them.
 
 
-# Draft out at least the structure for the part of code that deals
-with visualization of datasets (and of trust metrics on datasets).
-Think about the structure of the classes, the methods and write some
-example methods.
+
+Visualization
+=============
+
+Draft out at least the structure for the part of code that deals with
+visualization of datasets (and of trust metrics on datasets).  Think
+about the structure of the classes, the methods and write some example
+methods.
