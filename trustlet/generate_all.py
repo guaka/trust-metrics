@@ -8,7 +8,7 @@ a beta stage.
 """
 
 
-from PredGraph import PredGraph, TotalGraph
+from PredGraph import PredGraph
 from Advogato import Kaitiaki, SqueakFoundation, Advogato
 
 recreate = True
@@ -25,6 +25,5 @@ def generate_tms(CG, G):
 
 for G in [Kaitiaki(), SqueakFoundation(), Advogato()]:
     pg = generate_tms(PredGraph, G)
-    tg = generate_tms(TotalGraph, G)
 
 

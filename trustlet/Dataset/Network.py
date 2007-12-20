@@ -42,6 +42,7 @@ class Network(XDiGraph):
         # todo: power-law exponent
 
     def link_reciprocity(self):
+        """Calculate the reciprocity of the edges (without paying attention to the value on the edges."""
         return 1.0 * sum([self.has_successor(e[1], e[0]) for e in self.edges_iter()]) / self.number_of_edges()
 
     def in_degree_hist(self):
@@ -78,7 +79,7 @@ class Network(XDiGraph):
         self._paste_graph(graph)
         
     def _paste_graph(self, graph):
-        """Paste graph."""
+        """Paste graph into object."""
         for node in graph.nodes():
             self.add_node(node)
         for edge in graph.edges():
