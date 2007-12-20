@@ -5,30 +5,31 @@ TrustMetric classes
 These are initiated with the dataset that they're supposed to measure
 trust on.
 
+Classier way of dealing with this.
+
+If you want to test 
+
+
+ 
+OBSERVATION: When calculating tm(G,a,b) it's not actually needed to
+pass the graph all the time, edge(a,b) can be removed in the trust
+metric class. For simple trust metrics this won't matter, but for
+more "advanced" ones like Advogato and PageRank this might
+considerably speed up things.
+
 """
-
-
-###############################################
-# classier way of dealing with this
-#
-# 
-# OBSERVATION: When calculating tm(G,a,b) it's not actually needed to
-# pass the graph all the time, edge(a,b) can be removed in the trust
-# metric class. For simple trust metrics this won't matter, but for
-# more "advanced" ones like Advogato and PageRank this might
-# considerably speed up things.
 
 from trustmetrics import *
 from helpers import *
 
 class TrustMetric:
-    """A generic trust metric class"""
+    """A generic trust metric class."""
 
     # rescale the prediction graph, useful for PageRank
     rescale = False
-    def __init__(self, G):
+    def __init__(self, dataset):
         """Use this to plug in functional trust metrics"""
-        self.G = G
+        self.dataset = dataset
         self._set_tm()
         
     def __getattr__(self, name):
@@ -45,15 +46,23 @@ class TrustMetric:
         raise AttributeError
 
     def calc(self, n1, n2):
-        return self.trustmetric(self.G, n1, n2)
+        return self.trustmetric(self.dataset, n1, n2)
 
-    def leave_one_out(self, e):
-        """The leave-one-out algorithm, for some trust metrics it's
-        more efficient to subclass this."""
-        self.G.delete_edge(e)
+    def predict_edge(self, edge, leave_one_out = True):
+        """Predict edge, leave_one_out or not."""
+        if leave_one_out:
+            self.dataset.delete_edge(e)
         trust_value = self.calc(e[0], e[1])
-        self.G.add_edge(e)
-        return trust_value
+        if leave_one_out:
+            self.dataset.add_edge(e)
+        return trust_value            
+
+    def leave_one_out(self, edge):
+        """DEPRECATED
+
+        The leave-one-out algorithm, for some trust metrics it's
+        more efficient to subclass this."""
+        return self.predict_edge(edge, leave_one_out = True)
 
 
 # turning functions into classes, I wish I could do 
@@ -81,6 +90,9 @@ class PaoloMoleTM(TrustMetric):
 #         def getname(self):
 #             return MoletrustTM_horizon1_threshold0
 #     return ClassThing
+
+
+# refactor the following into something cleaner:
 
 class MoletrustTM_horizon1_threshold0(TrustMetric):
     def _set_tm(self):
@@ -171,50 +183,50 @@ class EdgesB_TM(TrustMetric):
 class PageRankTM0(TrustMetric):
     rescale = "recur_log_rescale"
     
-    def __init__(self, G_orig):
-        self.G = G_orig
+    def __init__(self, dataset_orig):
+        self.dataset = dataset_orig
         # here it should calculate the PR values for all nodes
         
     def calc(self, n1, n2):
         # this should use precalculated values
-        return pagerank_tm(self.G, n2)
+        return pagerank_tm(self.dataset, n2)
 
     def leave_one_out(self, e_orig):
-        edge = [e for e in self.G.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
-        self.G.delete_edge(edge)
-        trust_value = pagerank_tm(self.G, e[1])
-        self.G.add_edge(edge)
+        edge = [e for e in self.dataset.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
+        self.dataset.delete_edge(edge)
+        trust_value = pagerank_tm(self.dataset, e[1])
+        self.dataset.add_edge(edge)
         return trust_value
 
 
 class PageRankTMfakeLeave1out(TrustMetric):
     rescale = "recur_log_rescale"
     
-    def __init__(self, G_orig):
-        self.G = G_orig  # beh, need to do something here
+    def __init__(self, dataset_orig):
+        self.dataset = dataset_orig  # beh, need to do something here
         # here it should calculate the PR values for all nodes
         raise NotImplemented
         
     def calc(self, n1, n2):
         # this should use precalculated values
-        return pagerank_tm(self.G, n2)
+        return pagerank_tm(self.dataset, n2)
 
     def leave_one_out(self, e_orig):
         # here it should just fetch the PR value for e_orig
 
         # the following stuff can be avoided
-        edge = [e for e in self.G.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
-        self.G.delete_edge(edge)
-        trust_value = pagerank_tm(self.G, e[1])
-        self.G.add_edge(edge)
+        edge = [e for e in self.dataset.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
+        self.dataset.delete_edge(edge)
+        trust_value = pagerank_tm(self.dataset, e[1])
+        self.dataset.add_edge(edge)
         return trust_value
 
 class PageRankGlobalTM(TrustMetric):
     rescale = "recur_log_rescale"
     
-    def __init__(self, G):
+    def __init__(self, dataset):
         from pagerank_tm import BasicPageRank
-        self.pagerank = BasicPageRank(G)
+        self.pagerank = BasicPageRank(dataset)
         
     def calc(self, n1, n2):
         return self.pagerank[n2]
@@ -227,12 +239,12 @@ class PageRankGlobalTM(TrustMetric):
 class AdvogatoTM(TrustMetric):
 	"""The advogato trust metric."""
 
-	def __init__(self, G):
-		self.G = G
+	def __init__(self, dataset):
+		self.dataset = dataset
 		self.p = Profiles(Profile, DictCertifications)
-		self.p.add_profiles_from_graph(G)
+		self.p.add_profiles_from_graph(dataset)
 
-		levels = G.level_map.items()
+		levels = dataset.level_map.items()
 		levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 		levels = map((lambda x: x[0]), levels)
 		self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
@@ -245,7 +257,7 @@ class AdvogatoTM(TrustMetric):
 		self.p.add_cert(a, 'like', b, level)
 		
 		if b in r.keys():
-                    return self.G.level_map[r[b]]
+                    return self.dataset.level_map[r[b]]
 		else:
                     return None
 
@@ -253,28 +265,29 @@ class AdvogatoTM(TrustMetric):
 class AdvogatoGlobalTM(TrustMetric):
 	"""The advogato trust metric, global, seeds: the 4 masters of advogato."""
 
-	def __init__(self, G):
-	    self.G = G
+	def __init__(self, dataset):
+	    self.dataset = dataset
 	    self.p = Profiles(Profile, DictCertifications)
-	    self.p.add_profiles_from_graph(G)
+	    self.p.add_profiles_from_graph(dataset)
 	
-	    levels = G.level_map.items()
+	    levels = dataset.level_map.items()
 	    levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
 	    levels = map((lambda x: x[0]), levels)
 	    self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
-	    for s in self.G.advogato_seeds:
-	        assert s in G, "the seed node %s is not in the graph and this is not allowed" % s
-	    self.pred_trust = self.t.tmetric_calc('like', self.G.advogato_seeds)
+	    for s in self.dataset.advogato_seeds:
+	        assert s in dataset, "the seed node %s is not in the graph and this is not allowed" % s
+	    self.pred_trust = self.t.tmetric_calc('like', self.dataset.advogato_seeds)
 	    
 	    self.pred_trust_keys = self.pred_trust.keys()
 
-	def leave_one_out(self, e):
-	    a, b, level = e
+	def leave_one_out(self, edge):
+            # def predict_edge(self, e, leave_one_out = True) maybe...
+	    a, b, level = edge
 	    # level = level['level']
 	    if b in self.pred_trust_keys:
-	        return self.G.level_map[self.pred_trust[b]]
+	        return self.dataset.level_map[self.pred_trust[b]]
 	    else:
-	        return 0.4 # should depend on G.level_map
+	        return 0.4 # should depend on dataset.level_map
 
 class AdvogatoTMDefaultObserver(AdvogatoTM):
     pass
@@ -287,7 +300,7 @@ class AdvogatoGlobalTMDefaultObserver(AdvogatoGlobalTM):
 if __name__ == "__main__":
     import Advogato, PredGraph
     
-    GRAPH = Advogato.Advogato()
-    PREDGRAPHS = PredGraph.PredGraph(GRAPH, PageRankGlobalTM)
+    dataset = Advogato.Advogato()
+    predgraphs = PredGraph.PredGraph(dataset, PageRankGlobalTM)
     
     

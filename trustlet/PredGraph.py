@@ -27,18 +27,19 @@ except:
 class CalcGraph(Dataset.Network):
     """Generic calculation graph class"""
 
-    def __init__(self, dataset, TM, recreate = False, predict_ratio = 1.0):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
         Dataset.Network.__init__(self, make_base_path = False)
-        
+
+        dataset = TM.dataset
         self.dataset, self.TM = dataset, TM
         self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
         self.path = reduce(os.path.join,
-                           [Dataset.dataset_dir(),
+                           ['/sra0/sra/souren/datasets/', #FIX: Dataset.Network.dataset_dir(),
                             get_name(dataset),
                             path_name(TM)])
         if not os.path.exists(self.path):
@@ -140,37 +141,6 @@ class CalcGraph(Dataset.Network):
         eta = avg_t * (len(self.dataset.edges()) - count)
         print '#', int(count), "avg time:", avg_t, "ETA", est_datetime_arr(eta), moreinfo
         
-
-class TotalGraph(CalcGraph):
-    """This graph should have edges for all nodes.
- 
-    Since these trust metrics are supposed to be used on the entire
-    graph actually using them on the entire graph should give us some
-    interesting data to play with.
-    """
-    def _generate(self):
-        tg = self._predict_all()
-        self._paste_graph(tg)
-        return tg
-
-    def _prepare(self):
-        pass
-
-    def _predict_all(self):
-        if self.predict_ratio != 1.0:
-            raise NotImplemented, "for predict_ratio != 1.0"
-        count = 0
-        pred_graph = XDiGraph()
-        tm = self.TM(self.dataset)
-        for n1 in self.dataset.nodes_iter():
-            pred_graph.add_node(n1)
-            for n2 in self.dataset.nodes():  #can't be _iter
-                predicted_trust = tm.calc(n1, n2)
-                pred_graph.add_edge(n1, n2, {'pred': str(predicted_trust)})
-            count += 1.
-            if divmod(count, 100)[1] == 0 :
-                self._time_indicator(count / self.predict_ratio)
-        return pred_graph
 
 
 class PredGraph(CalcGraph):

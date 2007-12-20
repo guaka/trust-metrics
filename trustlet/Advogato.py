@@ -70,6 +70,18 @@ class Advogato(Network):
         """Trust level on edge."""
         return self.level_map[edge[2]['level']]
 
+    def info(self):
+        Network.info(self)
+        print "Level distribution:"
+        for l in self.level_distribution():
+            print l
+
+    def level_distribution(self):
+        return map(lambda s: (s, len([e
+                                      for e in self.edges_iter()
+                                      if e[2].values()[0] == s])), self.level_map.keys())
+        
+
     def download(self, only_if_needed = False):
         """Download dataset."""
         if only_if_needed and os.path.exists(self.filepath):

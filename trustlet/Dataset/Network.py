@@ -1,6 +1,10 @@
 import urllib
 import os
 from networkx.xdigraph import XDiGraph
+from networkx import cluster
+
+import numpy
+import scipy
 
 def dataset_dir():
     """Create datasets/ directory if needed."""
@@ -26,6 +30,32 @@ class Network(XDiGraph):
             self.path = os.path.join(dataset_dir(), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
+
+    def info(self):
+        XDiGraph.info(self)
+        print "Std deviation of in-degree:", scipy.std(([len(self.in_edges(n)) for n in self.nodes()]))
+        print "Std deviation of out-degree:", scipy.std(([len(self.out_edges(n)) for n in self.nodes()]))
+        print "Average clustering coefficient:", cluster.average_clustering(self)
+        # todo: power-law exponent
+
+    def in_degree_hist(self):
+        """in-degree histogram, minor adaptation from networkx.function.degree_histogram"""
+        degseq=self.in_degree()
+        dmax=max(degseq)+1
+        freq= [ 0 for d in xrange(dmax) ]
+        for d in degseq:
+            freq[d] += 1
+        return freq
+
+    def out_degree_hist(self):
+        """out-degree histogram, minor adaptation from networkx.function.degree_histogram"""
+        degseq=self.out_degree()
+        dmax=max(degseq)+1
+        freq= [ 0 for d in xrange(dmax) ]
+        for d in degseq:
+            freq[d] += 1
+        return freq
+
 
     def download_file(self, url, filename):
         '''Download url to filename into the right path '''
