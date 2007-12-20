@@ -1,5 +1,4 @@
 
-
 List of stuff todo:
 
 == Documentation ==
@@ -7,11 +6,9 @@ List of stuff todo:
 Write a lot of documentation, especially for getting started with the
 system after you download the code.
 
-# How to write the first simple program?
-# Example code for doing very simple stuff at the beginning (these
-  things can be placed also on the wiki of course but first of all in
-  the code as well)
-# Write textual comments on every single method
+# epydoc -> make doc
+# write textual comments on every single method
+# more examples/*.py
 
 
 == Dataset classes ==
@@ -76,11 +73,12 @@ certain method _really_ needs weighted and/or directed edges.
 
 
 
-# Define a large bunch of methods for the database class, for example
-computeReciprocity. At least all the methods that corresponds to
-characteristics of the dataset as shown in papers by Newman:
-#* power-law exponent
-#* please add more...
+# object.info():
+ * computeReciprocity
+ * at least all the methods that corresponds to characteristics of the
+   dataset as shown in papers by Newman:
+ * power-law exponent
+ * please add more...
 
 
 # PredGraph
