@@ -7,18 +7,16 @@ some information.
 import sys
 sys.path.append('../trustlet')
 
-
-
-import Advogato
+from Advogato import *
 
 # create Kaitiaki dataset
-K = Advogato.Kaitiaki()
+K = KaitiakiNetwork()
 K.info() # show information
 
 # create SqueakFoundation dataset
-S = Advogato.SqueakFoundation()
+S = SqueakFoundationNetwork()
 S.info()
 
 # create Advogato dataset
-A = Advogato.Advogato()
+A = AdvogatoNetwork()
 A.info() 
