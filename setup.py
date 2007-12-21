@@ -8,7 +8,7 @@ setup(	name = 'trustlet',
 	version = trustlet.__version__,
 	description = 'Analyse trust metrics on social networks',
 	author = 'Kasper Souren, Paolo Massa and others',
-	author_email = 'souren@itc.it',
+	author_email = 'kasper.souren@gmail.com',
 	url = 'http://trustlet.org/wiki/Code',
 	license = 'GPL',
 	platforms = ["any"],
@@ -19,7 +19,7 @@ setup(	name = 'trustlet',
                          'Natural Language :: English',			\
                          'Operating System :: OS Independent',		\
                          'Programming Language :: Python',		\
-                   #     'Topic :: Scientific/Engineering :: Visualization',\
+                         'Topic :: Scientific/Engineering :: Visualization',\
                          'Topic :: Software Development :: Libraries :: Python Modules'],
 	long_description = "\n".join(trustlet.__doc__.split('\n')),
 	# py_modules = ['trustlet', 'pymmetry'],

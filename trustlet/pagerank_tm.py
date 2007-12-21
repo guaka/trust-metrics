@@ -1,6 +1,6 @@
 
 from networkx import *
-from Advogato import *
+from Dataset import Advogato
 import page_rank
 import numpy
 
@@ -78,8 +78,9 @@ def pagerank_tm(G, node):
 
 
 if __name__ == "__main__":
-    import Advogato, TrustMetric, PredGraph
-    G = Advogato.Kaitiaki()
+    import TrustMetric, PredGraph
+    from Dataset import Advogato
+    G = Advogato.KaitiakiNetwork()
     PR = BasicPageRank(G)
     for n in G.nodes():
         print PR[n]

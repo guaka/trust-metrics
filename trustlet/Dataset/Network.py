@@ -1,3 +1,6 @@
+
+import trustlet
+
 import urllib
 import os
 from networkx.xdigraph import XDiGraph
@@ -6,7 +9,7 @@ from networkx import cluster
 import numpy
 import scipy
 
-from Table import Table
+from trustlet.Table import Table
 
 import igraph
 

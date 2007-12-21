@@ -1,7 +1,6 @@
 import networkx
 from networkx import path, search
-import Advogato
-import Dataset
+from Dataset import Advogato, Dummy
 import random
 from pprint import pprint
 # see also something else
@@ -200,9 +199,9 @@ def adv_trust_metric(G):
     return node_levels
 
 
-D = Dataset.Dummy()
-K = Advogato.Kaitiaki()
-S = Advogato.SqueakFoundation()
+D = Dummy.DummyNetwork()
+K = Advogato.KaitiakiNetwork()
+S = Advogato.SqueakFoundationNetwork()
 
 a = adv_trust_metric(K)
 print a

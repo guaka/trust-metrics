@@ -29,6 +29,6 @@ Using
 __version__ = '0.1.0'
 
 
-from Advogato import *
+from Dataset.Advogato import *
 from TrustMetric import *
 from PredGraph import *

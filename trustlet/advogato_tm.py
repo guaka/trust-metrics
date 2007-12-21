@@ -72,10 +72,10 @@ def advogato_tm(graph, src, dst):
 
 
 if __name__ == "__main__":
-    import Advogato, PredGraph
+    import Dataset.Advogato, PredGraph
     import TrustMetric
     
-    G = Advogato.Kaitiaki() #Advogato()
+    G = Dataset.Advogato.KaitiakiNetwork() #Advogato()
     pg = PredGraph.PredGraph(G, TrustMetric.AdvogatoGlobalTM, True)
     import scipy
     print scipy.mean(pg.pred_trust), scipy.std(pg.pred_trust)

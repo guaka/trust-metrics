@@ -99,8 +99,8 @@ def _trust_val(graph, a, b):
     
 
 if __name__ == "__main__":
-    from Advogato import Advogato, SqueakFoundation
-    test_graph = SqueakFoundation()
+    from Dataset.Advogato import AdvogatoNetwork, SqueakFoundationNetwork
+    test_graph = SqueakFoundationNetwork()
     graph_props = GraphProperties(test_graph)
 
 
