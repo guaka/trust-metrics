@@ -43,10 +43,8 @@ class CalcGraph(Dataset.Network):
         self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
-        self.path = reduce(os.path.join,
-                           ['/sra0/sra/souren/datasets/', #FIX: Dataset.Network.dataset_dir(),
-                            get_name(dataset),
-                            path_name(TM)])
+        self.path = os.path.join(Dataset.Network.dataset_dir(), get_name(dataset),
+                                 path_name(TM))
         if not os.path.exists(self.path):
             os.mkdir(self.path)
         self.filepath = os.path.join(self.path, get_name(self) + '.dot')

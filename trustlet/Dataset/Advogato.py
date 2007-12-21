@@ -43,6 +43,7 @@ __license__ = "GPL"
 from Network import WeightedNetwork
 import os
 import re
+import datetime
 
 class AdvogatoNetwork(WeightedNetwork):
     """The Advogato dataset."""
@@ -71,22 +72,21 @@ class AdvogatoNetwork(WeightedNetwork):
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, filename = None, comp_threshold = 0):
+    def __init__(self, date = None, comp_threshold = 0):
+        """e.g. A = Advogato(date = '20071221')"""
         WeightedNetwork.__init__(self, weights = self.level_map)
+        if not date:
+            date = datetime.datetime.now().strftime("%Y%m%d")
+        self.date = date
+
+        self.path = os.path.join(self.path, date)
+        if not os.path.exists(self.path):
+            os.mkdir(self.path)
         self.filepath = os.path.join(self.path, self.dotfile)
         self.download(only_if_needed = True)
+        self.get_graph_dot()
 
-        # ugly, temp workaround: RobotsNet isn't parsing properly yet
-        if (self.__class__.__name__ == "RobotsNet"):
-            self.fix_graphdot()
-
-        if filename == "tiny":
-            self.get_graph_dot("tiny_graph.dot")
-        elif filename and os.path.exists(filename):
-            self.get_graph_dot(filename)
-        elif filename is None:
-            self.get_graph_dot()
-
+        # DEPRECATED?
         if comp_threshold:
             self.ditch_components(comp_threshold)
 
@@ -202,5 +202,3 @@ date will be parameter of AdvogatoNetwork.__init__
 
 """
 
-if __name__ == "__main__":
-    ROB = RobotsNet()
