@@ -23,6 +23,8 @@ for datasets: Kaitiaki, SqueakFoundation, Advogato
 
 """ 
 
+import sys
+sys.path.append('..')
 from helpers import get_name
 
 
@@ -54,12 +56,12 @@ def evals_with_conds(pred_graphs, eval_measure, conds_on_edges):
     return conds_on_edges, evals
 
 if __name__ == "__main__":
-    from Dataset.Advogato import AdvogatoNetwork, SqueakFoundationNetwork, KaitiakiNetwork
+    from Advogato import Advogato, SqueakFoundation, Kaitiaki
     from PredGraph import PredGraph
     from TrustMetric import EbayTM, OutA_TM
-    G = SqueakFoundation() # Advogato()
+    GRAPH = SqueakFoundation() # Advogato()
 
-    evaluated_trust_metrics = [EbayTM, OutA_TM]
+    EVALUATED_TRUST_METRICS = [EbayTM, OutA_TM]
     #evaluated_trust_metrics = [AlwaysMaster, AlwaysJourneyer,
     #AlwaysApprentice, AlwaysObserver, RandomTM, EbayTM, OutA_TM,
     #OutB_TM, EdgesB_TM, EdgesA_TM, MoletrustTM_horizon1_threshold0,
@@ -72,17 +74,17 @@ if __name__ == "__main__":
     #PageRankGlobalTM, PageRankTM0, GuakaMoleFullTM, GuakaMoleTM,
     #PaoloMoleTM, IntersectionTM, ]
     
-    eval_measures = ['coverage_cond', 'abs_error_cond']
-    conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
+    EVAL_MEASURES = ['coverage_cond', 'abs_error_cond']
+    CONDS_ON_EDGES = ['and_cond(master, edge_to_connected_node(5))',
                       'and_cond(master, not_cond(edge_to_connected_node(5)))',
                       'and_cond(not_cond(master), edge_to_connected_node(5))']
 
-    pred_graphs = map(lambda tm: PredGraph(G, tm), evaluated_trust_metrics)
+    PRED_GRAPHS = map(lambda tm: PredGraph(GRAPH, tm), EVALUATED_TRUST_METRICS)
 
-    for eval_measure in eval_measures:
-        conds, evals = evals_with_conds(pred_graphs,
-                                        eval_measure, conds_on_edges)
-        display(eval_measure, conds, evals)
+    for EVAL_MEASURE in EVAL_MEASURES:
+        CONDS, EVALS = evals_with_conds(PRED_GRAPHS,
+                                        EVAL_MEASURE, CONDS_ON_EDGES)
+        display(EVAL_MEASURE, CONDS, EVALS)
         
 
 
