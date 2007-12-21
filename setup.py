@@ -25,4 +25,12 @@ setup(	name = 'trustlet',
 	# py_modules = ['trustlet', 'pymmetry'],
         scripts = ['scripts/dataset-downloader'],
         packages = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset'],
+
+        # this doesn't work really well with Python 2.5.1 and
+        # setuptools 0.6c6 on guaka's RH machine called power at IRST
+        install_requires = ['igraph',
+                            'pyparsing',
+                            'pygraphviz',
+                            'numpy',
+                            'networkx']  
         )
