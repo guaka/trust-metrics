@@ -1,7 +1,7 @@
 
 from Network import Network
 
-class Dummy(Network):
+class DummyNetwork(Network):
     """A dummy dataset used for testing purposes, actually the dataset
     with 8 nodes discussed in
     http://www.ams.org/featurecolumn/archive/pagerank.html"""
@@ -31,7 +31,7 @@ class Dummy(Network):
             self.add_edge(edge[0], edge[1], 1.0)
         
 
-class Dummy_Weighted(Network):
+class DummyWeightedNetwork(Network):
     """A dummy dataset used for testing purposes, actually the dataset
     with 8 nodes discussed in
     http://www.ams.org/featurecolumn/archive/pagerank.html

@@ -40,11 +40,11 @@ More to add:
 __author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)"""
 __license__ = "GPL"
 
-from Dataset.Network import WeightedNetwork
+from Network import WeightedNetwork
 import os
 import re
 
-class Advogato(WeightedNetwork):
+class AdvogatoNetwork(WeightedNetwork):
     """The Advogato dataset."""
 
     # TODO:
@@ -134,7 +134,7 @@ class Advogato(WeightedNetwork):
         self._read_dot(filepath)
 
 
-class RobotsNet(Advogato):
+class RobotsNetNetwork(AdvogatoNetwork):
     """
     See http://trustlet.org/wiki/Robots.net
     Problem: spaces in graph.dot
@@ -159,7 +159,7 @@ class RobotsNet(Advogato):
         open(self.filepath + 'test', 'w').writelines(fixed_lines)
         return self.filepath + 'test'
 
-class SqueakFoundation(Advogato):
+class SqueakFoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
     level_map = {
@@ -178,23 +178,28 @@ class SqueakFoundation(Advogato):
         return self.level_map[edge[2]['color']]
 
 
-class Kaitiaki(SqueakFoundation):
+class KaitiakiNetwork(SqueakFoundationNetwork):
     """Kaitaki dataset"""
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
 
+"""
+
 class AdvogatoPast(Advogato):
     def __init__(self, date):
         raise NotImplemented
 
-"""
+
         http://phauly.bzaar.net/advogato_files/
         graph20041028154056.dot 27-Aug-2007 06:19   2.2M
         graph20051111035647.dot 27-Aug-2007 06:19   2.5M
         graph20060211110033.dot 27-Aug-2007 06:19   3.0M
         graph20060520065443.dot 27-Aug-2007 06:20   3.1M
         graph20070827.dot       27-Aug-2007 06:20   2.5M  
+
+date will be parameter of AdvogatoNetwork.__init__
+
 """
 
 if __name__ == "__main__":

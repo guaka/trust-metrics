@@ -1,6 +1,6 @@
 
 from Network import Network
-from Dummy import Dummy, Dummy_Weighted
+from Dummy import DummyNetwork, DummyWeightedNetwork
 
 import sys
 sys.path.append('..')

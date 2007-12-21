@@ -7,7 +7,8 @@ some information.
 import sys
 sys.path.append('../trustlet')
 
-from Advogato import *
+from Dataset.Advogato import *
+from Dataset.Dummy import DummyNetwork
 
 # create dummy dataset
 D = DummyNetwork()
