@@ -9,6 +9,10 @@ sys.path.append('../trustlet')
 
 from Advogato import *
 
+# create dummy dataset
+D = DummyNetwork()
+D.info() # show information
+
 # create Kaitiaki dataset
 K = KaitiakiNetwork()
 K.info() # show information
