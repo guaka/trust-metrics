@@ -1,0 +1,1843 @@
+digraph "G" {
+   /* "dbarth" */
+   "dbarth" -> "mikl" [level="Journeyer"];
+   /* "simonbaro" */
+   "simonbaro" -> "alan" [level="Master"];
+   "simonbaro" -> "mako" [level="Master"];
+   "simonbaro" -> "fxn" [level="Master"];
+   "simonbaro" -> "raph" [level="Master"];
+   "simonbaro" -> "zbowling" [level="Master"];
+   "simonbaro" -> "Telsa" [level="Master"];
+   "simonbaro" -> "dhd" [level="Master"];
+   "simonbaro" -> "werner" [level="Master"];
+   "simonbaro" -> "dria" [level="Master"];
+   "simonbaro" -> "zab" [level="Master"];
+   "simonbaro" -> "cbbrowne" [level="Master"];
+   "simonbaro" -> "jbuck" [level="Master"];
+   /* "davidhenryreisch" */
+   /* "florian" */
+   /* "Remote" */
+   /* "Byter" */
+   /* "brondsem" */
+   "brondsem" -> "brondsem" [level="Journeyer"];
+   "brondsem" -> "ncm" [level="Observer"];
+   /* "sandro" */
+   /* "gavag06" */
+   /* "dan" */
+   "dan" -> "mjc" [level="Journeyer"];
+   "dan" -> "mjs" [level="Journeyer"];
+   "dan" -> "foo" [level="Observer"];
+   "dan" -> "alex" [level="Journeyer"];
+   "dan" -> "nwv" [level="Journeyer"];
+   "dan" -> "argent" [level="Master"];
+   "dan" -> "ariel" [level="Master"];
+   "dan" -> "Ward" [level="Master"];
+   "dan" -> "Sunir" [level="Journeyer"];
+   "dan" -> "wnewman" [level="Master"];
+   "dan" -> "pvaneynd" [level="Master"];
+   "dan" -> "Omnifarious" [level="Journeyer"];
+   "dan" -> "kira" [level="Journeyer"];
+   "dan" -> "tbmoore" [level="Master"];
+   "dan" -> "fufie" [level="Journeyer"];
+   "dan" -> "ingvar" [level="Journeyer"];
+   "dan" -> "rjain" [level="Journeyer"];
+   "dan" -> "walters" [level="Journeyer"];
+   "dan" -> "crhodes" [level="Master"];
+   "dan" -> "rvdm" [level="Journeyer"];
+   "dan" -> "slef" [level="Apprentice"];
+   "dan" -> "hands" [level="Master"];
+   "dan" -> "mdanish" [level="Journeyer"];
+   "dan" -> "mglazer" [level="Observer"];
+   "dan" -> "bmastenbrook" [level="Journeyer"];
+   "dan" -> "tagishandy" [level="Journeyer"];
+   /* "juanjo" */
+   "juanjo" -> "alan" [level="Master"];
+   "juanjo" -> "juanjo" [level="Journeyer"];
+   "juanjo" -> "cananian" [level="Journeyer"];
+   "juanjo" -> "hpa" [level="Master"];
+   "juanjo" -> "miguel" [level="Master"];
+   "juanjo" -> "davem" [level="Master"];
+   "juanjo" -> "rms" [level="Master"];
+   "juanjo" -> "riel" [level="Master"];
+   /* "stakos" */
+   "stakos" -> "stakos" [level="Master"];
+   /* "rinkjustice" */
+   /* "mathias" */
+   "mathias" -> "miguel" [level="Master"];
+   "mathias" -> "alan" [level="Master"];
+   "mathias" -> "riel" [level="Master"];
+   "mathias" -> "quintela" [level="Journeyer"];
+   /* "jaanmemon" */
+   /* "jsh" */
+   "jsh" -> "timj" [level="Master"];
+   "jsh" -> "miguel" [level="Master"];
+   "jsh" -> "kaig" [level="Journeyer"];
+   "jsh" -> "mjs" [level="Master"];
+   "jsh" -> "eskil" [level="Journeyer"];
+   "jsh" -> "vicious" [level="Master"];
+   /* "Bcuttie11225" */
+   /* "rickwood" */
+   /* "kappa" */
+   "kappa" -> "grog" [level="Master"];
+   "kappa" -> "bp" [level="Master"];
+   "kappa" -> "peter" [level="Master"];
+   "kappa" -> "kkenn" [level="Journeyer"];
+   "kappa" -> "nik" [level="Master"];
+   "kappa" -> "phk" [level="Master"];
+   "kappa" -> "imp" [level="Master"];
+   "kappa" -> "obrien" [level="Master"];
+   "kappa" -> "msmith" [level="Master"];
+   "kappa" -> "kappa" [level="Apprentice"];
+   "kappa" -> "Malx" [level="Apprentice"];
+   "kappa" -> "jhb" [level="Master"];
+   "kappa" -> "eivind" [level="Master"];
+   "kappa" -> "gsutter" [level="Journeyer"];
+   "kappa" -> "benno" [level="Journeyer"];
+   "kappa" -> "gelderen" [level="Journeyer"];
+   "kappa" -> "dcs" [level="Journeyer"];
+   "kappa" -> "will" [level="Journeyer"];
+   "kappa" -> "keichii" [level="Journeyer"];
+   "kappa" -> "cg" [level="Journeyer"];
+   "kappa" -> "nsayer" [level="Journeyer"];
+   "kappa" -> "alan" [level="Master"];
+   "kappa" -> "rwatson" [level="Master"];
+   "kappa" -> "softweyr" [level="Master"];
+   "kappa" -> "billf" [level="Journeyer"];
+   "kappa" -> "k" [level="Journeyer"];
+   "kappa" -> "green" [level="Journeyer"];
+   "kappa" -> "jedgar" [level="Master"];
+   "kappa" -> "nbm" [level="Journeyer"];
+   "kappa" -> "des" [level="Master"];
+   "kappa" -> "aunty" [level="Journeyer"];
+   "kappa" -> "jkh" [level="Master"];
+   "kappa" -> "voland" [level="Journeyer"];
+   "kappa" -> "Fyodor" [level="Journeyer"];
+   "kappa" -> "Gruber" [level="Journeyer"];
+   "kappa" -> "bmilekic" [level="Journeyer"];
+   /* "cltam" */
+   /* "jimray" */
+   "jimray" -> "gregorsamsa" [level="Master"];
+   "jimray" -> "beens" [level="Journeyer"];
+   "jimray" -> "taranga" [level="Master"];
+   "jimray" -> "manu" [level="Master"];
+   "jimray" -> "dchud" [level="Journeyer"];
+   "jimray" -> "TordJ" [level="Master"];
+   /* "Spoon" */
+   "Spoon" -> "Spoon" [level="Apprentice"];
+   "Spoon" -> "fxn" [level="Journeyer"];
+   "Spoon" -> "IlyaM" [level="Journeyer"];
+   "Spoon" -> "LotR" [level="Journeyer"];
+   "Spoon" -> "petdance" [level="Journeyer"];
+   "Spoon" -> "autarch" [level="Master"];
+   "Spoon" -> "cwinters" [level="Journeyer"];
+   "Spoon" -> "whytheluckystiff" [level="Master"];
+   /* "Affero" */
+   "Affero" -> "Affero" [level="Apprentice"];
+   "Affero" -> "rasmus" [level="Master"];
+   /* "mbm" */
+   "mbm" -> "mbm" [level="Master"];
+   "mbm" -> "trackman" [level="Journeyer"];
+   "mbm" -> "marius" [level="Journeyer"];
+   "mbm" -> "garrett" [level="Master"];
+   "mbm" -> "octobrx" [level="Journeyer"];
+   /* "in1t" */
+   /* "deft" */
+   "deft" -> "loam" [level="Apprentice"];
+   "deft" -> "twisted" [level="Journeyer"];
+   /* "laslo" */
+   /* "galt" */
+   /* "jeske" */
+   /* "ddeniel" */
+   /* "yetixxl" */
+   /* "neoneye" */
+   "neoneye" -> "ringbark" [level="Journeyer"];
+   "neoneye" -> "whytheluckystiff" [level="Master"];
+   "neoneye" -> "brwill" [level="Journeyer"];
+   "neoneye" -> "lerdsuwa" [level="Journeyer"];
+   "neoneye" -> "tcopeland" [level="Master"];
+   "neoneye" -> "ringbark" [level="Journeyer"];
+   "neoneye" -> "rw2" [level="Journeyer"];
+   "neoneye" -> "stillflame" [level="Journeyer"];
+   /* "sioakaos" */
+   "sioakaos" -> "sioakaos" [level="Journeyer"];
+   /* "ddb" */
+   "ddb" -> "ddb" [level="Apprentice"];
+   /* "MsnChat" */
+   /* "mot" */
+   /* "Physicman" */
+   "Physicman" -> "Physicman" [level="Apprentice"];
+   "Physicman" -> "dsandras" [level="Master"];
+   "Physicman" -> "Fyodor" [level="Master"];
+   "Physicman" -> "adulau" [level="Journeyer"];
+   "Physicman" -> "Pitr" [level="Journeyer"];
+   "Physicman" -> "xsa" [level="Journeyer"];
+   "Physicman" -> "mbanck" [level="Master"];
+   /* "simosx" */
+   /* "DuMbBrUnEtTe639" */
+   /* "kronenpj" */
+   /* "cech" */
+   "cech" -> "cech" [level="Apprentice"];
+   "cech" -> "jgg" [level="Master"];
+   "cech" -> "z" [level="Journeyer"];
+   "cech" -> "joey" [level="Master"];
+   "cech" -> "dhd" [level="Journeyer"];
+   "cech" -> "marcel" [level="Journeyer"];
+   "cech" -> "wichert" [level="Master"];
+   "cech" -> "espy" [level="Journeyer"];
+   "cech" -> "doogie" [level="Journeyer"];
+   "cech" -> "hands" [level="Journeyer"];
+   "cech" -> "nick" [level="Journeyer"];
+   "cech" -> "chip" [level="Master"];
+   "cech" -> "branden" [level="Journeyer"];
+   "cech" -> "srivasta" [level="Journeyer"];
+   "cech" -> "omnic" [level="Journeyer"];
+   "cech" -> "knghtbrd" [level="Journeyer"];
+   "cech" -> "alan" [level="Master"];
+   "cech" -> "netgod" [level="Journeyer"];
+   "cech" -> "davidw" [level="Journeyer"];
+   "cech" -> "bombadil" [level="Journeyer"];
+   "cech" -> "tausq" [level="Journeyer"];
+   "cech" -> "gorgo" [level="Journeyer"];
+   "cech" -> "seeS" [level="Journeyer"];
+   "cech" -> "bma" [level="Journeyer"];
+   "cech" -> "dres" [level="Journeyer"];
+   "cech" -> "ruud" [level="Journeyer"];
+   "cech" -> "Joy" [level="Journeyer"];
+   "cech" -> "ejb" [level="Journeyer"];
+   "cech" -> "broonie" [level="Journeyer"];
+   "cech" -> "lordsutch" [level="Journeyer"];
+   "cech" -> "calc" [level="Journeyer"];
+   "cech" -> "Slimer" [level="Journeyer"];
+   /* "hangel" */
+   "hangel" -> "hangel" [level="Observer"];
+   /* "aizatto" */
+   "aizatto" -> "aizatto" [level="Apprentice"];
+   /* "jlatour" */
+   "jlatour" -> "jlatour" [level="Apprentice"];
+   "jlatour" -> "tnt" [level="Journeyer"];
+   /* "gregorb" */
+   "gregorb" -> "gregorb" [level="Apprentice"];
+   "gregorb" -> "aviram" [level="Journeyer"];
+   /* "flips" */
+   /* "helge" */
+   "helge" -> "helge" [level="Observer"];
+   /* "jeffreybradley2002" */
+   /* "alexmerz" */
+   "alexmerz" -> "alexmerz" [level="Master"];
+   /* "bhyde" */
+   "bhyde" -> "davidr" [level="Master"];
+   "bhyde" -> "jimjag" [level="Master"];
+   "bhyde" -> "rasmus" [level="Master"];
+   "bhyde" -> "wrowe" [level="Master"];
+   "bhyde" -> "gstein" [level="Master"];
+   "bhyde" -> "wsanchez" [level="Master"];
+   "bhyde" -> "daniel" [level="Master"];
+   "bhyde" -> "jimw" [level="Master"];
+   "bhyde" -> "ben" [level="Master"];
+   "bhyde" -> "manoj" [level="Master"];
+   "bhyde" -> "lars" [level="Master"];
+   "bhyde" -> "karimlakhani" [level="Master"];
+   "bhyde" -> "mjcox" [level="Master"];
+   "bhyde" -> "crhodes" [level="Master"];
+   /* "async" */
+   "async" -> "async" [level="Observer"];
+   "async" -> "nymia" [level="Apprentice"];
+   "async" -> "sye" [level="Apprentice"];
+   "async" -> "kyotone" [level="Apprentice"];
+   "async" -> "Telsa" [level="Journeyer"];
+   "async" -> "pcburns" [level="Apprentice"];
+   "async" -> "dto" [level="Journeyer"];
+   "async" -> "bratsche" [level="Apprentice"];
+   "async" -> "StevenRainwater" [level="Journeyer"];
+   "async" -> "brg" [level="Journeyer"];
+   "async" -> "raph" [level="Master"];
+   "async" -> "sad" [level="Journeyer"];
+   "async" -> "lilo" [level="Master"];
+   "async" -> "dria" [level="Master"];
+   "async" -> "elise" [level="Journeyer"];
+   "async" -> "jenni" [level="Apprentice"];
+   "async" -> "pjf" [level="Journeyer"];
+   "async" -> "jerdfelt" [level="Master"];
+   "async" -> "goingware" [level="Journeyer"];
+   "async" -> "kgb" [level="Master"];
+   "async" -> "demoncrat" [level="Journeyer"];
+   "async" -> "srl" [level="Journeyer"];
+   "async" -> "gleblanc" [level="Journeyer"];
+   "async" -> "DV" [level="Master"];
+   "async" -> "Wilddev" [level="Journeyer"];
+   "async" -> "superant" [level="Journeyer"];
+   "async" -> "ajh" [level="Journeyer"];
+   "async" -> "fufie" [level="Journeyer"];
+   "async" -> "zeevon" [level="Apprentice"];
+   "async" -> "rjain" [level="Journeyer"];
+   "async" -> "ajv" [level="Master"];
+   "async" -> "MikeGTN" [level="Journeyer"];
+   "async" -> "csm" [level="Journeyer"];
+   "async" -> "Skud" [level="Master"];
+   "async" -> "dyork" [level="Journeyer"];
+   "async" -> "sneakums" [level="Apprentice"];
+   "async" -> "dirtyrat" [level="Journeyer"];
+   "async" -> "djcb" [level="Journeyer"];
+   "async" -> "jmg" [level="Master"];
+   "async" -> "trow" [level="Master"];
+   "async" -> "dancer" [level="Journeyer"];
+   "async" -> "hypatia" [level="Apprentice"];
+   "async" -> "rachel" [level="Apprentice"];
+   "async" -> "washort" [level="Journeyer"];
+   "async" -> "varelse" [level="Apprentice"];
+   "async" -> "adulau" [level="Journeyer"];
+   "async" -> "baruch" [level="Journeyer"];
+   "async" -> "davej" [level="Master"];
+   "async" -> "imp" [level="Master"];
+   "async" -> "Jewelsthorn" [level="Apprentice"];
+   "async" -> "Ankh" [level="Master"];
+   "async" -> "abg" [level="Apprentice"];
+   "async" -> "ottawaDave" [level="Apprentice"];
+   "async" -> "voltron" [level="Journeyer"];
+   "async" -> "mpruett" [level="Journeyer"];
+   "async" -> "stone" [level="Journeyer"];
+   "async" -> "argent" [level="Master"];
+   "async" -> "monkeyiq" [level="Journeyer"];
+   "async" -> "lukeg" [level="Journeyer"];
+   "async" -> "rupert" [level="Journeyer"];
+   "async" -> "wingo" [level="Journeyer"];
+   "async" -> "rooneg" [level="Journeyer"];
+   "async" -> "jamesh" [level="Master"];
+   "async" -> "kiko" [level="Journeyer"];
+   "async" -> "jdahlin" [level="Journeyer"];
+   "async" -> "brejc8" [level="Journeyer"];
+   "async" -> "mathrick" [level="Journeyer"];
+   /* "SLauaki" */
+   /* "cbz" */
+   "cbz" -> "cbz" [level="Apprentice"];
+   "cbz" -> "jwz" [level="Master"];
+   "cbz" -> "orabidoo" [level="Journeyer"];
+   "cbz" -> "apm" [level="Journeyer"];
+   "cbz" -> "monniaux" [level="Apprentice"];
+   /* "dooykung" */
+   "dooykung" -> "dooykung" [level="Master"];
+   /* "kinetik" */
+   "kinetik" -> "kinetik" [level="Journeyer"];
+   "kinetik" -> "ncm" [level="Master"];
+   "kinetik" -> "graydon" [level="Master"];
+   "kinetik" -> "oxygene" [level="Journeyer"];
+   "kinetik" -> "randombit" [level="Journeyer"];
+   /* "julesh" */
+   "julesh" -> "kernelrahl" [level="Journeyer"];
+   "julesh" -> "hpa" [level="Master"];
+   "julesh" -> "abs" [level="Master"];
+   "julesh" -> "Fare" [level="Journeyer"];
+   "julesh" -> "Physicman" [level="Apprentice"];
+   /* "miknight" */
+   "miknight" -> "miknight" [level="Apprentice"];
+   /* "jamey" */
+   "jamey" -> "jamey" [level="Master"];
+   "jamey" -> "France" [level="Master"];
+   /* "fremo" */
+   /* "msteeg" */
+   /* "laburu" */
+   "laburu" -> "bonzini" [level="Master"];
+   "laburu" -> "laburu" [level="Apprentice"];
+   /* "lokafg" */
+   /* "chrislong" */
+   /* "sun" */
+   "sun" -> "eli7" [level="Apprentice"];
+   "sun" -> "sun" [level="Journeyer"];
+   "sun" -> "gby" [level="Journeyer"];
+   "sun" -> "Marcus" [level="Master"];
+   "sun" -> "behdad" [level="Journeyer"];
+   /* "Jewelsthorn" */
+   "Jewelsthorn" -> "jimr" [level="Journeyer"];
+   "Jewelsthorn" -> "Jewelsthorn" [level="Journeyer"];
+   "Jewelsthorn" -> "chrisd" [level="Journeyer"];
+   "Jewelsthorn" -> "davemc" [level="Journeyer"];
+   "Jewelsthorn" -> "dsifry" [level="Journeyer"];
+   "Jewelsthorn" -> "dmarti" [level="Journeyer"];
+   "Jewelsthorn" -> "ignatz" [level="Apprentice"];
+   "Jewelsthorn" -> "omarius" [level="Apprentice"];
+   "Jewelsthorn" -> "klevin" [level="Apprentice"];
+   "Jewelsthorn" -> "mpruett" [level="Apprentice"];
+   "Jewelsthorn" -> "aicra" [level="Apprentice"];
+   "Jewelsthorn" -> "mpawlo" [level="Apprentice"];
+   "Jewelsthorn" -> "mtearle" [level="Apprentice"];
+   /* "Apakuni" */
+   "Apakuni" -> "Apakuni" [level="Journeyer"];
+   "Apakuni" -> "gregorrothfuss" [level="Journeyer"];
+   "Apakuni" -> "janschrage" [level="Journeyer"];
+   "Apakuni" -> "Rabbitt" [level="Journeyer"];
+   "Apakuni" -> "besfred" [level="Journeyer"];
+   "Apakuni" -> "niceguyeddie" [level="Journeyer"];
+   "Apakuni" -> "StEgo" [level="Journeyer"];
+   "Apakuni" -> "jotajota" [level="Journeyer"];
+   "Apakuni" -> "IsaacGolding" [level="Master"];
+   "Apakuni" -> "vogelap" [level="Journeyer"];
+   "Apakuni" -> "johnny" [level="Journeyer"];
+   "Apakuni" -> "andyv" [level="Journeyer"];
+   /* "Raiden" */
+   /* "dlepage" */
+   "dlepage" -> "dlepage" [level="Observer"];
+   /* "mindfreak" */
+   /* "scaramanga" */
+   "scaramanga" -> "RyanMuldoon" [level="Journeyer"];
+   /* "JB318" */
+   "JB318" -> "JB318" [level="Apprentice"];
+   "JB318" -> "xiphmont" [level="Journeyer"];
+   "JB318" -> "alan" [level="Master"];
+   "JB318" -> "jwz" [level="Journeyer"];
+   "JB318" -> "chromatic" [level="Apprentice"];
+   "JB318" -> "schoen" [level="Journeyer"];
+   "JB318" -> "biffhero" [level="Apprentice"];
+   "JB318" -> "elise" [level="Journeyer"];
+   "JB318" -> "justin" [level="Apprentice"];
+   "JB318" -> "pate" [level="Apprentice"];
+   "JB318" -> "mishan" [level="Journeyer"];
+   "JB318" -> "ajk" [level="Journeyer"];
+   "JB318" -> "jgoldsch" [level="Apprentice"];
+   "JB318" -> "BrucePerens" [level="Master"];
+   "JB318" -> "rachel" [level="Apprentice"];
+   "JB318" -> "liw" [level="Master"];
+   "JB318" -> "dhd" [level="Journeyer"];
+   "JB318" -> "zw" [level="Journeyer"];
+   "JB318" -> "kelly" [level="Journeyer"];
+   "JB318" -> "lkcl" [level="Journeyer"];
+   "JB318" -> "Talin" [level="Journeyer"];
+   "JB318" -> "jlp" [level="Apprentice"];
+   "JB318" -> "starshine" [level="Journeyer"];
+   /* "Erbo" */
+   "Erbo" -> "jeremie" [level="Master"];
+   "Erbo" -> "DizzyD" [level="Journeyer"];
+   "Erbo" -> "Erbo" [level="Journeyer"];
+   "Erbo" -> "temas" [level="Journeyer"];
+   "Erbo" -> "eliot" [level="Apprentice"];
+   "Erbo" -> "pgmillard" [level="Journeyer"];
+   "Erbo" -> "alan" [level="Master"];
+   "Erbo" -> "TSBandit" [level="Apprentice"];
+   "Erbo" -> "quad" [level="Journeyer"];
+   "Erbo" -> "nwv" [level="Journeyer"];
+   "Erbo" -> "dwaite" [level="Journeyer"];
+   "Erbo" -> "julian" [level="Apprentice"];
+   "Erbo" -> "jwz" [level="Master"];
+   "Erbo" -> "washort" [level="Apprentice"];
+   "Erbo" -> "jmecham" [level="Apprentice"];
+   /* "tacho" */
+   /* "daycart" */
+   /* "oddiofile" */
+   "oddiofile" -> "oddiofile" [level="Master"];
+   /* "flight" */
+   "flight" -> "flight" [level="Apprentice"];
+   /* "karmyshev" */
+   "karmyshev" -> "karmyshev" [level="Apprentice"];
+   /* "razv" */
+   /* "Dougster" */
+   /* "kmacleod" */
+   /* "brother" */
+   "brother" -> "brother" [level="Journeyer"];
+   "brother" -> "bma" [level="Journeyer"];
+   "brother" -> "darkewolf" [level="Journeyer"];
+   "brother" -> "lazarus" [level="Apprentice"];
+   "brother" -> "joey" [level="Master"];
+   "brother" -> "wichert" [level="Master"];
+   "brother" -> "branden" [level="Master"];
+   "brother" -> "netgod" [level="Journeyer"];
+   "brother" -> "knghtbrd" [level="Journeyer"];
+   "brother" -> "liw" [level="Journeyer"];
+   "brother" -> "lilo" [level="Journeyer"];
+   "brother" -> "ajk" [level="Journeyer"];
+   "brother" -> "kanikus" [level="Journeyer"];
+   "brother" -> "kimusan" [level="Journeyer"];
+   "brother" -> "ask" [level="Journeyer"];
+   "brother" -> "cech" [level="Journeyer"];
+   "brother" -> "phk" [level="Master"];
+   "brother" -> "karlheg" [level="Journeyer"];
+   "brother" -> "torsten" [level="Journeyer"];
+   "brother" -> "wurtel" [level="Apprentice"];
+   "brother" -> "alfie" [level="Observer"];
+   "brother" -> "xtifr" [level="Journeyer"];
+   "brother" -> "evo" [level="Journeyer"];
+   "brother" -> "jpick" [level="Journeyer"];
+   "brother" -> "wwwwolf" [level="Apprentice"];
+   "brother" -> "mihtjel" [level="Apprentice"];
+   /* "assyl" */
+   /* "alboole" */
+   /* "FreeTinker" */
+   "FreeTinker" -> "FreeTinker" [level="Master"];
+   /* "psdie" */
+   "psdie" -> "TordJ" [level="Journeyer"];
+   "psdie" -> "psdie" [level="Apprentice"];
+   "psdie" -> "plundis" [level="Journeyer"];
+   /* "mpb" */
+   "mpb" -> "mpb" [level="Observer"];
+   /* "taj" */
+   "taj" -> "ralsina" [level="Journeyer"];
+   "taj" -> "gjbadros" [level="Journeyer"];
+   "taj" -> "vektor" [level="Apprentice"];
+   "taj" -> "Pseudonym" [level="Journeyer"];
+   "taj" -> "achitnis" [level="Journeyer"];
+   "taj" -> "gael" [level="Journeyer"];
+   "taj" -> "larsk" [level="Journeyer"];
+   "taj" -> "nicnacs" [level="Apprentice"];
+   "taj" -> "tackat" [level="Master"];
+   "taj" -> "Skud" [level="Master"];
+   "taj" -> "bero" [level="Master"];
+   "taj" -> "msevior" [level="Journeyer"];
+   "taj" -> "baueran" [level="Journeyer"];
+   "taj" -> "mjs" [level="Master"];
+   "taj" -> "vicious" [level="Master"];
+   "taj" -> "Guillaume" [level="Master"];
+   "taj" -> "jono" [level="Journeyer"];
+   "taj" -> "etbe" [level="Master"];
+   "taj" -> "paul" [level="Journeyer"];
+   "taj" -> "jasonkb" [level="Journeyer"];
+   "taj" -> "LeeJay" [level="Apprentice"];
+   "taj" -> "ajv" [level="Journeyer"];
+   "taj" -> "tronical" [level="Master"];
+   "taj" -> "taj" [level="Journeyer"];
+   "taj" -> "neil" [level="Journeyer"];
+   "taj" -> "Archit" [level="Journeyer"];
+   "taj" -> "Capzilla" [level="Journeyer"];
+   "taj" -> "Uche" [level="Master"];
+   "taj" -> "daniels" [level="Journeyer"];
+   "taj" -> "naba" [level="Journeyer"];
+   /* "lauro" */
+   /* "karene" */
+   /* "Agna" */
+   /* "Michael" */
+   "Michael" -> "partain" [level="Journeyer"];
+   "Michael" -> "austin" [level="Journeyer"];
+   "Michael" -> "bigdisk" [level="Journeyer"];
+   "Michael" -> "link" [level="Apprentice"];
+   "Michael" -> "mobius" [level="Apprentice"];
+   "Michael" -> "chicane" [level="Journeyer"];
+   "Michael" -> "rpragana" [level="Apprentice"];
+   "Michael" -> "jonathan" [level="Apprentice"];
+   "Michael" -> "nixnut" [level="Apprentice"];
+   "Michael" -> "krftkndl" [level="Apprentice"];
+   "Michael" -> "adamd" [level="Apprentice"];
+   "Michael" -> "pate" [level="Apprentice"];
+   "Michael" -> "ErikLevy" [level="Apprentice"];
+   "Michael" -> "phlip" [level="Apprentice"];
+   "Michael" -> "stargazer" [level="Apprentice"];
+   "Michael" -> "eskimoses" [level="Apprentice"];
+   "Michael" -> "Johnath" [level="Apprentice"];
+   "Michael" -> "wsanchez" [level="Master"];
+   "Michael" -> "phk" [level="Master"];
+   "Michael" -> "nomadamon" [level="Apprentice"];
+   "Michael" -> "claudio" [level="Journeyer"];
+   "Michael" -> "MarkF" [level="Journeyer"];
+   "Michael" -> "larva" [level="Journeyer"];
+   "Michael" -> "mskala" [level="Journeyer"];
+   "Michael" -> "Iain" [level="Journeyer"];
+   "Michael" -> "larsu" [level="Journeyer"];
+   "Michael" -> "Michael" [level="Apprentice"];
+   /* "ibiris" */
+   "ibiris" -> "ibiris" [level="Observer"];
+   /* "MildSeven" */
+   "MildSeven" -> "MildSeven" [level="Master"];
+   /* "basvk" */
+   "basvk" -> "basvk" [level="Master"];
+   /* "wald" */
+   "wald" -> "wald" [level="Apprentice"];
+   "wald" -> "mallum" [level="Apprentice"];
+   "wald" -> "wmf" [level="Journeyer"];
+   /* "prashonlinux" */
+   /* "skynirvana419" */
+   /* "sefidom" */
+   "sefidom" -> "sefidom" [level="Observer"];
+   /* "phawley" */
+   /* "baueran" */
+   "baueran" -> "baueran" [level="Journeyer"];
+   "baueran" -> "JoshO" [level="Journeyer"];
+   "baueran" -> "kenelson" [level="Master"];
+   "baueran" -> "Tobias" [level="Apprentice"];
+   "baueran" -> "murrayc" [level="Journeyer"];
+   "baueran" -> "mobius" [level="Apprentice"];
+   "baueran" -> "Omnifarious" [level="Journeyer"];
+   "baueran" -> "cactus" [level="Journeyer"];
+   "baueran" -> "jbowman" [level="Apprentice"];
+   "baueran" -> "Telsa" [level="Journeyer"];
+   "baueran" -> "pilotlight" [level="Journeyer"];
+   "baueran" -> "gert" [level="Master"];
+   "baueran" -> "Uraeus" [level="Apprentice"];
+   "baueran" -> "lange" [level="Journeyer"];
+   "baueran" -> "sussman" [level="Journeyer"];
+   "baueran" -> "mmangino" [level="Apprentice"];
+   "baueran" -> "Thias" [level="Journeyer"];
+   "baueran" -> "Rhys" [level="Apprentice"];
+   "baueran" -> "alan" [level="Master"];
+   "baueran" -> "ralf" [level="Master"];
+   "baueran" -> "tubi" [level="Apprentice"];
+   "baueran" -> "orlando" [level="Apprentice"];
+   "baueran" -> "taj" [level="Journeyer"];
+   "baueran" -> "drc" [level="Journeyer"];
+   "baueran" -> "baerli" [level="Apprentice"];
+   "baueran" -> "chrisflynn" [level="Apprentice"];
+   "baueran" -> "jaco" [level="Apprentice"];
+   "baueran" -> "angelsun" [level="Journeyer"];
+   "baueran" -> "xriso" [level="Apprentice"];
+   "baueran" -> "jamesh" [level="Master"];
+   "baueran" -> "chrisime" [level="Journeyer"];
+   "baueran" -> "jao" [level="Journeyer"];
+   "baueran" -> "bvermeul" [level="Journeyer"];
+   "baueran" -> "highgeek" [level="Journeyer"];
+   "baueran" -> "opiate" [level="Journeyer"];
+   "baueran" -> "neurogato" [level="Apprentice"];
+   "baueran" -> "footrot" [level="Apprentice"];
+   "baueran" -> "Szilva" [level="Apprentice"];
+   "baueran" -> "Kay" [level="Journeyer"];
+   "baueran" -> "Stevey" [level="Journeyer"];
+   "baueran" -> "fxn" [level="Apprentice"];
+   "baueran" -> "holdenweb" [level="Apprentice"];
+   "baueran" -> "jkinsella" [level="Apprentice"];
+   "baueran" -> "aftyde" [level="Master"];
+   "baueran" -> "stevej" [level="Journeyer"];
+   "baueran" -> "Ausmosis" [level="Apprentice"];
+   "baueran" -> "jono" [level="Journeyer"];
+   "baueran" -> "criswell" [level="Journeyer"];
+   "baueran" -> "ks" [level="Journeyer"];
+   "baueran" -> "prigaux" [level="Journeyer"];
+   "baueran" -> "gc" [level="Journeyer"];
+   "baueran" -> "sera" [level="Apprentice"];
+   "baueran" -> "bbrock" [level="Journeyer"];
+   "baueran" -> "LordChaos" [level="Journeyer"];
+   "baueran" -> "Physicman" [level="Apprentice"];
+   "baueran" -> "jcv" [level="Apprentice"];
+   /* "stormwave" */
+   "stormwave" -> "stormwave" [level="Apprentice"];
+   /* "pwlfong" */
+   "pwlfong" -> "pwlfong" [level="Apprentice"];
+   "pwlfong" -> "arrowood" [level="Apprentice"];
+   "pwlfong" -> "pulento" [level="Journeyer"];
+   "pwlfong" -> "orasis" [level="Journeyer"];
+   "pwlfong" -> "madhatter" [level="Apprentice"];
+   "pwlfong" -> "soohrt" [level="Apprentice"];
+   "pwlfong" -> "phonomongrel" [level="Apprentice"];
+   "pwlfong" -> "MichaelCardenas" [level="Journeyer"];
+   "pwlfong" -> "csa" [level="Apprentice"];
+   "pwlfong" -> "gorny" [level="Apprentice"];
+   "pwlfong" -> "magsilva" [level="Apprentice"];
+   "pwlfong" -> "lsdrocha" [level="Apprentice"];
+   "pwlfong" -> "rms" [level="Master"];
+   /* "sweeks" */
+   /* "JohnMcIntosh" */
+   /* "flashjia" */
+   "flashjia" -> "flashjia" [level="Apprentice"];
+   /* "leeym" */
+   /* "tendencies" */
+   "tendencies" -> "tendencies" [level="Apprentice"];
+   /* "purp" */
+   "purp" -> "purp" [level="Apprentice"];
+   /* "jeffrysmith" */
+   /* "Mandrake" */
+   /* "tpot" */
+   "tpot" -> "lkcl" [level="Journeyer"];
+   "tpot" -> "rasmus" [level="Master"];
+   "tpot" -> "mbp" [level="Journeyer"];
+   "tpot" -> "jwz" [level="Master"];
+   "tpot" -> "jamesh" [level="Master"];
+   /* "paradies" */
+   "paradies" -> "paradies" [level="Observer"];
+   /* "donio" */
+   /* "Arnold" */
+   /* "RaV" */
+   /* "kirby" */
+   "kirby" -> "kirby" [level="Apprentice"];
+   "kirby" -> "snim2" [level="Apprentice"];
+   /* "axolotl" */
+   /* "wdavis" */
+   /* "garym" */
+   "garym" -> "chalst" [level="Master"];
+   "garym" -> "schoen" [level="Journeyer"];
+   "garym" -> "badvogato" [level="Master"];
+   "garym" -> "dmerrill" [level="Master"];
+   "garym" -> "dnm" [level="Master"];
+   "garym" -> "hub" [level="Journeyer"];
+   "garym" -> "rasmus" [level="Master"];
+   "garym" -> "ask" [level="Master"];
+   "garym" -> "shinta" [level="Observer"];
+   "garym" -> "hexmode" [level="Journeyer"];
+   "garym" -> "jlbec" [level="Master"];
+   "garym" -> "lkcl" [level="Master"];
+   "garym" -> "dyork" [level="Master"];
+   "garym" -> "hacker" [level="Master"];
+   "garym" -> "nconway" [level="Master"];
+   "garym" -> "glyph" [level="Journeyer"];
+   "garym" -> "ebf" [level="Master"];
+   "garym" -> "i0lanthe" [level="Journeyer"];
+   "garym" -> "mentifex" [level="Master"];
+   /* "janfrode" */
+   "janfrode" -> "janfrode" [level="Apprentice"];
+   "janfrode" -> "hpa" [level="Master"];
+   "janfrode" -> "alan" [level="Master"];
+   "janfrode" -> "fufie" [level="Journeyer"];
+   "janfrode" -> "dtucker" [level="Journeyer"];
+   "janfrode" -> "djm" [level="Journeyer"];
+   /* "Dunc" */
+   /* "bahamat" */
+   /* "kulkul" */
+   /* "fletch" */
+   /* "Bostjan" */
+   "Bostjan" -> "Bostjan" [level="Master"];
+   /* "dbc" */
+   "dbc" -> "dbc" [level="Apprentice"];
+   /* "andago" */
+   /* "Simpson34" */
+   /* "blackmoslem" */
+   /* "schoen" */
+   "schoen" -> "davidw" [level="Journeyer"];
+   "schoen" -> "Ryan" [level="Master"];
+   "schoen" -> "zab" [level="Master"];
+   "schoen" -> "crackmonkey" [level="Journeyer"];
+   "schoen" -> "jwz" [level="Master"];
+   "schoen" -> "joey" [level="Master"];
+   "schoen" -> "uzi" [level="Journeyer"];
+   "schoen" -> "yosh" [level="Master"];
+   "schoen" -> "jes" [level="Master"];
+   "schoen" -> "chrisd" [level="Journeyer"];
+   "schoen" -> "phil" [level="Master"];
+   "schoen" -> "dria" [level="Master"];
+   "schoen" -> "rasmus" [level="Master"];
+   "schoen" -> "inf" [level="Journeyer"];
+   "schoen" -> "wichert" [level="Master"];
+   "schoen" -> "alecm" [level="Master"];
+   "schoen" -> "riel" [level="Master"];
+   "schoen" -> "daw" [level="Journeyer"];
+   "schoen" -> "alan" [level="Master"];
+   "schoen" -> "dsifry" [level="Journeyer"];
+   "schoen" -> "jimd" [level="Journeyer"];
+   "schoen" -> "chip" [level="Master"];
+   "schoen" -> "lilo" [level="Master"];
+   "schoen" -> "scandal" [level="Master"];
+   "schoen" -> "bneely" [level="Apprentice"];
+   "schoen" -> "ben" [level="Master"];
+   "schoen" -> "digdude" [level="Journeyer"];
+   "schoen" -> "dhd" [level="Journeyer"];
+   "schoen" -> "mbp" [level="Journeyer"];
+   "schoen" -> "hpa" [level="Master"];
+   "schoen" -> "grog" [level="Master"];
+   "schoen" -> "elise" [level="Journeyer"];
+   "schoen" -> "starshine" [level="Journeyer"];
+   "schoen" -> "esr" [level="Master"];
+   "schoen" -> "davem" [level="Master"];
+   "schoen" -> "liw" [level="Master"];
+   "schoen" -> "dmarti" [level="Journeyer"];
+   "schoen" -> "shaleh" [level="Journeyer"];
+   "schoen" -> "nelsonrn" [level="Master"];
+   "schoen" -> "bodo" [level="Journeyer"];
+   "schoen" -> "jpick" [level="Journeyer"];
+   "schoen" -> "ping" [level="Journeyer"];
+   "schoen" -> "samth" [level="Journeyer"];
+   "schoen" -> "ncm" [level="Journeyer"];
+   "schoen" -> "mpav" [level="Journeyer"];
+   "schoen" -> "brg" [level="Journeyer"];
+   "schoen" -> "andreas" [level="Journeyer"];
+   "schoen" -> "bwtaylor" [level="Apprentice"];
+   "schoen" -> "wseltzer" [level="Journeyer"];
+   "schoen" -> "mskala" [level="Journeyer"];
+   "schoen" -> "agntdrake" [level="Journeyer"];
+   "schoen" -> "hypatia" [level="Apprentice"];
+   "schoen" -> "gtaylor" [level="Journeyer"];
+   "schoen" -> "dwmw2" [level="Master"];
+   "schoen" -> "hacker" [level="Journeyer"];
+   "schoen" -> "schoen" [level="Journeyer"];
+   "schoen" -> "dwiner" [level="Apprentice"];
+   "schoen" -> "cdlu" [level="Apprentice"];
+   "schoen" -> "Dunc" [level="Journeyer"];
+   "schoen" -> "mperry" [level="Journeyer"];
+   /* "Whitten" */
+   "Whitten" -> "Whitten" [level="Journeyer"];
+   /* "zecke" */
+   "zecke" -> "tronical" [level="Master"];
+   /* "willg" */
+   "willg" -> "willg" [level="Journeyer"];
+   "willg" -> "demoncrat" [level="Master"];
+   /* "josean" */
+   /* "Modar" */
+   /* "micksa" */
+   /* "wasabi" */
+   /* "zenspider" */
+   "zenspider" -> "zenspider" [level="Observer"];
+   /* "alessandro" */
+   /* "bhammersley" */
+   "bhammersley" -> "bhammersley" [level="Observer"];
+   /* "redfist" */
+   /* "fijal" */
+   /* "cdent" */
+   "cdent" -> "alan" [level="Master"];
+   "cdent" -> "cdent" [level="Observer"];
+   "cdent" -> "squiggy" [level="Apprentice"];
+   "cdent" -> "mml" [level="Journeyer"];
+   "cdent" -> "hpa" [level="Master"];
+   "cdent" -> "corbet" [level="Journeyer"];
+   "cdent" -> "suso" [level="Apprentice"];
+   "cdent" -> "mjs" [level="Master"];
+   "cdent" -> "mdorman" [level="Journeyer"];
+   "cdent" -> "bucky" [level="Apprentice"];
+   "cdent" -> "Acapnotic" [level="Journeyer"];
+   "cdent" -> "andrei" [level="Journeyer"];
+   "cdent" -> "lilo" [level="Journeyer"];
+   "cdent" -> "zbir" [level="Apprentice"];
+   "cdent" -> "ahosey" [level="Journeyer"];
+   "cdent" -> "jwz" [level="Master"];
+   "cdent" -> "davem" [level="Master"];
+   "cdent" -> "johnsonm" [level="Master"];
+   "cdent" -> "jjw" [level="Apprentice"];
+   "cdent" -> "eknuth" [level="Apprentice"];
+   "cdent" -> "jlf" [level="Apprentice"];
+   "cdent" -> "jbowman" [level="Apprentice"];
+   "cdent" -> "jmason" [level="Journeyer"];
+   "cdent" -> "GJF" [level="Apprentice"];
+   "cdent" -> "dirtyrat" [level="Apprentice"];
+   "cdent" -> "esinclai" [level="Apprentice"];
+   "cdent" -> "gary" [level="Apprentice"];
+   /* "superbinky" */
+   /* "dzerkel" */
+   /* "Lexi" */
+   /* "bradm" */
+   "bradm" -> "robk" [level="Apprentice"];
+   "bradm" -> "mbp" [level="Master"];
+   "bradm" -> "ajt" [level="Master"];
+   "bradm" -> "nooks" [level="Apprentice"];
+   "bradm" -> "latent" [level="Apprentice"];
+   "bradm" -> "jamver" [level="Apprentice"];
+   "bradm" -> "bjf" [level="Apprentice"];
+   "bradm" -> "kickaha" [level="Journeyer"];
+   "bradm" -> "croy" [level="Apprentice"];
+   /* "parags" */
+   "parags" -> "parags" [level="Journeyer"];
+   /* "tiantian" */
+   /* "feliperlz" */
+   "feliperlz" -> "feliperlz" [level="Observer"];
+   /* "danl" */
+   /* "CuTi3pUp" */
+   /* "nizvoo" */
+   /* "bulochka" */
+   /* "russgarrett" */
+   /* "sunryder" */
+   /* "adam" */
+   /* "namosui" */
+   /* "mcroydon" */
+   "mcroydon" -> "rcaden" [level="Journeyer"];
+   "mcroydon" -> "myelin" [level="Journeyer"];
+   /* "flatcap" */
+   "flatcap" -> "flatcap" [level="Apprentice"];
+   "flatcap" -> "AntonA" [level="Journeyer"];
+   /* "Flax" */
+   "Flax" -> "Flax" [level="Observer"];
+   /* "tan" */
+   "tan" -> "vanicat" [level="Journeyer"];
+   "tan" -> "rmathew" [level="Master"];
+   /* "nathno" */
+   /* "nax" */
+   /* "sabuj73" */
+   /* "ansimorph" */
+   /* "freez" */
+   "freez" -> "freez" [level="Master"];
+   /* "theGREENzebra" */
+   "theGREENzebra" -> "theGREENzebra" [level="Journeyer"];
+   "theGREENzebra" -> "piman" [level="Journeyer"];
+   /* "davelee" */
+   /* "mwh" */
+   "mwh" -> "effbot" [level="Master"];
+   "mwh" -> "gstein" [level="Master"];
+   "mwh" -> "faassen" [level="Journeyer"];
+   "mwh" -> "amk" [level="Master"];
+   "mwh" -> "ping" [level="Master"];
+   "mwh" -> "alecf" [level="Journeyer"];
+   "mwh" -> "bernhard" [level="Journeyer"];
+   "mwh" -> "wnewman" [level="Journeyer"];
+   "mwh" -> "tigert" [level="Master"];
+   "mwh" -> "chromatic" [level="Observer"];
+   "mwh" -> "dalke" [level="Journeyer"];
+   "mwh" -> "moshez" [level="Journeyer"];
+   "mwh" -> "jhylton" [level="Master"];
+   "mwh" -> "shapr" [level="Journeyer"];
+   "mwh" -> "cbbrowne" [level="Journeyer"];
+   "mwh" -> "fejj" [level="Journeyer"];
+   "mwh" -> "jamesh" [level="Master"];
+   "mwh" -> "nowonder" [level="Journeyer"];
+   "mwh" -> "gward" [level="Journeyer"];
+   "mwh" -> "nas" [level="Journeyer"];
+   "mwh" -> "dan" [level="Master"];
+   "mwh" -> "gvwilson" [level="Apprentice"];
+   "mwh" -> "michel" [level="Journeyer"];
+   "mwh" -> "fdrake" [level="Master"];
+   "mwh" -> "jhermann" [level="Journeyer"];
+   "mwh" -> "jimb" [level="Master"];
+   "mwh" -> "pvaneynd" [level="Master"];
+   "mwh" -> "dougt" [level="Journeyer"];
+   "mwh" -> "purcell" [level="Journeyer"];
+   "mwh" -> "Johnath" [level="Journeyer"];
+   "mwh" -> "crhodes" [level="Journeyer"];
+   "mwh" -> "mwh" [level="Observer"];
+   "mwh" -> "krftkndl" [level="Observer"];
+   "mwh" -> "niemeyer" [level="Journeyer"];
+   "mwh" -> "ShredWheat" [level="Master"];
+   "mwh" -> "dak" [level="Journeyer"];
+   "mwh" -> "raph" [level="Master"];
+   "mwh" -> "ghaering" [level="Journeyer"];
+   "mwh" -> "hubicka" [level="Journeyer"];
+   "mwh" -> "dannyobrien" [level="Journeyer"];
+   "mwh" -> "jmason" [level="Master"];
+   "mwh" -> "itamar" [level="Master"];
+   "mwh" -> "lloydwood" [level="Journeyer"];
+   "mwh" -> "jafo" [level="Journeyer"];
+   "mwh" -> "afayolle" [level="Journeyer"];
+   "mwh" -> "Bram" [level="Master"];
+   "mwh" -> "kalle" [level="Journeyer"];
+   "mwh" -> "rjones" [level="Journeyer"];
+   "mwh" -> "corbet" [level="Master"];
+   "mwh" -> "etrepum" [level="Journeyer"];
+   "mwh" -> "dannu" [level="Journeyer"];
+   "mwh" -> "sdrees" [level="Apprentice"];
+   /* "ananda" */
+   "ananda" -> "ananda" [level="Apprentice"];
+   /* "beewarlock" */
+   /* "timp" */
+   "timp" -> "timp" [level="Journeyer"];
+   "timp" -> "alan" [level="Master"];
+   "timp" -> "Ryan" [level="Journeyer"];
+   "timp" -> "spong" [level="Journeyer"];
+   "timp" -> "blizzard" [level="Master"];
+   "timp" -> "msw" [level="Master"];
+   "timp" -> "johnsonm" [level="Master"];
+   "timp" -> "Adrian" [level="Journeyer"];
+   "timp" -> "bero" [level="Journeyer"];
+   "timp" -> "harald" [level="Master"];
+   /* "jefft" */
+   "jefft" -> "gstein" [level="Master"];
+   "jefft" -> "dirkx" [level="Master"];
+   "jefft" -> "jefft" [level="Journeyer"];
+   "jefft" -> "wrowe" [level="Master"];
+   "jefft" -> "stoddard" [level="Master"];
+   "jefft" -> "ben" [level="Master"];
+   "jefft" -> "manoj" [level="Master"];
+   "jefft" -> "rbb" [level="Master"];
+   "jefft" -> "fielding" [level="Master"];
+   "jefft" -> "RoUS" [level="Master"];
+   "jefft" -> "jwoolley" [level="Journeyer"];
+   /* "TUCARBS" */
+   /* "deusx" */
+   "deusx" -> "deusx" [level="Journeyer"];
+   "deusx" -> "pudge" [level="Journeyer"];
+   "deusx" -> "Ankh" [level="Journeyer"];
+   "deusx" -> "freeside" [level="Journeyer"];
+   "deusx" -> "Simon" [level="Journeyer"];
+   /* "zzone" */
+   "zzone" -> "zzone" [level="Master"];
+   /* "sussman" */
+   "sussman" -> "sussman" [level="Journeyer"];
+   "sussman" -> "gstein" [level="Master"];
+   "sussman" -> "jimb" [level="Master"];
+   "sussman" -> "kfogel" [level="Journeyer"];
+   "sussman" -> "fitz" [level="Journeyer"];
+   "sussman" -> "lefty" [level="Journeyer"];
+   /* "ren" */
+   /* "konst" */
+   /* "fordcappry" */
+   /* "ntm" */
+   /* "n823nc" */
+   /* "bjelan" */
+   "bjelan" -> "Ward" [level="Master"];
+   "bjelan" -> "argent" [level="Master"];
+   "bjelan" -> "loic" [level="Master"];
+   "bjelan" -> "jdahlin" [level="Master"];
+   "bjelan" -> "JHM" [level="Master"];
+   "bjelan" -> "mrd" [level="Master"];
+   "bjelan" -> "dobey" [level="Master"];
+   "bjelan" -> "alvaro" [level="Master"];
+   "bjelan" -> "jimd" [level="Master"];
+   "bjelan" -> "cdent" [level="Master"];
+   "bjelan" -> "jmallett" [level="Master"];
+   "bjelan" -> "hacker" [level="Master"];
+   "bjelan" -> "lpd" [level="Master"];
+   "bjelan" -> "chrisd" [level="Master"];
+   "bjelan" -> "winter" [level="Master"];
+   "bjelan" -> "fdrake" [level="Master"];
+   "bjelan" -> "edd" [level="Master"];
+   "bjelan" -> "Akira" [level="Master"];
+   "bjelan" -> "cbbrowne" [level="Master"];
+   "bjelan" -> "jbuck" [level="Master"];
+   "bjelan" -> "rbultje" [level="Master"];
+   "bjelan" -> "sjburges" [level="Master"];
+   "bjelan" -> "RossBurton" [level="Master"];
+   "bjelan" -> "campd" [level="Master"];
+   "bjelan" -> "cannam" [level="Master"];
+   "bjelan" -> "andersca" [level="Master"];
+   "bjelan" -> "knghtbrd" [level="Master"];
+   "bjelan" -> "topher" [level="Master"];
+   "bjelan" -> "chema" [level="Master"];
+   "bjelan" -> "kanikus" [level="Master"];
+   "bjelan" -> "chromatic" [level="Master"];
+   "bjelan" -> "tausq" [level="Master"];
+   "bjelan" -> "clausen" [level="Master"];
+   "bjelan" -> "nik" [level="Master"];
+   "bjelan" -> "RoUS" [level="Master"];
+   "bjelan" -> "Bram" [level="Master"];
+   "bjelan" -> "sethcohn" [level="Master"];
+   "bjelan" -> "etbe" [level="Master"];
+   "bjelan" -> "bcollins" [level="Master"];
+   "bjelan" -> "robertc" [level="Master"];
+   "bjelan" -> "kevindumpscore" [level="Master"];
+   "bjelan" -> "nconway" [level="Master"];
+   "bjelan" -> "connolly" [level="Master"];
+   "bjelan" -> "Bryce" [level="Master"];
+   /* "cavio" */
+   /* "marcana" */
+   /* "whtroks4u2die4" */
+   /* "Liv3wir3" */
+   "Liv3wir3" -> "TheGiver" [level="Apprentice"];
+   "Liv3wir3" -> "Liv3wir3" [level="Observer"];
+   /* "slayer" */
+   /* "n6708r" */
+   "n6708r" -> "n6708r" [level="Apprentice"];
+   /* "thurni" */
+   /* "campeur" */
+   /* "pdewaha" */
+   /* "Elize" */
+   /* "Natalie" */
+   "Natalie" -> "Itsik" [level="Journeyer"];
+   "Natalie" -> "Heidi" [level="Apprentice"];
+   "Natalie" -> "Alissa" [level="Journeyer"];
+   /* "cysorz" */
+   "cysorz" -> "cysorz" [level="Observer"];
+   /* "testacct" */
+   "testacct" -> "dcoombs" [level="Observer"];
+   "testacct" -> "slajoie" [level="Observer"];
+   "testacct" -> "drheld" [level="Observer"];
+   "testacct" -> "ppatters" [level="Observer"];
+   "testacct" -> "ilgiz" [level="Observer"];
+   "testacct" -> "apenwarr" [level="Observer"];
+   /* "thinkingman" */
+   /* "slamb" */
+   "slamb" -> "slamb" [level="Apprentice"];
+   "slamb" -> "Akira" [level="Journeyer"];
+   "slamb" -> "badvogato" [level="Observer"];
+   "slamb" -> "trukfixer" [level="Apprentice"];
+   "slamb" -> "ak" [level="Journeyer"];
+   "slamb" -> "raph" [level="Master"];
+   "slamb" -> "gilbou" [level="Apprentice"];
+   "slamb" -> "markonen" [level="Apprentice"];
+   "slamb" -> "zanee" [level="Apprentice"];
+   "slamb" -> "chipx86" [level="Journeyer"];
+   "slamb" -> "gstein" [level="Master"];
+   "slamb" -> "sussman" [level="Master"];
+   "slamb" -> "jerenkrantz" [level="Master"];
+   "slamb" -> "tmorgan" [level="Apprentice"];
+   "slamb" -> "mackstann" [level="Apprentice"];
+   "slamb" -> "habes" [level="Journeyer"];
+   "slamb" -> "ncm" [level="Master"];
+   "slamb" -> "chant" [level="Apprentice"];
+   "slamb" -> "ramoth4" [level="Apprentice"];
+   "slamb" -> "skx" [level="Journeyer"];
+   "slamb" -> "MartySchrader" [level="Journeyer"];
+   "slamb" -> "returnoftheredi" [level="Journeyer"];
+   "slamb" -> "cdfrey" [level="Apprentice"];
+   "slamb" -> "avriettea" [level="Observer"];
+   "slamb" -> "DeepNorth" [level="Apprentice"];
+   /* "wildweasel" */
+   "wildweasel" -> "xsa" [level="Master"];
+   "wildweasel" -> "Miod" [level="Master"];
+   "wildweasel" -> "dhartmei" [level="Master"];
+   "wildweasel" -> "gilbou" [level="Journeyer"];
+   "wildweasel" -> "schubert" [level="Master"];
+   "wildweasel" -> "todd" [level="Master"];
+   "wildweasel" -> "mickey" [level="Master"];
+   "wildweasel" -> "wildweasel" [level="Observer"];
+   "wildweasel" -> "Mala" [level="Apprentice"];
+   "wildweasel" -> "asmodai" [level="Master"];
+   "wildweasel" -> "systrace" [level="Observer"];
+   "wildweasel" -> "8088" [level="Observer"];
+   "wildweasel" -> "mips" [level="Master"];
+   "wildweasel" -> "jolan" [level="Master"];
+   "wildweasel" -> "hubertf" [level="Observer"];
+   "wildweasel" -> "lynx" [level="Apprentice"];
+   "wildweasel" -> "pvalchev" [level="Master"];
+   "wildweasel" -> "selerius" [level="Master"];
+   /* "scameron" */
+   "scameron" -> "wsanchez" [level="Master"];
+   /* "kendall" */
+   "kendall" -> "kmacleod" [level="Journeyer"];
+   "kendall" -> "kendall" [level="Apprentice"];
+   "kendall" -> "josh" [level="Journeyer"];
+   "kendall" -> "wmf" [level="Apprentice"];
+   "kendall" -> "cbbrowne" [level="Journeyer"];
+   /* "nik" */
+   "nik" -> "nik" [level="Master"];
+   "nik" -> "dcs" [level="Journeyer"];
+   "nik" -> "imp" [level="Master"];
+   "nik" -> "eivind" [level="Master"];
+   "nik" -> "Ryan" [level="Observer"];
+   "nik" -> "AilleCat" [level="Journeyer"];
+   "nik" -> "jmallett" [level="Journeyer"];
+   "nik" -> "lkcl" [level="Observer"];
+   /* "Jasonr" */
+   /* "dgarcia" */
+   "dgarcia" -> "dgarcia" [level="Apprentice"];
+   /* "kcr" */
+   "kcr" -> "kcr" [level="Observer"];
+   "kcr" -> "xela" [level="Apprentice"];
+   "kcr" -> "nathanw" [level="Journeyer"];
+   "kcr" -> "tibbetts" [level="Journeyer"];
+   "kcr" -> "marc" [level="Master"];
+   "kcr" -> "xiphmont" [level="Master"];
+   "kcr" -> "nocturne" [level="Journeyer"];
+   /* "xyongzhang" */
+   /* "cullenfluffyjennings" */
+   "cullenfluffyjennings" -> "cullenfluffyjennings" [level="Journeyer"];
+   "cullenfluffyjennings" -> "Qbert" [level="Journeyer"];
+   "cullenfluffyjennings" -> "stig" [level="Master"];
+   "cullenfluffyjennings" -> "drunen" [level="Journeyer"];
+   "cullenfluffyjennings" -> "lpd" [level="Master"];
+   /* "prozax" */
+   "prozax" -> "prozax" [level="Observer"];
+   /* "ldodds" */
+   "ldodds" -> "ldodds" [level="Journeyer"];
+   "ldodds" -> "aaronsw" [level="Journeyer"];
+   "ldodds" -> "jtauber" [level="Journeyer"];
+   "ldodds" -> "jonb" [level="Journeyer"];
+   "ldodds" -> "edd" [level="Journeyer"];
+   "ldodds" -> "cam" [level="Journeyer"];
+   "ldodds" -> "wmf" [level="Journeyer"];
+   "ldodds" -> "barryp" [level="Journeyer"];
+   "ldodds" -> "vdv" [level="Master"];
+   "ldodds" -> "simonstl" [level="Master"];
+   "ldodds" -> "Uche" [level="Master"];
+   "ldodds" -> "dajobe" [level="Master"];
+   /* "shack" */
+   "shack" -> "shack" [level="Apprentice"];
+   "shack" -> "sangr" [level="Apprentice"];
+   /* "zoke" */
+   "zoke" -> "zoke" [level="Apprentice"];
+   /* "shad0w" */
+   "shad0w" -> "shad0w" [level="Journeyer"];
+   "shad0w" -> "fatal" [level="Journeyer"];
+   "shad0w" -> "alan" [level="Master"];
+   /* "f0og" */
+   /* "Crimz" */
+   "Crimz" -> "Crimz" [level="Journeyer"];
+   "Crimz" -> "ole" [level="Journeyer"];
+   "Crimz" -> "Radagast" [level="Journeyer"];
+   "Crimz" -> "miguel" [level="Master"];
+   "Crimz" -> "werner" [level="Journeyer"];
+   "Crimz" -> "bruce" [level="Journeyer"];
+   "Crimz" -> "andrei" [level="Journeyer"];
+   "Crimz" -> "strlen" [level="Apprentice"];
+   "Crimz" -> "listen" [level="Journeyer"];
+   "Crimz" -> "iGN" [level="Journeyer"];
+   /* "Russ" */
+   "Russ" -> "JALH" [level="Apprentice"];
+   "Russ" -> "rmk" [level="Master"];
+   "Russ" -> "alan" [level="Master"];
+   "Russ" -> "riel" [level="Journeyer"];
+   "Russ" -> "timriker" [level="Master"];
+   "Russ" -> "andersee" [level="Master"];
+   /* "stephena" */
+   /* "nanda" */
+   "nanda" -> "nanda" [level="Apprentice"];
+   /* "amithadke" */
+   "amithadke" -> "amithadke" [level="Master"];
+   /* "craigg" */
+   /* "guardian" */
+   "guardian" -> "guardian" [level="Apprentice"];
+   "guardian" -> "Skud" [level="Journeyer"];
+   "guardian" -> "argent" [level="Journeyer"];
+   "guardian" -> "jwz" [level="Master"];
+   "guardian" -> "dannyobrien" [level="Apprentice"];
+   "guardian" -> "cam" [level="Apprentice"];
+   "guardian" -> "tladuca" [level="Apprentice"];
+   "guardian" -> "raph" [level="Master"];
+   "guardian" -> "rafeco" [level="Journeyer"];
+   "guardian" -> "LotR" [level="Journeyer"];
+   /* "squish" */
+   "squish" -> "squish" [level="Journeyer"];
+   "squish" -> "gilbertt" [level="Journeyer"];
+   /* "Strike" */
+   "Strike" -> "alan" [level="Master"];
+   "Strike" -> "jemfinch" [level="Apprentice"];
+   "Strike" -> "Strike" [level="Apprentice"];
+   /* "saugart" */
+   "saugart" -> "saugart" [level="Journeyer"];
+   "saugart" -> "mjw" [level="Master"];
+   "saugart" -> "robilad" [level="Master"];
+   "saugart" -> "gadek" [level="Master"];
+   "saugart" -> "jserv" [level="Master"];
+   /* "pusakat" */
+   "pusakat" -> "rms" [level="Master"];
+   "pusakat" -> "pusakat" [level="Journeyer"];
+   "pusakat" -> "sacha" [level="Observer"];
+   "pusakat" -> "jennv" [level="Journeyer"];
+   "pusakat" -> "dancer" [level="Journeyer"];
+   "pusakat" -> "goingware" [level="Journeyer"];
+   "pusakat" -> "TypeRite" [level="Apprentice"];
+   "pusakat" -> "bytesplit" [level="Apprentice"];
+   "pusakat" -> "fallenlord" [level="Apprentice"];
+   "pusakat" -> "beppu" [level="Journeyer"];
+   "pusakat" -> "dobey" [level="Journeyer"];
+   "pusakat" -> "dmerrill" [level="Journeyer"];
+   "pusakat" -> "BrucePerens" [level="Master"];
+   "pusakat" -> "hacker" [level="Journeyer"];
+   "pusakat" -> "sachac" [level="Journeyer"];
+   /* "eliphas" */
+   "eliphas" -> "eliphas" [level="Master"];
+   "eliphas" -> "ruda" [level="Master"];
+   "eliphas" -> "gwm" [level="Master"];
+   "eliphas" -> "kojima" [level="Master"];
+   "eliphas" -> "rodarvus" [level="Journeyer"];
+   "eliphas" -> "acme" [level="Master"];
+   "eliphas" -> "claudio" [level="Master"];
+   "eliphas" -> "olive" [level="Master"];
+   "eliphas" -> "bruder" [level="Journeyer"];
+   "eliphas" -> "morcego" [level="Journeyer"];
+   "eliphas" -> "baretta" [level="Master"];
+   "eliphas" -> "osvaldo" [level="Master"];
+   "eliphas" -> "clausen" [level="Master"];
+   "eliphas" -> "radtke" [level="Journeyer"];
+   "eliphas" -> "niemeyer" [level="Master"];
+   "eliphas" -> "lilo" [level="Journeyer"];
+   "eliphas" -> "aoliva" [level="Master"];
+   "eliphas" -> "aristeu" [level="Master"];
+   "eliphas" -> "lclaudio" [level="Master"];
+   "eliphas" -> "marcelo" [level="Master"];
+   "eliphas" -> "webseeker" [level="Apprentice"];
+   "eliphas" -> "Roxo" [level="Journeyer"];
+   "eliphas" -> "LaForge" [level="Master"];
+   "eliphas" -> "fbl" [level="Master"];
+   "eliphas" -> "maragato" [level="Journeyer"];
+   "eliphas" -> "minami" [level="Journeyer"];
+   "eliphas" -> "brain" [level="Journeyer"];
+   /* "ibnulwaqt" */
+   /* "zoltan" */
+   /* "jloki" */
+   /* "dak" */
+   "dak" -> "AlanShutko" [level="Journeyer"];
+   /* "gimpster" */
+   /* "xef4" */
+   /* "ffrederick" */
+   "ffrederick" -> "ffrederick" [level="Master"];
+   "ffrederick" -> "albert" [level="Master"];
+   "ffrederick" -> "akpm" [level="Master"];
+   "ffrederick" -> "zwane" [level="Master"];
+   "ffrederick" -> "alan" [level="Master"];
+   "ffrederick" -> "hpa" [level="Master"];
+   "ffrederick" -> "axboe" [level="Master"];
+   "ffrederick" -> "bcrl" [level="Master"];
+   "ffrederick" -> "prigaux" [level="Master"];
+   "ffrederick" -> "AntonA" [level="Master"];
+   "ffrederick" -> "RoUS" [level="Master"];
+   "ffrederick" -> "laredo" [level="Master"];
+   "ffrederick" -> "lerdsuwa" [level="Journeyer"];
+   "ffrederick" -> "CharlesGoodwin" [level="Journeyer"];
+   "ffrederick" -> "ebassi" [level="Journeyer"];
+   "ffrederick" -> "Akira" [level="Journeyer"];
+   "ffrederick" -> "rotty" [level="Master"];
+   "ffrederick" -> "tigert" [level="Master"];
+   "ffrederick" -> "Telsa" [level="Master"];
+   /* "rum" */
+   /* "Ansimorph" */
+   "Ansimorph" -> "bratislav" [level="Apprentice"];
+   "Ansimorph" -> "Ansimorph" [level="Apprentice"];
+   "Ansimorph" -> "Uraeus" [level="Journeyer"];
+   "Ansimorph" -> "KaiL" [level="Apprentice"];
+   "Ansimorph" -> "MikeGTN" [level="Apprentice"];
+   "Ansimorph" -> "davej" [level="Journeyer"];
+   "Ansimorph" -> "tigert" [level="Master"];
+   "Ansimorph" -> "meni" [level="Journeyer"];
+   /* "gbarr" */
+   "gbarr" -> "ask" [level="Journeyer"];
+   "gbarr" -> "chip" [level="Master"];
+   "gbarr" -> "chromatic" [level="Journeyer"];
+   "gbarr" -> "acme" [level="Journeyer"];
+   "gbarr" -> "merlyn" [level="Master"];
+   "gbarr" -> "pudge" [level="Master"];
+   "gbarr" -> "freeside" [level="Journeyer"];
+   /* "lordshrill" */
+   /* "jaygray" */
+   "jaygray" -> "jaygray" [level="Journeyer"];
+   /* "Soren" */
+   "Soren" -> "Soren" [level="Master"];
+   /* "ARepty" */
+   "ARepty" -> "ARepty" [level="Apprentice"];
+   /* "DoogeyHowzerMD" */
+   /* "kael" */
+   "kael" -> "kael" [level="Observer"];
+   /* "lathi" */
+   /* "immy" */
+   "immy" -> "immy" [level="Observer"];
+   /* "viper" */
+   "viper" -> "viper" [level="Apprentice"];
+   "viper" -> "cech" [level="Journeyer"];
+   "viper" -> "vicious" [level="Journeyer"];
+   "viper" -> "alan" [level="Master"];
+   "viper" -> "gregf" [level="Apprentice"];
+   /* "italy" */
+   "italy" -> "italy" [level="Observer"];
+   /* "hallvar" */
+   "hallvar" -> "hallvar" [level="Observer"];
+   "hallvar" -> "bma" [level="Journeyer"];
+   "hallvar" -> "axboe" [level="Master"];
+   "hallvar" -> "xach" [level="Journeyer"];
+   "hallvar" -> "adraken" [level="Journeyer"];
+   "hallvar" -> "alan" [level="Master"];
+   "hallvar" -> "gilbertt" [level="Observer"];
+   "hallvar" -> "tigert" [level="Master"];
+   "hallvar" -> "ljlane" [level="Journeyer"];
+   "hallvar" -> "ElCoronel" [level="Journeyer"];
+   "hallvar" -> "Gnrfan" [level="Journeyer"];
+   "hallvar" -> "pabs" [level="Journeyer"];
+   "hallvar" -> "fusion94" [level="Journeyer"];
+   "hallvar" -> "garrett" [level="Journeyer"];
+   /* "denisianum" */
+   "denisianum" -> "denisianum" [level="Master"];
+   /* "lordpixel" */
+   "lordpixel" -> "lordpixel" [level="Apprentice"];
+   "lordpixel" -> "bengoodger" [level="Apprentice"];
+   "lordpixel" -> "scc" [level="Master"];
+   "lordpixel" -> "hwaara" [level="Apprentice"];
+   "lordpixel" -> "zachlipton" [level="Journeyer"];
+   "lordpixel" -> "pavlov" [level="Journeyer"];
+   "lordpixel" -> "shaver" [level="Master"];
+   "lordpixel" -> "smfr" [level="Journeyer"];
+   "lordpixel" -> "softkid" [level="Apprentice"];
+   "lordpixel" -> "sbwoodside" [level="Apprentice"];
+   "lordpixel" -> "MichaelCrawford" [level="Apprentice"];
+   "lordpixel" -> "lerdsuwa" [level="Journeyer"];
+   /* "carlsj" */
+   "carlsj" -> "carlsj" [level="Observer"];
+   /* "fatjim" */
+   "fatjim" -> "tigert" [level="Journeyer"];
+   "fatjim" -> "ajt" [level="Journeyer"];
+   "fatjim" -> "xach" [level="Journeyer"];
+   "fatjim" -> "chrisd" [level="Journeyer"];
+   "fatjim" -> "kuro5hin" [level="Journeyer"];
+   "fatjim" -> "graydon" [level="Master"];
+   "fatjim" -> "stefan" [level="Journeyer"];
+   "fatjim" -> "TheGiver" [level="Observer"];
+   /* "Anthony" */
+   "Anthony" -> "Anthony" [level="Journeyer"];
+   "Anthony" -> "tromey" [level="Master"];
+   "Anthony" -> "aoliva" [level="Master"];
+   "Anthony" -> "mjw" [level="Master"];
+   "Anthony" -> "db" [level="Master"];
+   "Anthony" -> "rms" [level="Master"];
+   /* "Nurf" */
+   /* "murrayc" */
+   "murrayc" -> "ebassi" [level="Journeyer"];
+   "murrayc" -> "Iain" [level="Apprentice"];
+   "murrayc" -> "kenelson" [level="Master"];
+   "murrayc" -> "RyanMuldoon" [level="Journeyer"];
+   "murrayc" -> "Ankh" [level="Master"];
+   "murrayc" -> "ebassi" [level="Journeyer"];
+   "murrayc" -> "ari" [level="Journeyer"];
+   "murrayc" -> "danielk" [level="Master"];
+   "murrayc" -> "funrecords" [level="Journeyer"];
+   "murrayc" -> "sisob" [level="Journeyer"];
+   "murrayc" -> "DV" [level="Master"];
+   "murrayc" -> "Telsa" [level="Journeyer"];
+   "murrayc" -> "Phoon" [level="Apprentice"];
+   "murrayc" -> "mettw" [level="Apprentice"];
+   "murrayc" -> "gman" [level="Journeyer"];
+   "murrayc" -> "nullity" [level="Journeyer"];
+   "murrayc" -> "Guillaume" [level="Journeyer"];
+   "murrayc" -> "djcb" [level="Journeyer"];
+   "murrayc" -> "AArthur" [level="Apprentice"];
+   "murrayc" -> "cactus" [level="Master"];
+   "murrayc" -> "jwz" [level="Master"];
+   "murrayc" -> "jeorgen" [level="Apprentice"];
+   "murrayc" -> "samurai" [level="Journeyer"];
+   "murrayc" -> "Rika" [level="Observer"];
+   "murrayc" -> "squiggy" [level="Journeyer"];
+   "murrayc" -> "Jody" [level="Master"];
+   "murrayc" -> "mjs" [level="Master"];
+   "murrayc" -> "nixnut" [level="Apprentice"];
+   "murrayc" -> "rml" [level="Master"];
+   "murrayc" -> "Gregoyle" [level="Apprentice"];
+   "murrayc" -> "BrucePerens" [level="Master"];
+   "murrayc" -> "Spooky" [level="Master"];
+   "murrayc" -> "RossBurton" [level="Journeyer"];
+   "murrayc" -> "calum" [level="Journeyer"];
+   "murrayc" -> "jamesh" [level="Master"];
+   "murrayc" -> "morphex" [level="Journeyer"];
+   "murrayc" -> "jrb" [level="Master"];
+   "murrayc" -> "sethcohn" [level="Apprentice"];
+   "murrayc" -> "hp" [level="Master"];
+   "murrayc" -> "Dacta" [level="Observer"];
+   "murrayc" -> "sdodji" [level="Journeyer"];
+   "murrayc" -> "sander" [level="Journeyer"];
+   "murrayc" -> "kmaraas" [level="Master"];
+   "murrayc" -> "exa" [level="Apprentice"];
+   "murrayc" -> "edd" [level="Master"];
+   "murrayc" -> "aes" [level="Journeyer"];
+   "murrayc" -> "mjg59" [level="Journeyer"];
+   "murrayc" -> "alan" [level="Master"];
+   "murrayc" -> "nyk" [level="Observer"];
+   "murrayc" -> "hadess" [level="Journeyer"];
+   "murrayc" -> "wichert" [level="Master"];
+   "murrayc" -> "chrisime" [level="Apprentice"];
+   "murrayc" -> "tromey" [level="Master"];
+   "murrayc" -> "julian" [level="Master"];
+   "murrayc" -> "vila" [level="Apprentice"];
+   "murrayc" -> "bdale" [level="Master"];
+   "murrayc" -> "avi" [level="Apprentice"];
+   "murrayc" -> "wtogami" [level="Master"];
+   "murrayc" -> "timj" [level="Master"];
+   "murrayc" -> "nzkoz" [level="Apprentice"];
+   "murrayc" -> "sej" [level="Journeyer"];
+   "murrayc" -> "pfremy" [level="Apprentice"];
+   "murrayc" -> "jacob" [level="Master"];
+   "murrayc" -> "Uraeus" [level="Journeyer"];
+   "murrayc" -> "aidan" [level="Journeyer"];
+   "murrayc" -> "dwave" [level="Apprentice"];
+   "murrayc" -> "dsandras" [level="Master"];
+   "murrayc" -> "jdub" [level="Master"];
+   "murrayc" -> "Darin" [level="Master"];
+   "murrayc" -> "jrennie" [level="Apprentice"];
+   "murrayc" -> "Ilan" [level="Observer"];
+   "murrayc" -> "mpesenti" [level="Master"];
+   "murrayc" -> "Malx" [level="Apprentice"];
+   "murrayc" -> "gleblanc" [level="Journeyer"];
+   "murrayc" -> "frehberg" [level="Journeyer"];
+   "murrayc" -> "cerquide" [level="Apprentice"];
+   "murrayc" -> "rodrigo" [level="Master"];
+   "murrayc" -> "geoffeg" [level="Apprentice"];
+   /* "abo" */
+   "abo" -> "abo" [level="Apprentice"];
+   "abo" -> "rosen" [level="Apprentice"];
+   "abo" -> "jooon" [level="Apprentice"];
+   "abo" -> "Erik" [level="Apprentice"];
+   "abo" -> "Fare" [level="Journeyer"];
+   "abo" -> "krftkndl" [level="Apprentice"];
+   /* "julio" */
+   "julio" -> "julio" [level="Journeyer"];
+   "julio" -> "lukeh" [level="Master"];
+   "julio" -> "bcollins" [level="Master"];
+   "julio" -> "juanjo" [level="Journeyer"];
+   "julio" -> "olea" [level="Master"];
+   /* "supertesty" */
+   /* "advogato" */
+   "advogato" -> "Qbert" [level="Observer"];
+   "advogato" -> "jfoster" [level="Observer"];
+   "advogato" -> "idcmp" [level="Observer"];
+   "advogato" -> "bombadil" [level="Observer"];
+   /* "riquelme" */
+   "riquelme" -> "claire" [level="Master"];
+   "riquelme" -> "louie" [level="Master"];
+   "riquelme" -> "karlberry" [level="Master"];
+   "riquelme" -> "jacob" [level="Master"];
+   "riquelme" -> "esr" [level="Master"];
+   "riquelme" -> "jameson" [level="Master"];
+   "riquelme" -> "davidr" [level="Master"];
+   "riquelme" -> "benno" [level="Master"];
+   "riquelme" -> "branden" [level="Master"];
+   "riquelme" -> "menthos" [level="Master"];
+   "riquelme" -> "proski" [level="Master"];
+   "riquelme" -> "r4f" [level="Master"];
+   "riquelme" -> "wrowe" [level="Master"];
+   "riquelme" -> "yeupou" [level="Master"];
+   "riquelme" -> "jbs" [level="Master"];
+   "riquelme" -> "chip" [level="Master"];
+   "riquelme" -> "dsandras" [level="Master"];
+   "riquelme" -> "SIrabbi" [level="Master"];
+   "riquelme" -> "jschauma" [level="Master"];
+   "riquelme" -> "schoen" [level="Master"];
+   /* "DeadRat" */
+   "DeadRat" -> "Gecko" [level="Journeyer"];
+   "DeadRat" -> "Watch" [level="Observer"];
+   /* "rangerrick" */
+   "rangerrick" -> "shaneo" [level="Journeyer"];
+   "rangerrick" -> "rangerrick" [level="Journeyer"];
+   "rangerrick" -> "Leimy" [level="Journeyer"];
+   "rangerrick" -> "lovelace" [level="Journeyer"];
+   /* "Manmanoko" */
+   /* "jeri" */
+   /* "coconut5621" */
+   /* "Newbie" */
+   /* "kraai" */
+   "kraai" -> "samth" [level="Journeyer"];
+   "kraai" -> "jsh" [level="Master"];
+   "kraai" -> "scandal" [level="Master"];
+   "kraai" -> "wichert" [level="Master"];
+   "kraai" -> "joey" [level="Master"];
+   "kraai" -> "andersee" [level="Journeyer"];
+   "kraai" -> "akihabara" [level="Journeyer"];
+   "kraai" -> "claviola" [level="Apprentice"];
+   "kraai" -> "Jordi" [level="Apprentice"];
+   "kraai" -> "beppu" [level="Apprentice"];
+   /* "Dukerocks141" */
+   /* "tace" */
+   /* "donjefe68" */
+   /* "barryp" */
+   "barryp" -> "barryp" [level="Journeyer"];
+   "barryp" -> "jef" [level="Journeyer"];
+   "barryp" -> "ldodds" [level="Journeyer"];
+   "barryp" -> "edd" [level="Journeyer"];
+   "barryp" -> "Malx" [level="Apprentice"];
+   /* "coldn" */
+   "coldn" -> "coldn" [level="Apprentice"];
+   "coldn" -> "zeshin" [level="Apprentice"];
+   /* "sabetts" */
+   /* "alice204" */
+   /* "Avantopia" */
+   /* "maverick" */
+   "maverick" -> "maverick" [level="Apprentice"];
+   /* "jnewbigin" */
+   "jnewbigin" -> "Fefe" [level="Master"];
+   "jnewbigin" -> "jnewbigin" [level="Journeyer"];
+   "jnewbigin" -> "lance" [level="Journeyer"];
+   "jnewbigin" -> "gregk433" [level="Journeyer"];
+   "jnewbigin" -> "skvidal" [level="Master"];
+   "jnewbigin" -> "tnt" [level="Journeyer"];
+   "jnewbigin" -> "rmathew" [level="Master"];
+   "jnewbigin" -> "ger" [level="Journeyer"];
+   "jnewbigin" -> "proclus" [level="Master"];
+   "jnewbigin" -> "pp" [level="Journeyer"];
+   "jnewbigin" -> "MJ" [level="Journeyer"];
+   "jnewbigin" -> "mkp" [level="Master"];
+   "jnewbigin" -> "softweyr" [level="Master"];
+   "jnewbigin" -> "itp" [level="Master"];
+   "jnewbigin" -> "mpawlo" [level="Master"];
+   "jnewbigin" -> "RyanPavlik" [level="Journeyer"];
+   "jnewbigin" -> "pavlov" [level="Master"];
+   "jnewbigin" -> "weasel" [level="Journeyer"];
+   "jnewbigin" -> "bogart" [level="Journeyer"];
+   "jnewbigin" -> "dsandras" [level="Master"];
+   "jnewbigin" -> "chip" [level="Master"];
+   "jnewbigin" -> "timriker" [level="Master"];
+   "jnewbigin" -> "kristian" [level="Journeyer"];
+   "jnewbigin" -> "jameson" [level="Journeyer"];
+   "jnewbigin" -> "quintela" [level="Journeyer"];
+   "jnewbigin" -> "quinlan" [level="Master"];
+   "jnewbigin" -> "drc" [level="Journeyer"];
+   "jnewbigin" -> "jef" [level="Master"];
+   "jnewbigin" -> "dick" [level="Master"];
+   "jnewbigin" -> "jsheets" [level="Journeyer"];
+   "jnewbigin" -> "harold" [level="Master"];
+   "jnewbigin" -> "Senra" [level="Master"];
+   "jnewbigin" -> "stefan" [level="Master"];
+   "jnewbigin" -> "tseaver" [level="Master"];
+   "jnewbigin" -> "merlyn" [level="Master"];
+   "jnewbigin" -> "thaytan" [level="Journeyer"];
+   "jnewbigin" -> "ds" [level="Master"];
+   "jnewbigin" -> "jschauma" [level="Master"];
+   "jnewbigin" -> "SIrabbi" [level="Master"];
+   "jnewbigin" -> "Daryll" [level="Master"];
+   "jnewbigin" -> "jimmac" [level="Master"];
+   "jnewbigin" -> "simonstl" [level="Master"];
+   "jnewbigin" -> "jes" [level="Master"];
+   "jnewbigin" -> "dugsong" [level="Master"];
+   "jnewbigin" -> "madscientist" [level="Master"];
+   "jnewbigin" -> "4am" [level="Master"];
+   "jnewbigin" -> "adam" [level="Journeyer"];
+   "jnewbigin" -> "skx" [level="Master"];
+   "jnewbigin" -> "itamar" [level="Master"];
+   "jnewbigin" -> "ShredWheat" [level="Master"];
+   "jnewbigin" -> "malcolm" [level="Journeyer"];
+   "jnewbigin" -> "ajt" [level="Master"];
+   "jnewbigin" -> "robilad" [level="Master"];
+   "jnewbigin" -> "zarq" [level="Journeyer"];
+   "jnewbigin" -> "Ryan" [level="Journeyer"];
+   "jnewbigin" -> "gtaylor" [level="Journeyer"];
+   "jnewbigin" -> "pat" [level="Journeyer"];
+   "jnewbigin" -> "zeev" [level="Master"];
+   "jnewbigin" -> "striker" [level="Journeyer"];
+   "jnewbigin" -> "dtype" [level="Journeyer"];
+   "jnewbigin" -> "vdv" [level="Master"];
+   "jnewbigin" -> "trow" [level="Master"];
+   "jnewbigin" -> "tromey" [level="Master"];
+   "jnewbigin" -> "LaForge" [level="Master"];
+   "jnewbigin" -> "cjwatson" [level="Master"];
+   "jnewbigin" -> "omega" [level="Master"];
+   "jnewbigin" -> "ndw" [level="Master"];
+   "jnewbigin" -> "louie" [level="Master"];
+   "jnewbigin" -> "thomasvs" [level="Master"];
+   "jnewbigin" -> "rakholh" [level="Journeyer"];
+   "jnewbigin" -> "abg" [level="Journeyer"];
+   "jnewbigin" -> "jonas" [level="Master"];
+   "jnewbigin" -> "notzed" [level="Master"];
+   "jnewbigin" -> "ping" [level="Journeyer"];
+   "jnewbigin" -> "xiphmont" [level="Master"];
+   "jnewbigin" -> "liw" [level="Master"];
+   "jnewbigin" -> "dwiner" [level="Journeyer"];
+   "jnewbigin" -> "msw" [level="Master"];
+   "jnewbigin" -> "willy" [level="Master"];
+   "jnewbigin" -> "carmstro" [level="Journeyer"];
+   "jnewbigin" -> "timur" [level="Journeyer"];
+   "jnewbigin" -> "demoncrat" [level="Master"];
+   "jnewbigin" -> "avriettea" [level="Journeyer"];
+   "jnewbigin" -> "saugart" [level="Journeyer"];
+   "jnewbigin" -> "GrahamAsher" [level="Journeyer"];
+   "jnewbigin" -> "anderson" [level="Journeyer"];
+   "jnewbigin" -> "tetron" [level="Journeyer"];
+   "jnewbigin" -> "fabrice" [level="Apprentice"];
+   "jnewbigin" -> "moray" [level="Apprentice"];
+   "jnewbigin" -> "sulaiman" [level="Master"];
+   "jnewbigin" -> "Ausmosis" [level="Apprentice"];
+   "jnewbigin" -> "nether" [level="Journeyer"];
+   "jnewbigin" -> "ladypine" [level="Journeyer"];
+   "jnewbigin" -> "gbowland" [level="Journeyer"];
+   "jnewbigin" -> "aunty" [level="Journeyer"];
+   "jnewbigin" -> "edward" [level="Journeyer"];
+   "jnewbigin" -> "besfred" [level="Journeyer"];
+   "jnewbigin" -> "spiv" [level="Journeyer"];
+   "jnewbigin" -> "gby" [level="Journeyer"];
+   "jnewbigin" -> "fab" [level="Journeyer"];
+   "jnewbigin" -> "matt" [level="Journeyer"];
+   "jnewbigin" -> "caio1982" [level="Apprentice"];
+   "jnewbigin" -> "omnic" [level="Journeyer"];
+   "jnewbigin" -> "baueran" [level="Journeyer"];
+   "jnewbigin" -> "bribass" [level="Journeyer"];
+   /* "jesse" */
+   "jesse" -> "jesse" [level="Journeyer"];
+   "jesse" -> "xiphmont" [level="Master"];
+   "jesse" -> "jwz" [level="Master"];
+   "jesse" -> "marc" [level="Journeyer"];
+   "jesse" -> "wsanchez" [level="Master"];
+   /* "plevy" */
+   "plevy" -> "plevy" [level="Journeyer"];
+   "plevy" -> "eldamitri" [level="Journeyer"];
+   /* "wfmcwalter" */
+   /* "dileone" */
+   /* "sonacsocietenatio" */
+   "sonacsocietenatio" -> "casper" [level="Apprentice"];
+   "sonacsocietenatio" -> "kbreit" [level="Journeyer"];
+   "sonacsocietenatio" -> "grape" [level="Journeyer"];
+   "sonacsocietenatio" -> "ditd" [level="Apprentice"];
+   "sonacsocietenatio" -> "kholmes" [level="Journeyer"];
+   "sonacsocietenatio" -> "jtauber" [level="Master"];
+   "sonacsocietenatio" -> "jono" [level="Master"];
+   "sonacsocietenatio" -> "ndw" [level="Master"];
+   /* "chris20" */
+   /* "titivillus" */
+   /* "mdeegan" */
+   "mdeegan" -> "mdeegan" [level="Apprentice"];
+   "mdeegan" -> "yakk" [level="Journeyer"];
+   "mdeegan" -> "dayta" [level="Apprentice"];
+   "mdeegan" -> "gbowland" [level="Journeyer"];
+   "mdeegan" -> "k" [level="Journeyer"];
+   "mdeegan" -> "trs80" [level="Apprentice"];
+   /* "suckabus" */
+   /* "SooTy" */
+   "SooTy" -> "SooTy" [level="Master"];
+   /* "andrew" */
+   /* "gadgeteer" */
+   /* "Nyco" */
+   "Nyco" -> "Nyco" [level="Apprentice"];
+   "Nyco" -> "miguel" [level="Master"];
+   "Nyco" -> "alan" [level="Master"];
+   "Nyco" -> "yeupou" [level="Apprentice"];
+   "Nyco" -> "loic" [level="Master"];
+   "Nyco" -> "rms" [level="Master"];
+   "Nyco" -> "penso" [level="Master"];
+   "Nyco" -> "BrucePerens" [level="Master"];
+   "Nyco" -> "neofutur" [level="Apprentice"];
+   "Nyco" -> "gael" [level="Journeyer"];
+   "Nyco" -> "gc" [level="Journeyer"];
+   "Nyco" -> "sdodji" [level="Journeyer"];
+   /* "bob" */
+   "bob" -> "bob" [level="Master"];
+   /* "buzzcutbuddha" */
+   /* "nil" */
+   /* "razor" */
+   "razor" -> "rms" [level="Master"];
+   "razor" -> "rasmus" [level="Master"];
+   /* "ktohk" */
+   "ktohk" -> "kkenn" [level="Journeyer"];
+   /* "rw" */
+   "rw" -> "johnw" [level="Master"];
+   "rw" -> "rms" [level="Master"];
+   "rw" -> "aaronl" [level="Journeyer"];
+   "rw" -> "radtke" [level="Journeyer"];
+   "rw" -> "Roxo" [level="Journeyer"];
+   "rw" -> "kojima" [level="Master"];
+   "rw" -> "rbp" [level="Journeyer"];
+   "rw" -> "isamar" [level="Journeyer"];
+   "rw" -> "rasmus" [level="Master"];
+   "rw" -> "jwz" [level="Master"];
+   "rw" -> "miguel" [level="Master"];
+   "rw" -> "riel" [level="Master"];
+   "rw" -> "octobrx" [level="Journeyer"];
+   "rw" -> "acidx" [level="Apprentice"];
+   "rw" -> "garrett" [level="Observer"];
+   "rw" -> "thies" [level="Master"];
+   "rw" -> "guidob" [level="Journeyer"];
+   "rw" -> "accdias" [level="Journeyer"];
+   "rw" -> "sdm" [level="Observer"];
+   "rw" -> "jordan" [level="Apprentice"];
+   "rw" -> "SorrowD" [level="Journeyer"];
+   "rw" -> "xsandro" [level="Apprentice"];
+   "rw" -> "aoliva" [level="Master"];
+   "rw" -> "ivan" [level="Master"];
+   "rw" -> "maragato" [level="Journeyer"];
+   "rw" -> "marcelo" [level="Master"];
+   "rw" -> "h4" [level="Journeyer"];
+   "rw" -> "rw" [level="Observer"];
+   "rw" -> "hacker" [level="Observer"];
+   "rw" -> "ovo" [level="Apprentice"];
+   "rw" -> "claviola" [level="Journeyer"];
+   "rw" -> "walters" [level="Journeyer"];
+   "rw" -> "acme" [level="Master"];
+   "rw" -> "Nafai77" [level="Apprentice"];
+   "rw" -> "clausen" [level="Master"];
+   "rw" -> "bobg" [level="Master"];
+   "rw" -> "darkewolf" [level="Journeyer"];
+   "rw" -> "mishan" [level="Journeyer"];
+   "rw" -> "edrx" [level="Journeyer"];
+   "rw" -> "bruder" [level="Journeyer"];
+   "rw" -> "kaig" [level="Journeyer"];
+   "rw" -> "tigert" [level="Journeyer"];
+   "rw" -> "morcego" [level="Observer"];
+   "rw" -> "alan" [level="Master"];
+   "rw" -> "zeev" [level="Master"];
+   "rw" -> "gshapiro" [level="Master"];
+   "rw" -> "wsanchez" [level="Master"];
+   "rw" -> "timj" [level="Master"];
+   "rw" -> "khazad" [level="Observer"];
+   "rw" -> "raph" [level="Observer"];
+   "rw" -> "z" [level="Observer"];
+   "rw" -> "ajt" [level="Observer"];
+   "rw" -> "ruda" [level="Journeyer"];
+   "rw" -> "claudio" [level="Observer"];
+   "rw" -> "godoy" [level="Observer"];
+   "rw" -> "roguemtl" [level="Observer"];
+   "rw" -> "precision" [level="Observer"];
+   "rw" -> "jbyers" [level="Observer"];
+   "rw" -> "andrei" [level="Observer"];
+   "rw" -> "Iain" [level="Observer"];
+   "rw" -> "murrayc" [level="Observer"];
+   "rw" -> "Bryce" [level="Observer"];
+   "rw" -> "Zaitcev" [level="Observer"];
+   "rw" -> "aftyde" [level="Observer"];
+   "rw" -> "niemeyer" [level="Observer"];
+   "rw" -> "ajv" [level="Observer"];
+   "rw" -> "toledo" [level="Observer"];
+   "rw" -> "rodrigo" [level="Observer"];
+   "rw" -> "ben" [level="Observer"];
+   "rw" -> "ssb" [level="Master"];
+   "rw" -> "andi" [level="Observer"];
+   "rw" -> "olive" [level="Observer"];
+   "rw" -> "dmarti" [level="Observer"];
+   "rw" -> "csm" [level="Observer"];
+   "rw" -> "bcollins" [level="Observer"];
+   "rw" -> "mobius" [level="Observer"];
+   "rw" -> "dto" [level="Observer"];
+   "rw" -> "joey" [level="Observer"];
+   "rw" -> "wichert" [level="Observer"];
+   "rw" -> "shapr" [level="Journeyer"];
+   "rw" -> "mirwin" [level="Journeyer"];
+   "rw" -> "quentin" [level="Apprentice"];
+   "rw" -> "live" [level="Apprentice"];
+   "rw" -> "kr0n" [level="Apprentice"];
+   "rw" -> "redowl" [level="Apprentice"];
+   "rw" -> "tod" [level="Apprentice"];
+   "rw" -> "thrx" [level="Apprentice"];
+   "rw" -> "rcastro" [level="Observer"];
+   "rw" -> "flavio" [level="Apprentice"];
+   "rw" -> "deego" [level="Journeyer"];
+   "rw" -> "abraham" [level="Master"];
+   "rw" -> "BrucePerens" [level="Master"];
+   "rw" -> "rstevens" [level="Master"];
+   /* "monkeyboy121" */
+   "monkeyboy121" -> "monkeyboy121" [level="Apprentice"];
+   /* "najwa" */
+   /* "svan" */
+   "svan" -> "svan" [level="Apprentice"];
+   "svan" -> "corecode" [level="Journeyer"];
+   "svan" -> "asmodai" [level="Master"];
+   "svan" -> "hiten" [level="Master"];
+   "svan" -> "rwatson" [level="Master"];
+   "svan" -> "imp" [level="Master"];
+   "svan" -> "jkh" [level="Master"];
+   /* "hunt" */
+   /* "cgillot" */
+   "cgillot" -> "welisc" [level="Journeyer"];
+   "cgillot" -> "jao" [level="Journeyer"];
+   /* "caseyg" */
+   /* "golddog" */
+   /* "sdrees" */
+   "sdrees" -> "sdrees" [level="Apprentice"];
+   "sdrees" -> "vdv" [level="Journeyer"];
+   "sdrees" -> "jhylton" [level="Master"];
+   "sdrees" -> "gward" [level="Journeyer"];
+   "sdrees" -> "fdrake" [level="Master"];
+   "sdrees" -> "gstein" [level="Master"];
+   "sdrees" -> "jtauber" [level="Master"];
+   /* "roberthstarr" */
+   "roberthstarr" -> "roberthstarr" [level="Observer"];
+   /* "jp4" */
+   /* "mpawlo" */
+   "mpawlo" -> "pawal" [level="Master"];
+   "mpawlo" -> "bagder" [level="Journeyer"];
+   "mpawlo" -> "zagor" [level="Journeyer"];
+   "mpawlo" -> "wseltzer" [level="Journeyer"];
+   "mpawlo" -> "schoen" [level="Journeyer"];
+   "mpawlo" -> "crackmonkey" [level="Master"];
+   "mpawlo" -> "Jewelsthorn" [level="Journeyer"];
+   "mpawlo" -> "mpawlo" [level="Apprentice"];
+   "mpawlo" -> "jonas" [level="Journeyer"];
+   "mpawlo" -> "kuro5hin" [level="Master"];
+   "mpawlo" -> "sdodji" [level="Apprentice"];
+   "mpawlo" -> "SteveMallett" [level="Journeyer"];
+   "mpawlo" -> "MisterBad" [level="Master"];
+   "mpawlo" -> "sneakums" [level="Apprentice"];
+   "mpawlo" -> "dmarti" [level="Master"];
+   "mpawlo" -> "raph" [level="Master"];
+   /* "bje" */
+   "bje" -> "bje" [level="Observer"];
+   "bje" -> "tromey" [level="Master"];
+   "bje" -> "rth" [level="Master"];
+   "bje" -> "mbp" [level="Master"];
+   /* "dopey" */
+   "dopey" -> "Netsnipe" [level="Journeyer"];
+   "dopey" -> "jaq" [level="Journeyer"];
+   "dopey" -> "jdub" [level="Journeyer"];
+   "dopey" -> "seeS" [level="Journeyer"];
+   "dopey" -> "daniels" [level="Journeyer"];
+   "dopey" -> "XFire" [level="Journeyer"];
+   "dopey" -> "dopey" [level="Journeyer"];
+   "dopey" -> "omnic" [level="Journeyer"];
+   "dopey" -> "bod" [level="Journeyer"];
+   "dopey" -> "Liedra" [level="Journeyer"];
+   "dopey" -> "benjl" [level="Apprentice"];
+   "dopey" -> "conrad" [level="Journeyer"];
+   "dopey" -> "Cantanker" [level="Journeyer"];
+   "dopey" -> "thaytan" [level="Apprentice"];
+   "dopey" -> "hypatia" [level="Journeyer"];
+   "dopey" -> "thom" [level="Journeyer"];
+   "dopey" -> "samj" [level="Journeyer"];
+   "dopey" -> "ElectricElf" [level="Journeyer"];
+   "dopey" -> "Dougiamas" [level="Journeyer"];
+   "dopey" -> "etbe" [level="Journeyer"];
+   "dopey" -> "Jordi" [level="Journeyer"];
+   "dopey" -> "caelyx" [level="Apprentice"];
+   "dopey" -> "cdlu" [level="Master"];
+   "dopey" -> "branden" [level="Master"];
+   "dopey" -> "bcollins" [level="Master"];
+   "dopey" -> "neuro" [level="Journeyer"];
+   "dopey" -> "Joy" [level="Journeyer"];
+   "dopey" -> "bdale" [level="Master"];
+   "dopey" -> "joey" [level="Master"];
+   "dopey" -> "calc" [level="Journeyer"];
+   /* "babybeard" */
+   /* "uorden" */
+   /* "Patrekur" */
+   "Patrekur" -> "Patrekur" [level="Apprentice"];
+   /* "amol" */
+   /* "tordj" */
+   /* "samoied" */
+   /* "ielton" */
+   /* "pabs3" */
+   "pabs3" -> "pabs3" [level="Apprentice"];
+   "pabs3" -> "frob" [level="Journeyer"];
+   /* "roms" */
+   "roms" -> "roms" [level="Observer"];
+   /* "uilton" */
+   /* "tinman" */
+   /* "ru" */
+   "ru" -> "ru" [level="Journeyer"];
+   "ru" -> "demoncrat" [level="Journeyer"];
+   "ru" -> "markm" [level="Master"];
+   "ru" -> "Zooko" [level="Journeyer"];
+   "ru" -> "dsifry" [level="Master"];
+   "ru" -> "ben" [level="Master"];
+   /* "jpc" */
+   "jpc" -> "dannyobrien" [level="Apprentice"];
+}
