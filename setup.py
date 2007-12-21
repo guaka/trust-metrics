@@ -29,8 +29,10 @@ setup(	name = 'trustlet',
         # this doesn't work really well with Python 2.5.1 and
         # setuptools 0.6c6 on guaka's RH machine called power at IRST
         install_requires = ['igraph',
-                            'pyparsing',
                             'pygraphviz',
+                            'pyparsing',
+                            'networkx',
                             'numpy',
-                            'networkx']  
+                            'scipy',
+                            ]  
         )

@@ -199,10 +199,10 @@ def page_rank_scipy(G,alpha=0.85,max_iter=100,tol=1.0e-4,nodelist=None):
 
 if __name__ == "__main__":
 
-    from networkx import *
+    import networkx
     import numpy
 
-    G=DiGraph()
+    G = networkx.DiGraph()
 
     edges=[(1,2),(1,3),\
            (3,1),(3,2),(3,5),\

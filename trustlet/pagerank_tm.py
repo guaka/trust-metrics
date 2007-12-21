@@ -4,7 +4,6 @@ from Dataset import Advogato
 import page_rank
 import numpy
 
-from pprint import pprint
 
 # http://localhost/src/networkx/reference/public/networkx.generators.classic-module.html
 

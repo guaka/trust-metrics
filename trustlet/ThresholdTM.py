@@ -1,7 +1,6 @@
 import PredGraph
 import TrustMetric
 import Advogato
-from helpers import get_name
 
 
 

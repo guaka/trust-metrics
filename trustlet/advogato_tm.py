@@ -3,7 +3,6 @@
 """Wrapper thing around pymmetry."""
 
 import time
-from pprint import pprint
 
 from pymmetry.profile import Profiles, Profile
 from pymmetry.certs import DictCertifications, CertInfo

@@ -1,6 +1,11 @@
 
 """
-Prediction Graph.
+Prediction graph
+================
+
+
+Analysis of trust metrics through predicting edges.
+
 """
 
 import Dataset
@@ -127,7 +132,7 @@ class CalcGraph(Dataset.Network):
         return 1.0 - (1.0 * self.num_undefined / len(self.edges()))
 
     def evaluate(self):
-        """Evaluate the graph."""
+        """Evaluate the graph. DEPRECATED"""
         evals = [(f.__name__, f())
                  for f in [self.coverage, self.mean_std]
                  ]
@@ -152,12 +157,14 @@ class PredGraph(CalcGraph):
     predicted trust is None."""
 
     def _generate(self):
+        """Generate the prediction graph."""
         print "Generating", self.filepath
         pg = self._predict_existing()
         self._paste_graph(pg)
         return pg
         
     def _prepare(self):
+        """Prepare."""
         ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
 
         # if True:  # check if self has orig
@@ -279,7 +286,7 @@ class PredGraph(CalcGraph):
         return math.sqrt(sum(sqr_error) / self.num_defined)
 
     def evaluate(self):
-        """A bunch of evaluations."""
+        """A bunch of evaluations. DEPRECATED"""
         evals = [(f.__name__, f())
                  for f in [self.coverage, self.abs_error,
                            self.abs_error_map, self.sqr_error, self.mean_std]]

@@ -1,9 +1,7 @@
 import networkx
-from networkx import path, search
+from networkx import path
 from Dataset import Advogato, Dummy
-import random
-from pprint import pprint
-# see also something else
+
 
 
 cap_dict = { 0: 800,
@@ -185,10 +183,7 @@ def adv_trust_metric(G):
     for attr,lvl in levels:
         for e in G.edges_iter():
             if e[2].values()[0] == attr:
-                ###########################3
-                #if random.random() < 0.6:
                 G_lvl.add_edge((e[0], e[1]))
-                ###########################33
         print "len G_lvl:", len(G_lvl)
         G_flow = build_adv_flow_graph(G_lvl, G.advogato_seeds)
         ff = ford_fulkerson(G_flow)
