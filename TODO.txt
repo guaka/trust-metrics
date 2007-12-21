@@ -1,5 +1,6 @@
 
-List of stuff todo:
+Here's a bunch of stuff to do.
+
 
 Documentation
 =============
@@ -8,28 +9,17 @@ Write a lot of documentation, especially for getting started with the
 system after you download the code.
 
 - epydoc
-- write textual comments on every single method
+- pylint
+- comments for every module, class, method and function
 - more examples/*.py
+
 
 
 Dataset module
 ==============
 
-* functions for reading and writing Dot, GMML and Pajek
-
-* the reading of file should be according to a certain pattern (feel
-  free to propose one) that depends on the file system structure on
-  trustlet.org?
-  
-  such as http://www.trustlet.org/datasets/advogato/
-
-
-Example file that should be read by a constructor at
-http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-21.dot
-Constructor might ask the date of the file to be loaded (all
-references should be moved from (?)
-
-See more at http://www.trustlet.org/datasets/
+* functions for reading and writing GraphML, GMML and Pajek
+  Possibly coordinate with NetworkX?
 
 * modularize the dataset class depending on whether a certain dataset
   is directed or undirected, weighted or unweighted, (sparse or not
@@ -101,16 +91,32 @@ certain method _really_ needs weighted and/or directed edges.
 
   - write comments about them
 
-## about advogato trust metric
-### understand code of pymmetry for advogato trust metric
-### understand how to use code of pymmetry
-### integrate code for advogato from pymmetry into the trustlet
-advogatoTM (both local and global) in a clever and correct way, so
-that people who read the code
-of trustlet don't have to know about certificates and how they are
-used in pymmetry
-## implement more trust metrics such as TidalTrust or AppleSeed (find
-description in th relevant paper).
+
+Advogato
+========
+
+About the Advogato trust metric.
+
+# understand code of pymmetry for advogato trust metric
+
+# understand how to use code of pymmetry
+
+# integrate code for advogato from pymmetry into the trustlet
+  advogatoTM (both local and global) in a clever and correct way, so
+  that people who read the code of trustlet don't have to know about
+  certificates and how they are used in pymmetry
+
+# implement more trust metrics such as TidalTrust or AppleSeed (find
+  description in th relevant paper).
+
+
+Visualization
+=============
+
+Draft out at least the structure for the part of code that deals with
+visualization of datasets (and of trust metrics on datasets).  Think
+about the structure of the classes, the methods and write some example
+methods.
 
 
 
@@ -182,10 +188,3 @@ then implement them.
 
 
 
-Visualization
-=============
-
-Draft out at least the structure for the part of code that deals with
-visualization of datasets (and of trust metrics on datasets).  Think
-about the structure of the classes, the methods and write some example
-methods.
