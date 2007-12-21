@@ -12,7 +12,6 @@ system after you download the code.
 - more examples/*.py
 
 
-
 Dataset module
 ==============
 
@@ -36,17 +35,17 @@ See more at http://www.trustlet.org/datasets/
   is directed or undirected, weighted or unweighted, (sparse or not
   sparse)
 
-** for example it could be that "weighted dataset" has a method
-   getReciprocationMatrix (like in the paper), while unweighted don't
-   have such a method.
+  * for example it could be that "weighted dataset" has a method
+    getReciprocationMatrix (like in the paper), while unweighted don't
+    have such a method.
 
-** or it could be that "directed dataset" has a method
-   computeReciprocation while undirected don't
+  * or it could be that "directed dataset" has a method
+    computeReciprocation while undirected don't
 
-** or it could be that "directed dataset" has a method
-   getLargestStronglyConnectedComponent while undirected doesn't
-   (strongly connected components take into account directions of
-   edges and it is computable only for directed datasets)
+  * or it could be that "directed dataset" has a method
+    getLargestStronglyConnectedComponent while undirected doesn't
+    (strongly connected components take into account directions of
+    edges and it is computable only for directed datasets)
 
 One possibility could be to design a bunch of superclasses and make
 different datasets inherit from them, such as

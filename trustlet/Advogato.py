@@ -38,6 +38,7 @@ More to add:
 """
 
 __author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)"""
+__license__ = "GPL"
 
 from Dataset.Network import WeightedNetwork
 import os

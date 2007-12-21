@@ -8,6 +8,9 @@ import scipy
 
 from Table import Table
 
+import igraph
+
+
 def dataset_dir():
     """Create datasets/ directory if needed."""
     if os.environ.has_key('HOME'):
@@ -40,6 +43,7 @@ class Network(XDiGraph):
         print "Average clustering coefficient:", cluster.average_clustering(self)
         print "Ratio of edges reciprocated:", self.link_reciprocity()
         # todo: power-law exponent
+
 
     def link_reciprocity(self):
         """Calculate the reciprocity of the edges (without paying attention to the value on the edges."""
@@ -153,5 +157,6 @@ class WeightedNetwork(Network):
             return table
         else:
             raise NotImplemented
+
 
 
