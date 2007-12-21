@@ -70,13 +70,22 @@ class Network(XDiGraph):
             freq[d] += 1
         return freq
 
-
     def download_file(self, url, filename):
         '''Download url to filename into the right path '''
         filepath = os.path.join(self.path, filename)
         print "Downloading %s to %s " % (url, filepath)
-        retriever = urllib.urlretrieve(url, filepath)
-        print retriever
+
+        import urllib2
+        try:
+            asock = urllib2.urlopen(url)
+            f = open(filepath, 'w')
+            f.write(asock.read())
+            f.close()
+            asock.close()
+        except urllib2.HTTPError, e:
+            print e.code
+            print "Cannot download dataset"
+
 
     def _read_dot(self, filepath):
         """Read file."""

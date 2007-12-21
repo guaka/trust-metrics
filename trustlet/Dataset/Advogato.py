@@ -46,20 +46,11 @@ import re
 import datetime
 
 class AdvogatoNetwork(WeightedNetwork):
-    """The Advogato dataset."""
+    """The Advogato dataset.
 
-    # TODO:
-    #   * maybe change the name into Advogato_dataset?
-    #
-    #   * read files with a date as well (AdvogatoPast is an attempt
-    #   to do this but maybe there is another way).  For example, in
-    #   future we might want to store daily a copy of advogato
-    #   graph.dot and save it on
-    #   http://trustlet.org/datasets/advogato/ ) as graph20071012.dot
-    #   (for now some files taken from archive.org are in
-    #   http://phauly.bzaar.net/advogato_files/ )
-    
-    url = "http://www.advogato.org/person/graph.dot"
+http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
+"""
+    orig_url = "http://www.advogato.org/person/graph.dot"
     dotfile = 'graph.dot'
 
     level_map = {
@@ -72,11 +63,25 @@ class AdvogatoNetwork(WeightedNetwork):
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
+    def _name_lowered(self):
+        """Helper for url."""
+        name = self.__class__.__name__.lower()
+        if name[-7:] == 'network':
+            name = name[:-7]
+        return name
+
     def __init__(self, date = None, comp_threshold = 0):
-        """e.g. A = Advogato(date = '20071221')"""
+        """e.g. A = Advogato(date = '2007-12-21')"""
         WeightedNetwork.__init__(self, weights = self.level_map)
+
+        self.url = ('http://www.trustlet.org/datasets/' +
+                    self._name_lowered() + '/' +
+                    self._name_lowered())
         if not date:
-            date = datetime.datetime.now().strftime("%Y%m%d")
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.url += '-graph-latest.dot'
+        else:
+            self.url += '-graph-' + date + '.dot'
         self.date = date
 
         self.path = os.path.join(self.path, date)
@@ -184,21 +189,8 @@ class KaitiakiNetwork(SqueakFoundationNetwork):
     advogato_seeds = ['susan', 'lucyt']
 
 
-"""
 
-class AdvogatoPast(Advogato):
-    def __init__(self, date):
-        raise NotImplemented
-
-
-        http://phauly.bzaar.net/advogato_files/
-        graph20041028154056.dot 27-Aug-2007 06:19   2.2M
-        graph20051111035647.dot 27-Aug-2007 06:19   2.5M
-        graph20060211110033.dot 27-Aug-2007 06:19   3.0M
-        graph20060520065443.dot 27-Aug-2007 06:20   3.1M
-        graph20070827.dot       27-Aug-2007 06:20   2.5M  
-
-date will be parameter of AdvogatoNetwork.__init__
-
-"""
-
+if __name__ == "__main__":
+    S = SqueakFoundationNetwork(date = '2007-12-20')
+    
+    
