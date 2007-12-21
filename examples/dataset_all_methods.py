@@ -54,6 +54,10 @@ def call_all_methods(N):
     print "--------- reciprocation -----------"
     print "get_avg_reciprocity()="+N.get_avg_reciprocity()
     print "print_reciprocity_matrix()="+print_reciprocity_matrix()
+    print "--------- controversiality --------"
+    print "get_avg_controversiality(3)="+N.get_avg_controversiality(3) # get the average controversiality of users with at least 3 incoming edges
+    # controversiality could be simply the standard deviation of received trust statements
+    print "get_number_of_controversial_nodes(3,0.2)="+N.get_number_of_controversial_nodes(3,0.2) # number of users whose controversiality is > 0.2 and received at least 2 incoming edges
 
     print ".... phew!"
     
