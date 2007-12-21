@@ -23,6 +23,6 @@ setup(	name = 'trustlet',
                          'Topic :: Software Development :: Libraries :: Python Modules'],
 	long_description = "\n".join(trustlet.__doc__.split('\n')),
 	# py_modules = ['trustlet', 'pymmetry'],
-        scripts=['scripts/dataset-downloader'],
-        packages = ['trustlet', 'trustlet.pymmetry']
+        scripts = ['scripts/dataset-downloader'],
+        packages = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset'],
         )
