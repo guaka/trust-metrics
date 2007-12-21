@@ -25,3 +25,9 @@ S.info()
 # create Advogato dataset
 A = AdvogatoNetwork()
 A.info() 
+
+# create Advogato dataset as it was on a certain date.
+# The .dot file is taken from http://www.trustlet.org/datasets/advogato/ looking for the correctly dated file
+AD = AdvogatoNetwork(2007,10,13)
+AD.info() 
+
