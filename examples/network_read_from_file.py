@@ -19,3 +19,6 @@ ErdosUDUW.info()
 #create a directed weighted network from a dot file 
 RagusaDW=read_dot("data/ragusa16_directed_weighted.net")
 RagusaDW.info()
+
+graphML = read_GraphML('simple-graphml.xml')
+graphML.info()
