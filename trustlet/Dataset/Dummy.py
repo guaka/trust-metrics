@@ -1,5 +1,10 @@
 
-from Network import Network
+"""
+Some very simple networks for testing.
+
+"""
+
+from Network import Network, WeightedNetwork
 
 class DummyNetwork(Network):
     """A dummy dataset used for testing purposes, actually the dataset
@@ -31,13 +36,13 @@ class DummyNetwork(Network):
             self.add_edge(edge[0], edge[1], 1.0)
         
 
-class DummyWeightedNetwork(Network):
+class DummyWeightedNetwork(WeightedNetwork):
     """A dummy dataset used for testing purposes, actually the dataset
     with 8 nodes discussed in
     http://www.ams.org/featurecolumn/archive/pagerank.html
     But with weights on edges, so that it is like a trust network"""
     def __init__(self):
-        Dataset.Network.__init__(self)
+        WeightedNetwork.__init__(self)
         edges = [(1, 2, 0.6),
                  (1, 3, 0.6),
                  (2, 4, 0.6),

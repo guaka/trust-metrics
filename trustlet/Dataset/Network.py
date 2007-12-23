@@ -1,7 +1,10 @@
 
-import trustlet
+"""
+Network classes
 
-import urllib
+"""
+
+
 import os
 from networkx.xdigraph import XDiGraph
 from networkx import cluster
@@ -11,7 +14,6 @@ import scipy
 
 from trustlet.Table import Table
 
-import igraph
 
 
 def dataset_dir():
@@ -40,20 +42,27 @@ class Network(XDiGraph):
                 os.mkdir(self.path)
 
     def info(self):
+        """Show information."""
         XDiGraph.info(self)
-        print "Std deviation of in-degree:", scipy.std(([len(self.in_edges(n)) for n in self.nodes()]))
-        print "Std deviation of out-degree:", scipy.std(([len(self.out_edges(n)) for n in self.nodes()]))
-        print "Average clustering coefficient:", cluster.average_clustering(self)
+        print ("Std deviation of in-degree:", 
+               scipy.std(([len(self.in_edges(n)) for n in self.nodes()])))
+        print ("Std deviation of out-degree:", 
+               scipy.std(([len(self.out_edges(n)) for n in self.nodes()])))
+        print ("Average clustering coefficient:", 
+               cluster.average_clustering(self))
         print "Ratio of edges reciprocated:", self.link_reciprocity()
         # todo: power-law exponent
 
 
     def link_reciprocity(self):
-        """Calculate the reciprocity of the edges (without paying attention to the value on the edges."""
-        return 1.0 * sum([self.has_successor(e[1], e[0]) for e in self.edges_iter()]) / self.number_of_edges()
+        """Calculate the reciprocity of the edges (without paying attention 
+        to the value on the edges."""
+        return 1.0 * sum([self.has_successor(e[1], e[0]) 
+                          for e in self.edges_iter()]) / self.number_of_edges()
 
     def in_degree_hist(self):
-        """in-degree histogram, minor adaptation from networkx.function.degree_histogram"""
+        """in-degree histogram, minor adaptation from 
+        networkx.function.degree_histogram"""
         degseq = self.in_degree()
         dmax = max(degseq)+1
         freq = [0 for d in xrange(dmax)]
@@ -62,7 +71,8 @@ class Network(XDiGraph):
         return freq
 
     def out_degree_hist(self):
-        """out-degree histogram, minor adaptation from networkx.function.degree_histogram"""
+        """out-degree histogram, minor adaptation from 
+        networkx.function.degree_histogram"""
         degseq = self.out_degree()
         dmax = max(degseq)+1
         freq = [0 for d in xrange(dmax)]
@@ -152,7 +162,7 @@ class WeightedNetwork(Network):
             tbl = Table([12] + [12] * len(self.weights))
             tbl.printHdr(['reciprocity'] + self.weights.keys())
             tbl.printSep()
-            for k,v in recp_tbl.items():
+            for k, v in recp_tbl.items():
                 tbl.printRow([k] + v)
 
     def reciprocity_table(self):
@@ -162,9 +172,11 @@ class WeightedNetwork(Network):
             for v in self.weights.keys():
                 line = []
                 for w in self.weights.keys():
+                    
                     line.append(sum([self.get_edge(e[1], e[0]).values()[0] == w
                                      for e in self.edges_iter()
-                                     if self.has_edge(e[1], e[0]) and e[2].values()[0] == v]))
+                                     if (self.has_edge(e[1], e[0]) and 
+                                         e[2].values()[0] == v)]))
                 table[v] = line
             return table
         else:

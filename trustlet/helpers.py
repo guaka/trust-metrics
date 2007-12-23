@@ -55,27 +55,31 @@ def get_name(obj):
 
 
 def path_name(obj):
+    """Name of the path where an object can be stored.
+    
+    TODO: add date."""
     if hasattr(obj, "path_name"):
         return obj.path_name
     else:
         return get_name(obj)
 
-mean_std = lambda x: (scipy.mean(x), scipy.std(x))
-
+def mean_std(arr):
+    """mean and std of array."""
+    return (scipy.mean(arr), scipy.std(arr))
 
 def threshold(arr):
     """Should use scaling here."""
     t_arr = arr.copy()
-    for i, v in enumerate(arr):
-        if v == UNDEFINED:
+    for i, value in enumerate(arr):
+        if value == UNDEFINED:
             pass
-        elif v >= 0.9 and v < 1.0:
+        elif value >= 0.9 and value < 1.0:
             t_arr[i] = 1.0
-        elif v >= 0.7 and v < 0.9:
+        elif value >= 0.7 and value < 0.9:
             t_arr[i] = 0.8
-        elif v >= 0.5 and v < 0.7:
+        elif value >= 0.5 and value < 0.7:
             t_arr[i] = 0.6
-        elif v < 0.5:
+        elif value < 0.5:
             t_arr[i] = 0.4
     return t_arr
 
@@ -83,17 +87,17 @@ def thresholdPR(arr):
     """Should use scaling here."""
     arr = recur_log_rescale(arr)
     t_arr = arr.copy()
-    for i, v in enumerate(arr):
+    for i, value in enumerate(arr):
         # print i,v
-        if v == UNDEFINED:
+        if value == UNDEFINED:
             pass
-        elif v > 0.8 and v < 1.0:
+        elif value > 0.8 and value < 1.0:
             t_arr[i] = 1.0
-        elif v > 0.6 and v < 0.8:
+        elif value > 0.6 and value < 0.8:
             t_arr[i] = 0.8
-        elif v > 0.4 and v < 0.6:
+        elif value > 0.4 and value < 0.6:
             t_arr[i] = 0.6
-        elif v < 0.4:
+        elif value < 0.4:
             t_arr[i] = 0.4
     return t_arr
 

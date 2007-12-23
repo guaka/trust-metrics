@@ -19,6 +19,7 @@ considerably speed up things.
 
 """
 
+# FIX: don't use import *
 from trustmetrics import *
 from helpers import *
 
@@ -192,7 +193,8 @@ class PageRankTM0(TrustMetric):
         return pagerank_tm(self.dataset, n2)
 
     def leave_one_out(self, e_orig):
-        edge = [e for e in self.dataset.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
+        edge = [e for e in self.dataset.edges() 
+                if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
         self.dataset.delete_edge(edge)
         trust_value = pagerank_tm(self.dataset, e[1])
         self.dataset.add_edge(edge)
@@ -215,7 +217,8 @@ class PageRankTMfakeLeave1out(TrustMetric):
         # here it should just fetch the PR value for e_orig
 
         # the following stuff can be avoided
-        edge = [e for e in self.dataset.edges() if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
+        edge = [e for e in self.dataset.edges() 
+                if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
         self.dataset.delete_edge(edge)
         trust_value = pagerank_tm(self.dataset, e[1])
         self.dataset.add_edge(edge)
@@ -237,57 +240,57 @@ class PageRankGlobalTM(TrustMetric):
 
 
 class AdvogatoTM(TrustMetric):
-	"""The advogato trust metric."""
+    """The advogato trust metric."""
 
-	def __init__(self, dataset):
-		self.dataset = dataset
-		self.p = Profiles(Profile, DictCertifications)
-		self.p.add_profiles_from_graph(dataset)
+    def __init__(self, dataset):
+        self.dataset = dataset
+        self.p = Profiles(Profile, DictCertifications)
+        self.p.add_profiles_from_graph(dataset)
 
-		levels = dataset.level_map.items()
-		levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
-		levels = map((lambda x: x[0]), levels)
-		self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
+        levels = dataset.level_map.items()
+        levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
+        levels = map((lambda x: x[0]), levels)
+        self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
 
-	def leave_one_out(self, e):
-		a, b, level = e
-		level = level.values()[0]
-		self.p.del_cert(a, 'like', b, level)
-		r = self.t.tmetric_calc('like', [e[0]])
-		self.p.add_cert(a, 'like', b, level)
-		
-		if b in r.keys():
-                    return self.dataset.level_map[r[b]]
-		else:
-                    return None
+    def leave_one_out(self, e):
+        a, b, level = e
+        level = level.values()[0]
+        self.p.del_cert(a, 'like', b, level)
+        r = self.t.tmetric_calc('like', [e[0]])
+        self.p.add_cert(a, 'like', b, level)
+                
+        if b in r.keys():
+            return self.dataset.level_map[r[b]]
+        else:
+            return None
 
 
 class AdvogatoGlobalTM(TrustMetric):
-	"""The advogato trust metric, global, seeds: the 4 masters of advogato."""
+    """The advogato trust metric, global, seeds: the 4 masters of advogato."""
 
-	def __init__(self, dataset):
-	    self.dataset = dataset
-	    self.p = Profiles(Profile, DictCertifications)
-	    self.p.add_profiles_from_graph(dataset)
-	
-	    levels = dataset.level_map.items()
-	    levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
-	    levels = map((lambda x: x[0]), levels)
-	    self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
-	    for s in self.dataset.advogato_seeds:
-	        assert s in dataset, "the seed node %s is not in the graph and this is not allowed" % s
-	    self.pred_trust = self.t.tmetric_calc('like', self.dataset.advogato_seeds)
-	    
-	    self.pred_trust_keys = self.pred_trust.keys()
-
-	def leave_one_out(self, edge):
-            # def predict_edge(self, e, leave_one_out = True) maybe...
-	    a, b, level = edge
-	    # level = level['level']
-	    if b in self.pred_trust_keys:
-	        return self.dataset.level_map[self.pred_trust[b]]
-	    else:
-	        return 0.4 # should depend on dataset.level_map
+    def __init__(self, dataset):
+        self.dataset = dataset
+        self.p = Profiles(Profile, DictCertifications)
+        self.p.add_profiles_from_graph(dataset)
+        
+        levels = dataset.level_map.items()
+        levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
+        levels = map((lambda x: x[0]), levels)
+        self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)
+        for s in self.dataset.advogato_seeds:
+            assert s in dataset, "The seed node %s is not in the graph" % s
+        self.pred_trust = self.t.tmetric_calc('like', 
+                                              self.dataset.advogato_seeds)
+        self.pred_trust_keys = self.pred_trust.keys()
+        
+    def leave_one_out(self, edge):
+        # def predict_edge(self, e, leave_one_out = True) maybe...
+        a, b, level = edge
+            # level = level['level']
+        if b in self.pred_trust_keys:
+            return self.dataset.level_map[self.pred_trust[b]]
+        else:
+            return 0.4 # should depend on dataset.level_map
 
 class AdvogatoTMDefaultObserver(AdvogatoTM):
     pass

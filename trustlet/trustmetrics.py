@@ -20,7 +20,7 @@ from pagerank_tm import *
 # helpers
 #
 
-def avg_or_none(list):
+def avg_or_none(in_list):
     """Return the average of a list, or None in case the
     list is empty or a list of Nones
 
@@ -31,7 +31,7 @@ def avg_or_none(list):
     None
     """
     filt_list = [e
-                 for e in list
+                 for e in in_list
                  if e is not None]
     if filt_list:
         return float(sum(filt_list)) / len(filt_list)
@@ -194,7 +194,9 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
         trust_map = [{a: 1.0}] + [{}] * horizon
 
         for (dist, node) in path_length_list[1:]:
-            useful_in_edges = filter(lambda x: x[0] in trust_map[dist-1], G.in_edges(node))
+            useful_in_edges = filter(lambda x: 
+                                     x[0] in (trust_map[dist-1], 
+                                              G.in_edges(node)))
             
             # We have to benchmark this, it could be a lot faster?
             #if len(useful_in_edges) == 1:
@@ -202,10 +204,14 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
 
             # not considering the negative trust (or e.g. <0.5)
             # statements, very good for our accuracy! yay! big hugs!
-            useful_in_edges = filter(lambda x: G.trust_on_edge(x) >= edge_trust_threshold, useful_in_edges)
+            useful_in_edges = filter(lambda x: (G.trust_on_edge(x) >= 
+                                                edge_trust_threshold, 
+                                                useful_in_edges))
             
             for edge in useful_in_edges:
-                if debug: print "useful edge:", edge, "predecessor tvalue", trust_map[dist-1][edge[0]]
+                if debug: 
+                    print ("useful edge:", edge, 
+                           "predecessor tvalue", trust_map[dist-1][edge[0]])
             pred_trust = weighted_average(map(lambda x: (G.trust_on_edge(x),
                                                          trust_map[dist-1][x[0]]),
                                               useful_in_edges))
