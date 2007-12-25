@@ -8,7 +8,7 @@ Analysis of trust metrics through predicting edges.
 
 """
 
-import Dataset
+from Dataset.Network import Network
 from helpers import *
 
 import os
@@ -29,25 +29,26 @@ except:
 
 
 
-class CalcGraph(Dataset.Network):
+class CalcGraph(Network):
     """Generic calculation graph class"""
 
     def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
-        Dataset.Network.__init__(self, make_base_path = False)
+        Network.__init__(self, make_base_path = False)
 
-        dataset = TM.dataset
-        self.dataset, self.TM = dataset, TM
+        self.TM = TM
+        self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
-        self.path = os.path.join(Dataset.Network.dataset_dir(), get_name(dataset),
+        self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                  path_name(TM))
         if not os.path.exists(self.path):
             os.mkdir(self.path)
-        self.filepath = os.path.join(self.path, get_name(self) + '.dot')
+        self.filepath = os.path.join(self.path, 
+                                     get_name(self) + '.dot')
 
         if not recreate and os.path.exists(self.filepath):
             self._read_dot(self.filepath)
@@ -142,7 +143,8 @@ class CalcGraph(Dataset.Network):
         # print edge, predicted_trust
         avg_t = (time.time() - self.start_time) / count
         eta = avg_t * (len(self.dataset.edges()) - count)
-        print '#', int(count), "avg time:", avg_t, "ETA", est_datetime_arr(eta), moreinfo
+        print '#', int(count), "avg time:", 
+        print avg_t, "ETA", est_datetime_arr(eta), moreinfo
         
 
 
@@ -174,7 +176,8 @@ class PredGraph(CalcGraph):
                 # work here
                 x = dict(self.get_edge(e[0], e[1]))
                 x['orig'] = self.dataset.trust_on_edge(e)
-                x['pred'] = (x['pred'] == 'None') and UNDEFINED or float(x['pred'])
+                x['pred'] = ((x['pred'] == 'None') and 
+                             UNDEFINED or float(x['pred']))
                 self.add_edge(e[0], e[1], x)
             self.orig_trust = self._trust_array('orig')
         else:
@@ -182,8 +185,10 @@ class PredGraph(CalcGraph):
             print "actual ratio: ", ratio
             for e in self.edges_iter():
                 x = dict(self.get_edge(e[0], e[1]))
-                # for some reason the upper line (which is neater) doesn't work here
-                x['orig'] = self.dataset.level_map[self.dataset.get_edge(e[0], e[1]).values()[0]]
+                # for some reason the upper line (which is neater) 
+                # doesn't work here
+                orig_value = self.dataset.get_edge(e[0], e[1]).values()[0]
+                x['orig'] = self.dataset.level_map[orig_value]
                 x['pred'] = ((x['pred'] == 'None') and
                              UNDEFINED or float(x['pred']))
                 self.add_edge(e[0], e[1], x)
@@ -196,14 +201,15 @@ class PredGraph(CalcGraph):
             pred_graph.add_node(n)
 
         count = 0
-        tm = self.TM(self.dataset)
+        tm = self.TM
         predicted_trust = None
         for edge in self.dataset.edges_iter():
             if (self.predict_ratio == 1.0 or
                 random() <= self.predict_ratio):
                 predicted_trust = tm.leave_one_out(edge)
-                pred_graph.add_edge(edge[0], edge[1], {'pred': str(predicted_trust)})
-                                    #, 'orig': str(self.dataset.trust_on_edge(edge)})
+                pred_graph.add_edge(edge[0], edge[1], 
+                                    {'pred': str(predicted_trust)})
+                #, 'orig': str(self.dataset.trust_on_edge(edge)})
                 count += 1
                 if divmod(count, 100)[1] == 0:
                     self._time_indicator(count, (edge, predicted_trust))
@@ -262,7 +268,6 @@ class PredGraph(CalcGraph):
 
     def mean_cond(self, condition):
         """Mean of edges satisfying condition."""
-        # TODO: std_cond
         num_edges = 0
         l = []
         # ugly
@@ -340,10 +345,12 @@ def in_edges_cond(node):
 
 
 if __name__ == "__main__":
-    import Advogato, TrustMetric
-    G = Advogato.SqueakFoundation()
-    # G = Advogato.Advogato()
-    pg = PredGraph(G, TrustMetric.GuakaMoleTM)
+    from Dataset import Advogato
+    import TrustMetric
+    G = Advogato.SqueakFoundationNetwork()
+    # G = Advogato.AdvogatoNetwork()
+    tm = TrustMetric.GuakaMoleTM(G)
+    pg = PredGraph(tm)
     l = ['master',
          'in_edges_cond("Yoda")',
          'in_edges_cond("luciano")',

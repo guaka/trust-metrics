@@ -12,7 +12,8 @@ from networkx import cluster
 import numpy
 import scipy
 
-from trustlet.Table import Table
+# import trustlet
+from Table import Table
 
 
 

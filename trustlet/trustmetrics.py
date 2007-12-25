@@ -195,8 +195,8 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
 
         for (dist, node) in path_length_list[1:]:
             useful_in_edges = filter(lambda x: 
-                                     x[0] in (trust_map[dist-1], 
-                                              G.in_edges(node)))
+                                     x[0] in (trust_map[dist-1]), 
+                                     G.in_edges(node))
             
             # We have to benchmark this, it could be a lot faster?
             #if len(useful_in_edges) == 1:
@@ -205,8 +205,8 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
             # not considering the negative trust (or e.g. <0.5)
             # statements, very good for our accuracy! yay! big hugs!
             useful_in_edges = filter(lambda x: (G.trust_on_edge(x) >= 
-                                                edge_trust_threshold, 
-                                                useful_in_edges))
+                                                edge_trust_threshold), 
+                                     useful_in_edges)
             
             for edge in useful_in_edges:
                 if debug: 

@@ -46,16 +46,16 @@ class TrustMetric:
                 return self.name
         raise AttributeError
 
-    def calc(self, n1, n2):
-        return self.trustmetric(self.dataset, n1, n2)
+    def calc(self, node1, node2):
+        return self.trustmetric(self.dataset, node1, node2)
 
     def predict_edge(self, edge, leave_one_out = True):
         """Predict edge, leave_one_out or not."""
         if leave_one_out:
-            self.dataset.delete_edge(e)
-        trust_value = self.calc(e[0], e[1])
+            self.dataset.delete_edge(edge)
+        trust_value = self.calc(edge[0], edge[1])
         if leave_one_out:
-            self.dataset.add_edge(e)
+            self.dataset.add_edge(edge)
         return trust_value            
 
     def leave_one_out(self, edge):
