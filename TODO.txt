@@ -25,10 +25,6 @@ Dataset module
   is directed or undirected, weighted or unweighted, (sparse or not
   sparse)
 
-  * for example it could be that "weighted dataset" has a method
-    getReciprocationMatrix (like in the paper), while unweighted don't
-    have such a method.
-
   * or it could be that "directed dataset" has a method
     computeReciprocation while undirected don't
 

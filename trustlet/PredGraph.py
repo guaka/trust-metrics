@@ -350,7 +350,7 @@ if __name__ == "__main__":
     G = Advogato.SqueakFoundationNetwork()
     # G = Advogato.AdvogatoNetwork()
     tm = TrustMetric.GuakaMoleTM(G)
-    pg = PredGraph(tm)
+    pg = PredGraph(tm, predict_ratio = 0.1)
     l = ['master',
          'in_edges_cond("Yoda")',
          'in_edges_cond("luciano")',

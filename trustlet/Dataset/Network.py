@@ -52,8 +52,10 @@ class Network(XDiGraph):
         print ("Average clustering coefficient:", 
                cluster.average_clustering(self))
         print "Ratio of edges reciprocated:", self.link_reciprocity()
-        # todo: power-law exponent
 
+        from powerlaw import power_exp_cum_deg_hist
+        print ("Power exponent of cumulative degree distribution:",
+               power_exp_cum_deg_hist(self))
 
     def link_reciprocity(self):
         """Calculate the reciprocity of the edges (without paying attention 
