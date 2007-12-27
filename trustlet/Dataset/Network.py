@@ -12,6 +12,7 @@ from trustlet.powerlaw import power_exp_cum_deg_hist
 import os
 from networkx.xdigraph import XDiGraph
 from networkx import cluster
+from networkx.component import is_strongly_connected, is_connected
 
 import numpy
 import scipy
@@ -45,19 +46,49 @@ class Network(XDiGraph):
         if from_graph:
             self._paste_graph(from_graph)
 
+    def avg_in_degree(self):
+        return scipy.average(self.in_degree())
+
+    def avg_out_degree(self):
+        return scipy.average(self.out_degree())
+
+    def std_in_degree(self):
+        return scipy.std(self.in_degree())
+
+    def std_out_degree(self):
+        return scipy.std(self.out_degree())
+
+    def degree_histogram(self):
+        from networkx import degree_histogram
+        return degree_histogram(self)
+
     def info(self):
         """Show information."""
         XDiGraph.info(self)
         print ("Std deviation of in-degree:", 
-               scipy.std(([len(self.in_edges(n)) for n in self.nodes()])))
+               self.std_in_degree())
         print ("Std deviation of out-degree:", 
-               scipy.std(([len(self.out_edges(n)) for n in self.nodes()])))
+               self.std_out_degree())
         print ("Average clustering coefficient:", 
                cluster.average_clustering(self))
         print "Ratio of edges reciprocated:", self.link_reciprocity()
 
         print ("Power exponent of cumulative degree distribution:",
-               power_exp_cum_deg_hist(self))
+               self.powerlaw_exponent())
+
+    def powerlaw_exponent(self):
+        return power_exp_cum_deg_hist(self)
+
+    def is_connected(self):
+        if self.is_directed():
+            G = self.to_undirected()
+            return is_connected(G)
+        else:
+            return is_connected(self)
+
+    def is_strongly_connected(self):
+        if self.is_directed():
+            return is_strongly_connected(self)
 
     def link_reciprocity(self):
         """Calculate the reciprocity of the edges (without paying attention 
@@ -155,7 +186,7 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights, is_discrete = True):
+    def __init__(self, weights = None, is_discrete = True):
         Network.__init__(self)
         self.weights = weights
         self.is_discrete = is_discrete
@@ -169,6 +200,8 @@ class WeightedNetwork(Network):
             tbl.printSep()
             for k, v in recp_tbl.items():
                 tbl.printRow([k] + v)
+
+
 
     def reciprocity_table(self):
         """Generate a reciprocity table (which is actually a dict)."""
@@ -186,6 +219,5 @@ class WeightedNetwork(Network):
             return table
         else:
             raise NotImplemented
-
 
 

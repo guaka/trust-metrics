@@ -19,7 +19,6 @@ Dataset module
 ==============
 
 * functions for reading and writing GraphML, GMML and Pajek
-  Possibly coordinate with NetworkX?
 
 * modularize the dataset class depending on whether a certain dataset
   is directed or undirected, weighted or unweighted, (sparse or not
@@ -64,7 +63,7 @@ certain method _really_ needs weighted and/or directed edges.
 - object.info():
   - at least all the methods that corresponds to characteristics of the
     dataset as shown in papers by Newman:
-  - power-law exponent
+  - check powerlaw exponent, examples/powerlaw_test.py
   - please add more...
 
 
