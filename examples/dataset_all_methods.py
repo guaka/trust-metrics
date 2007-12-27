@@ -35,12 +35,11 @@ def call_all_methods(N):
     call_methods(("number_of_nodes", "number_of_edges", "is_directed"))
 
     print "\nDEGREES"
-    call_methods(("avg_in_degree", "avg_out_degree", "std_in_degree", "std_out_degree"))
+    call_methods(("avg_degree", "std_in_degree", "std_out_degree"))
     #TODO: print "get_degree_correlation_coefficient()="+N.get_degree_correlation_coefficient()
     call_methods(("degree_histogram", "powerlaw_exponent"))
 
     print "\nCOMPONENTS"
-
     call_methods(("is_strongly_connected",
                   "is_connected",
                   "number_nodes_in_strongly_connected_component",

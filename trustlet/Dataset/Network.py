@@ -47,11 +47,8 @@ class Network(XDiGraph):
         if from_graph:
             self._paste_graph(from_graph)
 
-    def avg_in_degree(self):
-        return average(self.in_degree())
-
-    def avg_out_degree(self):
-        return average(self.out_degree())
+    def avg_degree(self):
+        return average(self.degree())
 
     def std_in_degree(self):
         return scipy.std(self.in_degree())
