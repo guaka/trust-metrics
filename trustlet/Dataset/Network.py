@@ -17,6 +17,8 @@ from networkx.component import is_strongly_connected, is_connected
 import numpy
 import scipy
 
+average = lambda x: sum(x) / len(x)
+
 
 def dataset_dir():
     """Create datasets/ directory if needed."""
@@ -47,10 +49,10 @@ class Network(XDiGraph):
             self._paste_graph(from_graph)
 
     def avg_in_degree(self):
-        return scipy.average(self.in_degree())
+        return average(self.in_degree())
 
     def avg_out_degree(self):
-        return scipy.average(self.out_degree())
+        return average(self.out_degree())
 
     def std_in_degree(self):
         return scipy.std(self.in_degree())
@@ -70,7 +72,7 @@ class Network(XDiGraph):
         print ("Std deviation of out-degree:", 
                self.std_out_degree())
         print ("Average clustering coefficient:", 
-               cluster.average_clustering(self))
+               self.clustering())
         print "Ratio of edges reciprocated:", self.link_reciprocity()
 
         print ("Power exponent of cumulative degree distribution:",
@@ -220,13 +222,26 @@ class WeightedNetwork(Network):
             for k, v in recp_mtx.items():
                 tbl.printRow([k] + v)
 
-    def min_possible_weight(self):
-        if self.weights:
-            return min(self.weights().values())
+    def min_weight(self):
+        """Minimum weight."""
+        return min(self.weights().values())
 
-    def max_possible_weight(self):
-        if self.weights:
-            return max(self.weights().values())
+    def max_weight(self):
+        """Maximum weight."""
+        return max(self.weights().values())
+
+    def average_clustering(self):
+        """Average clustering coefficient."""
+        return average(cluster.clustering(self))
+
+    def transitivity(self):
+        """Clustering transitivity coefficient."""
+        return cluster.transitivity(self)
+
+    """
+    # call path.all_pairs_shortest_path_length(G, cutoff=None) # also pay attention to the fact there are 2 or more connected components
+    "avg_node_node_shortest_distance",
+    """
 
     def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""

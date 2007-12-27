@@ -50,7 +50,7 @@ def call_all_methods(N):
                   "avg_distance",
                   "cluster_coefficient", #based on N.clustering() of networkx?
                   "average_clustering", #call the function cluster.average_clustering(N)
-                  "transitivity()", # call the function cluster.transitivity(N)
+                  "transitivity", # call the function cluster.transitivity(N)
                   # call path.all_pairs_shortest_path_length(G, cutoff=None) # also pay attention to the fact there are 2 or more connected components
                   "avg_node_node_shortest_distance",
                   ))
@@ -58,7 +58,7 @@ def call_all_methods(N):
     print "\nweights on edges"
     call_methods(("is_weighted",
                   "has_discrete_weights",
-                  "weights", # return a sorted array of the possible weight values (if discrete)
+                  "weights", 
                   "min_possible_weight", 
                   "max_possible_weight", 
                   ))
