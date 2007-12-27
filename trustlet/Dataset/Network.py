@@ -5,16 +5,16 @@ Network classes
 """
 
 
+from trustlet.Table import Table
+from trustlet.powerlaw import power_exp_cum_deg_hist
+
+
 import os
 from networkx.xdigraph import XDiGraph
 from networkx import cluster
 
 import numpy
 import scipy
-
-# import trustlet
-from Table import Table
-
 
 
 def dataset_dir():
@@ -33,7 +33,7 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, make_base_path = True):
+    def __init__(self, from_graph = None, make_base_path = True):
         '''Create directory for class name if needed'''
 
         XDiGraph.__init__(self, multiedges = False)
@@ -41,6 +41,9 @@ class Network(XDiGraph):
             self.path = os.path.join(dataset_dir(), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
+
+        if from_graph:
+            self._paste_graph(from_graph)
 
     def info(self):
         """Show information."""
@@ -53,7 +56,6 @@ class Network(XDiGraph):
                cluster.average_clustering(self))
         print "Ratio of edges reciprocated:", self.link_reciprocity()
 
-        from powerlaw import power_exp_cum_deg_hist
         print ("Power exponent of cumulative degree distribution:",
                power_exp_cum_deg_hist(self))
 
