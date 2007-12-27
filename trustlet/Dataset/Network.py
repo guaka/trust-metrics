@@ -186,35 +186,65 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, is_discrete = True):
+    def __init__(self, weights = None, has_discrete_weights = True):
         Network.__init__(self)
-        self.weights = weights
-        self.is_discrete = is_discrete
+        self._weights = weights
+        self.has_discrete_weights = has_discrete_weights
+        self.is_weighted = True
+
+    def weights(self):
+        if hasattr(self, "_weights") and self._weights:
+            weights = self._weights
+        else:
+            weights = {}
+            for n in self.edges_iter():
+                x = n[2]
+                if type(x) in (float, int):
+                    weights[str(x)] = x
+                else:
+                    print x
+                    weights[x[0]] = x[1]
+            self._weights = weights
+        return weights
         
     def info(self):
         Network.info(self)
-        if self.is_discrete:
-            recp_tbl = self.reciprocity_table()
-            tbl = Table([12] + [12] * len(self.weights))
-            tbl.printHdr(['reciprocity'] + self.weights.keys())
+        self.show_reciprocity_matrix()
+
+    def show_reciprocity_matrix(self):
+        if self.has_discrete_weights:
+            recp_mtx = self.reciprocity_matrix()
+            tbl = Table([12] + [12] * len(self.weights()))
+            tbl.printHdr(['reciprocity'] + self.weights().keys())
             tbl.printSep()
-            for k, v in recp_tbl.items():
+            for k, v in recp_mtx.items():
                 tbl.printRow([k] + v)
 
+    def min_possible_weight(self):
+        if self.weights:
+            return min(self.weights().values())
 
+    def max_possible_weight(self):
+        if self.weights:
+            return max(self.weights().values())
 
-    def reciprocity_table(self):
+    def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""
-        if self.is_discrete:
+        def value_on_edge(e):
+            if type(e) in (int, float):
+                return e
+            else:
+                return e.values()[0]
+        
+        if self.has_discrete_weights:
             table = {}
-            for v in self.weights.keys():
+            for v in self.weights().keys():
                 line = []
-                for w in self.weights.keys():
-                    
-                    line.append(sum([self.get_edge(e[1], e[0]).values()[0] == w
+                for w in self.weights().keys():
+                    line.append(sum([value_on_edge(self.get_edge(e[1], e[0])) == w
                                      for e in self.edges_iter()
                                      if (self.has_edge(e[1], e[0]) and 
-                                         e[2].values()[0] == v)]))
+                                         value_on_edge(e[2]) == v)]))
                 table[v] = line
             return table
         else:

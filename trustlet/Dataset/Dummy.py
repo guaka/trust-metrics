@@ -64,3 +64,7 @@ class DummyWeightedNetwork(WeightedNetwork):
         for edge in edges:
             self.add_edge(edge)    
         
+
+if __name__ == "__main__":
+    dwn = DummyWeightedNetwork()
+    print dwn.weights()

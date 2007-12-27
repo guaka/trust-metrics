@@ -21,7 +21,10 @@ def call_all_methods(N):
             if hasattr(N, method_name):
                 method = getattr(N, method_name)
                 if hasattr(method, "__call__"):
-                    print method_name, method()
+                    if method_name[:4] == "show":
+                        print method()
+                    else:
+                        print method_name, method()
                 else:
                     print method_name, method #is not actually a method
             else:
@@ -65,7 +68,7 @@ def call_all_methods(N):
 
     print "\nreciprocation"
     call_methods(("get_avg_reciprocity",
-                  "print_reciprocity_matrix"))
+                  "show_reciprocity_matrix"))
     print "\ncontroversiality"
 
     # get the average controversiality of users with at least 3 incoming edges
