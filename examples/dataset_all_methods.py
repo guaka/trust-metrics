@@ -22,7 +22,7 @@ def call_all_methods(N):
                 method = getattr(N, method_name)
                 if hasattr(method, "__call__"):
                     if method_name[:4] == "show":
-                        print method()
+                        method()
                     else:
                         print method_name, method()
                 else:
@@ -34,12 +34,12 @@ def call_all_methods(N):
 
     call_methods(("number_of_nodes", "number_of_edges", "is_directed"))
 
-    print "\ndegrees"
+    print "\nDEGREES"
     call_methods(("avg_in_degree", "avg_out_degree", "std_in_degree", "std_out_degree"))
     #TODO: print "get_degree_correlation_coefficient()="+N.get_degree_correlation_coefficient()
     call_methods(("degree_histogram", "powerlaw_exponent"))
 
-    print "\ncomponents"
+    print "\nCOMPONENTS"
 
     call_methods(("is_strongly_connected",
                   "is_connected",
@@ -47,36 +47,35 @@ def call_all_methods(N):
                   "number_nodes_in_connected_component",
                   "largest_strongly_connected_component",
                   "largest_connected_component",
-                  "avg_distance",
-                  "cluster_coefficient", #based on N.clustering() of networkx?
-                  "average_clustering", #call the function cluster.average_clustering(N)
-                  "transitivity", # call the function cluster.transitivity(N)
-                  # call path.all_pairs_shortest_path_length(G, cutoff=None) # also pay attention to the fact there are 2 or more connected components
-                  "avg_node_node_shortest_distance",
+                  "average_clustering",
+                  "transitivity",
+                  "avg_shortest_distance",
                   ))
 
-    print "\nweights on edges"
+    print "\nWEIGHTS ON EDGES"
     call_methods(("is_weighted",
                   "has_discrete_weights",
                   "weights", 
-                  "min_possible_weight", 
-                  "max_possible_weight", 
+                  "min_weight", 
+                  "max_weight", 
                   ))
 
     # TODO: return the number of edges whose value is the smallest of the possible values
     # print "get_number_of_edges(get_weights()[0])", N.get_number_of_edges(get_weights()[0])
 
-    print "\nreciprocation"
-    call_methods(("get_avg_reciprocity",
-                  "show_reciprocity_matrix"))
-    print "\ncontroversiality"
+    print "\nRECIPROCATION"
+    call_methods(("link_reciprocity", 
+                  "show_reciprocity_matrix"
+                  ))
+
+    print "\nCONTROVERSIALITY"
 
     # get the average controversiality of users with at least 3 incoming edges
     # controversiality could be simply the standard deviation of received trust statements
-    # TODO: print "avg_controversiality(3)", N.get_avg_controversiality(3)
+    print "avg_controversiality(3)" # TODO N.get_avg_controversiality(3)
     
     # number of users whose controversiality is > 0.2 and received at least 2 incoming edges
-    # TODO: print "get_number_of_controversial_nodes(3, 0.2)", N.get_number_of_controversial_nodes(3, 0.2)
+    print "get_number_of_controversial_nodes(3, 0.2)" # TODO N.get_number_of_controversial_nodes(3, 0.2)
 
 
 # create some datasets

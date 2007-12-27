@@ -11,13 +11,12 @@ from trustlet.powerlaw import power_exp_cum_deg_hist
 
 import os
 from networkx.xdigraph import XDiGraph
-from networkx import cluster
-from networkx.component import is_strongly_connected, is_connected
+from networkx import cluster, path, component
 
 import numpy
 import scipy
 
-average = lambda x: sum(x) / len(x)
+average = lambda x: float(sum(x)) / len(x)
 
 
 def dataset_dir():
@@ -84,13 +83,13 @@ class Network(XDiGraph):
     def is_connected(self):
         if self.is_directed():
             G = self.to_undirected()
-            return is_connected(G)
+            return component.is_connected(G)
         else:
-            return is_connected(self)
+            return component.is_connected(self)
 
     def is_strongly_connected(self):
         if self.is_directed():
-            return is_strongly_connected(self)
+            return component.is_strongly_connected(self)
 
     def link_reciprocity(self):
         """Calculate the reciprocity of the edges (without paying attention 
@@ -152,11 +151,10 @@ class Network(XDiGraph):
 
     def ditch_components(self, threshold = 3):
         """Ditch components with less than [threshold] nodes"""
-        from networkx.component import connected_component_subgraphs
 
         undir_graph = self.to_undirected()
         if len(undir_graph):
-            concom_subgraphs = connected_component_subgraphs(undir_graph)[1:]
+            concom_subgraphs = component.connected_component_subgraphs(undir_graph)[1:]
             n_remove = 0
             for subgraph in concom_subgraphs:
                 if len(subgraph) <= threshold:
@@ -179,6 +177,19 @@ class Network(XDiGraph):
         that will be applied to the edges"""
         return numpy.array(map(mapper, self._sorted_edges()))
 
+    def average_clustering(self):
+        """Average clustering coefficient."""
+        return average(cluster.clustering(self))
+
+    def transitivity(self):
+        """Clustering transitivity coefficient."""
+        return cluster.transitivity(self)
+
+    def avg_shortest_distance(self):
+        """Average shortest distance between nodes."""
+        # TODO: pay attention to the fact there are 2 or more connected component
+        pair_distances = path.all_pairs_shortest_path_length(self)
+        return average([average(x.values()) for x in pair_distances.values()])
 
 
 class WeightedNetwork(Network):
@@ -230,18 +241,6 @@ class WeightedNetwork(Network):
         """Maximum weight."""
         return max(self.weights().values())
 
-    def average_clustering(self):
-        """Average clustering coefficient."""
-        return average(cluster.clustering(self))
-
-    def transitivity(self):
-        """Clustering transitivity coefficient."""
-        return cluster.transitivity(self)
-
-    """
-    # call path.all_pairs_shortest_path_length(G, cutoff=None) # also pay attention to the fact there are 2 or more connected components
-    "avg_node_node_shortest_distance",
-    """
 
     def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""
