@@ -40,12 +40,10 @@ def call_all_methods(N):
     call_methods(("degree_histogram", "powerlaw_exponent"))
 
     print "\nCOMPONENTS"
-    call_methods(("is_strongly_connected",
-                  "is_connected",
-                  "number_nodes_in_strongly_connected_component",
-                  "number_nodes_in_connected_component",
-                  "largest_strongly_connected_component",
-                  "largest_connected_component",
+    call_methods(("is_connected",
+                  "is_strongly_connected",
+                  "connected_components_size",
+                  "strongly_connected_components_size",
                   "average_clustering",
                   "transitivity",
                   "avg_shortest_distance",

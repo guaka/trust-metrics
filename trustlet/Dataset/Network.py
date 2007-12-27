@@ -47,6 +47,26 @@ class Network(XDiGraph):
         if from_graph:
             self._paste_graph(from_graph)
 
+    def connected_components(self):
+        G = self
+        if self.is_directed():
+            G = G.to_undirected()
+        return component.connected_components(G)
+
+    def connected_components_size(self):
+        return map(len, self.connected_components())
+
+
+    def strongly_connected_components(self):
+        G = self
+        if self.is_directed():
+            G = G.to_undirected()
+        return component.connected_components(G)
+
+    def strongly_connected_components_size(self):
+        return map(len, self.connected_components())
+
+
     def avg_degree(self):
         return average(self.degree())
 
