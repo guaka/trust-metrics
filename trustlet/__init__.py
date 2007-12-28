@@ -24,7 +24,7 @@ Using
 
 
 # how to use subversion revision number?
-__version__ = '0.1.1' # + "-r" + $Revision: $
+__version__ = '0.1.2' # + "-r" + $Revision: $
 
 
 from Dataset.Advogato import *

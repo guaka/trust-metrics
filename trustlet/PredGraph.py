@@ -347,9 +347,10 @@ def in_edges_cond(node):
 
 
 if __name__ == "__main__":
-    from Dataset import Advogato
+    from Dataset import Advogato, Dummy
     import TrustMetric
-    G = Advogato.SqueakFoundationNetwork()
+    G = Dummy.DummyWeightedNetwork()
+    # G = Advogato.SqueakFoundationNetwork()
     # G = Advogato.AdvogatoNetwork()
     tm = TrustMetric.GuakaMoleTM(G)
     pg = PredGraph(tm, predict_ratio = 0.1)

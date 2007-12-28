@@ -1,6 +1,5 @@
 
-from Network import Network
-from Dummy import DummyNetwork, DummyWeightedNetwork
+import Network
+import Dummy
 
-# import trustlet
 
