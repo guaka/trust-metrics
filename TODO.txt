@@ -21,30 +21,21 @@ system after you download the code.
 
 
 
-Dataset module
-==============
+Dataset
+=======
 
 - functions for reading and writing GraphML, GMML and Pajek
-
-- modularize the dataset class depending on whether a certain dataset
-  is directed or undirected, weighted or unweighted, (sparse or not
-  sparse)
-
-- check powerlaw exponent, examples/powerlaw_test.py
+- check powerlaw exponent, add examples/powerlaw_test.py
+- check if PredGraph(predict_ratio = 0.1) works
 
 
-- PredGraph
-  - in case of only some edges predicted (ratio): add all original
-    values and mark edges NOT_PREDICTED (find good name, wrt UNDEFINED)
+Trust metrics
+=============
 
-
-- Trust metrics code
-  - Check if structure is consistent and refactor, 
-  - Is there a better way of dealing with leave-one-out thing?  Should
-    it be a different class such as TrustMetricEvaluation?  Which
-    methods should the class TrustMetric export?
-  - Correct code for trust metrics, try to make it more efficient,
-  - Write comments about them
+- Is there a better way of dealing with leave-one-out thing?  Should
+  it be a different class such as TrustMetricEvaluation?  Which
+  methods should the class TrustMetric export?
+- Add more comments
 
 
 Advogato
@@ -78,11 +69,9 @@ methods.
 Tables
 ======
 
-As we have seen writing the paper, it is very important to be able to
-easily and quickly generate the tables of results that you need, when
-you need it.  This means being able to call methods such as
+Implement function to create tables, and export CSV.
 
-predGraph.getPredictionTable(rows=[array of trust
+getPredictionTable(pred_graph, rows=[array of trust
 metrics],columns=[array of evaluation measures],multiplicity=array of
 conditions on edges,precision=number_of_decimals)
 that will generate for example
@@ -135,11 +124,6 @@ edge_to_connected_node(30)    |    0.343423                  |
 0.11134342           |  0.322343423
 
 
-Also think about different ways of exporting it (directly into a more
-portable format?) (with fix width for columns? or with columns that
-accomodate everything? as parameter, ...)
-First, think about the methods and how we need them (and for what),
-then implement them.
 
 
 
