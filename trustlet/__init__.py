@@ -13,13 +13,9 @@ Using
 -----
 
    >>> from trustlet import *
-   >>> G=Advogato()
-   >>> G.add_edge(1,2)
-   >>> G.add_node("spam")
-   >>> print G.nodes()
-   [1, 2, 'spam']
-   >>> print G.edges()
-   [(1, 2)]
+   >>> AD = AdvogatoNetwork(date="2007-10-13")
+   >>> AD.info() 
+... add more here
 """
 
 
@@ -31,4 +27,3 @@ from Dataset.Advogato import *
 from Dataset.Dummy import *
 from TrustMetric import *
 from PredGraph import *
-
