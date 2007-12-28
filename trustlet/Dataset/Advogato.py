@@ -186,12 +186,15 @@ class RobotsNetNetwork(AdvogatoNetwork):
 class SqueakFoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
-    level_map = {
-        'violet': 1.0, #master
-        'blue': 0.8,   #journeyer
-        'green': 0.6,  #apprentice
-        'gray': 0.4,   #observer
-        }
+
+    def __init__(self):
+        AdvogatoNetwork.__init__(self)
+        self.level_map = {
+            'violet': 1.0, #master
+            'blue': 0.8,   #journeyer
+            'green': 0.6,  #apprentice
+            'gray': 0.4,   #observer
+            }
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']

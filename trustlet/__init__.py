@@ -28,5 +28,7 @@ __version__ = '0.1.1' # + "-r" + $Revision: $
 
 
 from Dataset.Advogato import *
+from Dataset.Dummy import *
 from TrustMetric import *
 from PredGraph import *
+

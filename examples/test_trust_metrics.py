@@ -3,23 +3,20 @@ Create networks, create trust metrics, test trust metrics on these datasets (als
 """
 
 # make sure example can be run from examples/ directory
-import sys
-sys.path.append('../trustlet')
 
-from Dataset.Advogato import *
-from Dataset.Dummy import DummyNetwork
+from trustlet import *
+
 
 # create datasets
-dummyNetwork = DummyNetwork()
+dummy_network = DummyNetwork()
 
 # create trust metrics
-EbayTM = EbayTM()
-MT2 = Moletrust(2)
-
 # create the predgraphs based on leave-one-out (also with ratios)
 # predict 10% of edges with leave-one-out
-pred_graph = PredGrap(dummyNetwork, MT2, 0.1) 
+pred_graph = PredGraph(MoleTrustTM(dummy_network, horizon = 2, threshold = 0.5),
+                       # predict_ratio = 0.5
+                       )
 
 # show evaluation measures
-predgraph.showTable()
-predgraph.MAE()
+pred_graph.abs_error()
+# pred_graph.show_table()

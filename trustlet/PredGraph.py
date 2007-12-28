@@ -43,18 +43,20 @@ class CalcGraph(Network):
         self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
-        self.path = os.path.join(os.path.split(dataset.filepath)[0],
-                                 path_name(TM))
-        if not os.path.exists(self.path):
-            os.mkdir(self.path)
-        self.filepath = os.path.join(self.path, 
-                                     get_name(self) + '.dot')
 
-        if not recreate and os.path.exists(self.filepath):
-            self._read_dot(self.filepath)
-        else:
-            graph = self._generate()
-            self._write_pred_graph_dot(graph)
+        if hasattr(dataset, "filepath"):
+            self.path = os.path.join(os.path.split(dataset.filepath)[0],
+                                     path_name(TM))
+            if not os.path.exists(self.path):
+                os.mkdir(self.path)
+            self.filepath = os.path.join(self.path, 
+                                         get_name(self) + '.dot')
+
+            if not recreate and os.path.exists(self.filepath):
+                self._read_dot(self.filepath)
+            else:
+                graph = self._generate()
+                self._write_pred_graph_dot(graph)
         self._set_arrays()
         self._prepare()
         if hasattr(self.TM, 'rescale') and self.TM.rescale:

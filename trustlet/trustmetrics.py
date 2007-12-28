@@ -225,21 +225,6 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
     return moletrust_tm
 
 
-# The following is butt ugly and should not be happening in Python:
-
-#moletrust with threshold 0 (all trust statements are accepted) and different propagation horizons
-moletrust_tm_hor1_threshold0 = moletrust_generator(horizon = 1, pred_node_trust_threshold = 0.0, edge_trust_threshold = 0)
-moletrust_tm_hor2_threshold0 = moletrust_generator(horizon = 2, pred_node_trust_threshold = 0.0, edge_trust_threshold = 0)
-moletrust_tm_hor3_threshold0 = moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.0, edge_trust_threshold = 0)
-moletrust_tm_hor4_threshold0 = moletrust_generator(horizon = 4, pred_node_trust_threshold = 0.0, edge_trust_threshold = 0)
-moletrust_tm_hor5_threshold0 = moletrust_generator(horizon = 5, pred_node_trust_threshold = 0.0, edge_trust_threshold = 0)
-
-#moletrust with threshold 0.5 (only trust statements coming from users with predicted trust >= 0.5 are accepted) and different propagation horizons
-moletrust_tm_hor1_threshold05 = moletrust_generator(horizon = 1, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0)
-moletrust_tm_hor2_threshold05 = moletrust_generator(horizon = 2, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0)
-moletrust_tm_hor3_threshold05 = moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0)
-moletrust_tm_hor4_threshold05 = moletrust_generator(horizon = 4, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0)
-moletrust_tm_hor5_threshold05 = moletrust_generator(horizon = 5, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0)
 
 paolomole_tm = moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5, edge_trust_threshold = 0)
 

@@ -23,6 +23,7 @@ considerably speed up things.
 from trustmetrics import *
 from helpers import *
 
+
 class TrustMetric:
     """A generic trust metric class."""
 
@@ -31,7 +32,8 @@ class TrustMetric:
     def __init__(self, dataset):
         """Use this to plug in functional trust metrics"""
         self.dataset = dataset
-        self._set_tm()
+        if hasattr(self, "_set_tm"):
+            self._set_tm()
         
     def __getattr__(self, name):
         if name == "name":
@@ -93,47 +95,21 @@ class PaoloMoleTM(TrustMetric):
 #     return ClassThing
 
 
-# refactor the following into something cleaner:
 
-class MoletrustTM_horizon1_threshold0(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor1_threshold0
+# The following is butt ugly and should not be happening in Python:
 
-class MoletrustTM_horizon2_threshold0(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor2_threshold0
 
-class MoletrustTM_horizon3_threshold0(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor3_threshold0
+class MoleTrustTM(TrustMetric):
+    """MoleTrust trust metric.
 
-class MoletrustTM_horizon4_threshold0(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor4_threshold0
+    TODO: set some sensible default values.
+    """
+    def __init__(self, dataset, horizon = 2, threshold = 0.3, edge_trust_threshold = 0):
+        TrustMetric.__init__(self, dataset)
+        self.trustmetric = moletrust_generator(horizon = horizon,
+                                               pred_node_trust_threshold = threshold,
+                                               edge_trust_threshold = edge_trust_threshold)
 
-class MoletrustTM_horizon5_threshold0(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor5_threshold0
-
-class MoletrustTM_horizon1_threshold05(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor1_threshold05
-
-class MoletrustTM_horizon2_threshold05(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor2_threshold05
-
-class MoletrustTM_horizon3_threshold05(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor3_threshold05
-
-class MoletrustTM_horizon4_threshold05(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor4_threshold05
-
-class MoletrustTM_horizon5_threshold05(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = moletrust_tm_hor5_threshold05
 
 class AlwaysMaster(TrustMetric):
     def _set_tm(self):
