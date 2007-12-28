@@ -2,6 +2,12 @@
 Here's a bunch of stuff to do.
 
 
+Installing
+==========
+
+- fix setup.py to make "easy_install trustlet" work
+
+
 Documentation
 =============
 
@@ -18,19 +24,13 @@ system after you download the code.
 Dataset module
 ==============
 
-* functions for reading and writing GraphML, GMML and Pajek
+- functions for reading and writing GraphML, GMML and Pajek
 
-* modularize the dataset class depending on whether a certain dataset
+- modularize the dataset class depending on whether a certain dataset
   is directed or undirected, weighted or unweighted, (sparse or not
   sparse)
 
-
-
-- object.info():
-  - at least all the methods that corresponds to characteristics of the
-    dataset as shown in papers by Newman:
-  - check powerlaw exponent, examples/powerlaw_test.py
-  - please add more...
+- check powerlaw exponent, examples/powerlaw_test.py
 
 
 - PredGraph
@@ -52,16 +52,16 @@ Advogato
 
 About the Advogato trust metric.
 
-# understand code of pymmetry for advogato trust metric
+- understand code of pymmetry for advogato trust metric
 
-# understand how to use code of pymmetry
+- understand how to use code of pymmetry
 
-# integrate code for advogato from pymmetry into the trustlet
+- integrate code for advogato from pymmetry into the trustlet
   advogatoTM (both local and global) in a clever and correct way, so
   that people who read the code of trustlet don't have to know about
   certificates and how they are used in pymmetry
 
-# implement more trust metrics such as TidalTrust or AppleSeed (find
+- implement more trust metrics such as TidalTrust or AppleSeed (find
   description in th relevant paper).
 
 

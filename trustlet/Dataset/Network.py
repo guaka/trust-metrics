@@ -252,15 +252,6 @@ class WeightedNetwork(Network):
         Network.info(self)
         self.show_reciprocity_matrix()
 
-    def show_reciprocity_matrix(self):
-        if self.has_discrete_weights:
-            recp_mtx = self.reciprocity_matrix()
-            tbl = Table([12] + [12] * len(self.weights()))
-            tbl.printHdr(['reciprocity'] + self.weights().keys())
-            tbl.printSep()
-            for k, v in recp_mtx.items():
-                tbl.printRow([k] + v)
-
     def min_weight(self):
         """Minimum weight."""
         return min(self.weights().values())
@@ -295,6 +286,15 @@ class WeightedNetwork(Network):
         node_controversy_list.reverse()
         return node_controversy_list
         
+    def show_reciprocity_matrix(self):
+        if self.has_discrete_weights:
+            recp_mtx = self.reciprocity_matrix()
+            tbl = Table([12] + [12] * len(self.weights()))
+            tbl.printHdr(['reciprocity'] + self.weights().keys())
+            tbl.printSep()
+            for k, v in recp_mtx.items():
+                tbl.printRow([k] + v)
+
     def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""
         def value_on_edge(e):

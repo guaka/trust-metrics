@@ -10,8 +10,8 @@ is be based a few existing free software projects, such as:
 
 You can quickly install many dependencies through easy_install
 
-You can use epydoc to generate documentation. Also check examples/
-
+You can use epydoc to generate documentation. There is a Makefile, try "make doc"
+Also check examples/
 
 
 Links
