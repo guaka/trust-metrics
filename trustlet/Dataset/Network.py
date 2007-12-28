@@ -14,9 +14,8 @@ from networkx.xdigraph import XDiGraph
 from networkx import cluster, path, component
 
 import numpy
-import scipy
 
-average = lambda x: float(sum(x)) / len(x)
+average = lambda x: x and float(sum(x)) / len(x)
 
 
 def dataset_dir():
@@ -71,10 +70,10 @@ class Network(XDiGraph):
         return average(self.degree())
 
     def std_in_degree(self):
-        return scipy.std(self.in_degree())
+        return numpy.std(self.in_degree())
 
     def std_out_degree(self):
-        return scipy.std(self.out_degree())
+        return numpy.std(self.out_degree())
 
     def degree_histogram(self):
         from networkx import degree_histogram
@@ -208,6 +207,10 @@ class Network(XDiGraph):
         pair_distances = path.all_pairs_shortest_path_length(self)
         return average([average(x.values()) for x in pair_distances.values()])
 
+    def min_in_edges(self, num):
+        """Nodes with minimum of num incoming edges."""
+        return [n for n in self if len(self.in_edges(n)) > num]
+    
 
 class WeightedNetwork(Network):
     """A weighted network.
@@ -221,6 +224,12 @@ class WeightedNetwork(Network):
         self._weights = weights
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
+
+    def trust_on_edge(self, edge):
+        """
+        SHOULD BE: weight_on_edge
+        """
+        return edge[2]
 
     def weights(self):
         if hasattr(self, "_weights") and self._weights:
@@ -258,7 +267,32 @@ class WeightedNetwork(Network):
         """Maximum weight."""
         return max(self.weights().values())
 
+    def node_controversiality(self, node):
+        """Controversiality of node: the standard deviation of incoming weights."""
+        return numpy.std(map(self.trust_on_edge,
+                             self.in_edges_iter(node)))
 
+
+    def controversiality(self):
+        """Controversiality of nodes."""
+        return dict([(n, self.node_controversiality(n))
+                     for n in self])
+        
+    def avg_controversiality(self, min_num_edges = 3):
+        """Average controversiality of nodes with at least min_num_edges incoming edges."""
+        
+        return average([self.node_controversiality(n)
+                        for n in self.min_in_edges(min_num_edges)])
+
+    def controversial_nodes(self, min_std = 0.1, min_num_edges = 3):
+        """Nodes with at least min_num_edges incoming edges and controversiality > min_std."""
+        node_controversy_list = [(n, c)
+                                 for (n, c) in self.controversiality().items()
+                                 if c >= min_std and len(self.in_edges(n)) >= min_num_edges]
+        node_controversy_list.sort(lambda x, y: cmp(x[1], y[1]))
+        node_controversy_list.reverse()
+        return node_controversy_list
+        
     def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""
         def value_on_edge(e):
@@ -280,5 +314,6 @@ class WeightedNetwork(Network):
             return table
         else:
             raise NotImplemented
+
 
 

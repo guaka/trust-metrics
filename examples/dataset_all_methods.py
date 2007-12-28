@@ -69,10 +69,10 @@ def call_all_methods(N):
 
     # get the average controversiality of users with at least 3 incoming edges
     # controversiality could be simply the standard deviation of received trust statements
-    print "avg_controversiality(3)" # TODO N.get_avg_controversiality(3)
-    
-    # number of users whose controversiality is > 0.2 and received at least 2 incoming edges
-    print "get_number_of_controversial_nodes(3, 0.2)" # TODO N.get_number_of_controversial_nodes(3, 0.2)
+    call_methods(("avg_controversiality",
+                  "controversial_nodes",
+                  ))
+
 
 
 # create some datasets
