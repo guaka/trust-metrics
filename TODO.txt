@@ -24,40 +24,6 @@ Dataset module
   is directed or undirected, weighted or unweighted, (sparse or not
   sparse)
 
-  * or it could be that "directed dataset" has a method
-    computeReciprocation while undirected don't
-
-  * or it could be that "directed dataset" has a method
-    getLargestStronglyConnectedComponent while undirected doesn't
-    (strongly connected components take into account directions of
-    edges and it is computable only for directed datasets)
-
-One possibility could be to design a bunch of superclasses and make
-different datasets inherit from them, such as
-
-                               Dataset
-                                  |
-       ---------------------------+------------------------------+----------------------------------+
-       |                          |                              |
-                                  |
- DirectedNetwork          UndirectedNetwork
-WeightedNetwork            UnweightedNetwork
-
-AdvogatoNetwork might be a subclass of DirectedNetwork AND of
-WeightedNetwork, so that it inherits automatically all their methods.
-
-Maybe even what is now PredGraph can be a subclass of Dataset, such as
-DatasetWithPrediction.
-
-Or feel free to come up with a different solution, of course!
-
-
-NetworkX already has networkx.Graph, networkx.DiGraph and
-networkx.XDiGraph (which are subsequent subclasses). In trustlet we
-simply subclass XDiGraph. Kasper doesn't think it's necessary to
-distinguish at this point. It's always possible to raise an error if a
-certain method _really_ needs weighted and/or directed edges.
-
 
 
 - object.info():
@@ -68,23 +34,17 @@ certain method _really_ needs weighted and/or directed edges.
 
 
 - PredGraph
-
   - in case of only some edges predicted (ratio): add all original
     values and mark edges NOT_PREDICTED (find good name, wrt UNDEFINED)
 
 
 - Trust metrics code
-
-  - check if structure is consistent and refactor, 
-
-    for example there is a better way of dealing with leave-one-out
-    thing?  Should it be a different class such as
-    TrustMetricEvaluation?  Which methods should the class TrustMetric
-    export?
-
-  - correct code for trust metrics, try to make it more efficient,
-
-  - write comments about them
+  - Check if structure is consistent and refactor, 
+  - Is there a better way of dealing with leave-one-out thing?  Should
+    it be a different class such as TrustMetricEvaluation?  Which
+    methods should the class TrustMetric export?
+  - Correct code for trust metrics, try to make it more efficient,
+  - Write comments about them
 
 
 Advogato
