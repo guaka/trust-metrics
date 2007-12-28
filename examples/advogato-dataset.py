@@ -4,11 +4,9 @@ some information.
 """
 
 # make sure example can be run from examples/ directory
-import sys
-sys.path.append('../trustlet')
 
-from Dataset.Advogato import *
-from Dataset.Dummy import DummyNetwork
+from trustlet.Dataset.Advogato import *
+from trustlet.Dataset.Dummy import DummyNetwork
 
 # create dummy dataset
 D = DummyNetwork()

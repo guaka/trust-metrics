@@ -45,6 +45,24 @@ import os
 import re
 import datetime
 
+
+
+_color_map = {
+    'violet': 1.0, #master
+    'blue': 0.8,   #journeyer
+    'green': 0.6,  #apprentice
+    'gray': 0.4,   #observer
+    }
+
+
+_obs_app_jour_mas_map = {
+    'Observer': 0.4,
+    'Apprentice': 0.6,
+    'Journeyer': 0.8,
+    'Master': 1.0
+    }
+
+
 class AdvogatoNetwork(WeightedNetwork):
     """The Advogato dataset.
 
@@ -53,26 +71,11 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
     orig_url = "http://www.advogato.org/person/graph.dot"
     dotfile = 'graph.dot'
 
-    level_map = {
-        'Observer': 0.4,
-        'Apprentice': 0.6,
-        'Journeyer': 0.8,
-        'Master': 1.0
-        }
-
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def _name_lowered(self):
-        """Helper for url."""
-        name = self.__class__.__name__.lower()
-        if name[-7:] == 'network':
-            name = name[:-7]
-        return name
-
     def __init__(self, date = None, comp_threshold = 0):
         """e.g. A = Advogato(date = '2007-12-21')"""
-        WeightedNetwork.__init__(self, weights = self.level_map)
 
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
@@ -83,6 +86,14 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
         else:
             self.url += '-graph-' + date + '.dot'
         self.date = date
+
+        # until 2006-05-20 there were colors on the edges
+        if date <= "2006-05-20":
+            self.level_map = _color_map
+        else:
+            self.level_map = _obs_app_jour_mas_map
+
+        WeightedNetwork.__init__(self, weights = self.level_map)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -95,9 +106,17 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
         if comp_threshold:
             self.ditch_components(comp_threshold)
 
+    def _name_lowered(self):
+        """Helper for url."""
+        name = self.__class__.__name__.lower()
+        if name[-7:] == 'network':
+            name = name[:-7]
+        return name
+
+
     def trust_on_edge(self, edge):
         """Trust level on edge."""
-        return self.level_map[edge[2]['level']]
+        return self.level_map[edge[2].values()[0]]  # ['level']]
 
     def info(self):
         WeightedNetwork.info(self)

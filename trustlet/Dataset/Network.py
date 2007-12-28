@@ -79,20 +79,22 @@ class Network(XDiGraph):
         from networkx import degree_histogram
         return degree_histogram(self)
 
+    def _show_method(self, method, desc = ""):
+        if not desc:
+            desc = method
+        print desc, getattr(self, method)()
+        
     def info(self):
         """Show information."""
         XDiGraph.info(self)
-        print ("Std deviation of in-degree:", 
-               self.std_in_degree())
-        print ("Std deviation of out-degree:", 
-               self.std_out_degree())
-        print ("Average clustering coefficient:", 
-               self.clustering())
-        print "Ratio of edges reciprocated:", self.link_reciprocity()
-
-        print ("Power exponent of cumulative degree distribution:",
-               self.powerlaw_exponent())
-
+        
+        for method, desc in [("std_in_degree", "Std deviation of in-degree:"),
+                             ("std_out_degree", "Std deviation of out-degree:"),
+                             ("average_clustering", "Average clustering coefficient:"),
+                             ("link_reciprocity", "Ratio of edges reciprocated:"),
+                             ("powerlaw_exponent", "Power exponent of cumulative degree distribution:")]:
+            self._show_method(method, desc)
+        
     def powerlaw_exponent(self):
         return power_exp_cum_deg_hist(self)
 
