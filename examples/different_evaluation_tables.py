@@ -3,25 +3,24 @@ Once we have a PredGraph already computed (read from file), we get many differen
 """
 
 # make sure example can be run from examples/ directory
-import sys
-sys.path.append('../trustlet')
+
+from trustlet import *
 
 #create datasets
-dummyNetwork=DummyNetwork()
+dummy = DummyNetwork()
 
 #create trust metrics
-EbayTM=EbayTM()
-MT2=Moletrust(2)
-MT3=Moletrust(3)
+EbayTM=EbayTM
+MT2=MoleTrust(2)
+MT3=MoleTrust(3)
 AdvogatoLocalTM=AdvogatoLocalTM()
 PagerankTM=PagerankTM()
 AlwaysMaster=ConstantTM(1.0)
 
 
 #create the predgraphs based on leave-one-out (also with ratios)
-pred_graph=PredGrap(dummyNetwork,MT2,0.1,generate=false) #predict 10% of edges with leave-one-out
+pred_graph = PredGrap(MT2(dummy), 0.1, generate=false) #predict 10% of edges with leave-one-out
 
-#
 
 
 #NOW something more generic, able to create predgraph for different trust metrics (on a single dataset) and evaluated with different evaluation measures
@@ -93,4 +92,4 @@ for eval_measure in eval_measures:
         pred_graph = PredGraph.PredGraph(G,evaluated_trust_metric)
         conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
         display(eval_measure,conds, evals)
-        pred_graph = None #possibly freeing the memory
+        del pred_graph #possibly freeing the memory
