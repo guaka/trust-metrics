@@ -15,8 +15,7 @@ Write a lot of documentation, especially for getting started with the
 system after you download the code.
 
 - epydoc
-- pylint
-- comments for every module, class, method and function
+- comments for every module, class, method and function (use pylint)
 
 
 
