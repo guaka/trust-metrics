@@ -2,25 +2,22 @@
 Once we have a PredGraph already computed (read from file), we get many different tables from it
 """
 
-# make sure example can be run from examples/ directory
-
 from trustlet import *
 
 #create datasets
 dummy = DummyNetwork()
 
-#create trust metrics
-EbayTM=EbayTM
-MT2=MoleTrust(2)
-MT3=MoleTrust(3)
-AdvogatoLocalTM=AdvogatoLocalTM()
-PagerankTM=PagerankTM()
-AlwaysMaster=ConstantTM(1.0)
+#REMOVE: create trust metrics
+# EbayTM = EbayTM()
+# MT2 = Moletrust(2)
+# MT3 = Moletrust(3)
+# AdvogatoLocalTM = AdvogatoLocalTM()
+# PagerankTM = PagerankTM()
+# AlwaysMaster = ConstantTM(1.0)
 
 
 #create the predgraphs based on leave-one-out (also with ratios)
 pred_graph = PredGrap(MT2(dummy), 0.1, generate=false) #predict 10% of edges with leave-one-out
-
 
 
 #NOW something more generic, able to create predgraph for different trust metrics (on a single dataset) and evaluated with different evaluation measures
@@ -32,11 +29,12 @@ pred_graph = PredGrap(MT2(dummy), 0.1, generate=false) #predict 10% of edges wit
 # 
 
 evaluated_trust_metrics = [ # an array of already created objects which correspond to trust metrics
-                            EbayTM,
-                            MT2,
-                            MT3,
-                            AdvogatoLocalTM
-                          ]
+    EbayTM,
+    MT2,
+    MT3,
+    AdvogatoLocalTM
+    ]
+
 eval_measures = [#'coverage_cond',
                  #'abs_error_cond',
                  'yes_no_error_cond',

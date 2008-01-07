@@ -68,20 +68,6 @@ class TrustMetric:
         return self.predict_edge(edge, leave_one_out = True)
 
 
-# turning functions into classes, I wish I could do 
-class GuakaMoleTM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = guakamole_tm
-
-
-class GuakaMoleFullTM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = guakamole_full_tm
-
-
-class PaoloMoleTM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = paolomole_tm
 
 
 
@@ -99,7 +85,7 @@ class PaoloMoleTM(TrustMetric):
 # The following is butt ugly and should not be happening in Python:
 
 
-class MoleTrustTM(TrustMetric):
+class MoleTrust(TrustMetric):
     """MoleTrust trust metric.
 
     TODO: set some sensible default values.
@@ -109,6 +95,8 @@ class MoleTrustTM(TrustMetric):
         self.trustmetric = moletrust_generator(horizon = horizon,
                                                pred_node_trust_threshold = threshold,
                                                edge_trust_threshold = edge_trust_threshold)
+
+MoleTrustTM = MoleTrust  # deprecated
 
 
 class AlwaysMaster(TrustMetric):
@@ -135,9 +123,11 @@ class IntersectionTM(TrustMetric):
     def _set_tm(self):
         self.trustmetric = intersection_tm
 
-class EbayTM(TrustMetric):
+class Ebay(TrustMetric):
     def _set_tm(self):
         self.trustmetric = ebay_tm
+
+EbayTM = Ebay  # deprecated
 
 class OutA_TM(TrustMetric):
     def _set_tm(self):

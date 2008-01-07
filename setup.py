@@ -37,13 +37,13 @@ data = [# (docdirbase, glob("doc/*.txt")),
 package_data     = {'': ['*.txt'],} 
 
 
-install_requires = ['igraph',
-                    'pygraphviz',
-                    'pyparsing',
-                    'networkx',
-                    'numpy',
-                    'scipy',
-                    ]  
+dependencies = ['igraph',
+                'pygraphviz',
+                'pyparsing',
+                'networkx',
+                'numpy',
+                'scipy',
+                ]  
 
 
 setup(	name = 'trustlet',
@@ -70,12 +70,10 @@ setup(	name = 'trustlet',
         packages = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset'],
         data_files = data,
         package_data = package_data,
-        setup_requires = install_requires,
-
-        # this doesn't work really well with Python 2.5.1 and
-        # setuptools 0.6c6 on guaka's RH machine called power at IRST
         )
 
 
+# It's not very clear how to deal with package dependencies in setup.py
+
 import pkg_resources
-pkg_resources.require(install_requires)
+pkg_resources.require(dependencies)
