@@ -17,7 +17,6 @@ system after you download the code.
 - epydoc
 - pylint
 - comments for every module, class, method and function
-- more examples/*.py
 
 
 
@@ -32,10 +31,10 @@ Dataset
 Trust metrics
 =============
 
-- Is there a better way of dealing with leave-one-out thing?  Should
+- is there a better way of dealing with leave-one-out thing? Should
   it be a different class such as TrustMetricEvaluation?  Which
-  methods should the class TrustMetric export?
-- Add more comments
+  methods for the class TrustMetric?
+- add more comments
 
 
 Advogato

@@ -74,7 +74,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, comp_threshold = 0):
+    def __init__(self, date = None, weights = None, comp_threshold = 0):
         """e.g. A = Advogato(date = '2007-12-21')"""
 
         self.url = ('http://www.trustlet.org/datasets/' +
@@ -87,12 +87,14 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
             self.url += '-graph-' + date + '.dot'
         self.date = date
 
-        # until 2006-05-20 there were colors on the edges
-        if date <= "2006-05-20":
-            self.level_map = _color_map
-        else:
-            self.level_map = _obs_app_jour_mas_map
+        if not weights:
+            # until 2006-05-20 there were colors on the edges
+            if date <= "2006-05-20":
+                weights = _color_map
+            else:
+                weights = _obs_app_jour_mas_map
 
+        self.level_map = weights #level_map deprecated
         WeightedNetwork.__init__(self, weights = self.level_map)
 
         self.path = os.path.join(self.path, date)
@@ -188,13 +190,7 @@ class SqueakFoundationNetwork(AdvogatoNetwork):
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
     def __init__(self):
-        AdvogatoNetwork.__init__(self)
-        self.level_map = {
-            'violet': 1.0, #master
-            'blue': 0.8,   #journeyer
-            'green': 0.6,  #apprentice
-            'gray': 0.4,   #observer
-            }
+        AdvogatoNetwork.__init__(self, weights = _color_map)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -210,6 +206,8 @@ class KaitiakiNetwork(SqueakFoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
+    def __init__(self):
+        AdvogatoNetwork.__init__(self, weights = _color_map)
 
 
 if __name__ == "__main__":
