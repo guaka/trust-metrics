@@ -158,6 +158,12 @@ class PredGraph(CalcGraph):
     leaving out edge (a, b). If a prediction was not possible, the
     predicted trust is None."""
 
+    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
+        self.leave_one_out = leave_one_out
+        CalcGraph.__init__(self, TM,
+                           recreate = recreate,
+                           predict_ratio = predict_ratio)
+
     def _generate(self):
         """Generate the prediction graph."""
         print "Generating", self.filepath
@@ -282,13 +288,13 @@ class PredGraph(CalcGraph):
     def abs_error(self):
         """Absolute error."""
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
-        return sum(abs_error) / self.num_defined
+        return self.num_defined and (sum(abs_error) / self.num_defined)
 
     def sqr_error(self):
         """Root mean squared error."""
         sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust -
                                                       self.orig_trust)
-        return math.sqrt(sum(sqr_error) / self.num_defined)
+        return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
 
     def evaluate(self):
         """A bunch of evaluations. DEPRECATED"""

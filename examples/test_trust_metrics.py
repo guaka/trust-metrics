@@ -26,7 +26,7 @@ pred_graph.abs_error()
 # create the predgraphs based on leave-one-out (also with ratios)
 # predict 10% of edges with leave-one-out
 pred_graph = PredGraph(MoleTrustTM(dummy_network, horizon = 2, threshold = 0.5),
-                       leave_one_out=False,
+                       leave_one_out = False,
                        # predict_ratio = 0.5
                        )
 
