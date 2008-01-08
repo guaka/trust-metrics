@@ -17,7 +17,9 @@ dummy = DummyNetwork()
 
 
 #create the predgraphs based on leave-one-out (also with ratios)
-pred_graph = PredGrap(MT2(dummy), 0.1, generate=false) #predict 10% of edges with leave-one-out
+pred_graph = PredGraph(MoleTrust(dummy, horizon = 2),
+                       predict_ratio = 0.1) #predict 10% of edges with leave-one-out
+# generate = False  # what is this supposed to do?
 
 
 #NOW something more generic, able to create predgraph for different trust metrics (on a single dataset) and evaluated with different evaluation measures
@@ -30,9 +32,9 @@ pred_graph = PredGrap(MT2(dummy), 0.1, generate=false) #predict 10% of edges wit
 
 evaluated_trust_metrics = [ # an array of already created objects which correspond to trust metrics
     EbayTM,
-    MT2,
-    MT3,
-    AdvogatoLocalTM
+    MoleTrust2,
+    MoleTrust3,
+    AdvogatoLocal
     ]
 
 eval_measures = [#'coverage_cond',
@@ -84,10 +86,40 @@ conds_on_edges = ['every_edge',
 #Moletrust3_0.4    |    0.343444                  |  0.11134342 |  0.322343423          |     1.00      | 51344
 
 
+def display(eval_measure, methods, evals):
+    """Display evaluations in table."""
+    from trustlet.Table import Table
+    tbl = Table([32] + [20] * len(methods))
+    tbl.printHdr([eval_measure] + methods)
+    tbl.printSep()
+
+    def display_what(thing):
+        if type(thing) == float:
+            return "%f" % thing
+        if thing == 0:
+            return 0
+        else:
+            return "%f %i" % (thing[1], thing[0])
+
+    for trust_metric in evals:
+        tbl.printRow([trust_metric] + map(display_what, evals[trust_metric]))
+
+
+def evals_with_conds(pred_graphs, eval_measure, conds_on_edges):
+    """Evaluation with conditions."""
+    evals = {}
+    for pred_graph in pred_graphs:
+        evals[get_name(pred_graph.TM)] = [getattr(pred_graph, eval_measure)(cond)
+                                          for cond in conds_on_edges]
+    return conds_on_edges, evals
+
+
+G = KaitiakiNetwork()
+
 
 for eval_measure in eval_measures:
-    for evaluated_trust_metric in evaluated_trust_metrics:
-        pred_graph = PredGraph.PredGraph(G,evaluated_trust_metric)
+    for eval_tm in evaluated_trust_metrics:
+        pred_graph = PredGraph(eval_tm(G))
         conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
         display(eval_measure,conds, evals)
         del pred_graph #possibly freeing the memory

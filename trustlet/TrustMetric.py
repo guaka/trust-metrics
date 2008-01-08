@@ -98,6 +98,16 @@ class MoleTrust(TrustMetric):
 
 MoleTrustTM = MoleTrust  # deprecated
 
+class MoleTrust2(MoleTrust):
+    """This is very silly, but needed because dataset is now passed to the constructor."""
+    def __init__(self, dataset, threshold = 0.3, edge_trust_threshold = 0):
+        MoleTrust.__init__(self, dataset = dataset, horizon = 2, threshold = threshold, edge_trust_threshold = edge_trust_threshold)
+
+class MoleTrust3(MoleTrust):
+    """This is very silly, but needed because dataset is now passed to the constructor."""
+    def __init__(self, dataset, threshold = 0.3, edge_trust_threshold = 0):
+        MoleTrust.__init__(self, dataset = dataset, horizon = 3, threshold = threshold, edge_trust_threshold = edge_trust_threshold)
+
 
 class AlwaysMaster(TrustMetric):
     def _set_tm(self):
@@ -205,7 +215,7 @@ class PageRankGlobalTM(TrustMetric):
         return self.calc(None, e_orig[1])
 
 
-class AdvogatoTM(TrustMetric):
+class AdvogatoLocal(TrustMetric):
     """The advogato trust metric."""
 
     def __init__(self, dataset):
@@ -230,6 +240,7 @@ class AdvogatoTM(TrustMetric):
         else:
             return None
 
+AdvogatoLocalTM = AdvogatoTM = AdvogatoLocal # deprecated
 
 class AdvogatoGlobalTM(TrustMetric):
     """The advogato trust metric, global, seeds: the 4 masters of advogato."""
