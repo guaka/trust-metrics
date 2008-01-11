@@ -159,13 +159,17 @@ class Network(XDiGraph):
         graph = networkx.read_dot(filepath)
         self._paste_graph(graph)
         
-    def _paste_graph(self, graph):
+    def paste_graph(self, graph):
         """Paste graph into object."""
         for node in graph.nodes():
             self.add_node(node)
         for edge in graph.edges():
             self.add_edge(edge)
 
+
+    def _paste_graph(self, graph):
+        """Deprecated."""
+        self.paste_graph(graph)
 
     def ditch_components(self, threshold = 3):
         """Ditch components with less than [threshold] nodes"""
