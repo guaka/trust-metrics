@@ -22,7 +22,7 @@ system after you download the code.
 Dataset
 =======
 
-- functions for reading and writing GraphML, GMML and Pajek
+- writing GraphML, GML and Pajek?
 - check powerlaw exponent, add examples/powerlaw_test.py
 - check if PredGraph(predict_ratio = 0.1) works
 
