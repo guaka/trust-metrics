@@ -3,10 +3,7 @@ Load some datasets (possibly download them from the internet) and show
 some information.
 """
 
-# make sure example can be run from examples/ directory
-
-from trustlet.Dataset.Advogato import *
-from trustlet.Dataset.Dummy import DummyNetwork
+from trustlet import *
 
 # create dummy dataset
 D = DummyNetwork()

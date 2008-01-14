@@ -6,9 +6,7 @@ Create a network and call all its method on it.
 # import sys
 # sys.path.append('../trustlet')
 
-from trustlet.Dataset.Dummy import DummyNetwork, DummyWeightedNetwork
-from trustlet.Dataset.Advogato import AdvogatoNetwork, SqueakFoundationNetwork
-
+from trustlet import *
 
 
 def call_all_methods(N):
