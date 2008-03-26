@@ -1,7 +1,9 @@
 
 """Collection of random useful stuff."""
-
+import math
 import numpy
+import trustlet.TrustMetric
+import trustlet.trustmetrics
 import datetime
 try:
     import scipy
@@ -42,17 +44,25 @@ def get_name(obj):
     >>> get_name(datetime)
     datetime
     """
+
     if hasattr(obj, "__name__"):
         if hasattr(obj, "name"):
             return obj.name
         return obj.__name__
+
     if hasattr(obj, "__class__"):
         if hasattr(obj, "get_name"):
-            return obj.get_name()
-        return get_name(obj.__class__)
-    else:
-        raise "Can't find name."
+            ret = obj.get_name()
+        ret = get_name(obj.__class__)
 
+    # se e` una classe generica, identifico il predgraph con la funzione tm
+    if ret == "TrustMetric":
+        if hasattr(obj, "get_tm" ):
+            return obj.get_tm().__name__
+        else:
+            raise AttributeError
+    else:
+        return ret
 
 def path_name(obj):
     """Name of the path where an object can be stored.
@@ -144,3 +154,163 @@ def indication_of_dist(arr, stepsize = 0.2):
 
     
             
+#made by Danilo Tomasoni
+
+
+def BestMoletrustParameters( network, verbose = False ):
+    """
+    This function, print for a network passed, the best parameters
+    for the moletrust_tm trustmetric
+    parameters:
+    network: the reference to the network
+             on which you would calcolate the best parameters
+    verbose: verbose mode, default false
+    return a tuple with
+    (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
+    """
+
+    K = network
+
+#horizon = 3, pred_node_trust_threshold = 0.5,
+#                        edge_trust_threshold = 0.4
+    r = range(10)
+    
+    bestvalue = 1.0
+    besthorizon = 0
+    bestpnt = 0.0
+    bestet = 0.0
+
+    for h in r: #range for horizon
+        if verbose:
+            print "Horizon number:",h
+        for pnt in r: #pred_node_trust_threshold
+            for et in r: #edge_trust_treshold
+                tm = trustlet.TrustMetric( K , 
+                                           trustlet.moletrust_generator( h , float( pnt/10 ) , float( et/10 ) ) 
+                                           )
+                
+                
+            #calcolo l'errore medio
+                sum = 0
+                cnt = 0
+
+                for edge in tm.dataset.edges_iter():
+                #valori per calcolare l'errore medio
+                    orig_trust = tm.dataset.trust_on_edge(edge)
+                    pred_trust = tm.leave_one_out(edge)
+                    sum = sum + math.fabs(orig_trust - pred_trust)
+                    cnt = cnt + 1
+                    
+                    avg = float(sum/cnt)
+
+                    if avg < bestvalue:
+                        bestvalue = avg
+                        besthorizon = h
+                        bestpnt = float( pnt/10 )
+                        bestet = float( et/10 )
+
+            
+
+    if verbose:
+        print "the best parameter are:"
+        print "horizon:", besthorizon, "pred_node_trust_threshold:", bestpnt, "edge_trust_treshold:", bestet
+        print "with the best absolute error:", bestvalue
+
+    return (besthorizon,bestpnt,bestet,bestvalue)
+
+
+
+def testTM( choice, singletrustm = False, verbose = False ):
+    """
+    This function test a single trustmetric or all the existence trustmetric, 
+    on a specific network
+    parameters:
+    choice: the name of the network used for the test
+                  possible value:
+                  kaitiaki
+                  dummy
+                  advogato
+                  squeakfoundation
+
+    singletrustm: if false, check all the trustmetrics, else only the name of trustmetric passed
+                  possible value:
+                  intersection
+                  edges a
+                  ebay
+                  out a
+                  out b
+                  random
+                  moletrust standard
+                  moletrust generator
+                  pagerank
+
+    verbose: verbose mode, true o false
+    return a tuple, with the best trustmetric and it's average error 
+    """
+
+#questo e` uno switch ;-)
+#assegno la network scelta alla variabile K
+    K = {
+        'kaitiaki': KaitiakiNetwork(date = "2008-03-20"),
+        'dummy': DummyWeightedNetwork(),
+        'advogato': AdvogatoNetwork(date = "2008-03-22"),
+        'squeakfoundation' : SqueakFoundationNetwork( date = "2008-03-22" )
+        }[choice]
+
+    
+    trustmetrics = {
+        "intersection" : TrustMetric( K , intersection_tm ),
+        "edges a" : TrustMetric( K , edges_a_tm ),
+        "ebay" : TrustMetric( K , ebay_tm ),
+        "out a" : TrustMetric( K , outa_tm ),
+        "out b" : TrustMetric( K , outb_tm ),
+        "random" : TrustMetric( K , random_tm ),
+        "moletrust standard" : MoleTrustTM( K ),
+        "moletrust generator" : TrustMetric( K , 
+                                             moletrust_generator( 6 , 0.0 , 0.0 ) ),
+        "pagerank" : PageRankTM( K )
+        #"pagerank global": PageRankGlobalTM( K )
+        }
+    
+    if singletrustm:
+        trustmetric = {singletrustm: trustmetrics[singletrustm]}
+    else:
+        trustmetric = trustmetrics
+
+#foreach trustmetric print the predicted value foreach node..
+    bestname = ''
+    bestvalue = 1.0
+
+    for tm in trustmetric:
+        sum = 0
+        cnt = 0
+
+        if verbose:
+            print "------------- BEGIN ",tm,"--------\n"
+        
+        for edge in trustmetrics[tm].dataset.edges_iter():
+        #valori per calcolare l'errore medio
+            orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
+            pred_trust = trustmetrics[tm].leave_one_out(edge)
+            sum = sum + math.fabs(orig_trust - pred_trust)
+            cnt = cnt + 1
+        
+        #stampa la trustmetric e che arco cerca di predire
+            if verbose:
+                print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
+    
+            if float(sum/cnt) < bestvalue:
+                bestvalue = float(sum/cnt)
+                bestname = tm
+        
+        if verbose:
+            print "average error: ", float(sum/cnt), "\n"
+            print "------------- END ",tm,"--------\n"
+
+    if verbose:
+        print "+-----------------------------------------------------+"
+        print "   the best trustmetric for this test is", bestname 
+        print "   with the average error:", bestvalue      
+        print "+-----------------------------------------------------+"
+    
+    return (bestname,bestvalue)

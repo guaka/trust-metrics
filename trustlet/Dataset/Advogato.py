@@ -74,8 +74,14 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = None, comp_threshold = 0):
-        """e.g. A = Advogato(date = '2007-12-21')"""
+    def __init__(self, date = None, weights = None, comp_threshold = 0, download = False):
+        """
+        e.g. A = Advogato(date = '2007-12-21')
+        date = the date of the dot file, if you would to use a old dataset
+        weights = if no value is assigned to this parameter, the class choose automatically
+        between _color_map and _obs_app_jour_mas_map
+        comp_threshold = if this parameter is set, the class evaluate the ditch component
+        """
 
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
@@ -101,7 +107,8 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
         if not os.path.exists(self.path):
             os.mkdir(self.path)
         self.filepath = os.path.join(self.path, self.dotfile)
-        self.download(only_if_needed = True)
+        #'download' parameter say to the class if download the source dot file or not
+        self.download(only_if_needed = download)
         self.get_graph_dot()
 
         # DEPRECATED?
@@ -134,10 +141,15 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
 
     def download(self, only_if_needed = False):
         """Download dataset."""
-        if only_if_needed and os.path.exists(self.filepath):
+        if os.path.exists(self.filepath):
             return
-        self.download_file(self.url, self.dotfile)
-        self.fix_graphdot()
+
+        if (not os.path.exists(self.filepath)) and (not only_if_needed):
+            raise IOError( "dot file does not exists, if you would download it,\nset 'download' parameter to True" )
+        else:
+            if only_if_needed and (not os.path.exists(self.filepath)):
+                self.download_file(self.url, self.dotfile)
+                self.fix_graphdot()
 
     def fix_graphdot(self):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
@@ -189,8 +201,8 @@ class SqueakFoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
-    def __init__(self):
-        AdvogatoNetwork.__init__(self, weights = _color_map)
+    def __init__(self, download = False, date=None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date=date)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -206,8 +218,8 @@ class KaitiakiNetwork(SqueakFoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self):
-        AdvogatoNetwork.__init__(self, weights = _color_map)
+    def __init__(self, download=False, date = None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date )
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ from pagerank_tm import *
 #
 
 def avg_or_none(in_list):
-    """Return the average of a list, or None in case the
+    """Return the average of a list, or 0.0 in case the
     list is empty or a list of Nones
 
     >>> avg_or_none(range(6))
@@ -36,7 +36,7 @@ def avg_or_none(in_list):
     if filt_list:
         return float(sum(filt_list)) / len(filt_list)
     else:
-        return None
+        return 0.0
 
 def overlap(main_tm, fallback_tm):
     """overlap main_tm with fallback_tm
@@ -154,8 +154,8 @@ def intersection_tm(G, a, b):
         return max(map(lambda i: min(outa[i], inb[i]), intersection))
 
 
-def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
-                        edge_trust_threshold = 0.4):
+def moletrust_generator(horizon = 6, pred_node_trust_threshold = 0.0,
+                        edge_trust_threshold = 0.0):
     """Generate moletrust trust metric functions.
 
     Parameters:
@@ -180,12 +180,12 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
         # subgraphs = connected_component_subgraphs(UG)
         # find a
         # if not b in subgraph_with_a:
-        #   return None
+        #   return 0.0
         
         # path_length_dict and trust_map should be cached in a very smart way
         path_length_dict = path.single_source_shortest_path_length(G, a, horizon)
         if not b in path_length_dict or path_length_dict[b] > horizon:
-            return None
+            return 0.0
         
         path_length_list = map(lambda (x,y): (y,x), path_length_dict.items())
         path_length_list.sort()  # order by distance
@@ -221,7 +221,7 @@ def moletrust_generator(horizon = 3, pred_node_trust_threshold = 0.5,
             # only keep edges over pred_node_trust_threshold
             if pred_trust >= pred_node_trust_threshold:
                 trust_map[dist][node] = pred_trust
-        return None
+        return 0.0
     return moletrust_tm
 
 

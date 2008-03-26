@@ -70,10 +70,10 @@ class BasicPageRank:
         """
         return self.pr[self.nodes.index(node)]
 
-
-def pagerank_tm(G, node):
+#DT prima era G, node
+def pagerank_tm(G, n1, n2):
     pr = BasicPageRank(G)
-    return pr[node]
+    return pr[n2]
 
 
 if __name__ == "__main__":

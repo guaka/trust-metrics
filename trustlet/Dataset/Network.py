@@ -44,7 +44,8 @@ class Network(XDiGraph):
                 os.mkdir(self.path)
 
         if from_graph:
-            self._paste_graph(from_graph)
+            self.paste_graph(from_graph)
+
 
     def connected_components(self):
         G = self
@@ -64,7 +65,6 @@ class Network(XDiGraph):
 
     def strongly_connected_components_size(self):
         return map(len, self.connected_components())
-
 
     def avg_degree(self):
         return average(self.degree())
@@ -157,12 +157,13 @@ class Network(XDiGraph):
         import networkx
         print "Reading", filepath
         graph = networkx.read_dot(filepath)
-        self._paste_graph(graph)
+        self.paste_graph(graph)
         
     def paste_graph(self, graph):
         """Paste graph into object."""
         for node in graph.nodes():
             self.add_node(node)
+
         for edge in graph.edges():
             self.add_edge(edge)
 

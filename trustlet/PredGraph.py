@@ -10,6 +10,7 @@ Analysis of trust metrics through predicting edges.
 
 from Dataset.Network import Network
 from helpers import *
+from TrustMetric import *
 
 import os
 import math
@@ -57,6 +58,7 @@ class CalcGraph(Network):
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
+                
         self._set_arrays()
         self._prepare()
         if hasattr(self.TM, 'rescale') and self.TM.rescale:
@@ -97,7 +99,7 @@ class CalcGraph(Network):
         """Return numpy array of pred (default) or orig values."""
         def mapper(edge):
             val = edge[2][which_one]
-            return (val == 'None') and UNDEFINED or float(val)
+            return ( (val == 'None') or (val == 0.0) ) and UNDEFINED or float(val)
         return self._edge_array(mapper)
 
     def _write_pred_graph_dot(self, pred_graph):
@@ -172,7 +174,7 @@ class PredGraph(CalcGraph):
         return pg
         
     def _prepare(self):
-        """Prepare."""
+        """Prepare. Data"""
         ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
 
         # if True:  # check if self has orig
@@ -184,7 +186,7 @@ class PredGraph(CalcGraph):
                 # work here
                 x = dict(self.get_edge(e[0], e[1]))
                 x['orig'] = self.dataset.trust_on_edge(e)
-                x['pred'] = ((x['pred'] == 'None') and 
+                x['pred'] = (( (x['pred'] == 'None') or (x['pred'] == 0.0) ) and 
                              UNDEFINED or float(x['pred']))
                 self.add_edge(e[0], e[1], x)
             self.orig_trust = self._trust_array('orig')
@@ -197,7 +199,7 @@ class PredGraph(CalcGraph):
                 # doesn't work here
                 orig_value = self.dataset.get_edge(e[0], e[1]).values()[0]
                 x['orig'] = self.dataset.level_map[orig_value]
-                x['pred'] = ((x['pred'] == 'None') and
+                x['pred'] = (( (x['pred'] == 'None') or (x['pred'] == 0.0) ) and
                              UNDEFINED or float(x['pred']))
                 self.add_edge(e[0], e[1], x)
             self.orig_trust = self._trust_array('orig')
@@ -285,7 +287,8 @@ class PredGraph(CalcGraph):
                 num_edges += 1
         return num_edges and (num_edges, scipy.mean(l))
 
-    def abs_error(self):
+    #deprecated, testTM is better ;-)
+    def __abs_error(self):
         """Absolute error."""
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
         return self.num_defined and (sum(abs_error) / self.num_defined)
@@ -295,6 +298,84 @@ class PredGraph(CalcGraph):
         sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust -
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
+
+
+    #DT
+    def testTM( self, singletrustm = True, verbose = False ):
+        """
+        This function test a single trustmetric or all the existence trustmetric, 
+        on a specific network
+        
+        parameters:
+        singletrustm: if false, check all the trustmetrics, else only the trustmetric
+                      in the predgraph class instance
+        verbose: verbose mode, true or false
+        
+        return a tuple, with the best trustmetric and it's average error 
+        """
+
+        if singletrustm:
+            return (get_name(self.TM),self.__abs_error())
+        
+        
+        K = self.TM.dataset
+        
+        trustmetrics = {
+            "intersection_tm" : TrustMetric( K , intersection_tm ),
+            "edges_a_tm" : TrustMetric( K , edges_a_tm ),
+            "edges_b_tm" : TrustMetric( K , edges_b_tm ),
+            "ebay_tm" : TrustMetric( K , ebay_tm ),
+            "outa_tm" : TrustMetric( K , outa_tm ),
+            "outb_tm" : TrustMetric( K , outb_tm ),
+            "random_tm" : TrustMetric( K , random_tm ),
+            "moletrust_tm" : TrustMetric( K , 
+                                          moletrust_generator( 6 , 0.0 , 0.0 ) ),
+            "PageRankTM" : PageRankTM( K )
+            }
+
+        #foreach trustmetric print the predicted value foreach edge..
+        bestname = ''
+        bestvalue = 1.0
+
+        for tm in trustmetrics:
+            sum = 0
+            cnt = 0
+
+            if verbose:
+                print "------------- BEGIN ",tm,"--------\n"
+        
+            
+            for edge in trustmetrics[tm].dataset.edges_iter():
+                
+                #valori per calcolare l'errore medio
+                
+                orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
+                pred_trust = trustmetrics[tm].leave_one_out(edge)
+                
+                sum = sum + math.fabs(orig_trust - pred_trust)
+                cnt = cnt + 1
+        
+                #stampa la trustmetric e che arco cerca di predire
+                if verbose:
+                    print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
+    
+            if float(sum/cnt) < bestvalue:
+                bestvalue = float(sum/cnt)
+                bestname = tm
+        
+            if verbose:
+                print "average error: ", float(sum/cnt), "\n"
+                print "------------- END ",tm,"--------\n"
+
+        if verbose:
+            print "+-----------------------------------------------------+"
+            print "   the best trustmetric for this test is", bestname 
+            print "   with the average error:", bestvalue      
+            print "+-----------------------------------------------------+"
+    
+        return (bestname,bestvalue)
+
+    
 
     def evaluate(self):
         """A bunch of evaluations. DEPRECATED"""

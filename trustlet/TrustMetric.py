@@ -25,28 +25,53 @@ from helpers import *
 
 
 class TrustMetric:
-    """A generic trust metric class."""
+    """
+    A generic trust metric class.
+    The avaiable trust metric functions are:
+    always_master
+    always_journeyer
+    always_observer
+    always_apprentice
+    random_tm
+    intersection_tm
+    ebay_tm
+    outa_tm
+    outb_tm
+    edges_a_tm
+    DEPRECATED:
+    pagerank_tm: for this tm call PageRankTM class.
+    """
 
     # rescale the prediction graph, useful for PageRank
     rescale = False
-    def __init__(self, dataset):
-        """Use this to plug in functional trust metrics"""
+    # DT
+    def __init__(self, dataset , tm ):
+        """
+        Use this to plug in functional trust metrics
+        tm : the trust metric function
+        """
         self.dataset = dataset
-        if hasattr(self, "_set_tm"):
-            self._set_tm()
-        
+        self.trustmetric = tm
+
+     #   if hasattr(self, "_set_tm"):
+     #      self._set_tm()
+
+    #dt
+    def get_tm(self):
+        return self.trustmetric
+
     def __getattr__(self, name):
         if name == "name":
             if hasattr(self, name):
                 return self.name
-            else:
-                raise AttributeError
+            
         if name == "path_name":
             if hasattr(self, name):
                 return self.path_name
             else:
                 return self.name
         raise AttributeError
+        #return ""
 
     def calc(self, node1, node2):
         return self.trustmetric(self.dataset, node1, node2)
@@ -80,100 +105,46 @@ class TrustMetric:
 #             return MoletrustTM_horizon1_threshold0
 #     return ClassThing
 
-
-
-# The following is butt ugly and should not be happening in Python:
-
-
+#non serve a un cazzo
 class MoleTrust(TrustMetric):
-    """MoleTrust trust metric.
-
-    TODO: set some sensible default values.
-    """
+    #TODO: set some sensible default values.
+    
     def __init__(self, dataset, horizon = 2, threshold = 0.3, edge_trust_threshold = 0):
-        TrustMetric.__init__(self, dataset)
-        self.trustmetric = moletrust_generator(horizon = horizon,
+        TrustMetric.__init__(self, dataset , moletrust_generator(horizon = horizon,
                                                pred_node_trust_threshold = threshold,
-                                               edge_trust_threshold = edge_trust_threshold)
+                                               edge_trust_threshold = edge_trust_threshold) )
 
 MoleTrustTM = MoleTrust  # deprecated
 
-class MoleTrust2(MoleTrust):
-    """This is very silly, but needed because dataset is now passed to the constructor."""
-    def __init__(self, dataset, threshold = 0.3, edge_trust_threshold = 0):
-        MoleTrust.__init__(self, dataset = dataset, horizon = 2, threshold = threshold, edge_trust_threshold = edge_trust_threshold)
 
-class MoleTrust3(MoleTrust):
-    """This is very silly, but needed because dataset is now passed to the constructor."""
-    def __init__(self, dataset, threshold = 0.3, edge_trust_threshold = 0):
-        MoleTrust.__init__(self, dataset = dataset, horizon = 3, threshold = threshold, edge_trust_threshold = edge_trust_threshold)
-
-
-class AlwaysMaster(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = always_master
-
-class AlwaysJourneyer(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = always_journeyer
-
-class AlwaysApprentice(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = always_apprentice
-
-class AlwaysObserver(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = always_observer
-
-class RandomTM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = random_tm
-
-class IntersectionTM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = intersection_tm
-
-class Ebay(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = ebay_tm
-
-EbayTM = Ebay  # deprecated
-
-class OutA_TM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = outa_tm
-
-class OutB_TM(TrustMetric):
-    def _set_tm(self):
-        self.trustmetric = outb_tm
-
-class EdgesA_TM(TrustMetric):
-    """Average of outgoing and incoming edges of a"""
-    def _set_tm(self):
-        self.trustmetric = edges_a_tm
-
-class EdgesB_TM(TrustMetric):
-    """Average of outgoing and incoming edges of b"""
-    def _set_tm(self):
-        self.trustmetric = edges_b_tm
-
-class PageRankTM0(TrustMetric):
+class PageRankTM(TrustMetric):
     rescale = "recur_log_rescale"
     
-    def __init__(self, dataset_orig):
+    def __init__(self, dataset_orig ):
         self.dataset = dataset_orig
         # here it should calculate the PR values for all nodes
         
     def calc(self, n1, n2):
         # this should use precalculated values
-        return pagerank_tm(self.dataset, n2)
+        return pagerank_tm(self.dataset,n1, n2)
+
+    def get_tm(self):
+        return self
 
     def leave_one_out(self, e_orig):
+        # DT
+        # delete_edge solleva un eccezione se l'arco non esiste? se si sto codice non serve 
         edge = [e for e in self.dataset.edges() 
                 if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
-        self.dataset.delete_edge(edge)
-        trust_value = pagerank_tm(self.dataset, e[1])
-        self.dataset.add_edge(edge)
+
+        #for e in self.dataset.edges():
+        #    if e[0] == e_orig[0] and e[1] == e_orig[1]:
+        #        edge = e
+        #        break
+        
+        self.dataset.delete_edge(edge) 
+        trust_value = pagerank_tm(self.dataset, e[0] , e[1]) 
+        self.dataset.add_edge(edge) 
         return trust_value
 
 
@@ -187,7 +158,7 @@ class PageRankTMfakeLeave1out(TrustMetric):
         
     def calc(self, n1, n2):
         # this should use precalculated values
-        return pagerank_tm(self.dataset, n2)
+        return pagerank_tm(self.dataset, n1 , n2)
 
     def leave_one_out(self, e_orig):
         # here it should just fetch the PR value for e_orig
@@ -278,9 +249,60 @@ class AdvogatoGlobalTMDefaultObserver(AdvogatoGlobalTM):
 
 
 if __name__ == "__main__":
-    import Advogato, PredGraph
+    from trustlet import *
+
+    D = DummyNetwork()
+    predgraphs = PredGraph( TrustMetric( D , ebay_tm ) )
+    predgraphs.abs_error()
     
-    dataset = Advogato.Advogato()
-    predgraphs = PredGraph.PredGraph(dataset, PageRankGlobalTM)
     
-    
+
+"""
+class AlwaysMaster(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_master
+
+class AlwaysJourneyer(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_journeyer
+
+class AlwaysApprentice(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_apprentice
+
+class AlwaysObserver(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = always_observer
+
+class RandomTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = random_tm
+
+class IntersectionTM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = intersection_tm
+
+class Ebay(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = ebay_tm
+
+EbayTM = Ebay  # deprecated
+
+class OutA_TM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = outa_tm
+
+class OutB_TM(TrustMetric):
+    def _set_tm(self):
+        self.trustmetric = outb_tm
+
+class EdgesA_TM(TrustMetric):
+    #Average of outgoing and incoming edges of a
+    def _set_tm(self):
+        self.trustmetric = edges_a_tm
+
+class EdgesB_TM(TrustMetric):
+    #Average of outgoing and incoming edges of b
+    def _set_tm(self):
+        self.trustmetric = edges_b_tm
+"""
