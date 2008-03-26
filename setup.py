@@ -75,5 +75,5 @@ setup(	name = 'trustlet',
 
 # It's not very clear how to deal with package dependencies in setup.py
 
-import pkg_resources
+#import pkg_resources
 #pkg_resources.require(dependencies)
