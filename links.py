@@ -3,16 +3,19 @@
 #installati tramite link simbolici
 #(in modo da non dover reinstallare trustlet ad ogni modifica)
 
-"""# link.py [development path] [installation path]"""
+"""\
+USAGE:
+# link.py [development path] [installation path]\
+"""
 
 from os.path import join,exists
 import sys,os,os.path
 
-DEFDEVPATH = './trustlet'
-DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
-
 class Bug(Exception):
     pass
+
+DEFDEVPATH = './trustlet'
+DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
 
 def main():
     if 'help' in sys.argv[1:] or '--help' in sys.argv[1:]:
@@ -22,15 +25,16 @@ def main():
         devpath = sys.argv[1]
     except IndexError:
         devpath = DEFDEVPATH
+        print 'default development path:',DEFDEVPATH
     try:
         inspath = sys.argv[2]
     except IndexError:
         inspath = DEFINSPATH
+        print 'default installation path:',DEFINSPATH
 
     devpath = os.path.abspath(devpath)
     inspath = os.path.abspath(inspath)
 
-    #print os.path.join(devpath,"qwe")
     def getfiles(basedir,dir=''):
         curpath = join(basedir,dir)
         ret = []
@@ -44,10 +48,9 @@ def main():
 
     files = getfiles(inspath)
     #lista dei file da linkare
-    
-    for f in [join(inspath,f) for f in files]:
-        os.remove(f)
+
     for f in files:
+        os.remove(join(inspath,f))
         if exists(join(devpath,f)) and f[-4:]!='.pyc':
             if os.system('ln -s ' + join(devpath,f) + ' ' + join(inspath,f)):
                 raise Bug
