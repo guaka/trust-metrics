@@ -2,8 +2,10 @@
 """Collection of random useful stuff."""
 import math
 import numpy
+import os.path
 import trustlet.TrustMetric
 import trustlet.trustmetrics
+#from trustlet import *
 import datetime
 try:
     import scipy
@@ -157,7 +159,8 @@ def indication_of_dist(arr, stepsize = 0.2):
 #made by Danilo Tomasoni
 
 
-def BestMoletrustParameters( network, verbose = False ):
+#todo:Salvare il valore calcolato
+def BestMoletrustParameters( K, verbose = False ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
@@ -168,8 +171,20 @@ def BestMoletrustParameters( network, verbose = False ):
     return a tuple with
     (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
     """
+    path = os.path.join(K.path, "BestMoletrustParameters" )
+    
+    if not os.path.exists( path ):
+        os.mkdir( path )
+    else:
+        try:
 
-    K = network
+            fd = file( path+"bestparam", "r" )
+            ris = fd.read()
+            return map(lambda x: float(x), ris.split( "," ) )
+        
+        except IOError:
+            pass
+                
 
 #horizon = 3, pred_node_trust_threshold = 0.5,
 #                        edge_trust_threshold = 0.4
@@ -188,26 +203,22 @@ def BestMoletrustParameters( network, verbose = False ):
                 tm = trustlet.TrustMetric( K , 
                                            trustlet.moletrust_generator( h , float( pnt/10 ) , float( et/10 ) ) 
                                            )
-                
-                
-            #calcolo l'errore medio
-                sum = 0
-                cnt = 0
 
+                cnt = s = avg = 0
+                
                 for edge in tm.dataset.edges_iter():
-                #valori per calcolare l'errore medio
                     orig_trust = tm.dataset.trust_on_edge(edge)
                     pred_trust = tm.leave_one_out(edge)
-                    sum = sum + math.fabs(orig_trust - pred_trust)
-                    cnt = cnt + 1
+                    s = s + math.fabs( orig_trust - pred_trust )
+                    cnt += 1
                     
-                    avg = float(sum/cnt)
-
-                    if avg < bestvalue:
-                        bestvalue = avg
-                        besthorizon = h
-                        bestpnt = float( pnt/10 )
-                        bestet = float( et/10 )
+                avg = float(s)/cnt
+                    
+                if avg < bestvalue:
+                    bestvalue = avg
+                    besthorizon = h
+                    bestpnt = float( pnt/10 )
+                    bestet = float( et/10 )
 
             
 
@@ -216,8 +227,76 @@ def BestMoletrustParameters( network, verbose = False ):
         print "horizon:", besthorizon, "pred_node_trust_threshold:", bestpnt, "edge_trust_treshold:", bestet
         print "with the best absolute error:", bestvalue
 
-    return (besthorizon,bestpnt,bestet,bestvalue)
+    
+    fd = file( path+"bestparam", "w" )
+    fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)]) )
+    fd.close()
 
+    return [besthorizon,bestpnt,bestet,bestvalue]
+
+
+def ErrorTable( Network , verbose=True, sorted=False ):
+
+    trustmetrics = {
+        "intersection" : trustlet.TrustMetric( Network , trustlet.intersection_tm ),
+        "edges a" : trustlet.TrustMetric( Network ,trustlet.edges_a_tm ),
+        "ebay" : trustlet.TrustMetric( Network , trustlet.ebay_tm ),
+        "out a" : trustlet.TrustMetric( Network , trustlet.outa_tm ),
+        "out b" : trustlet.TrustMetric( Network , trustlet.outb_tm ),
+        "random" : trustlet.TrustMetric( Network , trustlet.random_tm ),
+        "moletrust standard" : trustlet.MoleTrustTM( Network ),
+        "moletrust generator" : trustlet.TrustMetric( Network , 
+                                             trustlet.moletrust_generator( 6 , 0.0 , 0.0 ) ),
+        "pagerank" : trustlet.PageRankTM( Network )
+        #"pagerank global": PageRankGlobalTM( K )
+        }
+    
+    #lista delle righe della tabella
+    t = []
+    #numero di elementi
+    cnt = 0
+    tot = 0
+    s = 0
+
+    for tm in trustmetrics:
+        P = trustlet.PredGraph( trustmetrics[tm] )
+        """
+        for edge in trustmetrics[tm].dataset.edges_iter():
+            orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
+            pred_trust = trustmetrics[tm].leave_one_out(edge)
+            tot += 1
+            if orig_trust != pred_trust:
+                s += 1
+        """
+        for i in range( len(P.orig_trust) ):
+            if P.orig_trust[i] != P.pred_trust[i]:
+                s += 1
+            tot += 1
+        
+            
+            
+        #RMSE,coverage,MAE,wrong predict, trustmetric name
+        t.insert(cnt,
+
+                 (
+                   (1.0 * s)/tot,
+                   P.mean(),
+                   P.sqr_error(),
+                   P.coverage(),
+                   tm
+                 )
+
+                 )
+
+
+    if verbose:
+        for row in t:
+            print row[4], row[0], row[1], row[2], row[3]
+
+    if sorted:
+        t.sort()
+
+    return t
 
 
 def testTM( choice, singletrustm = False, verbose = False ):
@@ -257,7 +336,7 @@ def testTM( choice, singletrustm = False, verbose = False ):
         'squeakfoundation' : SqueakFoundationNetwork( date = "2008-03-22" )
         }[choice]
 
-    
+
     trustmetrics = {
         "intersection" : TrustMetric( K , intersection_tm ),
         "edges a" : TrustMetric( K , edges_a_tm ),
@@ -271,6 +350,7 @@ def testTM( choice, singletrustm = False, verbose = False ):
         "pagerank" : PageRankTM( K )
         #"pagerank global": PageRankGlobalTM( K )
         }
+    
     
     if singletrustm:
         trustmetric = {singletrustm: trustmetrics[singletrustm]}
