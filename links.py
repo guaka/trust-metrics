@@ -3,7 +3,13 @@
 #installati tramite link simbolici
 #(in modo da non dover reinstallare trustlet ad ogni modifica)
 
-"""\
+"""
+Makes symbolic links from development path (local svn
+repository directory) to installation path in order to
+avoid reinstallation of trustlet every change.
+"""
+
+USAGE = """\
 USAGE:
 # link.py [development path] [installation path]\
 """
@@ -15,11 +21,11 @@ class Bug(Exception):
     pass
 
 DEFDEVPATH = './trustlet'
-DEFINSPATH = '/usr/lib/python2.4/site-packages/trustlet/'
+DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
 
 def main():
     if 'help' in sys.argv[1:] or '--help' in sys.argv[1:]:
-        print __doc__
+        print USAGE
         sys.exit()
     try:
         devpath = sys.argv[1]
@@ -47,11 +53,12 @@ def main():
         #print file
 
     files = getfiles(inspath)
-    #lista dei file da linkare
+    #list of files to link
 
     for f in files:
         os.remove(join(inspath,f))
         if exists(join(devpath,f)) and f[-4:]!='.pyc':
+            #doesn't exist os.sln()?
             if os.system('ln -s ' + join(devpath,f) + ' ' + join(inspath,f)):
                 raise Bug
 

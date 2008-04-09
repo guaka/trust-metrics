@@ -164,6 +164,7 @@ def indication_of_dist(arr, stepsize = 0.2):
 
 class BestMoletrustThreads( Thread ):
     def __init__(self, Net, horizon, l ):
+        #the9ull: che e` 'sto Net maiuscolo?
         Thread.__init__(self)
         self.horizon = horizon
         self.ris = l #list
@@ -188,6 +189,7 @@ class BestMoletrustThreads( Thread ):
         bestpnt = 0.0
         bestet = 0.0
         r = range(10)
+        #the9ull: sarebbe meglio xrange() nei for (non allocca la lista)
 
         for pnt in r: #pred_node_trust_threshold
             for et in r: #edge_trust_treshold
@@ -227,13 +229,14 @@ def bestMoletrustParameters( K, verbose = False ):
     return a tuple with
     (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
     """
-    path = os.path.join(K.path, "BestMoletrustParameters" )
+    path = os.path.join(K.path, "bestMoletrustParameters" )
     
     if not os.path.exists( path ):
         os.mkdir( path )
     else:
         try:
-
+            #DEBUG: force algorithm execution
+            raise IOError
             fd = file( path+"bestparam", "r" )
             ris = fd.read()
             return map(lambda x: float(x), ris.split( "," ) )
@@ -241,19 +244,21 @@ def bestMoletrustParameters( K, verbose = False ):
         except IOError:
             pass
 
-    r = range(10)
     ris = []
 
-    for h in r:
+    #the9ull: I'd removed r = range(10)
+    for h in xrange(10):
         BestMoletrustThreads(K,h,ris).start()
 
     #polling is better ;-)
     while( len(ris) < 10 ):
         time.sleep( 1 )
 
+    #print "DEBUG",ris
+
     #in base al primo valore della tupla
-    r.sort()
-    (bestvalue,besthorizon,bestpnt,bestet) = r[0]
+    ris.sort()
+    (bestvalue,besthorizon,bestpnt,bestet) = ris[0]
     
     fd = file( path+"bestparam", "w" )
     fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)]) )
