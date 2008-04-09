@@ -5,8 +5,11 @@ import numpy
 import os.path
 import trustlet.TrustMetric
 import trustlet.trustmetrics
+from trustlet import *
 #from trustlet import *
+from threading import Thread
 import datetime
+import time
 try:
     import scipy
 except:
@@ -159,8 +162,52 @@ def indication_of_dist(arr, stepsize = 0.2):
 #made by Danilo Tomasoni
 
 
-#todo:Salvare il valore calcolato
-def BestMoletrustParameters( K, verbose = False ):
+class BestMoletrustThreads( Thread ):
+    def __init__(self, Net, horizon, l ):
+        Thread.__init__(self)
+        self.horizon = horizon
+        self.ris = l #list
+        #come faccio copiare una rete??
+        self.K = {
+            'KaitiakiNetwork': KaitiakiNetwork()
+            'AdvogatoNetwork': AdvogatoNetwork()
+            }
+        self.K.paste_graph( Net ) 
+
+    def run(self):
+        
+        bestvalue = 1.0
+        bestpnt = 0.0
+        bestet = 0.0
+        r = range(10)
+
+        for pnt in r: #pred_node_trust_threshold
+            for et in r: #edge_trust_treshold
+                tm = trustlet.TrustMetric( self.K , 
+                                           trustlet.moletrust_generator( self.horizon , float( pnt/10 ) , float( et/10 ) ) 
+                                           )
+                
+                cnt = s = avg = 0
+                
+                for edge in tm.dataset.edges_iter():
+                    orig_trust = tm.dataset.trust_on_edge(edge)
+                    pred_trust = tm.leave_one_out(edge)
+                    s = s + math.fabs( orig_trust - pred_trust )
+                    cnt += 1
+                    
+                avg = float(s)/cnt
+                    
+                if avg < bestvalue:
+                    bestvalue = avg
+                    bestpnt = float( pnt/10 )
+                    bestet = float( et/10 )
+                    
+        ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
+            
+
+
+        
+def bestMoletrustParameters( K, verbose = False ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
@@ -184,49 +231,20 @@ def BestMoletrustParameters( K, verbose = False ):
         
         except IOError:
             pass
-                
 
-#horizon = 3, pred_node_trust_threshold = 0.5,
-#                        edge_trust_threshold = 0.4
     r = range(10)
-    
-    bestvalue = 1.0
-    besthorizon = 0
-    bestpnt = 0.0
-    bestet = 0.0
+    ris = []
 
-    for h in r: #range for horizon
-        if verbose:
-            print "Horizon number:",h
-        for pnt in r: #pred_node_trust_threshold
-            for et in r: #edge_trust_treshold
-                tm = trustlet.TrustMetric( K , 
-                                           trustlet.moletrust_generator( h , float( pnt/10 ) , float( et/10 ) ) 
-                                           )
+    for h in r:
+        BestMoletrustThreads(K,h,ris).start()
 
-                cnt = s = avg = 0
-                
-                for edge in tm.dataset.edges_iter():
-                    orig_trust = tm.dataset.trust_on_edge(edge)
-                    pred_trust = tm.leave_one_out(edge)
-                    s = s + math.fabs( orig_trust - pred_trust )
-                    cnt += 1
-                    
-                avg = float(s)/cnt
-                    
-                if avg < bestvalue:
-                    bestvalue = avg
-                    besthorizon = h
-                    bestpnt = float( pnt/10 )
-                    bestet = float( et/10 )
+    #polling is better ;-)
+    while( len(ris) < 10 ):
+        time.sleep( 1 )
 
-            
-
-    if verbose:
-        print "the best parameter are:"
-        print "horizon:", besthorizon, "pred_node_trust_threshold:", bestpnt, "edge_trust_treshold:", bestet
-        print "with the best absolute error:", bestvalue
-
+    #in base al primo valore della tupla
+    r.sort()
+    (bestvalue,besthorizon,bestpnt,bestet) = r[0]
     
     fd = file( path+"bestparam", "w" )
     fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)]) )
@@ -235,7 +253,7 @@ def BestMoletrustParameters( K, verbose = False ):
     return [besthorizon,bestpnt,bestet,bestvalue]
 
 
-def ErrorTable( Network , verbose=True, sorted=False ):
+def errorTable( Network , verbose=True, sorted=False ):
 
     trustmetrics = {
         "intersection" : trustlet.TrustMetric( Network , trustlet.intersection_tm ),

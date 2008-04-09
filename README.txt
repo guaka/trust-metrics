@@ -8,6 +8,12 @@ is be based a few existing free software projects, such as:
 - SciPy and NumPy: http://scipy.org
 - igraph: http://cneurocvs.rmki.kfki.hu/igraph/
 
+Debian packages
+===============
+
+- python-networkx
+
+
 You can quickly install many dependencies through easy_install
 
 You can use epydoc to generate documentation. There is a Makefile, try "make doc"
