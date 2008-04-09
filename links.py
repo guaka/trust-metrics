@@ -15,7 +15,7 @@ class Bug(Exception):
     pass
 
 DEFDEVPATH = './trustlet'
-DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
+DEFINSPATH = '/usr/lib/python2.4/site-packages/trustlet/'
 
 def main():
     if 'help' in sys.argv[1:] or '--help' in sys.argv[1:]:

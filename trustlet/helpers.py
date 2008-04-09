@@ -168,10 +168,18 @@ class BestMoletrustThreads( Thread ):
         self.horizon = horizon
         self.ris = l #list
         #come faccio copiare una rete??
-        self.K = {
-            'KaitiakiNetwork': KaitiakiNetwork()
-            'AdvogatoNetwork': AdvogatoNetwork()
-            }
+        #self.K = {
+        #    'KaitiakiNetwork': KaitiakiNetwork(),
+        #    'AdvogatoNetwork': AdvogatoNetwork()
+        #    }
+        if Net.__class__.__name__ == "KaitiakiNetwork" :
+            self.K = KaitiakiNetwork(download=True)
+        else: 
+            if Net.__class__.__name__ == "AdvogatoNetwork" :
+                self.K = AdvogatoNetwork(download=True)
+            else:
+                self.K = WeightedNetwork()
+
         self.K.paste_graph( Net ) 
 
     def run(self):
@@ -202,7 +210,8 @@ class BestMoletrustThreads( Thread ):
                     bestpnt = float( pnt/10 )
                     bestet = float( et/10 )
                     
-        ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
+        self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
+        print "Horizon ",self.horizon," calculated"
             
 
 
