@@ -8,6 +8,7 @@ import trustlet.trustmetrics
 from trustlet import *
 #from trustlet import *
 from threading import Thread
+import Gnuplot
 import datetime
 import time
 try:
@@ -208,8 +209,11 @@ class BestMoletrustThreads( Thread ):
         self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
         print "Horizon ",self.horizon," calculated"
             
-
-
+"""
+def plotparameters( tuplelist ):
+    g = Gnuplot.Gnuplot(
+    return
+"""
         
 def bestMoletrustParameters( K, verbose = False, bestris = True ):
     """
