@@ -209,11 +209,27 @@ class BestMoletrustThreads( Thread ):
         self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
         print "Horizon ",self.horizon," calculated"
             
-"""
-def plotparameters( tuplelist ):
-    g = Gnuplot.Gnuplot(
+
+def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' ):
+    """
+    Print a graphics of the list passed.
+    path is the location in wich the png image will be saved,
+    if you wouldn't save it, set the onlyshow parameter to True
+    title parameter, set the title of the plot
+    """
+    g = Gnuplot.Gnuplot()
+    g.title( title )
+    g('set parametric')
+    g.xlabel( 'horizon' )
+    g.ylabel( 'abs error' )
+    g.plot( map(lambda (a,b,c,d):(a,d,c,b) ,tuplelist) )
+    if not onlyshow:
+        g.hardcopy(
+            filename=path+'BestMoletrustGraphics.png',
+            terminal='png'
+            )
+    
     return
-"""
         
 def bestMoletrustParameters( K, verbose = False, bestris = True ):
     """
