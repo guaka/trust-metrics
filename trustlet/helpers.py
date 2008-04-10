@@ -9,6 +9,7 @@ from trustlet import *
 #from trustlet import *
 from threading import Thread
 import Gnuplot
+import os
 import datetime
 import time
 try:
@@ -287,6 +288,108 @@ def bestMoletrustParameters( K, verbose = False, bestris = True ):
         return (besthorizon,bestpnt,bestet,bestvalue)
     else:
         return ris
+    
+def bestMoletrustParameters_processes( K, verbose = False, bestris = True ):
+    """
+    This function, print for a network passed, the best parameters
+    for the moletrust_tm trustmetric
+    parameters:
+    network: the reference to the network
+             on which you would calcolate the best parameters
+    verbose: verbose mode, default false
+    return a tuple with
+    (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
+    """
+    path = os.path.join(K.path, "bestMoletrustParameters" )
+    
+    if not os.path.exists( path ):
+        os.mkdir( path )
+    else:
+        try:
+            raise IOError
+            fd = file( path+"bestparam", "r" )
+            ris = fd.read()
+            return map(lambda x: float(x), ris.split( "," ) )
+        
+        except IOError:
+            pass
+
+    ris = []
+    pipes = []
+    np = 2 #number of processes
+
+    for proc in xrange(np):
+        read,write = os.pipe()
+        if os.fork()==0:
+            #son
+
+            for horizon in xrange(proc,10,np):
+                
+                bestvalue = 1.0
+                bestpnt = 0.0
+                bestet = 0.0
+                r = range(10)
+                
+                for pnt in r: #pred_node_trust_threshold
+                    for et in r: #edge_trust_treshold
+                        tm = trustlet.TrustMetric( K , 
+                                                   trustlet.moletrust_generator( horizon , float( pnt/10 ) , float( et/10 ) ) 
+                                                   )
+                        
+                        cnt = s = avg = 0
+                        
+                        for edge in tm.dataset.edges_iter():
+                            orig_trust = tm.dataset.trust_on_edge(edge)
+                            pred_trust = tm.leave_one_out(edge)
+                            s = s + math.fabs( orig_trust - pred_trust )
+                            cnt += 1
+                            
+                            avg = float(s)/cnt
+                            
+                            if avg < bestvalue:
+                                bestvalue = avg
+                                bestpnt = float( pnt/10 )
+                                bestet = float( et/10 )
+                                
+                                #self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
+                                os.write(write,",".join((str(bestvalue),str(horizon),str(bestpnt),str(bestet)))+"|")
+                                print "Horizon ",horizon," calculated"
+            os.close(write)
+            return #son dies
+            #sys.exit()
+    else:
+        #save pipe
+        pipes.append(read)
+        
+
+    #wait responce from sons
+    for pipe in pipes:
+        buffer = 'something'
+        s = ''
+        #read all until son closes the pipe
+        while buffer!='':
+            buffer = os.read(pipe,100)
+            s += buffer
+        os.close(pipe)
+        for i in s.split("|"):
+            ris.append(tuple(i.split(",")))
+
+    #sort for the first value of the tuple
+    ris.sort()
+    fd = file( path+"bestparam", "w" )
+    
+    for i in xrange(10):
+        (bestvalue,besthorizon,bestpnt,bestet) = ris[i]
+        fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)])+"\n" )
+        
+    fd.close()
+
+    if bestris:
+        (bestvalue,besthorizon,bestpnt,bestet) = ris[0]
+        return (besthorizon,bestpnt,bestet,bestvalue)
+    else:
+        return ris
+
 
 
 def errorTable( Network , verbose=True, sorted=False ):
