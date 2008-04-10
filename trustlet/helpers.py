@@ -164,24 +164,18 @@ def indication_of_dist(arr, stepsize = 0.2):
 
 class BestMoletrustThreads( Thread ):
     def __init__(self, Net, horizon, l ):
-        #the9ull: che e` 'sto Net maiuscolo?
+        
         Thread.__init__(self)
         self.horizon = horizon
         self.ris = l #list
-        #come faccio copiare una rete??
-        #self.K = {
-        #    'KaitiakiNetwork': KaitiakiNetwork(),
-        #    'AdvogatoNetwork': AdvogatoNetwork()
-        #    }
+        
         if Net.__class__.__name__ == "KaitiakiNetwork" :
-            self.K = KaitiakiNetwork(download=True)
+            self.K = KaitiakiNetwork(date=Net.date)
         else: 
             if Net.__class__.__name__ == "AdvogatoNetwork" :
-                self.K = AdvogatoNetwork(download=True)
+                self.K = AdvogatoNetwork(date=Net.date)
             else:
                 self.K = WeightedNetwork()
-
-        self.K.paste_graph( Net ) 
 
     def run(self):
         
@@ -189,8 +183,7 @@ class BestMoletrustThreads( Thread ):
         bestpnt = 0.0
         bestet = 0.0
         r = range(10)
-        #the9ull: sarebbe meglio xrange() nei for (non allocca la lista)
-
+        
         for pnt in r: #pred_node_trust_threshold
             for et in r: #edge_trust_treshold
                 tm = trustlet.TrustMetric( self.K , 
@@ -235,8 +228,6 @@ def bestMoletrustParameters( K, verbose = False ):
         os.mkdir( path )
     else:
         try:
-            #DEBUG: force algorithm execution
-            raise IOError
             fd = file( path+"bestparam", "r" )
             ris = fd.read()
             return map(lambda x: float(x), ris.split( "," ) )
@@ -254,9 +245,8 @@ def bestMoletrustParameters( K, verbose = False ):
     while( len(ris) < 10 ):
         time.sleep( 1 )
 
-    #print "DEBUG",ris
 
-    #in base al primo valore della tupla
+    #sort for the first value of the tuple
     ris.sort()
     (bestvalue,besthorizon,bestpnt,bestet) = ris[0]
     
