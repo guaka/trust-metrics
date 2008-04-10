@@ -182,7 +182,7 @@ class BestMoletrustThreads( Thread ):
         bestvalue = 1.0
         bestpnt = 0.0
         bestet = 0.0
-        r = range(10)
+        r = range(5)
         
         for pnt in r: #pred_node_trust_threshold
             for et in r: #edge_trust_treshold
@@ -211,7 +211,7 @@ class BestMoletrustThreads( Thread ):
 
 
         
-def bestMoletrustParameters( K, verbose = False ):
+def bestMoletrustParameters( K, verbose = False, bestris = True ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
@@ -219,21 +219,27 @@ def bestMoletrustParameters( K, verbose = False ):
     network: the reference to the network
              on which you would calcolate the best parameters
     verbose: verbose mode, default false
+    bestris: if true, return only the best ris, else return all the ris in this format
+             (best_average_error,besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold)
     return a tuple with
     (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
     """
     path = os.path.join(K.path, "bestMoletrustParameters" )
-    
-    if not os.path.exists( path ):
-        os.mkdir( path )
-    else:
-        try:
-            fd = file( path+"bestparam", "r" )
-            ris = fd.read()
-            return map(lambda x: float(x), ris.split( "," ) )
+    #path = K.path
+
+    try:
+        fd = file( path+"bestparam", "r" )
+        if bestris:
+            return tuple(map( lambda x: float(x.strip()), fd.readline().split( "," )))
         
-        except IOError:
-            pass
+        all = []
+        for i in fd.readlines():
+            all.append( tuple(map(lambda x: float(x.strip()), i.split( "," ) )) )
+            
+        return all
+    
+    except IOError:
+        pass
 
     ris = []
 
@@ -248,13 +254,19 @@ def bestMoletrustParameters( K, verbose = False ):
 
     #sort for the first value of the tuple
     ris.sort()
-    (bestvalue,besthorizon,bestpnt,bestet) = ris[0]
-    
     fd = file( path+"bestparam", "w" )
-    fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)]) )
+    
+    for i in xrange(10):
+        (bestvalue,besthorizon,bestpnt,bestet) = ris[i]
+        fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)])+"\n" )
+        
     fd.close()
 
-    return [besthorizon,bestpnt,bestet,bestvalue]
+    if bestris:
+        (bestvalue,besthorizon,bestpnt,bestet) = ris[0]
+        return (besthorizon,bestpnt,bestet,bestvalue)
+    else:
+        return ris
 
 
 def errorTable( Network , verbose=True, sorted=False ):

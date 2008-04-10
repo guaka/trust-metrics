@@ -52,6 +52,7 @@ _color_map = {
     'blue': 0.8,   #journeyer
     'green': 0.6,  #apprentice
     'gray': 0.4,   #observer
+    '' : 0.0
     }
 
 
@@ -59,7 +60,8 @@ _obs_app_jour_mas_map = {
     'Observer': 0.4,
     'Apprentice': 0.6,
     'Journeyer': 0.8,
-    'Master': 1.0
+    'Master': 1.0,
+    '' : 0.0
     }
 
 
@@ -75,6 +77,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
     def __init__(self, date = None, weights = None, comp_threshold = 0, download = False):
+
         """
         e.g. A = Advogato(date = '2007-12-21')
         date = the date of the dot file, if you would to use a old dataset
