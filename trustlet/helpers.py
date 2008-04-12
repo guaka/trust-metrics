@@ -9,7 +9,7 @@ from trustlet import *
 #from trustlet import *
 from threading import Thread
 import Gnuplot
-import os
+import os,sys
 import datetime
 import time
 try:
@@ -161,55 +161,7 @@ def indication_of_dist(arr, stepsize = 0.2):
 
     
             
-#made by Danilo Tomasoni
-
-
-class BestMoletrustThreads( Thread ):
-    def __init__(self, Net, horizon, l ):
-        
-        Thread.__init__(self)
-        self.horizon = horizon
-        self.ris = l #list
-        
-        if Net.__class__.__name__ == "KaitiakiNetwork" :
-            self.K = KaitiakiNetwork(date=Net.date)
-        else: 
-            if Net.__class__.__name__ == "AdvogatoNetwork" :
-                self.K = AdvogatoNetwork(date=Net.date)
-            else:
-                self.K = WeightedNetwork()
-
-    def run(self):
-        
-        bestvalue = 1.0
-        bestpnt = 0.0
-        bestet = 0.0
-        r = range(5)
-        
-        for pnt in r: #pred_node_trust_threshold
-            for et in r: #edge_trust_treshold
-                tm = trustlet.TrustMetric( self.K , 
-                                           trustlet.moletrust_generator( self.horizon , float( pnt/10 ) , float( et/10 ) ) 
-                                           )
-                
-                cnt = s = avg = 0
-                
-                for edge in tm.dataset.edges_iter():
-                    orig_trust = tm.dataset.trust_on_edge(edge)
-                    pred_trust = tm.leave_one_out(edge)
-                    s = s + math.fabs( orig_trust - pred_trust )
-                    cnt += 1
-                    
-                avg = float(s)/cnt
-                    
-                if avg < bestvalue:
-                    bestvalue = avg
-                    bestpnt = float( pnt/10 )
-                    bestet = float( et/10 )
-                    
-        self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
-        print "Horizon ",self.horizon," calculated"
-            
+#made by Danilo Tomasoni            
 
 def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' ):
     """
@@ -231,109 +183,64 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' 
             )
     
     return
-        
-def bestMoletrustParameters( K, verbose = False, bestris = True ):
+
+#this function *doesn't work* with ipython
+#(because it traps sis.exit())
+def bestMoletrustParameters( K, verbose = False, bestris = True, maxhorizon = 5, force=False ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
     parameters:
-    network: the reference to the network
-             on which you would calcolate the best parameters
+    K: the reference to the network
+       on which you would calcolate the best parameters
     verbose: verbose mode, default false
-    bestris: if true, return only the best ris, else return all the ris in this format
-             (best_average_error,besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold)
+    bestris: return only the best 
+    maxhorizon: test horizons from 0 to maxhorizon
+    force: don't load precomputed result
     return a tuple with
-    (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
-    """
-    path = os.path.join(K.path, "bestMoletrustParameters" )
-    #path = K.path
-
-    try:
-        fd = file( path+"bestparam", "r" )
-        if bestris:
-            return tuple(map( lambda x: float(x.strip()), fd.readline().split( "," )))
-        
-        all = []
-        for i in fd.readlines():
-            all.append( tuple(map(lambda x: float(x.strip()), i.split( "," ) )) )
-            
-        return all
-    
-    except IOError:
-        pass
-
-    ris = []
-
-    #the9ull: I'd removed r = range(10)
-    for h in xrange(10):
-        BestMoletrustThreads(K,h,ris).start()
-
-    #polling is better ;-)
-    while( len(ris) < 10 ):
-        time.sleep( 1 )
-
-
-    #sort for the first value of the tuple
-    ris.sort()
-    fd = file( path+"bestparam", "w" )
-    
-    for i in xrange(10):
-        (bestvalue,besthorizon,bestpnt,bestet) = ris[i]
-        fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)])+"\n" )
-        
-    fd.close()
-
-    if bestris:
-        (bestvalue,besthorizon,bestpnt,bestet) = ris[0]
-        return (besthorizon,bestpnt,bestet,bestvalue)
-    else:
-        return ris
-    
-def bestMoletrustParameters_processes( K, verbose = False, bestris = True ):
-    """
-    This function, print for a network passed, the best parameters
-    for the moletrust_tm trustmetric
-    parameters:
-    network: the reference to the network
-             on which you would calcolate the best parameters
-    verbose: verbose mode, default false
-    return a tuple with
-    (besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold,best_average_error)
+    (best_average_error,besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold)
+    or a list of tuples like this
     """
     path = os.path.join(K.path, "bestMoletrustParameters" )
     
     if not os.path.exists( path ):
         os.mkdir( path )
     else:
-        try:
-            raise IOError
-            fd = file( path+"bestparam", "r" )
-            ris = fd.read()
-            return map(lambda x: float(x), ris.split( "," ) )
-        
-        except IOError:
-            pass
+        if not force:
+            if bestris:
+                try:
+                    fd = file( path+"bestparam", "r" )
+                    ris = fd.readline()
+                    return map(lambda x: float(x), ris.split( "," ) ) 
+                
+                except IOError:
+                    pass
+            else:
+                #return all saved values
+                return [map(lambda x: float(x), y.split(",")) for y in file(path+'bestparam').read().split('\n') if y]
 
+    maxhorizon += 1 #set maxhorizon to maxhorizon
+    r = range(maxhorizon) #values of horizon
     ris = []
     pipes = []
     np = 2 #number of processes
 
     for proc in xrange(np):
         read,write = os.pipe()
+        horizones = range(proc,len(r),np)
         if os.fork()==0:
             #son
 
-            for horizon in xrange(proc,10,np):
+            for horizon in horizones:
                 
                 bestvalue = 1.0
                 bestpnt = 0.0
                 bestet = 0.0
-                r = range(10)
                 
                 for pnt in r: #pred_node_trust_threshold
                     for et in r: #edge_trust_treshold
                         tm = trustlet.TrustMetric( K , 
-                                                   trustlet.moletrust_generator( horizon , float( pnt/10 ) , float( et/10 ) ) 
+                                                   trustlet.moletrust_generator( horizon , float( pnt/maxhorizon ) , float( et/maxhorizon ) ) 
                                                    )
                         
                         cnt = s = avg = 0
@@ -348,29 +255,29 @@ def bestMoletrustParameters_processes( K, verbose = False, bestris = True ):
                             
                             if avg < bestvalue:
                                 bestvalue = avg
-                                bestpnt = float( pnt/10 )
-                                bestet = float( et/10 )
+                                bestpnt = float( pnt/maxhorizon )
+                                bestet = float( et/maxhorizon )
                                 
                                 #self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
                                 os.write(write,",".join((str(bestvalue),str(horizon),str(bestpnt),str(bestet)))+"|")
                                 print "Horizon ",horizon," calculated"
             os.close(write)
-            return #son dies
-            #sys.exit()
-    else:
-        #save pipe
-        pipes.append(read)
-        
+            #return #son dies
+            #print "pipe closed"
+            sys.exit() # ipython trap this -_-
+        else:
+            #save pipe
+            pipes.append((read,len(horizones)))
 
     #wait responce from sons
-    for pipe in pipes:
-        buffer = 'something'
+    for pipe,n in pipes:
+        #sometimes (frequently) reading on closed pipes blocks python
+        #for this reason i count the |s
         s = ''
-        #read all until son closes the pipe
-        while buffer!='':
-            buffer = os.read(pipe,100)
-            s += buffer
+        while s.count('|')<n:
+            s += os.read(pipe,100)
         os.close(pipe)
+        s = s[:-1] # |
         for i in s.split("|"):
             ris.append(tuple(i.split(",")))
 
@@ -378,7 +285,7 @@ def bestMoletrustParameters_processes( K, verbose = False, bestris = True ):
     ris.sort()
     fd = file( path+"bestparam", "w" )
     
-    for i in xrange(10):
+    for i in xrange(maxhorizon):
         (bestvalue,besthorizon,bestpnt,bestet) = ris[i]
         fd.write( ",".join([str(besthorizon),str(bestpnt),str(bestet),str(bestvalue)])+"\n" )
         
