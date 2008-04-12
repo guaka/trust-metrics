@@ -182,7 +182,7 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' 
             terminal='png'
             )
     
-    return
+    return None
 
 #this function *doesn't work* with ipython
 #(because it traps sis.exit())
@@ -299,7 +299,19 @@ def bestMoletrustParameters( K, verbose = False, bestris = True, maxhorizon = 5,
 
 
 
-def errorTable( Network , verbose=True, sorted=False ):
+def errorTable( Network , verbose=True, sorted=False, cond=False ):
+    """
+    return for each trustmetric evaluated on the network passed this values:
+    wrong predict,MAE,coverage,RMSE, trustmetric name
+    it is a function to see how much powerful is a trustmetric
+    parameters:
+       Network: the network on which are calculated the trustmetric
+       verbose: print comment, and the result on standard output
+       sorted: sort the result, for the first value on the tuple (wrong predict)
+       cond: function that take two parameters (network and edge). It's used to choose
+             which edge to include
+    """
+
 
     trustmetrics = {
         "intersection" : trustlet.TrustMetric( Network , trustlet.intersection_tm ),
@@ -310,7 +322,7 @@ def errorTable( Network , verbose=True, sorted=False ):
         "random" : trustlet.TrustMetric( Network , trustlet.random_tm ),
         "moletrust standard" : trustlet.MoleTrustTM( Network ),
         "moletrust generator" : trustlet.TrustMetric( Network , 
-                                             trustlet.moletrust_generator( 6 , 0.0 , 0.0 ) ),
+                                                      trustlet.moletrust_generator( 6 , 0.0 , 0.0 ) ),
         "pagerank" : trustlet.PageRankTM( Network )
         #"pagerank global": PageRankGlobalTM( K )
         }
@@ -324,33 +336,40 @@ def errorTable( Network , verbose=True, sorted=False ):
 
     for tm in trustmetrics:
         P = trustlet.PredGraph( trustmetrics[tm] )
-        """
-        for edge in trustmetrics[tm].dataset.edges_iter():
-            orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
-            pred_trust = trustmetrics[tm].leave_one_out(edge)
-            tot += 1
-            if orig_trust != pred_trust:
-                s += 1
-        """
+        
         for i in range( len(P.orig_trust) ):
-            if P.orig_trust[i] != P.pred_trust[i]:
+            if round(P.orig_trust[i],1) != round(P.pred_trust[i],1):
                 s += 1
             tot += 1
         
             
             
-        #RMSE,coverage,MAE,wrong predict, trustmetric name
-        t.insert(cnt,
+        #wrong predict,MAE,coverage,RMSE, trustmetric name
+        if cond == False:
+            t.insert(cnt,
 
-                 (
-                   (1.0 * s)/tot,
-                   P.mean(),
-                   P.sqr_error(),
-                   P.coverage(),
-                   tm
-                 )
+                    (
+                    (1.0 * s)/tot,
+                    P.testTM(),
+                    P.sqr_error(),
+                    P.coverage(),
+                    tm
+                    )
+                     
+                     )
+        else:
+            t.insert(cnt,
 
-                 )
+                    (
+                    (1.0 * s)/tot,
+                    P.abs_error_cond(cond),
+                    P.root_mean_squared_error_cond(cond),
+                    P.coverage_cond(cond),
+                    tm
+                    )
+                     
+                     )
+        cnt += 1
 
 
     if verbose:

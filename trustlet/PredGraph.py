@@ -301,7 +301,7 @@ class PredGraph(CalcGraph):
 
 
     #DT
-    def testTM( self, singletrustm = True, verbose = False ):
+    def testTM( self, singletrustm = True, onlybest=True, verbose = False ):
         """
         This function test a single trustmetric or all the existence trustmetric, 
         on a specific network
@@ -313,11 +313,11 @@ class PredGraph(CalcGraph):
         
         return a tuple, with the best trustmetric and it's average error 
         """
-
+        
         if singletrustm:
-            return (get_name(self.TM),self.__abs_error())
+            return self.__abs_error()
         
-        
+        lris = []
         K = self.TM.dataset
         
         trustmetrics = {
@@ -358,7 +358,9 @@ class PredGraph(CalcGraph):
                 #stampa la trustmetric e che arco cerca di predire
                 if verbose:
                     print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
-    
+            #lista dei risultati
+            lris.append( ( float(sum/cnt), tm ) )
+                         
             if float(sum/cnt) < bestvalue:
                 bestvalue = float(sum/cnt)
                 bestname = tm
@@ -372,9 +374,12 @@ class PredGraph(CalcGraph):
             print "   the best trustmetric for this test is", bestname 
             print "   with the average error:", bestvalue      
             print "+-----------------------------------------------------+"
-    
-        return (bestname,bestvalue)
-
+                         
+        if onlybest:                 
+            return bestvalue
+        else:
+            return lris
+                         
     
 
     def evaluate(self):
