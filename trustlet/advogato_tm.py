@@ -74,9 +74,7 @@ if __name__ == "__main__":
     import Dataset.Advogato, PredGraph
     import TrustMetric
     
-    G = Dataset.Advogato.KaitiakiNetwork() #Advogato()
-    #pg = PredGraph.PredGraph(G, TrustMetric.AdvogatoGlobalTM, True)
-    # 'KaitiakiNetwork' object has no attribute 'dataset'
-    
+    k = Dataset.Advogato.KaitiakiNetwork() #Advogato()
+    pg = PredGraph.PredGraph(TrustMetric.AdvogatoGlobalTM(k))
     import scipy
     print scipy.mean(pg.pred_trust), scipy.std(pg.pred_trust)
