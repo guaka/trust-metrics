@@ -172,11 +172,7 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' 
     g = Gnuplot.Gnuplot()
     g.title( title )
     g('set parametric')
-<<<<<<< .mine
-    g('set logscale y 2' )
-=======
     g('set logscale y 1.5' )
->>>>>>> .r344
     g.xlabel( 'horizon' )
     g.ylabel( 'abs error' )
     #first place horizon, sencond place abs error (converted in float)
@@ -225,17 +221,10 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                 except IOError:
                     pass
             else:
-<<<<<<< .mine
                 #return all saved values in a list of tuple
                 ret = [tuple(f) for f in [map(lambda x: float(x), y.split(",")) for y in file(path+'bestparam').read().split('\n') if y]]
                 plotparameters( ret , path )
                 return ret
-=======
-                #return all saved values
-                ret = [tuple(f) for f in [map(lambda x: float(x), y.split(",")) for y in file(path+'bestparam').read().split('\n') if y]]
-                plotparameters( ret , path )
-                return ret
->>>>>>> .r344
 
 
     maxhorizon += 1 #set maxhorizon to maxhorizon
@@ -268,20 +257,6 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                             pred_trust = tm.leave_one_out(edge)
                             s = s + math.fabs( orig_trust - pred_trust )
                             cnt += 1
-<<<<<<< .mine
-                            
-                            avg = float(s)/cnt
-                            
-                            if avg < bestvalue:
-                                bestvalue = avg
-                                bestpnt = float( pnt/maxhorizon )
-                                bestet = float( et/maxhorizon )
-                                
-                #self.ris.append( (bestvalue,self.horizon,bestpnt,bestet) )
-                os.write(write,",".join((str(bestvalue),str(horizon),str(bestpnt),str(bestet)))+"|")
-                print "Horizon ",horizon," calculated"
-            
-=======
                     
                         avg = float(s)/cnt
                     
@@ -292,7 +267,6 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                 
                 os.write(write,",".join((str(bestvalue),str(horizon),str(bestpnt),str(bestet)))+"|")
                 print "Horizon ",horizon," calculated"
->>>>>>> .r344
             os.close(write)
             #return #son dies
             #print "pipe closed"
@@ -322,13 +296,8 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
         fd.write( ",".join([str(bestvalue),str(besthorizon),str(bestpnt),str(bestet)])+"\n" )
         
     fd.close()
-<<<<<<< .mine
     plotparameters( ris, path )
 
-=======
-    plotparameters( ris, path )
-    
->>>>>>> .r344
     if bestris:
         return ris[0]
     else:
@@ -514,18 +483,9 @@ def testTM( choice, singletrustm = False, verbose = False ):
         print "+-----------------------------------------------------+"
     
     return (bestname,bestvalue)
-<<<<<<< .mine
-
-
-if __name__ == "__main__":
-    from trustlet import *
-    K = KaitiakiNetwork(date="2008-04-14")
-    bestMoletrustParameters( K, bestris=False,force=True )
-=======
-
 
 if __name__=="__main__":
     from trustlet import *
+    from pprint import pprint
     k = KaitiakiNetwork(download=True)
-    print bestMoletrustParameters(k,bestris=False,force=True,maxhorizon=15)
->>>>>>> .r344
+    pprint(bestMoletrustParameters(k,bestris=False,force=True,maxhorizon=5))
