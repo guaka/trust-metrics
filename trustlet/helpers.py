@@ -5,8 +5,6 @@ import numpy
 import os.path
 import trustlet.TrustMetric
 import trustlet.trustmetrics
-from trustlet import *
-from threading import Thread
 import Gnuplot
 import os,sys
 import datetime
@@ -162,7 +160,7 @@ def indication_of_dist(arr, stepsize = 0.2):
             
 #made by Danilo Tomasoni            
 
-def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' ):
+def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy', xlabel='horizon', ylabel='abs error', log=True ):
     """
     Print a graphics of the list passed.
     path is the location in wich the png image will be saved,
@@ -171,16 +169,19 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy' 
     """
     g = Gnuplot.Gnuplot()
     g.title( title )
-    g('set parametric')
-    g('set logscale y 1.5' )
-    g.xlabel( 'horizon' )
-    g.ylabel( 'abs error' )
+    #g('set parametric')
+    g('set data style lines')
+    if log:
+        g('set logscale y 1.5' )
+    g.xlabel( xlabel )
+    g.ylabel( ylabel )
     #first place horizon, sencond place abs error (converted in float)
-    point = map(lambda (a,b,c,d):(float(b),float(a),float(c),float(d)), tuplelist)
-    g.plot( point )
+    points = map(lambda x:(float(x[0]),float(x[1])), tuplelist)
+    points.sort()
+    g.plot( points )
     if not onlyshow:
         g.hardcopy(
-            filename=path+'BestMoletrustGraphics.png',
+            filename=path,
             terminal='png'
             )
     
@@ -206,6 +207,12 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
     (best_average_error,besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold)
     or a list of tuples like this
     """
+
+    def plot(data):
+        plotparameters( map(lambda x:(x[1],x[0]), data) , path+'BestMoletrustGraphic.png' )
+        plotparameters( map(lambda x:(x[1],x[-1]), data) , path+'BestMoletrusTimeGraphic.png', log=False, ylabel='time [s]', title='Time of computation' )
+                
+
     path = os.path.join(K.path, "bestMoletrustParameters/" )
     
     if not os.path.exists( path ):
@@ -223,7 +230,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
             else:
                 #return all saved values in a list of tuple
                 ret = [tuple(f) for f in [map(lambda x: float(x), y.split(",")) for y in file(path+'bestparam').read().split('\n') if y]]
-                plotparameters( ret , path )
+                plot(ret)
                 return ret
 
 
@@ -241,6 +248,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
 
             for horizon in horizones:
                 
+                t = time.time()
                 bestvalue = 1.0
                 bestpnt = 0.0
                 bestet = 0.0
@@ -265,7 +273,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                             bestpnt = float( pnt/maxhorizon )
                             bestet = float( et/maxhorizon )
                 
-                os.write(write,",".join((str(bestvalue),str(horizon),str(bestpnt),str(bestet)))+"|")
+                os.write(write,",".join((str(bestvalue),str(horizon),str(bestpnt),str(bestet),str(time.time()-t)))+"|")
                 print "Horizon ",horizon," calculated"
             os.close(write)
             #return #son dies
@@ -291,12 +299,15 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
     ris.sort()
     fd = file( path+"bestparam", "w" )
     
+    #writes on file computed values
     for i in xrange(maxhorizon):
-        (bestvalue,besthorizon,bestpnt,bestet) = ris[i]
-        fd.write( ",".join([str(bestvalue),str(besthorizon),str(bestpnt),str(bestet)])+"\n" )
-        
+        fd.write( ",".join([str(x) for x in ris[i]])+"\n" )
     fd.close()
-    plotparameters( ris, path )
+
+    plot(ris)
+
+    #converts strings in floats
+    ris = [tuple(map(float,tt)) for tt in ris]
 
     if bestris:
         return ris[0]
@@ -488,4 +499,4 @@ if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
     k = KaitiakiNetwork(download=True)
-    pprint(bestMoletrustParameters(k,bestris=False,force=True,maxhorizon=5))
+    pprint(bestMoletrustParameters(k,bestris=False,force=True and False,maxhorizon=10))
