@@ -160,7 +160,7 @@ def indication_of_dist(arr, stepsize = 0.2):
             
 #made by Danilo Tomasoni            
 
-def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy', xlabel='horizon', ylabel='abs error', log=True ):
+def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy', xlabel='horizon', ylabel='abs error', log=False, onlypoint=False ):
     """
     Print a graphics of the list passed.
     path is the location in wich the png image will be saved,
@@ -169,8 +169,10 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     """
     g = Gnuplot.Gnuplot()
     g.title( title )
-    #g('set parametric')
-    g('set data style lines')
+    if onlypoint:
+        g('set parametric')
+    else:
+        g('set data style lines')
     if log:
         g('set logscale y 1.5' )
     g.xlabel( xlabel )

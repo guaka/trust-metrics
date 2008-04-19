@@ -219,7 +219,7 @@ class PredGraph(CalcGraph):
                 predicted_trust = tm.leave_one_out(edge)
                 pred_graph.add_edge(edge[0], edge[1], 
                                     {'pred': str(predicted_trust)})
-                #, 'orig': str(self.dataset.trust_on_edge(edge)})
+                                     #'orig': str(self.dataset.trust_on_edge(edge)})
                 count += 1
                 if divmod(count, 100)[1] == 0:
                     self._time_indicator(count, (edge, predicted_trust))
@@ -380,7 +380,75 @@ class PredGraph(CalcGraph):
         else:
             return lris
                          
-    
+    def graphcontroversiality( self, maxc, step, indegree = 5 ):
+        """
+        This function save a graph with
+        x axis: level of controversiality (max value = maxc)
+        y axis: an error measure (MAE)
+        parameter:
+           maxc {maxcontroversiality} = the max value of controversiality
+                                        in the graph
+        """
+        def plot():
+            plotparameters( tuplelist, self.path+'/error-controversiality-onlypoint.png',
+                            title = 'MAE for each level of controversiality',
+                            xlabel = 'controversiality', 
+                            ylabel = 'MAE', onlypoint=True )
+
+            plotparameters( tuplelist, self.path+'/error-controversiality.png',
+                            title = 'MAE for each level of controversiality',
+                            xlabel = 'controversiality', 
+                            ylabel = 'MAE' )
+            return None
+
+        try:
+            f = file( self.path+'/predControversiality', 'r' )
+            ris = map( lambda x: x.strip() , f.readlines())
+            tuplelist = map( lambda s : tuple(s.split(",")) , ris )
+            plot()
+            return tuplelist
+        except IOError:
+            pass 
+
+
+        start = 0
+        end = 1
+        weight = 2
+
+        i = 0.0
+        r = []
+        tuplelist = []
+        #create list of value from 0.0 to maxc (step = step) 
+        while( i <= maxc ):
+            r.append( round(i,5) )
+            i += step
+        #foreach controversiality level
+        for max in r:
+            
+            #calcolate the abs_error of the edges over the controversiality limit
+            #and append it to tuplelist in a tuple (controversiality,abs_error)
+            sum = 0
+            cnt = 0
+            for e in self.edges_iter():
+                if len( self.dataset.in_edges( e[end] )) < indegree:
+                    continue
+                if self.dataset.node_controversiality( e[end] ) >= max: 
+                    sum += abs(e[weight]['orig'] - e[weight]['pred'])
+                    cnt += 1
+        
+            if cnt:
+                tuplelist.append( (max,float(sum)/cnt) )
+            
+            print "MAE evaluated for %f controversiality" % max
+
+        #print graph 
+        plot()
+        
+        f = file( self.path+'/predControversiality', 'w' )
+        f.writelines( map( lambda (cnt,mae): str(cnt)+','+str(mae)+'\n' , tuplelist ) )
+
+        return tuplelist
+
 
     def evaluate(self):
         """A bunch of evaluations. DEPRECATED"""
@@ -439,19 +507,8 @@ def in_edges_cond(node):
 
 
 if __name__ == "__main__":
-    from Dataset import Advogato, Dummy
-    import TrustMetric
-    G = Dummy.DummyWeightedNetwork()
-    # G = Advogato.SqueakFoundationNetwork()
-    # G = Advogato.AdvogatoNetwork()
-    tm = TrustMetric.GuakaMoleTM(G)
-    pg = PredGraph(tm, predict_ratio = 0.1)
-    l = ['master',
-         'in_edges_cond("Yoda")',
-         'in_edges_cond("luciano")',
-         'and_cond(master, edge_to_connected_node(5))',
-         'and_cond(master, not_cond(edge_to_connected_node(5)))',
-         'and_cond(not_cond(master), edge_to_connected_node(5))']
-    for c in l:
-        print c, pg.abs_error_cond(c)
-    
+    from trustlet import *
+    K = KaitiakiNetwork( date="2008-04-10" )
+    tm = TrustMetric( K , random_tm )
+    P = PredGraph( tm )
+    P.graphcontroversiality( 3.0 , 0.01 )
