@@ -585,6 +585,12 @@ def load(key,path='.'):
     except IOError:
         return None
 
+def clear(key,path='.'):
+    fullpath = os.path.join(path,get_sign(key))
+    os.remove(fullpath)
+    if os.path.exists(fullpath+'.key'):
+        os.remove(fullpath+'.key')
+
 if __name__=="__main__":
     #from trustlet import *
     #from pprint import pprint
