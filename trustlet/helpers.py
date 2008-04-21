@@ -510,6 +510,44 @@ def testTM( choice, singletrustm = False, verbose = False ):
     
     return (bestname,bestvalue)
 
+
+def splittask(function,input,np=2):
+    """
+    create <np> processes with <input>[i] data,
+    the result will return in a list
+    """
+
+    ris = []
+    pipes = []
+
+    for proc in xrange(np):
+        read,write = os.pipe()
+        pinput = map(lambda x: input[x],xrange(proc,len(input),np))
+        if os.fork()==0:
+            #son
+            res = []
+            for data in input:
+                res.append(function(data))
+            os.write(write,pickle.dumps(res))
+            os.close(write)
+            sys.exit() # ipython trap this -_-
+        else:
+            #save pipe
+            pipes.append(read)
+            os.close(write)
+
+    #wait responce from sons
+    ris = []
+    for pipe in pipes:
+        buffer = '_'
+        s = ''
+        while buffer:
+            buffer = os.read(pipe,100)
+            s += buffer
+        ris += pickle.loads(s)
+
+    return ris
+
 # == cache ==
 # save and restore data into/from cache
 # - `key` is a dictionary
@@ -546,10 +584,9 @@ def load(key,path='.'):
     except IOError:
         return None
 
-
 if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
-    k = KaitiakiNetwork()
+    k = KaitiakiNetwork(download=True)
     pprint(bestMoletrustParameters(k,bestris=False,force=False,maxhorizon=10))
 
