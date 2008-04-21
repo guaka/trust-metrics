@@ -501,12 +501,6 @@ def testTM( choice, singletrustm = False, verbose = False ):
     
     return (bestname,bestvalue)
 
-if __name__=="__main__":
-    from trustlet import *
-    from pprint import pprint
-    k = KaitiakiNetwork(download=True)
-    pprint(bestMoletrustParameters(k,bestris=False,force=True and False,maxhorizon=10))
-
 # == cache ==
 # save and restore data into/from cache
 # - `key` is a dictionary
@@ -529,3 +523,11 @@ def load(key,path='.'):
         return pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
         return None
+
+
+if __name__=="__main__":
+    from trustlet import *
+    from pprint import pprint
+    k = KaitiakiNetwork()
+    pprint(bestMoletrustParameters(k,bestris=False,force=True and False,maxhorizon=10))
+
