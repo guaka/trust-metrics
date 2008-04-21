@@ -530,11 +530,12 @@ def get_sign(key):
         s+=str(k)+'='+str(key[k])+','
     return md5.new(s[:-1]).hexdigest()
 
-def save(key,data,path='.'):
+def save(key,data,path='.',savekey=False):
     mkpath(path)
     try:
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-        file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
+        if savekey:
+            file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
     except IOError,UnpickingError:
         return False
     return True
