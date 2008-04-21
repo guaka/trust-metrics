@@ -223,21 +223,6 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
     
     if not os.path.exists( path ):
         os.mkdir( path )
-    else:
-        if not force:
-            if bestris:
-                try:
-                    fd = file( path+"bestparam", "r" )
-                    ris = fd.readline()
-                    return tuple(map(lambda x: float(x), ris.split( "," ) )) 
-                
-                except IOError:
-                    pass
-            else:
-                #return all saved values in a list of tuple
-                ret = [tuple(f) for f in [map(lambda x: float(x), y.split(",")) for y in file(path+'bestparam').read().split('\n') if y]]
-                plot(ret)
-                return ret
 
 
     maxhorizon += 1 #set maxhorizon to maxhorizon
@@ -260,19 +245,40 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                 bestet = 0.0
                 for pnt in r: #pred_node_trust_threshold
                     for et in r: #edge_trust_treshold
-                        tm = trustlet.TrustMetric( K , 
-                                                   trustlet.moletrust_generator( horizon , float( pnt/maxhorizon ) , float( et/maxhorizon ) ) 
-                                                   )
+                        #there are saved values?
+                        avgsaved = load( {'func':'bestmoletrust',
+                                          'horizon':horizon,
+                                          'pnt':float( pnt/maxhorizon ),
+                                          'et':float( et/maxhorizon )} , path+"/cache" )
+                        #yes
+                        if avgsaved != None:
+                            avg = avgsaved
+                        #no, calcolate this and save
+                        else:
+                            tm = trustlet.TrustMetric( K , 
+                                                       trustlet.moletrust_generator( horizon , float( pnt/maxhorizon ) , float( et/maxhorizon ) ) 
+                                                       )
                 
-                        cnt = s = 0
+                            cnt = s = 0
                 
-                        for edge in tm.dataset.edges_iter():
-                            orig_trust = tm.dataset.trust_on_edge(edge)
-                            pred_trust = tm.leave_one_out(edge)
-                            s = s + math.fabs( orig_trust - pred_trust )
-                            cnt += 1
+                            for edge in tm.dataset.edges_iter():
+                                orig_trust = tm.dataset.trust_on_edge(edge)
+                                pred_trust = tm.leave_one_out(edge)
+                                s = s + math.fabs( orig_trust - pred_trust )
+                                cnt += 1
                     
-                        avg = float(s)/cnt
+                            avg = float(s)/cnt
+                            #save avg
+                            save(
+                                {'func':'bestmoletrust',
+                                  'horizon':horizon,
+                                  'pnt':float( pnt/maxhorizon ),
+                                  'et':float( et/maxhorizon )},
+                                 
+                                avg, 
+                                path+"/cache"
+                                ) 
+                            
                     
                         if avg < bestvalue:
                             bestvalue = avg
