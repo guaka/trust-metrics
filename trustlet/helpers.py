@@ -9,6 +9,10 @@ import Gnuplot
 import os,sys
 import datetime
 import time
+#cache
+import md5
+import pickle
+
 try:
     import scipy
 except:
@@ -502,3 +506,26 @@ if __name__=="__main__":
     from pprint import pprint
     k = KaitiakiNetwork(download=True)
     pprint(bestMoletrustParameters(k,bestris=False,force=True and False,maxhorizon=10))
+
+# == cache ==
+# save and restore data into/from cache
+# - `key` is a dictionary
+# - `data` can be anything (i hope)
+
+def get_sign(key):
+    s = ''
+    listkeys = key.keys()
+    listkeys.sort()
+    for k in listkeys:
+        s+=str(k)+'='+str(key[k])+','
+    return md5.new(s[:-1]).hexdigest()
+
+def save(key,data,path='.'):
+    pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
+    file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)+'='+str(key[x])+'\n' for x in key])
+    
+def load(key,path='.'):
+    try:
+        return pickle.load(file(os.path.join(path,get_sign(key))))
+    except IOError:
+        return None
