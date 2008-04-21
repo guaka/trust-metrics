@@ -526,11 +526,12 @@ def splittask(function,input,np=2):
         if os.fork()==0:
             #son
             res = []
-            for data in input:
+            for data in pinput:
                 res.append(function(data))
             os.write(write,pickle.dumps(res))
             os.close(write)
-            sys.exit() # ipython trap this -_-
+            #sys.exit() # ipython trap this -_-
+            os._exit(0) # ipython DOESN'T trap this ^_^
         else:
             #save pipe
             pipes.append(read)
@@ -585,8 +586,10 @@ def load(key,path='.'):
         return None
 
 if __name__=="__main__":
-    from trustlet import *
-    from pprint import pprint
-    k = KaitiakiNetwork(download=True)
-    pprint(bestMoletrustParameters(k,bestris=False,force=False,maxhorizon=10))
+    #from trustlet import *
+    #from pprint import pprint
+    #k = KaitiakiNetwork(download=True)
+    #pprint(bestMoletrustParameters(k,bestris=False,force=False,maxhorizon=10))
+    
+    print len(splittask(float,range(10)))
 
