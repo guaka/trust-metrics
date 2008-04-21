@@ -512,6 +512,13 @@ def testTM( choice, singletrustm = False, verbose = False ):
 # - `key` is a dictionary
 # - `data` can be anything (i hope)
 
+def mkpath(fullpath):
+    if not fullpath: return
+    if not os.path.exists(fullpath):
+        path = os.path.split(fullpath)[0]
+        mkpath(path)
+        os.mkdir(fullpath)
+
 def get_sign(key):
     s = ''
     listkeys = key.keys()
@@ -521,8 +528,13 @@ def get_sign(key):
     return md5.new(s[:-1]).hexdigest()
 
 def save(key,data,path='.'):
-    pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-    file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)+'='+str(key[x])+'\n' for x in key])
+    mkpath(path)
+    try:
+        pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
+        file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)+'='+str(key[x])+'\n' for x in key])
+    except IOError,UnpickingError:
+        return False
+    return True
     
 def load(key,path='.'):
     try:
@@ -535,5 +547,5 @@ if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
     k = KaitiakiNetwork()
-    pprint(bestMoletrustParameters(k,bestris=False,force=True and False,maxhorizon=10))
+    pprint(bestMoletrustParameters(k,bestris=False,force=False,maxhorizon=10))
 
