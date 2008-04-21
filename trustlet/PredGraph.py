@@ -434,11 +434,14 @@ class PredGraph(CalcGraph):
                         sum += abs(e[weight]['orig'] - e[weight]['pred'])
                         cnt += 1
         
-                save( {'func':'graphcontroversiality',
-                         'controversiality_level':max},
-                      (sum,cnt),
-                      self.path+'/cache'
-                      )
+                ret = save( {'func':'graphcontroversiality',
+                             'controversiality_level':max},
+                            (sum,cnt),
+                            self.path+'/cache'
+                            )
+                if not ret:
+                    print "Warning! i cannot be able to save this computation, check the permission"
+                    print "for the "+self.path+"/cache"+" path"
 
             if cnt:
                 tuplelist.append( (max,float(sum)/cnt) )

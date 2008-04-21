@@ -269,7 +269,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                     
                             avg = float(s)/cnt
                             #save avg
-                            save(
+                            ret = save(
                                 {'func':'bestmoletrust',
                                   'horizon':horizon,
                                   'pnt':float( pnt/maxhorizon ),
@@ -277,7 +277,10 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                                  
                                 avg, 
                                 path+"/cache"
-                                ) 
+                                )
+                            if not ret:
+                                print "Warning! i cannot be able to save this computation, check the permission"
+                                print "for the "+path+"/cache"+"path"
                             
                     
                         if avg < bestvalue:
