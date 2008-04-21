@@ -300,9 +300,9 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
 
     #wait responce from sons
     for pipe,n in pipes:
-        #sometimes (frequently) reading on closed pipes blocks python
-        #for this reason i count the |s
+        #when I wrote that I hadn't know how to works pipes
         s = ''
+        #counts the |s
         while s.count('|')<n:
             s += os.read(pipe,100)
         os.close(pipe)
@@ -534,7 +534,7 @@ def save(key,data,path='.'):
     mkpath(path)
     try:
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-        file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)+'='+str(key[x])+'\n' for x in key])
+        file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
     except IOError,UnpickingError:
         return False
     return True
