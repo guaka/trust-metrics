@@ -401,16 +401,7 @@ class PredGraph(CalcGraph):
                             ylabel = 'MAE' )
             return None
 
-        try:
-            f = file( self.path+'/predControversiality', 'r' )
-            ris = map( lambda x: x.strip() , f.readlines())
-            tuplelist = map( lambda s : tuple(s.split(",")) , ris )
-            plot()
-            return tuplelist
-        except IOError:
-            pass 
-
-
+        
         start = 0
         end = 1
         weight = 2
@@ -427,15 +418,28 @@ class PredGraph(CalcGraph):
             
             #calcolate the abs_error of the edges over the controversiality limit
             #and append it to tuplelist in a tuple (controversiality,abs_error)
-            sum = 0
-            cnt = 0
-            for e in self.edges_iter():
-                if len( self.dataset.in_edges( e[end] )) < indegree:
-                    continue
-                if self.dataset.node_controversiality( e[end] ) >= max: 
-                    sum += abs(e[weight]['orig'] - e[weight]['pred'])
-                    cnt += 1
+            abs = load( {'func':'graphcontroversiality',
+                         'controversiality_level':max},
+                        self.path+'/cache'
+                        )
+            if abs != None:
+                (sum,cnt) = abs
+            else:
+                sum = 0
+                cnt = 0
+                for e in self.edges_iter():
+                    if len( self.dataset.in_edges( e[end] )) < indegree:
+                        continue
+                    if self.dataset.node_controversiality( e[end] ) >= max: 
+                        sum += abs(e[weight]['orig'] - e[weight]['pred'])
+                        cnt += 1
         
+                save( {'func':'graphcontroversiality',
+                         'controversiality_level':max},
+                      (sum,cnt),
+                      self.path+'/cache'
+                      )
+
             if cnt:
                 tuplelist.append( (max,float(sum)/cnt) )
             
@@ -444,9 +448,6 @@ class PredGraph(CalcGraph):
         #print graph 
         plot()
         
-        f = file( self.path+'/predControversiality', 'w' )
-        f.writelines( map( lambda (cnt,mae): str(cnt)+','+str(mae)+'\n' , tuplelist ) )
-
         return tuplelist
 
 
