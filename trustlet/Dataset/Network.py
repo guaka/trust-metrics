@@ -18,11 +18,11 @@ import numpy
 average = lambda x: x and float(sum(x)) / len(x)
 
 
-def dataset_dir():
+def dataset_dir(path=None):
     """Create datasets/ directory if needed."""
-    if os.environ.has_key('HOME'):
-        home = os.environ['HOME']
-    dataset_path = os.path.join(home, 'datasets')
+    if not path and os.environ.has_key('HOME'):
+        path = os.environ['HOME']
+    dataset_path = os.path.join(path, 'datasets')
     if not os.path.exists(dataset_path):
         os.mkdir(dataset_path)
     return dataset_path
@@ -34,12 +34,12 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True):
+    def __init__(self, from_graph = None, make_base_path = True, path = None):
         '''Create directory for class name if needed'''
 
         XDiGraph.__init__(self, multiedges = False)
         if make_base_path:
-            self.path = os.path.join(dataset_dir(), self.__class__.__name__)
+            self.path = os.path.join(dataset_dir(path), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
 
@@ -226,8 +226,8 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True):
-        Network.__init__(self)
+    def __init__(self, weights = None, has_discrete_weights = True, path = None):
+        Network.__init__(self, path=path)
         self._weights = weights
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
