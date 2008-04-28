@@ -34,8 +34,11 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, path = None):
-        '''Create directory for class name if needed'''
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None):
+        '''
+        Create directory for class name if needed
+        base_path: the path to put dataset directory
+        '''
 
         XDiGraph.__init__(self, multiedges = False)
         if make_base_path:

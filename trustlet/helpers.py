@@ -195,7 +195,7 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
 
 #this function *doesn't work* with ipython
 #(because it traps sys.exit())
-def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False ):
+def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=2 ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
@@ -209,6 +209,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                     was returned. If you want recalculate, set
                     force=True
     force: don't load precomputed result
+    np: number of processes it is creating
     return a tuple with
     (best_average_error,besthorizon,best_pred_node_trust_threshold,best_edge_trust_threshold)
     or a list of tuples like this
@@ -229,7 +230,6 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
     r = range(maxhorizon) #values of horizon
     ris = []
     pipes = []
-    np = 2 #number of processes
 
     for proc in xrange(np):
         read,write = os.pipe()
@@ -293,7 +293,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
             os.close(write)
             #return #son dies
             #print "pipe closed"
-            sys.exit() # ipython trap this -_-
+            os._exit(0)
         else:
             #save pipe
             pipes.append((read,len(horizones)))
