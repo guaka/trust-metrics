@@ -60,7 +60,9 @@ def main():
     #list of files to link
 
     for f in files:
-        if not DEBUG:
+        if DEBUG:
+            print "os.remove(%s)" % join(inspath,f)
+        else:
             os.remove(join(inspath,f))
         if exists(join(devpath,f)) and f[-4:]!='.pyc':
             #doesn't exist os.sln()?
