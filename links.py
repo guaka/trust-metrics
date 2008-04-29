@@ -20,10 +20,14 @@ import sys,os,os.path
 class Bug(Exception):
     pass
 
+DEBUG = True
+
 DEFDEVPATH = './trustlet'
 DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
 
 def main():
+    if DEBUG:
+        print "DEBUG MODE"
     if 'help' in sys.argv[1:] or '--help' in sys.argv[1:]:
         print USAGE
         sys.exit()
@@ -56,10 +60,13 @@ def main():
     #list of files to link
 
     for f in files:
-        os.remove(join(inspath,f))
+        if not DEBUG:
+            os.remove(join(inspath,f))
         if exists(join(devpath,f)) and f[-4:]!='.pyc':
             #doesn't exist os.sln()?
-            if os.system('ln -s ' + join(devpath,f) + ' ' + join(inspath,f)):
+            if DEBUG:
+                print 'ln -s ' + join(devpath,f) + ' ' + join(inspath,f)
+            elif os.system('ln -s ' + join(devpath,f) + ' ' + join(inspath,f)):
                 raise Bug
 
 if __name__=="__main__":
