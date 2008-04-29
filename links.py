@@ -11,7 +11,7 @@ avoid reinstallation of trustlet every change.
 
 USAGE = """\
 USAGE:
-# link.py [development path] [installation path]\
+# link.py [development path [installation path]]\
 """
 
 from os.path import join,exists
