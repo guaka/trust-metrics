@@ -443,16 +443,16 @@ def testTM( K, singletrustm = False, verbose = False ):
     """
 
     trustmetrics = {
-        "intersection" : TrustMetric( K , intersection_tm ),
-        "edges a" : TrustMetric( K , edges_a_tm ),
-        "ebay" : TrustMetric( K , ebay_tm ),
-        "out a" : TrustMetric( K , outa_tm ),
-        "out b" : TrustMetric( K , outb_tm ),
-        "random" : TrustMetric( K , random_tm ),
-        "moletrust standard" : MoleTrustTM( K ),
-        "moletrust generator" : TrustMetric( K , 
-                                             moletrust_generator( 6 , 0.0 , 0.0 ) ),
-        "pagerank" : PageRankTM( K )
+        "intersection" : trustlet.TrustMetric( K , trustlet.intersection_tm ),
+        "edges a" : trustlet.TrustMetric( K , trustlet.edges_a_tm ),
+        "ebay" : trustlet.TrustMetric( K , trustlet.ebay_tm ),
+        "out a" : trustlet.TrustMetric( K , trustlet.outa_tm ),
+        "out b" : trustlet.TrustMetric( K , trustlet.outb_tm ),
+        "random" : trustlet.TrustMetric( K , trustlet.random_tm ),
+        "moletrust standard" : trustlet.MoleTrustTM( K ),
+        "moletrust generator" : trustlet.TrustMetric( K , 
+                                             trustlet.moletrust_generator( 6 , 0.0 , 0.0 ) ),
+        "pagerank" : trustlet.PageRankTM( K )
         #"pagerank global": PageRankGlobalTM( K )
         }
     
