@@ -380,7 +380,7 @@ class PredGraph(CalcGraph):
         else:
             return lris
                          
-    def graphcontroversiality( self, maxc, step, indegree = 5 ):
+    def graphcontroversiality( self, maxc, step, indegree = 5, np=2 ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -388,6 +388,9 @@ class PredGraph(CalcGraph):
         parameter:
            maxc {maxcontroversiality} = the max value of controversiality
                                         in the graph
+           step = from 0.0 to maxc with step == step
+           indegree = the min indegree
+           np = number of processes
         """
         def plot():
             plotparameters( tuplelist, self.path+'/error-controversiality-onlypoint.png',
@@ -408,45 +411,48 @@ class PredGraph(CalcGraph):
 
         i = 0.0
         r = []
-        tuplelist = []
         #create list of value from 0.0 to maxc (step = step) 
         while( i <= maxc ):
             r.append( round(i,5) )
             i += step
         #foreach controversiality level
-        for max in r:
-            
-            #calcolate the abs_error of the edges over the controversiality limit
-            #and append it to tuplelist in a tuple (controversiality,abs_error)
-            abs = load( {'func':'graphcontroversiality',
-                         'controversiality_level':max},
-                        self.path+'/cache'
-                        )
-            if abs != None:
-                (sum,cnt) = abs
-            else:
-                sum = 0
-                cnt = 0
-                for e in self.edges_iter():
-                    if len( self.dataset.in_edges( e[end] )) < indegree:
-                        continue
-                    if self.dataset.node_controversiality( e[end] ) >= max: 
-                        sum += abs(e[weight]['orig'] - e[weight]['pred'])
-                        cnt += 1
         
-                ret = save( {'func':'graphcontroversiality',
-                             'controversiality_level':max},
-                            (sum,cnt),
-                            self.path+'/cache'
-                            )
-                if not ret:
-                    print "Warning! i cannot be able to save this computation, check the permission"
-                    print "for the "+self.path+"/cache"+" path"
+        def eval( (net, max) ):    
+           #calcolate the abs_error of the edges over the controversiality limit
+           #and append it to tuplelist in a tuple (controversiality,abs_error)
+           abs = load( {'func':'graphcontroversiality',
+                        'controversiality_level':max},
+                       net.path+'/cache'
+                       )
+           if abs != None:
+               (sum,cnt) = abs
+           else:
+               sum = 0
+               cnt = 0
+               for e in net.edges_iter():
+                   if len( net.dataset.in_edges( e[end] )) < indegree:
+                       continue
+                   if net.dataset.node_controversiality( e[end] ) >= max: 
+                       sum += math.fabs(e[weight]['orig'] - e[weight]['pred'])
+                       cnt += 1
+        
+                   ret = save( {'func':'graphcontroversiality',
+                                'controversiality_level':max},
+                               (sum,cnt),
+                               net.path+'/cache'
+                               )
+                   if not ret:
+                       print "Warning! i cannot be able to save this computation, check the permission"
+                       print "for the "+self.path+"/cache"+" path"
 
-            if cnt:
-                tuplelist.append( (max,float(sum)/cnt) )
-            
-            print "MAE evaluated for %f controversiality" % max
+           print "MAE evaluated for %f controversiality" % max
+           
+           if cnt:
+               return (max,float(sum)/cnt)
+           else:
+               return None
+
+        tuplelist = splittask( eval, [(self,max) for max in r], np )
 
         #print graph 
         plot()
@@ -515,4 +521,4 @@ if __name__ == "__main__":
     K = KaitiakiNetwork( date="2008-04-10" )
     tm = TrustMetric( K , random_tm )
     P = PredGraph( tm )
-    P.graphcontroversiality( 3.0 , 0.01 )
+    P.graphcontroversiality( 0.5 , 0.1 )

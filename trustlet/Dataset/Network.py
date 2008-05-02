@@ -22,6 +22,8 @@ def dataset_dir(path=None):
     """Create datasets/ directory if needed."""
     if not path and os.environ.has_key('HOME'):
         path = os.environ['HOME']
+    else:
+        path = ''
     dataset_path = os.path.join(path, 'datasets')
     if not os.path.exists(dataset_path):
         os.mkdir(dataset_path)
@@ -42,7 +44,7 @@ class Network(XDiGraph):
 
         XDiGraph.__init__(self, multiedges = False)
         if make_base_path:
-            self.path = os.path.join(dataset_dir(path), self.__class__.__name__)
+            self.path = os.path.join(dataset_dir(base_path), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
 
@@ -229,8 +231,8 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, path = None):
-        Network.__init__(self, path=path)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None):
+        Network.__init__(self, base_path=base_path)
         self._weights = weights
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True

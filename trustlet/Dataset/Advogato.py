@@ -76,7 +76,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = None, comp_threshold = 0, download = False, path = None):
+    def __init__(self, date = None, weights = None, comp_threshold = 0, download = False, base_path = None):
 
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -104,7 +104,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
                 weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
-        WeightedNetwork.__init__(self, weights = self.level_map, path = path)
+        WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -204,8 +204,8 @@ class SqueakFoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
-    def __init__(self, download = False, date=None, path=None):
-        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date=date, path=path)
+    def __init__(self, download = False, date=None, base_path=None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date=date, base_path=base_path)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -221,8 +221,8 @@ class KaitiakiNetwork(SqueakFoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self, download=False, date = None, path = None):
-        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date, path = path )
+    def __init__(self, download=False, date = None, base_path = None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date, base_path = base_path )
 
 
 if __name__ == "__main__":

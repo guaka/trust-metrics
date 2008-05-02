@@ -10,7 +10,7 @@ import os,sys
 import datetime
 import time
 #cache
-import md5
+#import md5
 import pickle
 
 try:
@@ -567,7 +567,8 @@ def get_sign(key):
     listkeys.sort()
     for k in listkeys:
         s+=str(k)+'='+str(key[k])+','
-    return md5.new(s[:-1]).hexdigest()
+    return s[:-1]
+    #return md5.new(s[:-1]).hexdigest()
 
 def save(key,data,path='.',savekey=False):
     mkpath(path)
