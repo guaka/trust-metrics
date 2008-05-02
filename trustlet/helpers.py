@@ -10,7 +10,7 @@ import os,sys
 import datetime
 import time
 #cache
-#import md5
+import md5
 import pickle
 
 try:
@@ -195,7 +195,7 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
 
 #this function *doesn't work* with ipython
 #(because it traps sys.exit())
-def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=2 ):
+def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=4 ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
@@ -511,11 +511,13 @@ def testTM( choice, singletrustm = False, verbose = False ):
     return (bestname,bestvalue)
 
 
-def splittask(function,input,np=2):
+def splittask(function,input,np=4):
     """
     create <np> processes with <input>[i] data,
     the result will return in a list
     """
+
+    #ns should be read from environment var $CONCURRENCY_LEVEL
 
     ris = []
     pipes = []
@@ -567,8 +569,8 @@ def get_sign(key):
     listkeys.sort()
     for k in listkeys:
         s+=str(k)+'='+str(key[k])+','
-    return s[:-1]
-    #return md5.new(s[:-1]).hexdigest()
+    #return s[:-1]
+    return md5.new(s[:-1]).hexdigest()
 
 def save(key,data,path='.',savekey=False):
     mkpath(path)
