@@ -414,13 +414,13 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
     return t
 
 
-def testTM( choice, singletrustm = False, verbose = False ):
+def testTM( K, singletrustm = False, verbose = False ):
     """
     This function test a single trustmetric or all the existence trustmetric, 
     on a specific network
     parameters:
-    choice: the name of the network used for the test
-                  possible value:
+    K: network used for the test
+                  can be:
                   kaitiaki
                   dummy
                   advogato
@@ -441,16 +441,6 @@ def testTM( choice, singletrustm = False, verbose = False ):
     verbose: verbose mode, true o false
     return a tuple, with the best trustmetric and it's average error 
     """
-
-#questo e` uno switch ;-)
-#assegno la network scelta alla variabile K
-    K = {
-        'kaitiaki': KaitiakiNetwork(date = "2008-03-20"),
-        'dummy': DummyWeightedNetwork(),
-        'advogato': AdvogatoNetwork(date = "2008-03-22"),
-        'squeakfoundation' : SqueakFoundationNetwork( date = "2008-03-22" )
-        }[choice]
-
 
     trustmetrics = {
         "intersection" : TrustMetric( K , intersection_tm ),
