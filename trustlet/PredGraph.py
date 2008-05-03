@@ -443,7 +443,7 @@ class PredGraph(CalcGraph):
                                )
                    if not ret:
                        print "Warning! i cannot be able to save this computation, check the permission"
-                       print "for the "+self.path+"/cache"+" path"
+                       print "for this path: "+self.path+"/cache"
 
            print "MAE evaluated for %f controversiality" % max
            
@@ -454,7 +454,6 @@ class PredGraph(CalcGraph):
 
         tuplelist = splittask( eval, [(self,max) for max in r], np )
 
-        #print graph 
         plot()
         
         return tuplelist
@@ -518,7 +517,7 @@ def in_edges_cond(node):
 
 if __name__ == "__main__":
     from trustlet import *
-    K = KaitiakiNetwork( date="2008-04-10" )
-    tm = TrustMetric( K , random_tm )
+    K = KaitiakiNetwork( download=True )
+    tm = TrustMetric( K , edges_a_tm )
     P = PredGraph( tm )
-    P.graphcontroversiality( 0.5 , 0.1 )
+    P.graphcontroversiality( 0.6 , 0.01, indegree=2, np=1 )

@@ -182,7 +182,8 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     g.xlabel( xlabel )
     g.ylabel( ylabel )
     #first place horizon, sencond place abs error (converted in float)
-    points = map(lambda x:(float(x[0]),float(x[1])), tuplelist)
+    #i must delete the None object in list.
+    points = map(lambda x:(float(x[0]),float(x[1])), [t for t in tuplelist if t])
     points.sort()
     g.plot( points )
     if not onlyshow:
