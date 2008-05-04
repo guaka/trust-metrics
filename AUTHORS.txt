@@ -2,8 +2,9 @@
 Instigators and main contributors of this project:
 
 Kasper Souren <kasper.souren@gmail.com>
-Paolo Massa <massa@itc.it>
-
+Paolo Massa <massa@fbk.eu>
+Martino Salvetti 
+Danilo Tomasoni
 
 
 Some code has totally been written by other people, but has been added
