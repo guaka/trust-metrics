@@ -65,15 +65,17 @@ def main():
 
     file(LOG,'a').writelines([x+'\n' for x in log])
     
-    # doesn't work :( (yet ;)
-    #
-    #if '--sms' in sys.argv[1:] or '-s' in sys.argv[1:]:
-    #    import netfinity
-    #    client = netfinity.Client('the9ull6070','trustlet')
-    #    sms = 'Task finished: '+str_time(total_time)+' '+log[2]
-    #    #print ','.join([x.strip() for x in file('phoneNumbers').readlines()])
-    #    print sms[:160]
-    #    #print "DEBUG",client.sendMsg(','.join(file('phoneNumbers').readlines()),sms[:160])
+    if '--sms' in sys.argv[1:] or '-s' in sys.argv[1:]:
+        import netfinity
+        client = netfinity.Client('the9ull6070','trustlet')
+        sms = 'Task finished: '+str_time(total_time)+' '+log[2]
+        
+        for i in xrange(3):
+            try:
+                if client.sendMsg(','.join([x.strip() for x in file('phoneNumbers').readlines()]),sms[:160]) > 0:
+                    break
+            except IOError:
+                print "save destination numbers in phoneNumbers file"
         
 
 if __name__=="__main__":
