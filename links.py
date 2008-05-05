@@ -20,7 +20,7 @@ import sys,os,os.path
 class Bug(Exception):
     pass
 
-DEBUG = True
+DEBUG = False
 
 DEFDEVPATH = './trustlet'
 DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
