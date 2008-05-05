@@ -69,13 +69,16 @@ def main():
         import netfinity
         client = netfinity.Client('the9ull6070','trustlet')
         sms = 'Task finished: '+str_time(total_time)+' '+log[2]
+        #if the first line of code is a comment it'll send
+        if code[0].strip()[0]=='#':
+            sms += ' Comment: '+code[0].strip()[1:].strip()
         
         for i in xrange(3):
             try:
                 if client.sendMsg(','.join([x.strip() for x in file('phoneNumbers').readlines()]),sms[:160]) > 0:
                     break
             except IOError:
-                print "save destination numbers in phoneNumbers file"
+                print "save destination numbers in phoneNumbers file (one number per line)"
         
 
 if __name__=="__main__":
