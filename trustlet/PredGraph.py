@@ -301,7 +301,7 @@ class PredGraph(CalcGraph):
 
 
     #DT
-    def testTM( self, singletrustm = True, onlybest=True, verbose = False ):
+    def testTM( self, singletrustm = True, onlybest=True, verbose = False, plot = False ):
         """
         This function test a single trustmetric or all the existence trustmetric, 
         on a specific network
@@ -310,8 +310,10 @@ class PredGraph(CalcGraph):
         singletrustm: if false, check all the trustmetrics, else only the trustmetric
                       in the predgraph class instance
         verbose: verbose mode, true or false
+        plot: plot or not an istogram with the results
         
-        return a tuple, with the best trustmetric and it's average error 
+        return a tuple, with the best trustmetric and it's average error, or if
+        onlybest is set to False, all the trustmetric with his own MAE
         """
         
         if singletrustm:
@@ -319,7 +321,8 @@ class PredGraph(CalcGraph):
         
         lris = []
         K = self.TM.dataset
-        
+        path = self.dataset.path+'/TrustMetrics'
+
         trustmetrics = {
             "intersection_tm" : TrustMetric( K , intersection_tm ),
             "edges_a_tm" : TrustMetric( K , edges_a_tm ),
@@ -344,20 +347,26 @@ class PredGraph(CalcGraph):
             if verbose:
                 print "------------- BEGIN ",tm,"--------\n"
         
-            
-            for edge in trustmetrics[tm].dataset.edges_iter():
+            abs = load( {'tm':tm},path+'/cache' )
+
+            if abs != None:
+                sum,cnt = abs
+            else:
+                for edge in trustmetrics[tm].dataset.edges_iter():
                 
-                #valori per calcolare l'errore medio
+                    #valori per calcolare l'errore medio
                 
-                orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
-                pred_trust = trustmetrics[tm].leave_one_out(edge)
+                    orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
+                    pred_trust = trustmetrics[tm].leave_one_out(edge)
                 
-                sum = sum + math.fabs(orig_trust - pred_trust)
-                cnt = cnt + 1
+                    sum = sum + math.fabs(orig_trust - pred_trust)
+                    cnt = cnt + 1
         
-                #stampa la trustmetric e che arco cerca di predire
-                if verbose:
-                    print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
+                    #stampa la trustmetric e che arco cerca di predire
+                    if verbose:
+                        print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
+            
+                save({'tm':tm},(sum,cnt),path+'/cache')
             #lista dei risultati
             lris.append( ( float(sum/cnt), tm ) )
                          
@@ -378,6 +387,20 @@ class PredGraph(CalcGraph):
         if onlybest:                 
             return bestvalue
         else:
+            if plot:
+                
+                plotparameters( [x for x in enumerate([x for (x,s) in lris])], path+'/TrustMetricsHistogram.png', 
+                                title = 'MAE for each trustmetric on '+get_name(self.dataset)+' network',
+                                xlabel='trust metrics',
+                                ylabel='MAE',
+                                istogram = True )
+
+            fd = file( path+'/HistogramLegend', 'w' )
+            fd.write( '\n'.join( [str(n)+': '+s for (n,s) in enumerate([y+' '+str(x) for (x,y) in lris])] ) )
+            fd.close()
+
+            lris.sort()
+
             return lris
                          
     def graphcontroversiality( self, maxc, step, indegree = 5, np=2 ):
@@ -517,7 +540,7 @@ def in_edges_cond(node):
 
 if __name__ == "__main__":
     from trustlet import *
-    K = KaitiakiNetwork( download=True )
-    tm = TrustMetric( K , edges_a_tm )
+    K = AdvogatoNetwork( date="2008-04-28" )
+    tm = TrustMetric( K , moletrust_generator(horizon=4) )
     P = PredGraph( tm )
-    P.graphcontroversiality( 0.6 , 0.01, indegree=2, np=1 )
+    P.graphcontroversiality( 0.6 , 0.001, np=2 )

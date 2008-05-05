@@ -164,7 +164,7 @@ def indication_of_dist(arr, stepsize = 0.2):
             
 #made by Danilo Tomasoni            
 
-def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy', xlabel='horizon', ylabel='abs error', log=False, onlypoint=False ):
+def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy', xlabel='horizon', ylabel='abs error', log=False, onlypoint=False, istogram=False ):
     """
     Print a graphics of the list passed.
     path is the location in wich the png image will be saved,
@@ -173,10 +173,15 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     """
     g = Gnuplot.Gnuplot()
     g.title( title )
+
     if onlypoint:
         g('set parametric')
     else:
         g('set data style lines')
+    
+    if istogram:
+        g('set style data boxes')    
+        
     if log:
         g('set logscale y 1.5' )
     g.xlabel( xlabel )
@@ -184,8 +189,10 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     #first place horizon, sencond place abs error (converted in float)
     #i must delete the None object in list.
     points = map(lambda x:(float(x[0]),float(x[1])), [t for t in tuplelist if t])
+    
     points.sort()
     g.plot( points )
+
     if not onlyshow:
         g.hardcopy(
             filename=path,
@@ -586,10 +593,9 @@ def clear(key,path='.'):
         os.remove(fullpath+'.key')
 
 if __name__=="__main__":
-    #from trustlet import *
-    #from pprint import pprint
-    #k = KaitiakiNetwork(download=True)
-    #pprint(bestMoletrustParameters(k,bestris=False,force=False,maxhorizon=10))
-    
-    print len(splittask(float,range(10)))
+    from trustlet import *
+    from pprint import pprint
+    k = AdvogatoNetwork(date="2008-04-28")
+    pprint(bestMoletrustParameters(k,bestris=False,force=False,
+                                        maxhorizon=10,np=4))
 
