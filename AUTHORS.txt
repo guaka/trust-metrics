@@ -3,8 +3,8 @@ Instigators and main contributors of this project:
 
 Kasper Souren <kasper.souren@gmail.com>
 Paolo Massa <massa@fbk.eu>
-Martino Salvetti 
-Danilo Tomasoni
+Martino Salvetti <the9ull@silix.org>
+Danilo Tomasoni <ciropom@gmail.com>
 
 
 Some code has totally been written by other people, but has been added
