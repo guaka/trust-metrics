@@ -301,7 +301,7 @@ class PredGraph(CalcGraph):
 
 
     #DT
-    def testTM( self, singletrustm = True, onlybest=True, verbose = False, plot = False ):
+    def testTM( self, singletrustm = True, np=4, onlybest=True, plot = False ):
         """
         This function test a single trustmetric or all the existence trustmetric, 
         on a specific network
@@ -309,8 +309,8 @@ class PredGraph(CalcGraph):
         parameters:
         singletrustm: if false, check all the trustmetrics, else only the trustmetric
                       in the predgraph class instance
-        verbose: verbose mode, true or false
         plot: plot or not an istogram with the results
+        np: number of processors
         
         return a tuple, with the best trustmetric and it's average error, or if
         onlybest is set to False, all the trustmetric with his own MAE
@@ -332,7 +332,7 @@ class PredGraph(CalcGraph):
             "outb_tm" : TrustMetric( K , outb_tm ),
             "random_tm" : TrustMetric( K , random_tm ),
             "moletrust_tm" : TrustMetric( K , 
-                                          moletrust_generator( 6 , 0.0 , 0.0 ) ),
+                                          moletrust_generator( 4 , 0.0 , 0.0 ) ),
             "PageRankTM" : PageRankTM( K )
             }
 
@@ -340,52 +340,44 @@ class PredGraph(CalcGraph):
         bestname = ''
         bestvalue = 1.0
 
-        for tm in trustmetrics:
+        def eval( (path,tm,tmname,predgraph) ):
+            #tm = current tm
+            #tmname = my predgraph tm
+
+            evaltmname = get_name(tm)
+
+            if evaltmname == tmname:
+                return (predgraph.__abs_error(),tmname)
+
             sum = 0
             cnt = 0
-
-            if verbose:
-                print "------------- BEGIN ",tm,"--------\n"
-        
-            abs = load( {'tm':tm},path+'/cache' )
-
+            abs = load( {'tm':evaltmname},path+'/cache' )
+            
             if abs != None:
                 sum,cnt = abs
             else:
-                for edge in trustmetrics[tm].dataset.edges_iter():
-                
+                for edge in tm.dataset.edges_iter():
+                    
                     #valori per calcolare l'errore medio
-                
-                    orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
-                    pred_trust = trustmetrics[tm].leave_one_out(edge)
-                
+                    
+                    orig_trust = tm.dataset.trust_on_edge(edge)
+                    pred_trust = tm.leave_one_out(edge)
+                    
                     sum = sum + math.fabs(orig_trust - pred_trust)
                     cnt = cnt + 1
-        
-                    #stampa la trustmetric e che arco cerca di predire
-                    if verbose:
-                        print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
-            
-                save({'tm':tm},(sum,cnt),path+'/cache')
-            #lista dei risultati
-            lris.append( ( float(sum/cnt), tm ) )
-                         
-            if float(sum/cnt) < bestvalue:
-                bestvalue = float(sum/cnt)
-                bestname = tm
-        
-            if verbose:
-                print "average error: ", float(sum/cnt), "\n"
-                print "------------- END ",tm,"--------\n"
+                    
+                save({'tm':evaltmname},(sum,cnt),path+'/cache')
+                    
+            return ( float(sum/cnt), evaltmname )
 
-        if verbose:
-            print "+-----------------------------------------------------+"
-            print "   the best trustmetric for this test is", bestname 
-            print "   with the average error:", bestvalue      
-            print "+-----------------------------------------------------+"
-                         
-        if onlybest:                 
-            return bestvalue
+        #lista dei risultati
+                                 #path on wich save the computation, trustMetric class, my predgraph trust metric name, 
+                                 #predgraph
+        lris = splittask( eval , [(path,trustmetrics[tm],get_name(self.TM),self) for tm in trustmetrics], np ) 
+                                      
+        if onlybest:
+            lris.sort()
+            return lris[0]
         else:
             if plot:
                 
