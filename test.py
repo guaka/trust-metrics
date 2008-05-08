@@ -32,7 +32,7 @@ def str_time(t):
 def main():
     
     if sys.argv[1:]:
-        code = [x.strip() for x in file(argv[1]).readlines()]
+        code = [x.strip() for x in file(sys.argv[1]).readlines()]
     else:
         code = []
     log = []
