@@ -31,7 +31,10 @@ def str_time(t):
 
 def main():
     
-    code = []
+    if sys.argv[1:]:
+        code = [x.strip() for x in file(argv[1]).readlines()]
+    else:
+        code = []
     log = []
 
     print 'Insert code (and a comment):'
