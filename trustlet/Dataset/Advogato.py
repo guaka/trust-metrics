@@ -76,7 +76,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = None, comp_threshold = 0, download = False, base_path = None):
+    def __init__(self, date = None, weights = None, comp_threshold = 0, download = False, base_path = ''):
 
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -148,7 +148,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
             return
 
         if (not os.path.exists(self.filepath)) and (not only_if_needed):
-            raise IOError( "dot file does not exists, if you would download it,\nset 'download' parameter to True" )
+            raise IOError( "dot file does not exists (%s), if you would download it,\nset 'download' parameter to True"%self.filepath)
         else:
             if only_if_needed and (not os.path.exists(self.filepath)):
                 self.download_file(self.url, self.dotfile)
