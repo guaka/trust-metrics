@@ -2,7 +2,7 @@
 
 """This script keeps track of execution of tests"""
 
-import time,sys
+import time,sys,os
 from socket import gethostname
 
 LOG = 'test.log'
@@ -46,6 +46,7 @@ def main():
     
     begin_time = time.time()
     log.append('Begin time: '+time.ctime(begin_time))
+    log.append('pid: '+str(os.getpid()))
     log.append('Task:')
     log += ['*   '+x for x in code]
     log.append('-----')
