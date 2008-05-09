@@ -85,8 +85,8 @@ def main():
                         value = 1.0 * len(uvm) / s # 1 / avg
                         # s==0 and s==1 is the same
                 
-                    m.add_edge(u,v,value)
-                    m.add_edge(v,u,value)
+                    m.add_edge(u,v,{'value':str(value)})
+                    m.add_edge(v,u,{'value':str(value)})
                 
     write_dot(m,'graph.dot')
 
