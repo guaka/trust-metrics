@@ -105,11 +105,10 @@ class TrustMetric:
 #             return MoletrustTM_horizon1_threshold0
 #     return ClassThing
 
-#non serve a un cazzo
 class MoleTrust(TrustMetric):
     #TODO: set some sensible default values.
-    
-    def __init__(self, dataset, horizon = 2, threshold = 0.3, edge_trust_threshold = 0):
+    #DONE: set some sensible defalut values. Tested empirically
+    def __init__(self, dataset, horizon = 4, threshold = 0.0, edge_trust_threshold = 0):
         TrustMetric.__init__(self, dataset , moletrust_generator(horizon = horizon,
                                                pred_node_trust_threshold = threshold,
                                                edge_trust_threshold = edge_trust_threshold) )

@@ -377,7 +377,7 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
     for tm in trustmetrics:
         P = trustlet.PredGraph( trustmetrics[tm] )
         
-        for i in range( len(P.orig_trust) ):
+        for i in xrange( len(P.orig_trust) ):
             if round(P.orig_trust[i],1) != round(P.pred_trust[i],1):
                 s += 1
             tot += 1
@@ -596,6 +596,6 @@ if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
     k = AdvogatoNetwork(date="2008-04-28")
-    pprint(bestMoletrustParameters(k,bestris=False,force=False,
-                                        maxhorizon=10,np=4))
-
+    tm = TrustMetric( k, moletrust_generator(horizon=4) )
+    P = PredGraph( tm )
+    P.testTM( singletrustm = False, onlybest = False, np=4 )

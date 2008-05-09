@@ -2,6 +2,9 @@
 """
 Network classes
 
+In this file, was stored all the class that
+wrap the network in DOT format.
+Each network supported has it's own class to wrap it.
 """
 
 
@@ -20,11 +23,10 @@ average = lambda x: x and float(sum(x)) / len(x)
 
 def dataset_dir(path=None):
     """Create datasets/ directory if needed."""
-    if not path:
-        if os.environ.has_key('HOME'):
-            path = os.environ['HOME']
-        else:
-            path = ''
+    if not path and os.environ.has_key('HOME'):
+        path = os.environ['HOME']
+    else:
+        path = ''
     dataset_path = os.path.join(path, 'datasets')
     if not os.path.exists(dataset_path):
         os.mkdir(dataset_path)
@@ -45,9 +47,10 @@ class Network(XDiGraph):
 
         XDiGraph.__init__(self, multiedges = False)
         if make_base_path:
-            self.path = os.path.join(base_path and dataset_dir(os.path.abspath(base_path)) or dataset_dir(), self.__class__.__name__)
+            self.path = os.path.join(dataset_dir(base_path), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
+
         if from_graph:
             self.paste_graph(from_graph)
 
@@ -328,9 +331,18 @@ class WeightedNetwork(Network):
             raise NotImplemented
 
 
-if __name__=="__main__":
-    #test
-    from trustlet import *
-    
-    #K = KaitiakiNetwork(date="2008-05-06")
-    K = KaitiakiNetwork(base_path="/home/jonathan/Desktop",date="2008-05-06")
+
+class MovieLensNetwork(WeightedNetwork):
+    """
+    MovieLens dataset network
+    """
+    def __init__(self, base_path = None):
+        WeightedNetwork.__init__(self, base_path = base_path)
+        
+        try:
+            #print os.path.join(self.path,"graph.dot")
+            self._read_dot( os.path.join(self.path,"graph.dot") )
+        except IOError:
+            raise IOError("There aren't a dot file on this path:\n "+
+                          self.path+"\nplease specify another path or create dot file with movielens.py" )
+        
