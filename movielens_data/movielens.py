@@ -36,6 +36,7 @@ def main():
 
     for x in [(int(x[0]),x[0]+' '+x[1]+' '+x[2]+occupation[x[3]]) for x in [x.strip().split('::') for x in file('users.dat').readlines()]]:
         users[x[0]] = x[1]
+    #error: the file 'users.dat' is not in the SVN. There is the .tar.gz file but then it would make more sense to have a line to untar, unzip this file at the beginning of this script. REMOVE this comment if/when fixed.
 
     #read ratings
     # [(userid, movieid, rating)]
