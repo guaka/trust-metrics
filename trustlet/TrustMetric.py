@@ -132,7 +132,7 @@ class PageRankTM(TrustMetric):
 
     def leave_one_out(self, e_orig):
         # DT
-        # delete_edge solleva un eccezione se l'arco non esiste? se si sto codice non serve 
+        # CHECK: delete_edge throws an exception if the edge is not present? If yes, the following test is not needed
         edge = [e for e in self.dataset.edges() 
                 if e[0] == e_orig[0] and e[1] == e_orig[1]][0]
 
