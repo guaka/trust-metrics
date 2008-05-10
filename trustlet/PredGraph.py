@@ -29,7 +29,6 @@ except:
     print "damn! no scipy!"
 
 
-
 class CalcGraph(Network):
     """Generic calculation graph class"""
 
@@ -303,7 +302,7 @@ class PredGraph(CalcGraph):
     #DT
     def testTM( self, singletrustm = True, np=4, onlybest=True, plot = False ):
         """
-        This function test a single trustmetric or all the existence trustmetric, 
+        This function test a single trust metric or all the trust metrics, 
         on a specific network
         
         parameters:
@@ -319,7 +318,8 @@ class PredGraph(CalcGraph):
         if singletrustm:
             return self.__abs_error()
         
-        lris = []
+        lris = [] # list of results (performances), one for each trust metric evaluated
+
         K = self.TM.dataset
         path = self.dataset.path+'/TrustMetrics'
 
@@ -336,10 +336,15 @@ class PredGraph(CalcGraph):
             "PageRankTM" : PageRankTM( K )
             }
 
-        #foreach trustmetric print the predicted value foreach edge..
+        #for each trust metric, print the predicted value for each edge
         bestname = ''
         bestvalue = 1.0
 
+	#parameters:
+	#path is the path on which to save the computation
+	#tm is the trustMetric class 
+	#tmname is the trust metric name, 
+        #predgraph                                      
         def eval( (path,tm,tmname,predgraph) ):
             #tm = current tm
             #tmname = my predgraph tm
@@ -357,9 +362,7 @@ class PredGraph(CalcGraph):
                 sum,cnt = abs
             else:
                 for edge in tm.dataset.edges_iter():
-                    
-                    #valori per calcolare l'errore medio
-                    
+                    #extract the original trust value and the predicted trust value in order to compute the absolute error in this prediction
                     orig_trust = tm.dataset.trust_on_edge(edge)
                     pred_trust = tm.leave_one_out(edge)
                     
@@ -370,11 +373,9 @@ class PredGraph(CalcGraph):
                     
             return ( float(sum/cnt), evaltmname )
 
-        #lista dei risultati
-                                 #path on wich save the computation, trustMetric class, my predgraph trust metric name, 
-                                 #predgraph
+	# we use splittask so that we can split the computation in parallel across different processors (splittask is defined in helpers.py). Neet to check how much this is efficient or needed.
         lris = splittask( eval , [(path,trustmetrics[tm],get_name(self.TM),self) for tm in trustmetrics], np ) 
-                                      
+
         if onlybest:
             lris.sort()
             return lris[0]
@@ -394,6 +395,7 @@ class PredGraph(CalcGraph):
             lris.sort()
 
             return lris
+
                          
     def graphcontroversiality( self, maxc, step, indegree = 5, np=2 ):
         """
