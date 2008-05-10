@@ -2,6 +2,7 @@
 
 from trustlet.Dataset.Network import Network
 from networkx import write_dot
+from trustlet.helpers import splittask
 
 def main():
     m = Network()
@@ -53,7 +54,9 @@ def main():
     for u in enumerate(users):
         print int(100.0 * (u[0]+1) / len(users)),"%"
         u = u[1]
-        for v in users:
+
+        def eval( (m,v,u,ratings) ):
+        #for v in users:
             if u<v:
                 #this can be slow
 
@@ -88,6 +91,10 @@ def main():
                 
                     m.add_edge(u,v,{'value':str(value)})
                     m.add_edge(v,u,{'value':str(value)})
+            return ()
+        
+        splittask( eval, [(m,v,u,ratings) for v in users] ,np = 2 )
+        
                 
     write_dot(m,'graph.dot')
 
