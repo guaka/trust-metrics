@@ -31,8 +31,17 @@ def str_time(t):
 
 def main():
     
+    if '--help' in sys.argv[1:]:
+        print "USAGE: ./test.py [-s|--sms] [file common instructions]"
+        return
     if sys.argv[1:]:
-        code = [x.strip() for x in file(sys.argv[1]).readlines()]
+        filename = None
+        for f in sys.argv[1:]:
+            if f[0]!='-':
+                filename=f
+                break
+        if filename:
+            code = [x[-1]=='\n' and x[:-1] or x for x in file(filename).readlines()]
     else:
         code = []
     log = []
