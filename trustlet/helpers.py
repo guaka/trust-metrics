@@ -604,9 +604,9 @@ def load(key,path='.',time=False):
     except IOError:
         return None
     if time:
-        return data #(data,time)
-    else:
         return data[0]
+    else:
+        return data #(data,time)
 
 def clear(key,path='.'):
     os.remove(os.path.join(path,get_sign(key)))
