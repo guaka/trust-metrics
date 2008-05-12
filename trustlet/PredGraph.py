@@ -286,8 +286,7 @@ class PredGraph(CalcGraph):
                 num_edges += 1
         return num_edges and (num_edges, scipy.mean(l))
 
-    #deprecated, testTM is better ;-)
-    def __abs_error(self):
+    def abs_error(self):
         """Absolute error."""
         abs_error = self.def_mask * abs(self.pred_trust - self.orig_trust)
         return self.num_defined and (sum(abs_error) / self.num_defined)
@@ -297,105 +296,6 @@ class PredGraph(CalcGraph):
         sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust -
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
-
-
-    #DT
-    def testTM( self, singletrustm = True, np=4, onlybest=True, plot = False ):
-        """
-        This function test a single trust metric or all the trust metrics, 
-        on a specific network
-        
-        parameters:
-        singletrustm: if false, check all the trustmetrics, else only the trustmetric
-                      in the predgraph class instance
-        plot: plot or not an istogram with the results
-        np: number of processors
-        
-        return a tuple, with the best trustmetric and it's average error, or if
-        onlybest is set to False, all the trustmetric with his own MAE
-        """
-        
-        if singletrustm:
-            return self.__abs_error()
-        
-        lris = [] # list of results (performances), one for each trust metric evaluated
-
-        K = self.TM.dataset
-        path = self.dataset.path+'/TrustMetrics'
-
-        trustmetrics = {
-            "intersection_tm" : TrustMetric( K , intersection_tm ),
-            "edges_a_tm" : TrustMetric( K , edges_a_tm ),
-            "edges_b_tm" : TrustMetric( K , edges_b_tm ),
-            "ebay_tm" : TrustMetric( K , ebay_tm ),
-            "outa_tm" : TrustMetric( K , outa_tm ),
-            "outb_tm" : TrustMetric( K , outb_tm ),
-            "random_tm" : TrustMetric( K , random_tm ),
-            "moletrust_tm" : TrustMetric( K , 
-                                          moletrust_generator( 4 , 0.0 , 0.0 ) ),
-            "PageRankTM" : PageRankTM( K )
-            }
-
-        #for each trust metric, print the predicted value for each edge
-        bestname = ''
-        bestvalue = 1.0
-
-	#parameters:
-	#path is the path on which to save the computation
-	#tm is the trustMetric class 
-	#tmname is the trust metric name, 
-        #predgraph                                      
-        def eval( (path,tm,tmname,predgraph) ):
-            #tm = current tm
-            #tmname = my predgraph tm
-
-            evaltmname = get_name(tm)
-
-            if evaltmname == tmname:
-                return (predgraph.__abs_error(),tmname)
-
-            sum = 0
-            cnt = 0
-            abs = load( {'tm':evaltmname},path+'/cache' )
-            
-            if abs != None:
-                sum,cnt = abs
-            else:
-                for edge in tm.dataset.edges_iter():
-                    #extract the original trust value and the predicted trust value in order to compute the absolute error in this prediction
-                    orig_trust = tm.dataset.trust_on_edge(edge)
-                    pred_trust = tm.leave_one_out(edge)
-                    
-                    sum = sum + math.fabs(orig_trust - pred_trust)
-                    cnt = cnt + 1
-                    
-                save({'tm':evaltmname},(sum,cnt),path+'/cache')
-                    
-            return ( float(sum/cnt), evaltmname )
-
-	# we use splittask so that we can split the computation in parallel across different processors (splittask is defined in helpers.py). Neet to check how much this is efficient or needed.
-        lris = splittask( eval , [(path,trustmetrics[tm],get_name(self.TM),self) for tm in trustmetrics], np ) 
-
-        if onlybest:
-            lris.sort()
-            return lris[0]
-        else:
-            if plot:
-                
-                plotparameters( [x for x in enumerate([x for (x,s) in lris])], path+'/TrustMetricsHistogram.png', 
-                                title = 'MAE for each trustmetric on '+get_name(self.dataset)+' network',
-                                xlabel='trust metrics',
-                                ylabel='MAE',
-                                istogram = True )
-
-            fd = file( path+'/HistogramLegend', 'w' )
-            fd.write( '\n'.join( [str(n)+': '+s for (n,s) in enumerate([y+' '+str(x) for (x,y) in lris])] ) )
-            fd.close()
-
-            lris.sort()
-
-            return lris
-
                          
     def graphcontroversiality( self, maxc, step, indegree = 5, np=2, plot=False ):
         """

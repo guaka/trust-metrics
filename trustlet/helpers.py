@@ -3,8 +3,9 @@
 import math
 import numpy
 import os.path
-import trustlet.TrustMetric
-import trustlet.trustmetrics
+from trustlet.TrustMetric import *
+from trustlet.trustmetrics import *
+import trustlet
 import Gnuplot
 import os,sys
 import datetime
@@ -20,8 +21,22 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
-
-
+def getTrustMetrics( net ):
+    trustmetrics = {
+        "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
+        "intersection_tm":trustlet.TrustMetric( net , trustlet.intersection_tm ),
+        "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
+        "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
+        "outa_tm":trustlet.TrustMetric( net , trustlet.outa_tm ),
+        "outb_tm":trustlet.TrustMetric( net , trustlet.outb_tm ),
+        "PageRankTM":trustlet.PageRankTM(net),
+        "moletrust_3":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=3)),
+        "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4)),
+        "AdvogatoLocal":trustlet.AdvogatoLocal(net),
+        "AdvogatoGlobalTM":trustlet.AdvogatoGlobalTM(net)
+        }
+    
+    return trustmetrics
 
 
 def hms(t_sec):
@@ -390,7 +405,7 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
 
                     (
                     (1.0 * s)/tot,
-                    P.testTM(),
+                    P.abs_error(),
                     P.sqr_error(),
                     P.coverage(),
                     tm
@@ -421,92 +436,79 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
 
     return t
 
-
-def testTM( K, singletrustm = False, verbose = False ):
+def testTM( net, bpath=None, singletrustm = True, np=4, onlybest=False, plot = False ):
     """
-    This function test a single trustmetric or all the existence trustmetric, 
+    This function test a single trust metric or all the trust metrics, 
     on a specific network
+    
     parameters:
-    K: network used for the test
-                  can be:
-                  kaitiaki
-                  dummy
-                  advogato
-                  squeakfoundation
+    net: the network on wich calculate the errors
+    singletrustm: if false, check all the trustmetrics, else only the trustmetric
+    in the predgraph class instance
+    plot: plot or not an istogram with the results. 
+          It works only if onlybest is set to false
+    np: number of processors
+    bpath: the path in witch there are the predgraph dot
 
-    singletrustm: if false, check all the trustmetrics, else only the name of trustmetric passed
-                  possible value:
-                  intersection
-                  edges a
-                  ebay
-                  out a
-                  out b
-                  random
-                  moletrust standard
-                  moletrust generator
-                  pagerank
-
-    verbose: verbose mode, true o false
-    return a tuple, with the best trustmetric and it's average error 
+    return a tuple, with the best trustmetric and it's average error, or if
+    onlybest is set to False, all the trustmetric with his own MAE
     """
-
-    trustmetrics = {
-        "intersection" : trustlet.TrustMetric( K , trustlet.intersection_tm ),
-        "edges a" : trustlet.TrustMetric( K , trustlet.edges_a_tm ),
-        "ebay" : trustlet.TrustMetric( K , trustlet.ebay_tm ),
-        "out a" : trustlet.TrustMetric( K , trustlet.outa_tm ),
-        "out b" : trustlet.TrustMetric( K , trustlet.outb_tm ),
-        "random" : trustlet.TrustMetric( K , trustlet.random_tm ),
-        "moletrust standard" : trustlet.MoleTrustTM( K ),
-        "moletrust generator" : trustlet.TrustMetric( K , 
-                                             trustlet.moletrust_generator( 6 , 0.0 , 0.0 ) ),
-        "pagerank" : trustlet.PageRankTM( K )
-        #"pagerank global": PageRankGlobalTM( K )
-        }
     
-    
-    if singletrustm:
-        trustmetric = {singletrustm: trustmetrics[singletrustm]}
-    else:
-        trustmetric = trustmetrics
+    lris = [] # list of results (performances), one for each trust metric evaluated
 
-#foreach trustmetric print the predicted value foreach node..
-    bestname = ''
-    bestvalue = 1.0
+    if bpath == None:
+        bpath = net.path
 
-    for tm in trustmetric:
+    path = os.path.join(bpath,'TrustMetrics')
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+        #for each trust metric, print the predicted value for each edge
+    trustmetrics = getTrustMetrics( net )
+	#parameters:
+	#path is the path on which to save the computation
+	#tm is the trustMetric class 
+	#tmname is the trust metric name, 
+        #predgraph                                      
+    def eval( (path,tm) ):
+            #tm = current tm
+
         sum = 0
         cnt = 0
+        abs = load( {'tm':tm},path+'/cache' )
+        
+        if abs != None:
+            error = abs
+        else:
+            P = trustlet.PredGraph( trustmetrics[tm] )
+            error = P.abs_error()
+        
+            save({'tm':tm},error,path+'/cache')
+                    
+        return ( error, tm )
 
-        if verbose:
-            print "------------- BEGIN ",tm,"--------\n"
-        
-        for edge in trustmetrics[tm].dataset.edges_iter():
-        #valori per calcolare l'errore medio
-            orig_trust = trustmetrics[tm].dataset.trust_on_edge(edge)
-            pred_trust = trustmetrics[tm].leave_one_out(edge)
-            sum = sum + math.fabs(orig_trust - pred_trust)
-            cnt = cnt + 1
-        
-        #stampa la trustmetric e che arco cerca di predire
-            if verbose:
-                print "edge 1: ",edge[0],"edge 2: ",edge[1], '\n',"original trust: ",orig_trust,"predicted trust", pred_trust
-    
-            if float(sum/cnt) < bestvalue:
-                bestvalue = float(sum/cnt)
-                bestname = tm
-        
-        if verbose:
-            print "average error: ", float(sum/cnt), "\n"
-            print "------------- END ",tm,"--------\n"
+	# we use splittask so that we can split the computation in parallel across different processors (splittask is defined in helpers.py). Neet to check how much this is efficient or needed.
+    lris = splittask( eval , [(path,tm) for tm in trustmetrics], np ) 
 
-    if verbose:
-        print "+-----------------------------------------------------+"
-        print "   the best trustmetric for this test is", bestname 
-        print "   with the average error:", bestvalue      
-        print "+-----------------------------------------------------+"
-    
-    return (bestname,bestvalue)
+    if onlybest:
+        lris.sort()
+        return lris[0]
+    else:
+        if plot:    
+            plotparameters( [x for x in enumerate([x for (x,s) in lris])], path+'/TrustMetricsHistogram.png', 
+                            title = 'MAE for each trustmetric on '+get_name(net)+' network',
+                            xlabel='trust metrics',
+                            ylabel='MAE',
+                            istogram = True )
+            
+        fd = file( path+'/HistogramLegend', 'w' )
+        fd.write( '\n'.join( [str(n)+': '+s for (n,s) in enumerate([y+' '+str(x) for (x,y) in lris])] ) )
+        fd.close()
+        
+        lris.sort()
+
+        return lris
+
 
 
 def splittask(function,input,np=4):
@@ -595,7 +597,5 @@ def clear(key,path='.'):
 if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
-    k = AdvogatoNetwork(date="2008-04-28")
-    tm = TrustMetric( k, moletrust_generator(horizon=4) )
-    P = PredGraph( tm )
-    P.testTM( singletrustm = False, onlybest = False, np=4 )
+    k = KaitiakiNetwork(download=True)
+    testTM( k, np=2 )
