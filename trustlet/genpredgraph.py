@@ -4,8 +4,8 @@ from trustlet import *
 #from trustlet.trustmetrics import *
 
 
-def main():
-    A = AdvogatoNetwork( download=True, base_path='/hardmnt/sra01/sra/salvetti' )
+def main(path):
+    A = AdvogatoNetwork( download=True, base_path=path )
 
     trustmetrics = getTrustMetrics( A )
 
@@ -19,4 +19,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #import sys
+    #path = sys.argv[1:]
+    #'/hardmnt/sra01/sra/salvetti'
+    main(None)
