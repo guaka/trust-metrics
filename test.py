@@ -4,30 +4,12 @@
 
 import time,sys,os
 from socket import gethostname
+from trustlet.helpers import str_time
 
 LOG = 'test.log'
 
 def div(n,m):
     return (n/m,n%m)
-
-def human_time(t):
-    from time import gmtime #(tm_year, tm_mon, tm_mday, tm_hour, tm_min,
-                            # tm_sec, tm_wday, tm_yday, tm_isdst)
-    tt = gmtime(t)
-    #(days,hours,mins,secs)
-    return (t/24/60/60,tt[3],tt[4],tt[5])
-
-def str_time(t):
-    days,hours,mins,secs = human_time(t)
-    s = []
-    if days:
-        s.append(str(days)+'d')
-    if hours:
-        s.append(str(hours)+'h')
-    if mins:
-        s.append(str(mins)+'m')
-    s.append(str(secs)+'s')
-    return ' '.join(s)
 
 def test():
     print "test"
@@ -36,6 +18,7 @@ def test():
     print str_time(13600)
     print str_time(113600)
     print str_time(12336000)
+    print str_time(100000)
     
 
 def main():

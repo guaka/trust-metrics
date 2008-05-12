@@ -38,20 +38,26 @@ def getTrustMetrics( net ):
     
     return trustmetrics
 
+def human_time(t):
+    from time import gmtime #(tm_year, tm_mon, tm_mday, tm_hour, tm_min,
+                            # tm_sec, tm_wday, tm_yday, tm_isdst)
+    tt = gmtime(t)
+    #(days,hours,mins,secs)
+    return (t/24/60/60,tt[3],tt[4],tt[5])
 
-def hms(t_sec):
-    """Convert time in seconds into Hour Minute Second format.
+def str_time(t):
+    days,hours,mins,secs = human_time(t)
+    s = []
+    if days:
+        s.append(str(days)+'d')
+    if hours:
+        s.append(str(hours)+'h')
+    if mins:
+        s.append(str(mins)+'m')
+    s.append(str(secs)+'s')
+    return ' '.join(s)
 
-    >>> hms(30)
-    0h0m30s
-    >>> hms(100000)
-    27h46m40s
-    """
-    t_sec = int(t_sec)
-    mins, secs = divmod(t_sec, 60)
-    hours, mins = divmod(mins, 60)
-    return str(hours)+'h'+str(mins)+'m'+str(secs)+'s'
-
+hms = str_time
 
 def est_datetime_arr(seconds):
     """Estimated datetime of arrival."""
@@ -551,6 +557,7 @@ def splittask(function,input,np=4):
 
     return ris
 
+
 # == cache ==
 # save and restore data into/from cache
 # - `key` is a dictionary
@@ -563,36 +570,48 @@ def mkpath(fullpath):
         mkpath(path)
         os.mkdir(fullpath)
 
-def get_sign(key):
+def get_sign(key,mdfive=True):
     s = ''
     listkeys = key.keys()
     listkeys.sort()
     for k in listkeys:
-        s+=str(k)+'='+str(key[k])+','
-    #return s[:-1]
-    return md5.new(s[:-1]).hexdigest()
+        s+=str(k)+'_'+str(key[k])+'__'
+    if mdfive:
+        return md5.new(s[:-1]).hexdigest()
+    else:
+        return s[:-1]
 
-def save(key,data,path='.',savekey=False):
+def save(key,data,path='.',human=False,time=None):
     mkpath(path)
     try:
+        if human:
+            f = file(os.path.join(path,get_sign(key,False)),'w')
+            f.writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
+            if time:
+                f.write('time: %d\n'%time)
+            f.write('data: '+data.__str__())
+
+        if time:
+            data = (data,time)
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-        if savekey:
-            file(os.path.join(path,get_sign(key))+'.key','w').writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
     except IOError,UnpickingError:
         return False
     return True
     
-def load(key,path='.'):
+def load(key,path='.',time=False):
     try:
-        return pickle.load(file(os.path.join(path,get_sign(key))))
+        data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
         return None
+    if time:
+        return data #(data,time)
+    else:
+        return data[0]
 
 def clear(key,path='.'):
-    fullpath = os.path.join(path,get_sign(key))
-    os.remove(fullpath)
-    if os.path.exists(fullpath+'.key'):
-        os.remove(fullpath+'.key')
+    os.remove(os.path.join(path,get_sign(key)))
+    if os.path.exists(os.path.join(path,get_sign(key,False))):
+        os.remove(os.path.join(path,get_sign(key,False)))
 
 if __name__=="__main__":
     from trustlet import *
