@@ -1,6 +1,4 @@
-from trustlet import PredGraph, TrustMetric, PageRankTM, AdvogatoLocal
-from trustlet import AdvogatoGlobalTM, AdvogatoNetwork
-from trustlet.helpers import get_name, getTrustMetrics
+from trustlet.helpers import get_name, getTrustMetrics, splittask
 from trustlet.trustmetrics import *
 
 
@@ -9,8 +7,13 @@ def main():
 
     trustmetrics = getTrustMetrics( A )
 
-    for tm in trustmetrics:
+    def eval( tm ):
         P = PredGraph( trustmetrics[tm] )
+        return None
+    
+    splittask( eval , [tm for tm in trustmetrics], np=4 )
+    
+    return None
 
 
 if __name__ == "__main__":
