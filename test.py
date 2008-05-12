@@ -11,11 +11,11 @@ def div(n,m):
     return (n/m,n%m)
 
 def human_time(t):
-    days,t = div(t,5184000)
-    hours,t = div(t,216000)
-    mins,t = div(t,3600)
-    secs = t
-    return (days,hours,mins,secs)
+    from time import gmtime #(tm_year, tm_mon, tm_mday, tm_hour, tm_min,
+                            # tm_sec, tm_wday, tm_yday, tm_isdst)
+    tt = gmtime(t)
+    #(days,hours,mins,secs)
+    return (t/24/60/60,tt[3],tt[4],tt[5])
 
 def str_time(t):
     days,hours,mins,secs = human_time(t)
@@ -29,10 +29,22 @@ def str_time(t):
     s.append(str(secs)+'s')
     return ' '.join(s)
 
+def test():
+    print "test"
+    print str_time(15)
+    print str_time(3600)
+    print str_time(13600)
+    print str_time(113600)
+    print str_time(12336000)
+    
+
 def main():
     
     if '--help' in sys.argv[1:]:
         print "USAGE: ./test.py [-s|--sms] [file common instructions]"
+        return
+    if 'test' in sys.argv[1:]:
+        test()
         return
     if sys.argv[1:]:
         filename = None
