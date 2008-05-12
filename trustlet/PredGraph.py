@@ -397,7 +397,7 @@ class PredGraph(CalcGraph):
             return lris
 
                          
-    def graphcontroversiality( self, maxc, step, indegree = 5, np=2 ):
+    def graphcontroversiality( self, maxc, step, indegree = 5, np=2, plot=False ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -408,6 +408,7 @@ class PredGraph(CalcGraph):
            step = from 0.0 to maxc with step == step
            indegree = the min indegree
            np = number of processes
+           plot = if true, plot a graph of the results
         """
         def plot():
             plotparameters( tuplelist, self.path+'/error-controversiality-onlypoint.png',
@@ -437,41 +438,48 @@ class PredGraph(CalcGraph):
         def eval( (net, max) ):    
            #calcolate the abs_error of the edges over the controversiality limit
            #and append it to tuplelist in a tuple (controversiality,abs_error)
-           abs = load( {'func':'graphcontroversiality',
+            
+            abs = load( {'func':'graphcontroversiality',
                         'controversiality_level':max},
                        net.path+'/cache'
                        )
-           if abs != None:
-               (sum,cnt) = abs
-           else:
-               sum = 0
-               cnt = 0
-               for e in net.edges_iter():
-                   if len( net.dataset.in_edges( e[end] )) < indegree:
-                       continue
-                   if net.dataset.node_controversiality( e[end] ) >= max: 
-                       sum += math.fabs(e[weight]['orig'] - e[weight]['pred'])
-                       cnt += 1
-        
-                   ret = save( {'func':'graphcontroversiality',
-                                'controversiality_level':max},
-                               (sum,cnt),
-                               net.path+'/cache'
-                               )
-                   if not ret:
-                       print "Warning! i cannot be able to save this computation, check the permission"
-                       print "for this path: "+self.path+"/cache"
-
-           print "MAE evaluated for %f controversiality" % max
-           
-           if cnt:
-               return (max,float(sum)/cnt)
-           else:
-               return None
+            
+            if abs != None:
+                (sum,cnt) = abs
+            else:
+                sum = 0
+                cnt = 0
+                for e in net.edges_iter():
+                    if cnt % 1000 == 0:
+                        print "counter: ", cnt
+                    if len( net.dataset.in_edges( e[end] )) < indegree:
+                        continue
+                    if net.dataset.node_controversiality( e[end] ) >= max: 
+                        sum += math.fabs(e[weight]['orig'] - e[weight]['pred'])
+                        cnt += 1
+                       
+                        
+                ret = save( {'func':'graphcontroversiality',
+                             'controversiality_level':max},
+                            (sum,cnt),
+                            net.path+'/cache'
+                            )
+                        
+                if not ret:
+                    print "Warning! i cannot be able to save this computation, check the permission"
+                    print "for this path: "+self.path+"/cache"
+                        
+                print "MAE evaluated for %f controversiality" % max
+            
+            if cnt:
+                return (max,float(sum)/cnt)
+            else:
+                return None
 
         tuplelist = splittask( eval, [(self,max) for max in r], np )
 
-        plot()
+        if plot:
+            plot()
         
         return tuplelist
 
@@ -537,4 +545,4 @@ if __name__ == "__main__":
     K = AdvogatoNetwork( date="2008-04-28" )
     tm = TrustMetric( K , moletrust_generator(horizon=4) )
     P = PredGraph( tm )
-    P.graphcontroversiality( 0.6 , 0.001, np=2 )
+    P.graphcontroversiality( 0.3 , 0.01, np=2 )
