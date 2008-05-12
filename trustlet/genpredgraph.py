@@ -1,13 +1,13 @@
-from trustlet import PredGraph, AdvogatoNetwork
-from trustlet.helpers import get_name, getTrustMetrics, splittask
-from trustlet.trustmetrics import *
+from trustlet import *
+#from trustlet import PredGraph, AdvogatoNetwork
+#from trustlet.helpers import get_name, getTrustMetrics, splittask
+#from trustlet.trustmetrics import *
 
 
 def main():
     A = AdvogatoNetwork( download=True, base_path='/hardmnt/sra01/sra/salvetti' )
 
     trustmetrics = getTrustMetrics( A )
-    print trustmetrics
 
     def eval( tm ):
         P = PredGraph( trustmetrics[tm] )
