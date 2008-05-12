@@ -362,7 +362,8 @@ class PredGraph(CalcGraph):
                 ret = save( {'func':'graphcontroversiality',
                              'controversiality_level':max},
                             (sum,cnt),
-                            net.path+'/cache'
+                            net.path+'/cache',
+                            human=True
                             )
                         
                 if not ret:
