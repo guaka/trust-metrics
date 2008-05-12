@@ -297,7 +297,7 @@ class PredGraph(CalcGraph):
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                          
-    def graphcontroversiality( self, maxc, step, indegree = 5, np=2, plot=False ):
+    def graphcontroversiality( self, maxc, step, cond=None, indegree = 5, np=2, plot=False ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -309,6 +309,10 @@ class PredGraph(CalcGraph):
            indegree = the min indegree
            np = number of processes
            plot = if true, plot a graph of the results
+           cond = if None, calculate all the edges, else it must be a function
+                  that take an edge, and return True if the edge must be
+                  included in computation
+           
         """
         def plot():
             plotparameters( tuplelist, self.path+'/error-controversiality-onlypoint.png',
@@ -338,34 +342,51 @@ class PredGraph(CalcGraph):
         def eval( (net, max) ):    
            #calcolate the abs_error of the edges over the controversiality limit
            #and append it to tuplelist in a tuple (controversiality,abs_error)
-            
-            abs = load( {'func':'graphcontroversiality',
-                        'controversiality_level':max},
-                       net.path+'/cache'
-                       )
-            
+            if cond == None:
+                abs = load( {'func':'graphcontroversiality',
+                             'controversiality_level':max},
+                            net.path+'/cache'
+                            )
+            else:
+                abs = load( {'func':'graphcontroversiality',
+                             'controversiality_level':max,
+                             'condition':True},
+                            net.path+'/cache'
+                            )
+
+            print abs
             if abs != None:
                 (sum,cnt) = abs
             else:
                 sum = 0
                 cnt = 0
                 for e in net.edges_iter():
-                    if cnt % 1000 == 0:
-                        print "counter: ", cnt
                     if len( net.dataset.in_edges( e[end] )) < indegree:
                         continue
+                    
+                    if cond != None:
+                        if cond(e) != True:
+                            continue
+
                     if net.dataset.node_controversiality( e[end] ) >= max: 
-                        sum += math.fabs(e[weight]['orig'] - e[weight]['pred'])
-                        cnt += 1
+                            sum += math.fabs(e[weight]['orig'] - e[weight]['pred'])
+                            cnt += 1
+                        
                        
-                        
-                ret = save( {'func':'graphcontroversiality',
-                             'controversiality_level':max},
-                            (sum,cnt),
-                            net.path+'/cache',
-                            human=True
-                            )
-                        
+                if cond == None:
+                    ret = save( {'func':'graphcontroversiality',
+                                 'controversiality_level':max},
+                                (sum,cnt),
+                                net.path+'/cache'
+                                )
+                else:
+                    ret = save( {'func':'graphcontroversiality',
+                                 'controversiality_level':max,
+                                 'condition':True},
+                                (sum,cnt),
+                                net.path+'/cache'
+                                )
+    
                 if not ret:
                     print "Warning! i cannot be able to save this computation, check the permission"
                     print "for this path: "+self.path+"/cache"
@@ -446,4 +467,11 @@ if __name__ == "__main__":
     K = AdvogatoNetwork( date="2008-04-28" )
     tm = TrustMetric( K , moletrust_generator(horizon=4) )
     P = PredGraph( tm )
-    P.graphcontroversiality( 0.3 , 0.01, np=2 )
+
+    def condition( e ):
+        if math.fabs(e[2]['orig'] - e[2]['pred']) > 0.1:
+            return True
+        else:
+            return False
+
+    P.graphcontroversiality( 0.3 , 0.01, np=2, cond=condition )
