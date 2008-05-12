@@ -1,7 +1,7 @@
 from trustlet import PredGraph, TrustMetric, PageRankTM, AdvogatoLocal
 from trustlet import AdvogatoGlobalTM, AdvogatoNetwork
 from trustlet.helpers import get_name
-from trustlet.trustmetrics import moletrust_generator
+from trustlet.trustmetrics import *
 
 
 def main():
