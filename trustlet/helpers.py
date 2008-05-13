@@ -196,10 +196,12 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     path is the location in wich the png image will be saved,
     if you wouldn't save it, set the onlyshow parameter to True
     title parameter, set the title of the plot
+    
+    DEPRECATED (only because i don't like function signature)
     """
     g = Gnuplot.Gnuplot()
     g.title( title )
-
+    
     if onlypoint:
         g('set parametric')
     else:
@@ -220,12 +222,92 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     g.plot( points )
 
     if not onlyshow:
-        g.hardcopy(
-            filename=path,
-            terminal='png'
-            )
+        g('set terminal png')
+        g('set filename '+path)
+        #this doesn't work
+
+        #g.hardcopy(
+        #    filename=path,
+        #    terminal='png'
+        #    )
     
     return None
+
+def prettyplot( data, path, **args):
+    """
+    Print a graphics of the list passed.
+    *path* is the location in wich the png image will be saved,
+    if you wouldn't save it, set the onlyshow parameter to True
+    title parameter, set the title of the plot
+
+    *data* is ...
+        a list of points
+        [(x0,y0),(x1,y1),...]
+    or ...
+        a set of list of points
+        [ [(ax0,ay0),(ax1,ay1),...] , [(bx0,by0),(bx1,by1),...] , ...]
+        each list will plot on the same graph
+    
+    other args:
+        legend='' (describes data. It is a string or a list of strings (one for each set))
+        title=''
+        xlabel=''
+        ylabel=''
+        log=False
+        showlineFalse (old onlypoint)
+        istogram=False
+    """
+
+    g = Gnuplot.Gnuplot()
+    try:
+        g.title(args['title'])
+    except KeyError:
+        pass
+    
+    if args.has_key('showlines') and args['showlines']:
+        g('set data style lines')
+    else:
+        g('set parametric')
+    if args.has_key('istogram') and args['istogram']:
+        g('set style data boxes')
+    if args.has_key('log') and args['log']:
+        g('set logscale y 1.5' )
+    if args.has_key('xlabel'):
+        g.xlabel(args['xlabel'])
+    if args.has_key('ylabel'):
+        g.ylabel(args['ylabel'])
+
+    try:
+        legend = args['legend']
+    except:
+        legend = ''
+
+    if type(legend) is list:
+        pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in set if t]) for set in data]
+    else:
+        pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in data if t])]
+        legend = [legend]
+    
+    for name,points in zip(legend,pointssets):
+        #set name
+        points.sort()
+        print points
+        g.plot( points )
+
+    g.hardcopy(
+        filename=path,
+        terminal='png'
+        )
+
+
+#test!!!
+if __name__=="__main__":
+    if True or False:
+        s = prettyplot([[(0,0),(1,0.1),(2,0.2),(3,0.3)],[(0,1),(1,2),(2,3)]],'image.png',legend=['uno','due'],showlines=True)
+    else:
+        s = prettyplot([(0,0),(1,0),(2,0),(0,1),(1,2),(2,3)],'image.png',legend='uno',showlines=True)
+    print s
+    exit(0)
 
 #this function *doesn't work* with ipython
 #(because it traps sys.exit())
@@ -519,8 +601,6 @@ def testTM( net, bpath=None, singletrustm = True, np=4, onlybest=False, plot = F
         lris.sort()
 
         return lris
-
-
 
 def splittask(function,input,np=4):
     """

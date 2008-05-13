@@ -52,10 +52,11 @@ def main():
     log.append('Begin time: '+time.ctime(begin_time))
     log.append('pid: '+str(os.getpid()))
     log.append('Task:')
-    log += ['*   '+x for x in code]
+    log += code
     log.append('-----')
 
     file(LOG,'a').writelines([x+'\n' for x in log])
+    file('lasttest.py','w').writelines([x+'\n' for x in code])
 
     print "I'm working :-)"
     exec('\n'.join(code))
