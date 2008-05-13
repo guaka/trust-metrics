@@ -30,6 +30,7 @@ def getTrustMetrics( net ):
         "outa_tm":trustlet.TrustMetric( net , trustlet.outa_tm ),
         "outb_tm":trustlet.TrustMetric( net , trustlet.outb_tm ),
         "PageRankTM":trustlet.PageRankTM(net),
+        "moletrust_2":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=2)),
         "moletrust_3":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=3)),
         "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4)),
         "AdvogatoLocal":trustlet.AdvogatoLocal(net),
