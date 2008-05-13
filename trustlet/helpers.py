@@ -216,6 +216,7 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
     g.ylabel( ylabel )
     #first place horizon, sencond place abs error (converted in float)
     #i must delete the None object in list.
+    
     points = map(lambda x:(float(x[0]),float(x[1])), [t for t in tuplelist if t])
     
     points.sort()
@@ -529,15 +530,13 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
 
     return t
 
-def testTM( net, bpath=None, singletrustm = True, np=4, onlybest=False, plot = False ):
+def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
     """
     This function test a single trust metric or all the trust metrics, 
     on a specific network
     
     parameters:
     net: the network on wich calculate the errors
-    singletrustm: if false, check all the trustmetrics, else only the trustmetric
-    in the predgraph class instance
     plot: plot or not an istogram with the results. 
           It works only if onlybest is set to false
     np: number of processors
