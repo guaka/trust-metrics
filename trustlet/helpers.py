@@ -569,6 +569,9 @@ def splittask(function,input,np=4):
 # - `data` can be anything (i hope)
 
 def mkpath(fullpath):
+    """
+    makes all missed directory of a path
+    """
     if not fullpath: return
     if not os.path.exists(fullpath):
         path = os.path.split(fullpath)[0]
@@ -576,6 +579,12 @@ def mkpath(fullpath):
         os.mkdir(fullpath)
 
 def get_sign(key,mdfive=True):
+    """
+    Cache.
+    Generate an unique key given a dictionary.
+    If mdfive is True it will return an alphanumeric
+    key of 32 chars
+    """
     s = ''
     listkeys = key.keys()
     listkeys.sort()
@@ -587,6 +596,12 @@ def get_sign(key,mdfive=True):
         return s[:-1]
 
 def save(key,data,path='.',human=False,time=None):
+    """
+    Cache.
+    It stores some *data*  identified by *key* into a file in *path*.
+    If human=True it will save another file in plain text for human beings.
+    You can set *time* (integer, in seconds) to indicate the time of computation.
+    """
     mkpath(path)
     try:
         if human:
@@ -604,6 +619,11 @@ def save(key,data,path='.',human=False,time=None):
     return True
     
 def load(key,path='.',time=False):
+    """
+    Cache.
+    Loads data stored by save.
+    If time=True it will return the tuple (data,time), otherwise data is returned.
+    """
     try:
         data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
@@ -614,6 +634,10 @@ def load(key,path='.',time=False):
         return data #(data,time)
 
 def clear(key,path='.'):
+    """
+    Cache.
+    Remove stored data by key
+    """
     os.remove(os.path.join(path,get_sign(key)))
     if os.path.exists(os.path.join(path,get_sign(key,False))):
         os.remove(os.path.join(path,get_sign(key,False)))
