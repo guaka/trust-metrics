@@ -170,7 +170,12 @@ def moletrust_generator(horizon = 6, pred_node_trust_threshold = 0.0,
       edge_trust_threshold: an edge with trust < edge_trust_threshold
       will be thown out.
     """
-    def moletrust_tm(G, a, b):
+    def moletrust_tm(G, a, b, rh = False):
+        #it is useful to mark every moletrust with his horizon
+        #on the datasets folder
+        if rh:
+            return horizon
+
         debug = False
         if debug:
             print "predict trust from", a, "to", b

@@ -354,7 +354,6 @@ class PredGraph(CalcGraph):
                             net.path+'/cache'
                             )
 
-            print abs
             if abs != None:
                 (sum,cnt) = abs
             else:
@@ -474,4 +473,4 @@ if __name__ == "__main__":
         else:
             return False
 
-    P.graphcontroversiality( 0.3 , 0.01, np=2, cond=condition )
+    P.graphcontroversiality( 0.3 , 0.01, np=2 )

@@ -88,7 +88,11 @@ def get_name(obj):
     # se e` una classe generica, identifico il predgraph con la funzione tm
     if ret == "TrustMetric":
         if hasattr(obj, "get_tm" ):
-            return obj.get_tm().__name__
+            if obj.get_tm().__name__ == "moletrust_tm":
+                                                  #call the function with return horizon = True
+                return obj.get_tm().__name__[:-2]+str( (obj.get_tm())([],[],[],rh=True) )
+            else:
+                return obj.get_tm().__name__
         else:
             raise AttributeError
     else:
