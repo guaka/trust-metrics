@@ -589,7 +589,7 @@ def get_sign(key,mdfive=True):
     listkeys = key.keys()
     listkeys.sort()
     for k in listkeys:
-        s+=str(k)+'_'+str(key[k])+'__'
+        s+=str(k)+'='+str(key[k])+','
     if mdfive:
         return md5.new(s[:-1]).hexdigest()
     else:
