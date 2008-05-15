@@ -53,10 +53,6 @@ class Network(XDiGraph):
 
         if from_graph:
             self.paste_graph(from_graph)
-            
-        print self.path
-            
-
 
     def connected_components(self):
         G = self
