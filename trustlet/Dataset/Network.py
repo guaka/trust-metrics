@@ -23,10 +23,10 @@ average = lambda x: x and float(sum(x)) / len(x)
 
 def dataset_dir(path=None):
     """Create datasets/ directory if needed."""
-    if not path and os.environ.has_key('HOME'):
-        path = os.environ['HOME']
-    else:
+    if not path:
         path = ''
+        if os.environ.has_key('HOME'):
+            path = os.environ['HOME']
     dataset_path = os.path.join(path, 'datasets')
     if not os.path.exists(dataset_path):
         os.mkdir(dataset_path)
@@ -53,6 +53,9 @@ class Network(XDiGraph):
 
         if from_graph:
             self.paste_graph(from_graph)
+            
+        print self.path
+            
 
 
     def connected_components(self):
