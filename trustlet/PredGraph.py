@@ -470,5 +470,5 @@ if __name__ == "__main__":
         else:
             return False
 
-    print P.graphcontroversiality( 0.3 , 0.01,np=2 )
+    print P.graphcontroversiality( 0.3 , 0.1,np=2 )
     

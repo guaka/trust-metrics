@@ -81,6 +81,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
         """
         e.g. A = Advogato(date = '2007-12-21')
         date = the date of the dot file, if you would to use a old dataset
+        base_path=the path in wich is located the datasets folder
         weights = if no value is assigned to this parameter, the class choose automatically
         between _color_map and _obs_app_jour_mas_map
         comp_threshold = if this parameter is set, the class evaluate the ditch component
