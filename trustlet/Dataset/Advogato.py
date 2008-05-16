@@ -97,9 +97,10 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
             self.url += '-graph-' + date + '.dot'
         self.date = date
 
-        if not weights:
+        # it isn't true.. there are only observer etc.
+        #if not weights:
             # until 2006-05-20 there were colors on the edges
-            # it isn't true.. there are only observer etc.
+            
             #if date <= "2006-05-20":
             #    weights = _color_map
             #else:
