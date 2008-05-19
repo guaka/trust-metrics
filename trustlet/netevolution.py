@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 This package contains all the function 
 on the evolution of a network
@@ -9,6 +10,7 @@ from networkx import read_dot
 import os,time,re
 
 stringtime2int = lambda s: int(time.mktime( (int(s[:4]), int(s[5:7]), int(s[8:10]), 0, 0, 0, 0, 0, 0) ))
+inttime2string = lambda i: "%.4d-%.2d-%.2d"%time.gmtime(i)[:3]
 
 def trustAverage( fromdate, todate, path ):
     """
@@ -65,12 +67,13 @@ def usersgrown(path,range=None):
     dates = [x for x in os.listdir(path) if re.match(redate,x)]
 
     if range:
+        assert re.match(redate,range[0]) and  re.match(redate,range[1])
         dates = [x for x in dates if x>=range[0] and x<=range[1]]
 
     #print dates
 
     def eval(date):
-        print date
+        print '.',
         #cache
         nnodes = load({'function':'usersgrown','date':date},path=os.path.join(path,'cache'))
         if nnodes:
@@ -87,6 +90,24 @@ def usersgrown(path,range=None):
     return splittask(eval,dates)
 
 
-if __name__ == "__main__":
+def plot_usersgrown(data,path='.'):
+    '''
+    data is the output of usersgrown
+    >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
+    '''
+    data.sort()
+    fromdate = inttime2string(data[0][0])
+    todate = inttime2string(data[-1][0])
+    prettyplot(data,os.path.join(path,'usersgrown (%s %s).png'%(fromdate,todate)),
+               title='Users Grown',
+               xlabel='date [s] (from %s to %s)'%(fromdate,todate),
+               ylabel='n. of users',
+               showline=True
+               )
 
-    print trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" )
+if __name__ == "__main__":
+    
+    if 1:
+        plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
+    else:
+        print trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" )
