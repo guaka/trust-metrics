@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import re
 from trustlet import *
 from networkx import write_dot

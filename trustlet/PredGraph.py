@@ -296,7 +296,7 @@ class PredGraph(CalcGraph):
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                          
-    def graphcontroversiality( self, maxc, step, cond=None, indegree=5, np=None ):
+    def graphcontroversiality( self, maxc, step, cond=None, toe=None indegree=5, np=2 ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -312,6 +312,12 @@ class PredGraph(CalcGraph):
                   included in computation
            return a list of tuple in this form
            (controversiality,mae, rmse, percentage_wrong, cov)
+           if toe == None, else if toe is equal to
+           'mae': return a list with (controversiality,mae) error, 
+           'rmse': return a list with (controversiality,rmse) error
+           'coverage':return a list with (controversiality,coverage) error
+           'percentage_wrong': return a list with foreach step the (controversiality,percentage of wrong predict)
+           the length of the list depends by the step
         """
         
         start = 0
@@ -397,7 +403,19 @@ class PredGraph(CalcGraph):
             
             return (max,float(sum)/cnt, rmse, pw, cov)
         
-        return splittask( eval, [(self,max) for max in r], np )
+        ls = splittask( eval, [(self,max) for max in r], np )
+
+        if toe == None:
+            return ls
+        else:
+            #take a tuple and a index, and return a tuple with first value and the value n index
+            select = lambda tp,s: (tp[0],tp[s])
+            return { 'mae': select( ls,1 ),
+                     'rmse': select( ls,2 ),
+                     'percentage_wrong': select( ls,3 ),
+                     'coverage': select( ls,3 )
+                     }[toe]
+                
 
 
     def evaluate(self):
