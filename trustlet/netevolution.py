@@ -75,22 +75,22 @@ def usersgrown(path,range=None):
 
     #print dates
 
-    def eval(date):
-        print '.',
+    def task(date):
+        print date
         #cache
         nnodes = load({'function':'usersgrown','date':date},path=os.path.join(path,'cache'))
         if nnodes:
             return ( stringtime2int(date), nnodes )
         
-        t=time.time()
         G = read_dot(os.path.join(os.path.join(path,date),'graph.dot'))
-        K = Network.WeightedNetwork(make_base_path=False,from_graph=G)
+        K = Network.WeightedNetwork()
+        K.paste_graph(G)
         nnodes = len(K.nodes())
-        save({'function':'usersgrown','date':date},nnodes,time=time.time()-t,human=True,path=os.path.join(path,'cache'))
+        save({'function':'usersgrown','date':date},nnodes,human=True,path=os.path.join(path,'cache'))
         return ( stringtime2int(date), nnodes )
 
-    #return [eval(x) for x in dates]
-    return splittask(eval,dates)
+    #return [task(x) for x in dates]
+    return splittask(task,dates)
 
 
 def plot_usersgrown(data,path='.'):
@@ -101,6 +101,7 @@ def plot_usersgrown(data,path='.'):
     data.sort()
     fromdate = inttime2string(data[0][0])
     todate = inttime2string(data[-1][0])
+    print data
     prettyplot(data,os.path.join(path,'usersgrown (%s %s).png'%(fromdate,todate)),
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
@@ -114,3 +115,4 @@ if __name__ == "__main__":
         plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     else:
         print trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" )
+        
