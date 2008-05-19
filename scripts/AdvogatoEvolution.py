@@ -20,13 +20,6 @@ def evaluate( net ):
 
     return None
 
-def plotOverTime( ls, toe ):
-    """
-    this function takes a list of error (the type is passed as second argument as a string)
-    and plot it, with on x axes the time and y axes the list value.
-    """
-    return None
-
 def parseTextData(loadpath,savepath):
     """
     this function parse a set of file, (it is in the 'path' passed as parameter)
@@ -64,4 +57,4 @@ def parseTextData(loadpath,savepath):
 
 
 if __name__ == "__main__":
-    parseTextData( '/home/ciropom/advogatoCerts','/home/ciropom/datasets/AdvogatoNetwork/' )
+    parseTextData( '/home/jonathan/Desktop/certs','/home/jonathan/Desktop/certs_net' )

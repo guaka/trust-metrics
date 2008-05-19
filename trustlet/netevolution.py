@@ -5,7 +5,7 @@ on the evolution of a network
 
 from trustlet import *
 from networkx import read_dot
-import os
+import os,time,re
 
 stringtime2int = lambda s: int(time.mktime( (int(s[:4]), int(s[5:7]), int(s[8:10]), 0, 0, 0, 0, 0, 0) ))
 
@@ -47,6 +47,35 @@ def trustAverage( fromdate, todate, path ):
         return (stringtime2int(d),averagetrust)
         
     return splittask( eval, fdate )
+
+def usersgrown(path,range=None):
+    '''
+    return the number of user for each network in date range
+    '''
+    redate = re.compile('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+    dates = [x for x in os.listdir(path) if re.match(redate,x)]
+
+    if range:
+        dates = [x for x in dates if x>=range[0] and x<=range[1]]
+
+    #print dates
+
+    def eval(date):
+        print date
+        #cache
+        nnodes = load({'function':'usersgrown','date':date},path=os.path.join(path,'cache'))
+        if nnodes:
+            return ( stringtime2int(date), nnodes )
+        
+        t=time.time()
+        G = read_dot(os.path.join(os.path.join(path,date),'graph.dot'))
+        K = Network.WeightedNetwork(make_base_path=False,from_graph=G)
+        nnodes = len(K.nodes())
+        save({'function':'usersgrown','date':date},nnodes,time=time.time()-t,human=True,path=os.path.join(path,'cache'))
+        return ( stringtime2int(date), nnodes )
+
+    #return [eval(x) for x in dates]
+    return splittask(eval,dates)
 
 
 if __name__ == "__main__":
