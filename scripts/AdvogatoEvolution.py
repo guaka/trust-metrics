@@ -5,18 +5,6 @@ from networkx import write_dot
 import os
 
 def evaluate( net ):
-    """
-    this function must be called first, it generate
-    all the data used to plot the graphics.
-    Before evaluate was successfully terminated
-    You can call plotOverTime, and pass to it the result
-    of evaluate function.
-    If you evaluate twice the same thing, the evaluate 
-    function be able to remember it.
-    
-    Parameters:
-    net: the network on wich you would evaluate the history
-    """
 
     return None
 

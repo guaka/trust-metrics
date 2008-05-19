@@ -4,6 +4,7 @@ on the evolution of a network
 """
 
 from trustlet import *
+from trustlet.Advogato
 from networkx import read_dot
 import os,time,re
 
@@ -32,18 +33,26 @@ def trustAverage( fromdate, todate, path ):
 
     def eval( d ):
     #for d in fdate:
+        at = load( {'function':'trustAverage', 'date':d}, os.path.join(path,d) )
+        if at != None:
+            return (stringtime2int(d),at)
+
         #temporary path
         tpath = os.path.join( path, d )
-        N = Network.WeightedNetwork( from_graph=networkx.read_dot( os.path.join( tpath, 'graph.dot' ) ) , make_base_path = False )
-        #can be advogato/kaitiaki style, or directly with a integer weights 
+        N = Network.WeightedNetwork()
+        N.paste_graph( networkx.read_dot( os.path.join( tpath, 'graph.dot' ) ) )
+        #can be advogato/kaitiaki style, or directly with a integer weights
+        weight = N.weights()
+        
         try:
-            averagetrust = avg([_obs_app_jour_mas_map[val] for val in N.weights().keys()])
+            averagetrust = avg([_obs_app_jour_mas_map[val] for val in [x.values() for x in weight]])
         except KeyError:
             try:
-                averagetrust = avg([_color_map[val] for val in N.weights().keys()])
+                averagetrust = avg([_color_map[val] for val in [x.values() for x in weight]])
             except KeyError:
-                averagetrust = avg([val for val in N.weights().values()])
-                     
+                averagetrust = avg([val for val in [x.values() for x in weight]])
+
+        save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
         return (stringtime2int(d),averagetrust)
         
     return splittask( eval, fdate )

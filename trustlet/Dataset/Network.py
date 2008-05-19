@@ -246,18 +246,20 @@ class WeightedNetwork(Network):
         return edge[2]
 
     def weights(self):
+        """
+        Return a list with the weight of all edges
+        """
         if hasattr(self, "_weights") and self._weights:
-            weights = self._weights
+            ws = self._weights
         else:
-            weights = {}
+            ws = []
             for n in self.edges_iter():
                 x = n[2]
-                if type(x) in (float, int):
-                    weights[str(x)] = x
-                else:
-                    weights[x[0]] = x[1]
-            self._weights = weights
-        return weights
+                ws.append( x )
+            
+            self._weights = ws
+        
+        return ws
         
     def info(self):
         Network.info(self)
