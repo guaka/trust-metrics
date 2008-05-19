@@ -5,6 +5,7 @@ on the evolution of a network
 """
 
 from trustlet import *
+from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
 import os,time,re
 
@@ -38,6 +39,7 @@ def trustAverage( fromdate, todate, path ):
         if at != None:
             return (stringtime2int(d),at)
 
+        print "Evaluating dataset of ", d
         #temporary path
         tpath = os.path.join( path, d )
         N = Network.WeightedNetwork()
@@ -46,14 +48,16 @@ def trustAverage( fromdate, todate, path ):
         weight = N.weights()
         
         try:
-            averagetrust = avg([_obs_app_jour_mas_map[val] for val in [x.values() for x in weight]])
+            averagetrust = avg([_obs_app_jour_mas_map[val[0]] for val in [x.values() for x in weight]])
         except KeyError:
             try:
-                averagetrust = avg([_color_map[val] for val in [x.values() for x in weight]])
+                averagetrust = avg([_color_map[val[0]] for val in [x.values() for x in weight]])
             except KeyError:
-                averagetrust = avg([val for val in [x.values() for x in weight]])
+                averagetrust = avg([val[0] for val in [x.values() for x in weight]])
 
         save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
+        
+        print "dataset of ",d ," Evaluated"
         return (stringtime2int(d),averagetrust)
         
     return splittask( eval, fdate )
@@ -106,7 +110,7 @@ def plot_usersgrown(data,path='.'):
 
 if __name__ == "__main__":
     
-    if 1:
+    if 0:
         plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     else:
         print trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" )
