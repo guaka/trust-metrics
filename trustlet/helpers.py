@@ -237,9 +237,7 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
 def prettyplot( data, path, **args):
     """
     Print a graphics of the list passed.
-    *path* is the location in wich the png image will be saved,
-    if you wouldn't save it, set the onlyshow parameter to True
-    title parameter, set the title of the plot
+    *path* is the location in wich the png image will be saved.
 
     *data* is ...
         a list of points
@@ -255,11 +253,11 @@ def prettyplot( data, path, **args):
         xlabel=''
         ylabel=''
         log=False
-        showlineFalse (old onlypoint)
+        showline=False (old onlypoint)
         istogram=False
     """
 
-    g = Gnuplot.Gnuplot()
+    g = Gnuplot.Gnuplot(persist=1)
     try:
         g.title(args['title'])
     except KeyError:
@@ -267,8 +265,8 @@ def prettyplot( data, path, **args):
     
     if args.has_key('showlines') and args['showlines']:
         g('set data style lines')
-    else:
-        g('set parametric')
+    #else:
+    #    g('set parametric')
     if args.has_key('istogram') and args['istogram']:
         g('set style data boxes')
     if args.has_key('log') and args['log']:
@@ -281,37 +279,55 @@ def prettyplot( data, path, **args):
     try:
         legend = args['legend']
     except:
-        legend = ''
+        legend = None
 
-    if type(legend) is list:
+    if type(data) is list and type(data[0]) is list and type(data[0][0]) is tuple:
         pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in set if t]) for set in data]
     else:
         pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in data if t])]
-        legend = [legend]
-    
-    for name,points in zip(legend,pointssets):
-        #set name
+        if legend:
+            legend = [legend]
+
+    p = []
+    for name,points in legend and zip(legend,pointssets) or zip([None for x in pointssets[0]],pointssets):
         points.sort()
-        print points
-        g.plot( points )
+        if name:
+            p.append(Gnuplot.PlotItems.Data(points, title=name))
+        else:
+            p.append(Gnuplot.PlotItems.Data(points))
+        
+    g.plot(*p)
 
     g.hardcopy(
         filename=path,
         terminal='png'
         )
 
+#test prettyplot
+if 0 and __name__=="__main__":
 
-#test!!!
-if __name__=="__main__":
-    if True or False:
-        s = prettyplot([[(0,0),(1,0.1),(2,0.2),(3,0.3)],[(0,1),(1,2),(2,3)]],'image.png',legend=['uno','due'],showlines=True)
+    import Gnuplot
+
+    gp = Gnuplot.Gnuplot(persist = 1)
+    gp('set data style lines')
+    
+    data1 = [(0, 0), (1, 1), (2, 4), (3, 9), (4, 16)]    # The first data set (a quadratic)
+    data2 = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4]]     # The second data set (a straight line)
+    
+    # Make the plot items
+    plot1 = Gnuplot.PlotItems.Data(data1, with="lines", title="Quadratic")
+    plot2 = Gnuplot.PlotItems.Data(data2, with="points 3", title=None)  # No title
+
+    #gp.plot(plot1, plot2)
+    #exit(0)
+
+    if 1:
+        s = prettyplot([[(0,0),(1,0.1),(2,0.2),(3,0.3)],[(0,1),(1,2),(2,3)]],'image.png',showlines=True,legend=['ciao',''],xlabel='X',ylabel='ErrORReeeee',istogram=True)
     else:
         s = prettyplot([(0,0),(1,0),(2,0),(0,1),(1,2),(2,3)],'image.png',legend='uno',showlines=True)
     print s
     exit(0)
 
-#this function *doesn't work* with ipython
-#(because it traps sys.exit())
 def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=4 ):
     """
     This function, print for a network passed, the best parameters
@@ -601,13 +617,23 @@ def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
 
         return lris
 
-def splittask(function,input,np=4):
+def getnp():
+    """Return None or the number of processors"""
+    try:
+        return len([None for x in file('/proc/cpuinfo').readlines() if x.startswith('processor')])
+    except IOError:
+        return None
+
+def splittask(function,input,np=None):
     """
     create <np> processes with <input>[i] data,
     the result will return in a list
     """
 
-    #ns should be read from environment var $CONCURRENCY_LEVEL
+    if not np:
+        np = getnp()
+        if not np:
+            np = 4
 
     ris = []
     pipes = []

@@ -1,4 +1,3 @@
-
 """
 Prediction graph
 ================
@@ -297,7 +296,7 @@ class PredGraph(CalcGraph):
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                          
-    def graphcontroversiality( self, maxc, step, cond=None, indegree=5, np=2 ):
+    def graphcontroversiality( self, maxc, step, cond=None, indegree=5, np=None ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
