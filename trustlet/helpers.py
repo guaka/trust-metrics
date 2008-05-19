@@ -723,20 +723,16 @@ def save(key,data,path='.',human=False,time=None):
         return False
     return True
     
-def load(key,path='.',time=False):
+def load(key,path='.'):
     """
     Cache.
     Loads data stored by save.
-    If time=True it will return the tuple (data,time), otherwise data is returned.
     """
     try:
         data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
         return None
-    if time:
-        return data #(data,time)
-    else:
-        return data[0]
+    return data #(data,time) or data
 
 def clear(key,path='.'):
     """
