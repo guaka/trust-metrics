@@ -410,10 +410,10 @@ class PredGraph(CalcGraph):
         else:
             #take a tuple and a index, and return a tuple with first value and the value n index
             select = lambda tp,s: (tp[0],tp[s])
-            return { 'mae': select( ls,1 ),
-                     'rmse': select( ls,2 ),
-                     'percentage_wrong': select( ls,3 ),
-                     'coverage': select( ls,3 )
+            return { 'mae': [select( x,1 ) for x in ls],
+                     'rmse': [select( x,2 ) for x in ls],
+                     'percentage_wrong': [select( x,3 ) for x in ls],
+                     'coverage': [select( x,3 ) for x in ls]
                      }[toe]
                 
 

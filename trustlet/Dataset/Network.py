@@ -255,7 +255,6 @@ class WeightedNetwork(Network):
                 if type(x) in (float, int):
                     weights[str(x)] = x
                 else:
-                    print x
                     weights[x[0]] = x[1]
             self._weights = weights
         return weights
