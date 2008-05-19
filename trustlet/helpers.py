@@ -657,13 +657,18 @@ def splittask(function,input,np=None):
 
     #wait responce from sons
     ris = []
-    for pipe in pipes:
-        buffer = '_'
-        s = ''
-        while buffer:
-            buffer = os.read(pipe,100)
-            s += buffer
+    try:
+        for pipe in pipes:
+            buffer = '_'
+            s = ''
+            while buffer:
+                buffer = os.read(pipe,100)
+                s += buffer
         ris += pickle.loads(s)
+    except EOFError:
+        print "A son process is dead"
+        print "splittask says: it's not my fault!"
+        exit(1)
 
     return ris
 
