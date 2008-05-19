@@ -5,7 +5,6 @@ on the evolution of a network
 """
 
 from trustlet import *
-from trustlet.Advogato
 from networkx import read_dot
 import os,time,re
 
@@ -102,7 +101,7 @@ def plot_usersgrown(data,path='.'):
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of users',
-               showline=True
+               showlines=True
                )
 
 if __name__ == "__main__":

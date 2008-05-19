@@ -253,7 +253,7 @@ def prettyplot( data, path, **args):
         xlabel=''
         ylabel=''
         log=False
-        showline=False (old onlypoint)
+        showlines=False (old onlypoint)
         istogram=False
     """
 
