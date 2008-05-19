@@ -233,8 +233,8 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None):
-        Network.__init__(self, base_path=base_path)
+    def __init__(self, weights = None, has_discrete_weights = True, make_base_path = False, base_path = None, from_graph = None):
+        Network.__init__(self, make_base_path=make_base_path, base_path=base_path, from_graph=from_graph)
         self._weights = weights
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
