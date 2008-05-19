@@ -111,8 +111,9 @@ def plot_usersgrown(data,path='.'):
 
 if __name__ == "__main__":
     import socket
-    if socket.gethostname()=='silix1600':
-        plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
+    if socket.gethostname()!='silix1600':
+        plot_usersgrown(usersgrown('/home/ciropom/datasets/AdvogatoNetwork',range=('2000-01-01','2003-01-01')))
     else:
-        print trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" )
-        
+        prettyplot( trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" ) , 
+                    '/home/ciropom/datasets/AdvogatoNetwork/trustAverage(2000-2004).png',
+                    showlines=True)
