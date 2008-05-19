@@ -30,7 +30,7 @@ except:
 
 class CalcGraph(Network):
     """Generic calculation graph class"""
-
+    
     def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
@@ -296,7 +296,7 @@ class PredGraph(CalcGraph):
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                          
-    def graphcontroversiality( self, maxc, step, cond=None, toe=None indegree=5, np=2 ):
+    def graphcontroversiality( self, maxc, step, cond=None, toe=None, indegree=5, np=2 ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
