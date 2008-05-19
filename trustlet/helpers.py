@@ -734,9 +734,9 @@ def load(key,path='.',time=False):
     except IOError:
         return None
     if time:
-        return data[0]
-    else:
         return data #(data,time)
+    else:
+        return data[0]
 
 def clear(key,path='.'):
     """
