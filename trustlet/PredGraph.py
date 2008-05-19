@@ -399,7 +399,7 @@ class PredGraph(CalcGraph):
                     print "Warning! i cannot be able to save this computation, check the permission"
                     print "for this path: "+self.path+"/cache"
                         
-                print "MAE evaluated for %f controversiality" % max
+                print "Errors evaluated for %f controversiality" % max
             
             return (max,float(sum)/cnt, rmse, pw, cov)
         
