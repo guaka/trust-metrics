@@ -62,9 +62,10 @@ def trustAverage( fromdate, todate, path ):
         
     return splittask( eval, fdate )
 
-def usersgrown(path,range=None):
+
+def evolutionmap(path,function,range=None):
     '''
-    return the number of user for each network in date range
+    apply function function to each network in range range
     '''
     redate = re.compile('[0-9]{4}-[0-9]{2}-[0-9]{2}')
     dates = [x for x in os.listdir(path) if re.match(redate,x)]
@@ -73,25 +74,38 @@ def usersgrown(path,range=None):
         assert re.match(redate,range[0]) and  re.match(redate,range[1])
         dates = [x for x in dates if x>=range[0] and x<=range[1]]
 
-    #print dates
+    print "There are %d networks" % len(dates)
 
     def task(date):
         print date
         #cache
-        nnodes = load({'function':'usersgrown','date':date},path=os.path.join(path,'cache'))
-        if nnodes:
-            return ( stringtime2int(date), nnodes )
+        if function.__name__=='<lambda>':
+            print "i can't save cache with lambda funtions"
+        else:
+            cache = load({'function':function.__name__,'date':date},path=os.path.join(path,'cache'))
+            if cache:
+                return cache
         
         G = read_dot(os.path.join(os.path.join(path,date),'graph.dot'))
         K = Network.WeightedNetwork()
         K.paste_graph(G)
-        nnodes = len(K.nodes())
-        save({'function':'usersgrown','date':date},nnodes,human=True,path=os.path.join(path,'cache'))
-        return ( stringtime2int(date), nnodes )
+        res = function(K,date)
+        if function.__name__!='<lambda>':
+            save({'function':function.__name__,'date':date},res,human=True,path=os.path.join(path,'cache'))
+        return res
 
     #return [task(x) for x in dates]
     return splittask(task,dates)
 
+
+def usersgrown(path,range=None):
+    '''
+    return the number of user for each network in date range
+    '''
+    def usersgrown(K,date):
+        return ( stringtime2int(date),len(K.nodes()) )
+    
+    return evolutionmap(path,usersgrown,range)
 
 def plot_usersgrown(data,path='.'):
     '''
@@ -101,7 +115,6 @@ def plot_usersgrown(data,path='.'):
     data.sort()
     fromdate = inttime2string(data[0][0])
     todate = inttime2string(data[-1][0])
-    print data
     prettyplot(data,os.path.join(path,'usersgrown (%s %s).png'%(fromdate,todate)),
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
@@ -109,10 +122,38 @@ def plot_usersgrown(data,path='.'):
                showlines=True
                )
 
+def edgespernode(path,range=None):
+    '''
+    return the average number of edges for each user
+    '''
+    def edgespernode_nodes(K,date):
+        nodes = len(K.nodes())
+        return ( nodes , 1.0*len(K.edges())/nodes )
+    
+    return evolutionmap(path,edgespernode_nodes,range)
+
+def plot_edgespernode(data,path='.'):
+    '''
+    data is the output of edgespernode
+    '''
+    data.sort()
+    fromnnodes = data[0][0]
+    tonnodes = data[-1][0]
+    prettyplot(data,os.path.join(path,'edgespernode (%d %d).png'%(fromnnodes,tonnodes)),
+               title='Average Edges per Node',
+               xlabel='nodes',
+               ylabel='number of edges per node',
+               showlines=True
+               )
+
+
 if __name__ == "__main__":
     import socket
-    if socket.gethostname()!='silix1600':
-        plot_usersgrown(usersgrown('/home/ciropom/datasets/AdvogatoNetwork',range=('2000-01-01','2003-01-01')))
+    if socket.gethostname()=='silix1600':
+        #plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
+        plot_edgespernode(edgespernode('trustlet/datasets/Advogato'))
+    elif socket.gethostname()=='sracls01':
+        pass
     else:
         prettyplot( trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" ) , 
                     '/home/ciropom/datasets/AdvogatoNetwork/trustAverage(2000-2004).png',
