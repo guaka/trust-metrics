@@ -227,10 +227,10 @@ def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy',
         g('set filename '+path)
         #this doesn't work
 
-        #g.hardcopy(
-        #    filename=path,
-        #    terminal='png'
-        #    )
+        g.hardcopy(
+            filename=path,
+            terminal='png'
+            )
     
     return None
 
