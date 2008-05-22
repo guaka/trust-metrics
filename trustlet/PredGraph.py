@@ -145,7 +145,7 @@ class CalcGraph(Network):
         # print edge, predicted_trust
         avg_t = (time.time() - self.start_time) / count
         eta = avg_t * (len(self.dataset.edges()) - count)
-        print '#', int(count), "avg time:", 
+        print '#', int(count),'calculated at', time.asctime() , "avg time:", 
         print avg_t, "ETA", est_datetime_arr(eta), moreinfo
         
 
@@ -220,7 +220,7 @@ class PredGraph(CalcGraph):
                                      #'orig': str(self.dataset.trust_on_edge(edge)})
                 count += 1
                 if divmod(count, 100)[1] == 0:
-                    self._time_indicator(count, (edge, predicted_trust))
+                    self._time_indicator(count, str( (edge, predicted_trust) )+' tm: '+get_name(self.TM) )
         return pred_graph
         
 
@@ -300,7 +300,7 @@ class PredGraph(CalcGraph):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
-        y axis: an error measure (MAE)
+        y axis: an error measure (MAE or other)
         parameter:
            maxc {maxcontroversiality} = the max value of controversiality
                                         in the graph
@@ -333,8 +333,8 @@ class PredGraph(CalcGraph):
         #foreach controversiality level
         
         def eval( (net, max) ):    
-           #calcolate the abs_error of the edges over the controversiality limit
-           #and append it to tuplelist in a tuple (controversiality,abs_error)
+           #calculate some measure error of the edges over the controversiality limit
+           #and append it to tuplelist in a tuple (controversiality,error)
             if cond == None:
                 abs = load( {'controversiality_level':max},
                             net.path+'/cache'
@@ -358,7 +358,7 @@ class PredGraph(CalcGraph):
                     if len( net.dataset.in_edges( e[end] )) < indegree:
                         continue
                     #leave out the edges that not statisfy the condition
-                    if cond != None:
+                    if cond and False:
                         if cond(e) != True:
                             continue
 
@@ -409,11 +409,12 @@ class PredGraph(CalcGraph):
             return ls
         else:
             #take a tuple and a index, and return a tuple with first value and the value n index
+            #print 'AAA',tp,'AAAA'
             select = lambda tp,s: (tp[0],tp[s])
-            return { 'mae': [select( x,1 ) for x in ls],
-                     'rmse': [select( x,2 ) for x in ls],
-                     'percentage_wrong': [select( x,3 ) for x in ls],
-                     'coverage': [select( x,3 ) for x in ls]
+            return { 'mae': [select( x,1 ) for x in ls if x],
+                     'rmse': [select( x,2 ) for x in ls if x],
+                     'percentage_wrong': [select( x,3 ) for x in ls if x],
+                     'coverage': [select( x,4 ) for x in ls if x]
                      }[toe]
                 
 

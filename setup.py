@@ -45,6 +45,17 @@ dependencies = ['igraph',
                 'scipy',
                 ]  
 
+pkg = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset']
+
+#add all the folder in pywikipedia
+wikipath = './trustlet/pywikipedia/'
+
+for dir in [x for x in os.listdir( wikipath ) if os.path.isdir(wikipath+x)]:
+    if dir == ".svn" :
+        continue
+
+    pkg.append( 'trustlet.pywikipedia.'+dir ) 
+
 
 setup(	name = 'trustlet',
 	version = version,
@@ -67,7 +78,7 @@ setup(	name = 'trustlet',
 	long_description = "\n".join(trustlet.__doc__.split('\n')),
 	# py_modules = ['trustlet', 'pymmetry'],
         scripts = ['scripts/dataset-downloader'],
-        packages = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset'],
+        packages = pkg,
         data_files = data,
         package_data = package_data,
         )
