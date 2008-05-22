@@ -1,10 +1,8 @@
-#!/usr/bin/env python
 """
 This package contains all the function 
 on the evolution of a network
 """
-
-from trustlet import *
+from trustlet.helpers import prettyplot,splittask,save,load
 from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
 import os,time,re
