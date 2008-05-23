@@ -47,16 +47,6 @@ dependencies = ['igraph',
 
 pkg = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset']
 
-#add all the folder in pywikipedia
-wikipath = './trustlet/pywikipedia/'
-
-for dir in [x for x in os.listdir( wikipath ) if os.path.isdir(wikipath+x)]:
-    if dir == ".svn" :
-        continue
-
-    pkg.append( 'trustlet.pywikipedia.'+dir ) 
-
-
 setup(	name = 'trustlet',
 	version = version,
 	description = 'Analyse trust metrics on social networks',
