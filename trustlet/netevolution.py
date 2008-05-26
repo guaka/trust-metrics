@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 This package contains all the function 
 on the evolution of a network
@@ -145,14 +146,16 @@ def plot_edgespernode(data,path='.'):
                )
 
 
-if __name__ == "__main__":
-    import socket
-    if socket.gethostname()=='silix1600':
-        #plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
-        plot_edgespernode(edgespernode('trustlet/datasets/Advogato'))
-    elif socket.gethostname()=='sracls01':
-        pass
-    else:
-        prettyplot( trustAverage( "2000-01-01", "2005-01-01", "/home/ciropom/datasets/AdvogatoNetwork" ) , 
-                    '/home/ciropom/datasets/AdvogatoNetwork/trustAverage(2000-2004).png',
-                    showlines=True)
+if __name__ == "__main__":    
+    import sys
+    if len(sys.argv) < 5:
+        #prog startdate enddate path
+        print "USAGE: ./netevolution.py startdate enddate dataset_path, save_path"
+        sys.exit(1)
+
+    startdate = sys.argv[1]
+    enddate = sys.argv[2]
+    path = sys.argv[3]
+    savepath = sys.argv[4]
+
+    prettyplot( trustAverage( startdate, enddate, path ), savepath )
