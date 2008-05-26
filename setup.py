@@ -72,7 +72,8 @@ setup(	name = 'trustlet',
         data_files = data,
         package_data = package_data,
         )
-
+#copy datasets on home folder
+os.system( 'cp -R ./trustlet/datasets ~' )
 
 # It's not very clear how to deal with package dependencies in setup.py
 

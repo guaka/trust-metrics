@@ -4,6 +4,7 @@ This package contains all the function
 on the evolution of a network
 """
 from trustlet.helpers import prettyplot,splittask,save,load
+from trustlet.Dataset import Network
 from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
 import os,time,re
@@ -147,7 +148,7 @@ def plot_edgespernode(data,path='.'):
 
 
 if __name__ == "__main__":    
-    import sys
+    import sys,os
     if len(sys.argv) < 5:
         #prog startdate enddate path
         print "USAGE: ./netevolution.py startdate enddate dataset_path, save_path"
@@ -159,3 +160,4 @@ if __name__ == "__main__":
     savepath = sys.argv[4]
 
     prettyplot( trustAverage( startdate, enddate, path ), savepath )
+    plot_edgespernode( edgespernode( path,(startdate,enddate) ), os.path.split(savepath)[0] )
