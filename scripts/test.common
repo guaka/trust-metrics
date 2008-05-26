@@ -1,6 +1,5 @@
-def salve():
-    pass
+import socket
+from trustlet import *
 
-def chissaseva(qwe):
-    print qwe
-    return 1
+if socket.gethostname()=='sracls01':
+    K = AdvogatoNetwork(date="2008-05-12",base_path='/hardmnt/sra01/sra/salvetti')
