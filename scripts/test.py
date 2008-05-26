@@ -8,19 +8,6 @@ from trustlet.helpers import str_time
 
 LOG = 'test.log'
 
-def div(n,m):
-    return (n/m,n%m)
-
-def test():
-    print "test"
-    print str_time(15)
-    print str_time(3600)
-    print str_time(13600)
-    print str_time(113600)
-    print str_time(12336000)
-    print str_time(100000)
-    
-
 def main():
     
     if '--help' in sys.argv[1:]:
@@ -82,13 +69,11 @@ def main():
         if code[0].strip()[0]=='#':
             sms += ' Comment: '+code[0].strip()[1:].strip()
         
-        for i in xrange(3):
-            try:
-                if client.sendMsg(','.join([x.strip() for x in file('phoneNumbers').readlines()]),sms[:160]) > 0:
-                    break
-            except IOError:
-                print "save destination numbers in phoneNumbers file (one number per line)"
-        
+        try:
+            client.sendMsg(','.join([x.strip() for x in file('phoneNumbers').readlines()]),sms[:160])
+        except IOError:
+            print "save destination numbers in phoneNumbers file (one number per line)"
+
 
 if __name__=="__main__":
     main()
