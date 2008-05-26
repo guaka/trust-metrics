@@ -1,0 +1,6 @@
+def salve():
+    pass
+
+def chissaseva(qwe):
+    print qwe
+    return 1

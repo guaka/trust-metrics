@@ -29,6 +29,8 @@ def main():
     if 'test' in sys.argv[1:]:
         test()
         return
+
+    code = []
     if sys.argv[1:]:
         filename = None
         for f in sys.argv[1:]:
@@ -37,8 +39,6 @@ def main():
                 break
         if filename:
             code = [x[-1]=='\n' and x[:-1] or x for x in file(filename).readlines()]
-    else:
-        code = []
     log = []
 
     print 'Insert code (and a comment):'
