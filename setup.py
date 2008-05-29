@@ -60,7 +60,7 @@ setup(	name = 'trustlet',
                        'Intended Audience :: Science/Research', 
                        'License :: OSI Approved :: GNU General Public License (GPL)', 
                        'Natural Language :: English',			
-                       'Operating System :: OS Independent',		
+                       'Operating System :: Linux/OSX',		
                        'Programming Language :: Python',		
                        'Topic :: Scientific/Engineering :: Visualization',
                        'Topic :: Software Development :: Libraries :: Python Modules'
@@ -73,8 +73,8 @@ setup(	name = 'trustlet',
         package_data = package_data,
         )
 #copy datasets on home folder
-os.system( 'cp -R ./trustlet/datasets ~' )
-
+#os.system( 'cp -Rf ./trustlet/datasets ~' )
+print "IMPORTANT: remember to copy trustlet/datasets folder in your home directory!"
 # It's not very clear how to deal with package dependencies in setup.py
 
 #import pkg_resources
