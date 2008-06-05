@@ -38,13 +38,13 @@ def trustAverage( fromdate, todate, path ):
     #for d in fdate:
         at = load( {'function':'trustAverage', 'date':d}, os.path.join(path,d) )
         if at != None:
-            return (stringtime2int(d),at)
+            return (d,at)
 
         print "Evaluating dataset of ", d
         #temporary path
         tpath = os.path.join( path, d )
         N = Network.WeightedNetwork()
-        N.paste_graph( networkx.read_dot( os.path.join( tpath, 'graph.dot' ) ) )
+        N.paste_graph( read_dot( os.path.join( tpath, 'graph.dot' ) ) )
         #can be advogato/kaitiaki style, or directly with a integer weights
         weight = N.weights()
         
@@ -59,10 +59,12 @@ def trustAverage( fromdate, todate, path ):
         save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
         
         print "dataset of ",d ," Evaluated"
-        return (stringtime2int(d),averagetrust)
+        return (d,averagetrust)
         
     return splittask( eval, fdate )
 
+def ta_plot(ta, path):
+    prettyplot( ta, path, title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
 
 def evolutionmap(path,function,range=None):
     '''
@@ -147,13 +149,18 @@ def plot_edgespernode(data,path='.'):
                showlines=True
                )
 
-def createHTML( points ):
+def createHTML( path, points ):
     """
     This function create a HTML document, that contains a graph using "SMILE timeplot"
     http://simile.mit.edu/timeplot
     
     There isn't necessary to install webserver or moreover, but it's necessary
     to have an internet connection (because the html file use a javascript remote script)
+    This function save a file .data, that is the source data for the eventually html file.
+    Parameters:
+       path: path in wich save .data file
+       points: list of tuple
+       returns: html in a string
     """
 
     htmldoc = """<html><head>
@@ -165,13 +172,23 @@ def createHTML( points ):
 var timeplot;
 
 function onLoad() {
+  var eventSource = new Timeplot.DefaultEventSource();
   var plotInfo = [
     Timeplot.createPlotInfo({
-      id: "plot1"
+      id: "plot1",
+      dataSource: new Timeplot.ColumnSource(eventSource,1),
+      timeGeometry: new Timeplot.DefaultTimeGeometry({
+        gridColor: "#000000",
+        axisLabelsPlacement: "top"
+      }),
+      lineColor: "#ff0000",
+      fillColor: "#cc8080",
+      showValues: true
     })
   ];
             
   timeplot = Timeplot.create(document.getElementById("trustlet-timeplot"), plotInfo);
+  timeplot.loadText(".data", ",", eventSource);
 }
 
 var resizeTimerID = null;
@@ -191,12 +208,14 @@ function onResize() {
   <body  onload="onLoad();" onresize="onResize();">
 
   <div id="trustlet-timeplot" style="height: 150px;"></div>
+
+  </body></html>
 """
 
+    f = file( os.path.join( path, '.data' ), 'w' )
     
-
-
-    htmldoc +="</body></html>"
+    for (x,y) in points:
+        f.write( str(x)+","+str(y)+"\n" ) 
 
     return htmldoc
 
@@ -215,12 +234,13 @@ if __name__ == "__main__":
 
 
     ta = trustAverage( startdate, enddate, path )
-    prettyplot( ta, savepath )
+    print ta
+    ta_plot( [(stringtime2int(x),y) for (x,y) in ta], savepath )
     plot_edgespernode( edgespernode( path,(startdate,enddate) ), os.path.split(savepath)[0] )
 
     if len(sys.argv) == 6:
         html = sys.argv[5]
         f = file( os.path.join( savepath, html ) , 'w' )
         
-        f.write( createHTML( ta ) )
+        f.write( createHTML( savepath,ta ) )
         f.close()
