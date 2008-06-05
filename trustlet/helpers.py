@@ -281,7 +281,10 @@ def prettyplot( data, path, **args):
     except:
         legend = None
 
-    if type(data) is list and type(data[0]) is list and type(data[0][0]) is tuple:
+    if not data:
+        print "prettyplot: no input data"
+        return
+    if type(data) is list and type(data[0]) is list and data[0] and type(data[0][0]) is tuple:
         pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in set if t]) for set in data]
     else:
         pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in data if t])]
@@ -705,7 +708,7 @@ def get_sign(key,mdfive=True):
     else:
         return s[:-1]
 
-def save(key,data,path='.',human=False,time=None):
+def save(key,data,path='.',human=True,time=None):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
