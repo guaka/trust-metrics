@@ -23,6 +23,7 @@ def trustAverage( fromdate, todate, path ):
     todate: finishdate
     path: path in wich I can find the network
           ex. /home/ciropom/datasets/AdvogatoNetwork
+    returns: a list of tuple (x,y) that can be represented in a graph
     """
     try:
         lsdate = os.listdir( path )
@@ -146,18 +147,80 @@ def plot_edgespernode(data,path='.'):
                showlines=True
                )
 
+def createHTML( points ):
+    """
+    This function create a HTML document, that contains a graph using "SMILE timeplot"
+    http://simile.mit.edu/timeplot
+    
+    There isn't necessary to install webserver or moreover, but it's necessary
+    to have an internet connection (because the html file use a javascript remote script)
+    """
+
+    htmldoc = """<html><head>
+  <title>Trustlet Evolution Graph</title>
+    <script src="http://static.simile.mit.edu/timeplot/api/1.0/timeplot-api.js" 
+       type="text/javascript"></script>
+
+    <script language="Javascript1.2">
+var timeplot;
+
+function onLoad() {
+  var plotInfo = [
+    Timeplot.createPlotInfo({
+      id: "plot1"
+    })
+  ];
+            
+  timeplot = Timeplot.create(document.getElementById("trustlet-timeplot"), plotInfo);
+}
+
+var resizeTimerID = null;
+
+function onResize() {
+    if (resizeTimerID == null) {
+        resizeTimerID = window.setTimeout(function() {
+            resizeTimerID = null;
+            timeplot.repaint();
+        }, 100);
+    }
+}
+
+
+    </script>
+  </head>
+  <body  onload="onLoad();" onresize="onResize();">
+
+  <div id="trustlet-timeplot" style="height: 150px;"></div>
+"""
+
+    
+
+
+    htmldoc +="</body></html>"
+
+    return htmldoc
+
 
 if __name__ == "__main__":    
     import sys,os
     if len(sys.argv) < 5:
         #prog startdate enddate path
-        print "USAGE: ./netevolution.py startdate enddate dataset_path, save_path"
+        print "USAGE: ./netevolution.py startdate enddate dataset_path save_path [html file]"
         sys.exit(1)
 
     startdate = sys.argv[1]
     enddate = sys.argv[2]
     path = sys.argv[3]
-    savepath = sys.argv[4]
+    savepath = sys.argv[4]    
 
-    prettyplot( trustAverage( startdate, enddate, path ), savepath )
+
+    ta = trustAverage( startdate, enddate, path )
+    prettyplot( ta, savepath )
     plot_edgespernode( edgespernode( path,(startdate,enddate) ), os.path.split(savepath)[0] )
+
+    if len(sys.argv) == 6:
+        html = sys.argv[5]
+        f = file( os.path.join( savepath, html ) , 'w' )
+        
+        f.write( createHTML( ta ) )
+        f.close()
