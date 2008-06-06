@@ -6,13 +6,11 @@ from trustlet import Network,helpers
 from networkx import write_dot
 from xml.dom.minidom import parse
 
-if '--help' in sys.argv[1:]:
+if '--help' in sys.argv[1:] or len(sys.argv) < 2:
     print "USAGE: xml2dot [path]"
+    sys.exit(1)
 
-try:
-    path = sys.argv[1]
-except IndexError:
-    path = '/home/jonathan/Dev/trust-metrics/olddatasets'
+path = sys.argv[1]
 
 arcs = [x for x in os.listdir(path) if isfile(join(path,x)) and x[-8:]=='.tar.bz2']
 
