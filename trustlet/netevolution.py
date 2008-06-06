@@ -160,7 +160,9 @@ def createHTML( points ):
     Parameters:
        path: path in wich save .data file
        points: list of tuple
-       returns: html in a string
+       returns: tuple with html in a string, data 
+       NB: data must be written to a file named '.data'
+           if you would write the html file
     """
 
     htmldoc = """<html><head>
@@ -224,7 +226,7 @@ if __name__ == "__main__":
     import sys,os
     if len(sys.argv) < 5:
         #prog startdate enddate path
-        print "USAGE: ./netevolution.py startdate enddate dataset_path save_path [html file]"
+        print "USAGE: netevolution startdate enddate dataset_path save_path [html file]"
         sys.exit(1)
 
     startdate = sys.argv[1]
