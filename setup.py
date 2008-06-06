@@ -43,6 +43,7 @@ dependencies = ['igraph',
                 'networkx',
                 'numpy',
                 'scipy',
+                'python-gnuplot'
                 ]  
 
 pkg = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset']
@@ -74,6 +75,10 @@ setup(	name = 'trustlet',
         )
 #copy datasets on home folder
 #os.system( 'cp -Rf ./trustlet/datasets ~' )
+print "Installing script\n"
+os.system( 'cd trustlet && make install && cd ..' )
+os.system( 'cd scripts && make install && cd ..' )
+
 print "IMPORTANT: remember to copy trustlet/datasets folder in your home directory!"
 # It's not very clear how to deal with package dependencies in setup.py
 
