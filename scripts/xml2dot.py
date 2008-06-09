@@ -12,6 +12,8 @@ if '--help' in sys.argv[1:] or len(sys.argv) < 2:
 
 path = sys.argv[1]
 
+addsep = lambda x: x[:4]+'-'+x[4:6]+'-'+x[6:8]
+
 arcs = [x for x in os.listdir(path) if isfile(join(path,x)) and x[-8:]=='.tar.bz2']
 
 os.chdir(path)
@@ -59,5 +61,6 @@ for dataset in datasets:
             level = str(cert.getAttribute('level'))
             #print ">",user, subj, level
             n.add_edge(user,subj,{'value':level})
-
-    write_dot(n,join(path,dataset)+'.dot')
+            
+    os.mkdir(addsep(dataset))
+    write_dot(n,join(path,addsep(dataset))+'/graph.dot')

@@ -64,7 +64,7 @@ def trustAverage( fromdate, todate, path ):
     return splittask( eval, fdate )
 
 def ta_plot(ta, path):
-    prettyplot( ta, path, title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
+    prettyplot( ta, os.path.join(path,"trustAverage.png"), title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
 
 def evolutionmap(path,function,range=None):
     '''
