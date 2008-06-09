@@ -156,11 +156,10 @@ def createHTML( points ):
     
     There isn't necessary to install webserver or moreover, but it's necessary
     to have an internet connection (because the html file use a javascript remote script)
-    This function save a file .data, that is the source data for the eventually html file.
     Parameters:
-       path: path in wich save .data file
        points: list of tuple
-       returns: tuple with html in a string, data 
+       returns: tuple with html in a string, data in another string. 
+                
        NB: data must be written to a file named '.data'
            if you would write the html file
     """
