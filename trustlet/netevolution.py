@@ -32,9 +32,8 @@ def trustAverage( fromdate, todate, path ):
     
     avg = lambda ls:float(sum(ls))/len(ls)
     #filtered date
-    fdate = [x for x in lsdate if (fromdate <= x) and (x <= todate)]
-
-    def eval( d ):
+    
+    def eval( K, d ):
     #for d in fdate:
         at = load( {'function':'trustAverage', 'date':d}, os.path.join(path,d) )
         if at != None:
@@ -42,11 +41,8 @@ def trustAverage( fromdate, todate, path ):
 
         print "Evaluating dataset of ", d
         #temporary path
-        tpath = os.path.join( path, d )
-        N = Network.WeightedNetwork()
-        N.paste_graph( read_dot( os.path.join( tpath, 'graph.dot' ) ) )
         #can be advogato/kaitiaki style, or directly with a integer weights
-        weight = N.weights()
+        weight = K.weights()
         
         try:
             averagetrust = avg([_obs_app_jour_mas_map[val[0]] for val in [x.values() for x in weight]])
@@ -61,7 +57,7 @@ def trustAverage( fromdate, todate, path ):
         print "dataset of ",d ," Evaluated"
         return (d,averagetrust)
         
-    return splittask( eval, fdate )
+    return evolutionmap( path, eval, (fromdate,todate) ) 
 
 def ta_plot(ta, path):
     prettyplot( ta, os.path.join(path,"trustAverage.png"), title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
