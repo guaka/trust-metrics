@@ -231,8 +231,12 @@ if __name__ == "__main__":
 
 
     ta = trustAverage( startdate, enddate, path )
+    ta.sort()
+    print ta
     ta_plot( [(stringtime2int(x),y) for (x,y) in ta], savepath )
     plot_edgespernode( edgespernode( path,(startdate,enddate) ), savepath )
+    plot_usersgrown( usersgrown( path,(startdate,enddate) ), savepath )
+
 
     if len(sys.argv) == 6:
         html = sys.argv[5]
