@@ -8,7 +8,7 @@ specify on command line space-separated name of trustmetric to leave out.
 from trustlet import *
 
 
-def compareAllTrustMetrics( leaveOut ):
+def compareAllTrustMetrics( leaveOut, cond=None ):
     
     A = AdvogatoNetwork( date="2008-05-12" )
 
@@ -25,7 +25,7 @@ def compareAllTrustMetrics( leaveOut ):
     pointlist = []
 
     for p in plist:
-        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe="mae", np=2 ) ) )
+        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe="mae", np=2, cond=cond ) ) )
 
     for p in pointlist:
         for q in pointlist:
