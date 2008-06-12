@@ -95,8 +95,9 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         K = Network.WeightedNetwork()
         if filter_edges:
             for e in G.edges_iter():
-                if filter_edges:
+                if filter_edges(*e):
                     K.add_edge(*e)
+            print "keeped nodes %.2f%%" % (100.0 * len(K.edges()) / len(G.edges()))
         else:
             K.paste_graph(G)
         res = function(K,date)
@@ -116,6 +117,7 @@ def usersgrown(path,range=None):
     '''
     def usersgrown(K,date):
         return ( stringtime2int(date),len(K.nodes()) )
+        #return ( date,len(K.nodes()) )
     
     return evolutionmap(path,usersgrown,range)
 

@@ -1,0 +1,4 @@
+function=eval
+date=2000-08-11
+filter edges=no_observer
+data: ('2000-08-11', 0.80797619890908423)
