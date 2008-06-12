@@ -56,15 +56,18 @@ def trustAverage( fromdate, todate, path ):
         
         print "dataset of ",d ," Evaluated"
         return (d,averagetrust)
-        
-    return evolutionmap( path, eval, (fromdate,todate) ) 
+    
+    def no_observer(n1,n2,e):
+        return e['level']!='Observer'
+    return evolutionmap( path, eval, (fromdate,todate), no_observer )
 
-def ta_plot(ta, path):
-    prettyplot( ta, os.path.join(path,"trustAverage.png"), title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
+def ta_plot(ta, path, filename="trustAverage.png"):
+    prettyplot( ta, os.path.join(path,filename), title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
 
-def evolutionmap(path,function,range=None):
+def evolutionmap(path,function,range=None,filter_edges=None):
     '''
-    apply function function to each network in range range
+    apply function function to each network in range range.
+    If you want use cache function and filter_edges cannot be lambda functions.
     '''
     redate = re.compile('[0-9]{4}-[0-9]{2}-[0-9]{2}')
     dates = [x for x in os.listdir(path) if re.match(redate,x)]
@@ -78,19 +81,29 @@ def evolutionmap(path,function,range=None):
     def task(date):
         print date
         #cache
-        if function.__name__=='<lambda>':
+        if function.__name__=='<lambda>' or filter_edges and filter_edges.__name__=='<lambda>':
             print "i can't save cache with lambda funtions"
         else:
-            cache = load({'function':function.__name__,'date':date},path=os.path.join(path,'cache'))
+            cachekey = {'function':function.__name__,'date':date}
+            if filter_edges:
+                cachekey['filter edges'] = filter_edges.__name__
+            cache = load(cachekey,path=os.path.join(path,'cache'))
             if cache:
                 return cache
         
         G = read_dot(os.path.join(os.path.join(path,date),'graph.dot'))
         K = Network.WeightedNetwork()
-        K.paste_graph(G)
+        if filter_edges:
+            for e in G.edges_iter():
+                if filter_edges:
+                    K.add_edge(*e)
+        else:
+            K.paste_graph(G)
         res = function(K,date)
-        if function.__name__!='<lambda>':
-            save({'function':function.__name__,'date':date},res,human=True,path=os.path.join(path,'cache'))
+        if function.__name__!='<lambda>' and not filter_edges or filter_edges.__name__!='<lambda>':
+            if filter_edges:
+                cachekey['filter edges'] = filter_edges.__name__
+            save(cachekey,res,human=True,path=os.path.join(path,'cache'))
         return res
 
     #return [task(x) for x in dates]
@@ -230,7 +243,7 @@ if __name__ == "__main__":
     savepath = sys.argv[4]    
 
 
-    ta = trustAverage( startdate, enddate, path )
+    ta = trustAverage( startdate, enddate, path)
     ta.sort()
     print ta
     ta_plot( [(stringtime2int(x),y) for (x,y) in ta], savepath )
