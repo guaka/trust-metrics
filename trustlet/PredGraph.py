@@ -358,7 +358,7 @@ class PredGraph(CalcGraph):
                     if len( net.dataset.in_edges( e[end] )) < indegree:
                         continue
                     #leave out the edges that not statisfy the condition
-                    if cond and False:
+                    if cond != None:
                         if cond(e) != True:
                             continue
 
