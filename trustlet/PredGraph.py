@@ -352,10 +352,11 @@ class PredGraph(CalcGraph):
                 abs = load( diz,
                             net.path+'/cache'
                             )
-
+            #if are cached
             if abs != None:
                 (sum,cnt,rmse,pw,cov) = abs
             else:
+                #else calculate and save
                 sum = 0
                 cnt = 0
                 rmse = 0
@@ -391,7 +392,7 @@ class PredGraph(CalcGraph):
                 pw = float(pw)/cnt
                 cov = 1-(cov/cnt)
 
-
+                #saving calculated values
                 ret = save( diz,
                             (sum,cnt,rmse,pw,cov),
                             net.path+'/cache'
@@ -411,7 +412,6 @@ class PredGraph(CalcGraph):
             return ls
         else:
             #take a tuple and a index, and return a tuple with first value and the value n index
-            #print 'AAA',tp,'AAAA'
             select = lambda tp,s: (tp[0],tp[s])
             return { 'mae': [select( x,1 ) for x in ls if x],
                      'rmse': [select( x,2 ) for x in ls if x],
