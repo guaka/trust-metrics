@@ -335,13 +335,21 @@ class PredGraph(CalcGraph):
         def eval( (net, max) ):    
            #calculate some measure error of the edges over the controversiality limit
            #and append it to tuplelist in a tuple (controversiality,error)
+            
+            #default cannot be considered
+            if indegree == 5:
+                diz = {'controversiality_level':max}
+            else:
+                #else insert into keys for the cache
+                diz = {'controversiality_level':max,'indegree':indegree}
+            
             if cond == None:
-                abs = load( {'controversiality_level':max},
+                abs = load( diz,
                             net.path+'/cache'
                             )
             else:
-                abs = load( {'controversiality_level':max,
-                             'condition':cond},
+                diz['condition']=cond
+                abs = load( diz,
                             net.path+'/cache'
                             )
 
@@ -363,7 +371,7 @@ class PredGraph(CalcGraph):
                             continue
 
                     if net.dataset.node_controversiality( e[end] ) >= max:
-                        if e[2]['pred'] != None:
+                        if e[2]['pred'] != None and e[2]['pred'] != 0.0 and e[2]['pred'] != UNDEFINED:
                             abserr = math.fabs( e[weight]['orig'] - e[weight]['pred'] )
                             sum += abserr
                             rmse += abserr**2
@@ -383,18 +391,12 @@ class PredGraph(CalcGraph):
                 pw = float(pw)/cnt
                 cov = 1-(cov/cnt)
 
-                if cond == None:
-                    ret = save( {'controversiality_level':max},
-                                (sum,cnt,rmse,pw,cov),
-                                net.path+'/cache'
-                                )
-                else:
-                    ret = save( {'controversiality_level':max,
-                                 'condition':cond},
-                                (sum,cnt,rmse,pw,cov),
-                                net.path+'/cache'
-                                )
-    
+
+                ret = save( diz,
+                            (sum,cnt,rmse,pw,cov),
+                            net.path+'/cache'
+                            )
+                
                 if not ret:
                     print "Warning! i cannot be able to save this computation, check the permission"
                     print "for this path: "+self.path+"/cache"
