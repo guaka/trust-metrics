@@ -742,6 +742,8 @@ def load(key,path='.'):
     Cache.
     Loads data stored by save.
     """
+    if globals().has_key['IGNORECACHE'] and IGNORECACHE:
+        return None
     try:
         data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
