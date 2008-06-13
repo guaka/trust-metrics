@@ -296,7 +296,7 @@ class PredGraph(CalcGraph):
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                          
-    def graphcontroversiality( self, maxc, step, cond=None, toe=None, indegree=5, np=2 ):
+    def graphcontroversiality( self, maxc, step, force=False, cond=None, toe=None, indegree=5, np=2 ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -310,6 +310,7 @@ class PredGraph(CalcGraph):
            cond = if None, calculate all the edges, else it must be a function
                   that take an edge, and return True if the edge must be
                   included in computation
+           force = If set to true, recalculate always the values, and rewite the cache.
            return a list of tuple in this form
            (controversiality,mae, rmse, percentage_wrong, cov)
            if toe == None, else if toe is equal to
@@ -336,22 +337,24 @@ class PredGraph(CalcGraph):
            #calculate some measure error of the edges over the controversiality limit
            #and append it to tuplelist in a tuple (controversiality,error)
             
-            #default cannot be considered
-            if indegree == 5:
-                diz = {'controversiality_level':max}
-            else:
+            abs = None
+            if not force:
+                #default cannot be considered
+                if indegree == 5:
+                    diz = {'controversiality_level':max}
+                else:
                 #else insert into keys for the cache
-                diz = {'controversiality_level':max,'indegree':indegree}
+                    diz = {'controversiality_level':max,'indegree':indegree}
             
-            if cond == None:
-                abs = load( diz,
-                            net.path+'/cache'
-                            )
-            else:
-                diz['condition']=cond
-                abs = load( diz,
-                            net.path+'/cache'
-                            )
+                if cond == None:
+                    abs = load( diz,
+                                net.path+'/cache'
+                                )
+                else:
+                    diz['condition']=cond
+                    abs = load( diz,
+                                net.path+'/cache'
+                                )
             #if are cached
             if abs != None:
                 (sum,cnt,rmse,pw,cov) = abs
@@ -363,27 +366,24 @@ class PredGraph(CalcGraph):
                 pw = 0
                 cov = 0
 
-                for e in net.edges_iter():
-                    if len( net.dataset.in_edges( e[end] )) < indegree:
-                        continue
+                for e in net.edges_cond_iter( edge_to_controversial_node( number=indegree, controversy=max ) ):
                     #leave out the edges that not statisfy the condition
                     if cond != None:
                         if cond(e) != True:
                             continue
 
-                    if net.dataset.node_controversiality( e[end] ) >= max:
-                        if e[2]['pred'] != None and e[2]['pred'] != 0.0 and e[2]['pred'] != UNDEFINED:
-                            abserr = math.fabs( e[weight]['orig'] - e[weight]['pred'] )
-                            sum += abserr
-                            rmse += abserr**2
+                    if e[2]['pred'] != None and e[2]['pred'] != 0.0 and e[2]['pred'] != UNDEFINED:
+                        abserr = math.fabs( e[weight]['orig'] - e[weight]['pred'] )
+                        sum += abserr
+                        rmse += abserr**2
+                        
+                        if abserr != 0:
+                            pw += 1
 
-                            if abserr != 0:
-                                pw += 1
+                    else:
+                        cov += 1
 
-                        else:
-                            cov += 1
-
-                        cnt += 1
+                    cnt += 1
 
                 if cnt == 0:
                     return None
@@ -393,11 +393,31 @@ class PredGraph(CalcGraph):
                 cov = 1-(cov/cnt)
 
                 #saving calculated values
-                ret = save( diz,
-                            (sum,cnt,rmse,pw,cov),
-                            net.path+'/cache'
-                            )
-                
+                if not force:
+                    ret = save( diz,
+                                (sum,cnt,rmse,pw,cov),
+                                net.path+'/cache'
+                                )
+                else:
+                    if indegree == 5:
+                        diz = {'controversiality_level':max}
+                    else:
+                        #else insert into keys for the cache
+                        diz = {'controversiality_level':max,'indegree':indegree}
+            
+                        if cond == None:
+                            ret = ( diz,
+                                    (sum,cnt,rmse,pw,cov),
+                                    net.path+'/cache'
+                                    )
+                        else:
+                            diz['condition']=cond
+                            ret = save( diz,
+                                        (sum,cnt,rmse,pw,cov),
+                                        net.path+'/cache'
+                                        )
+            
+
                 if not ret:
                     print "Warning! i cannot be able to save this computation, check the permission"
                     print "for this path: "+self.path+"/cache"
@@ -405,6 +425,7 @@ class PredGraph(CalcGraph):
                 print "Errors evaluated for %f controversiality" % max
             
             return (max,float(sum)/cnt, rmse, pw, cov)
+        
         
         ls = splittask( eval, [(self,max) for max in r], np )
 
