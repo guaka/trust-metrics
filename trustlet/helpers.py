@@ -21,10 +21,9 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
-def getTrustMetrics( net ):
+def getTrustMetrics( net, trivial=False ):
     trustmetrics = {
         "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
-        "intersection_tm":trustlet.TrustMetric( net , trustlet.intersection_tm ),
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
         "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
         "outa_tm":trustlet.TrustMetric( net , trustlet.outa_tm ),
@@ -36,6 +35,10 @@ def getTrustMetrics( net ):
         "AdvogatoLocal":trustlet.AdvogatoLocal(net),
         "AdvogatoGlobalTM":trustlet.AdvogatoGlobalTM(net)
         }
+
+    if trivial:
+        trustmetrics["always_master"] = trustlet.TrustMetric( net , trustlet.always_master)
+        trustmetrics["intersection_tm"] = trustlet.TrustMetric( net , trustlet.intersection_tm )
     
     return trustmetrics
 
@@ -686,6 +689,8 @@ def mkpath(fullpath):
     makes all missed directory of a path
     """
     if not fullpath: return
+    if fullpath[-1] == os.path.sep:
+        fullpath = fullpath[:-1]
     if not os.path.exists(fullpath):
         path = os.path.split(fullpath)[0]
         mkpath(path)
@@ -727,7 +732,8 @@ def save(key,data,path='.',human=True,time=None):
         if time:
             data = (data,time)
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-    except IOError,UnpickingError:
+    except IOError,PicklingError:
+        print 'picking error'
         return False
     return True
     
@@ -740,7 +746,7 @@ def load(key,path='.'):
         data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
         return None
-    return data #(data,time) or data
+    return data
 
 def clear(key,path='.'):
     """
@@ -755,4 +761,4 @@ if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
     k = KaitiakiNetwork(download=True)
-    testTM( k, np=2 )
+    testTM( k )
