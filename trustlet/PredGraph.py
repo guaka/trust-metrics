@@ -365,6 +365,7 @@ class PredGraph(CalcGraph):
                 rmse = 0
                 pw = 0
                 cov = 0
+                covcnt = 0
 
                 for e in net.edges_cond_iter( edge_to_controversial_node( number=indegree, controversy=max ) ):
                     #leave out the edges that not statisfy the condition
@@ -372,25 +373,26 @@ class PredGraph(CalcGraph):
                         if cond(e) != True:
                             continue
 
-                    if e[2]['pred'] != None and e[2]['pred'] != 0.0 and e[2]['pred'] != UNDEFINED:
+                    if e[2]['pred'] != None and e[2]['pred'] != UNDEFINED:
                         abserr = math.fabs( e[weight]['orig'] - e[weight]['pred'] )
                         sum += abserr
                         rmse += abserr**2
-                        
+                        cnt +=1
+
                         if abserr != 0:
                             pw += 1
 
                     else:
                         cov += 1
 
-                    cnt += 1
+                    covcnt += 1
 
                 if cnt == 0:
                     return None
 
                 rmse = math.sqrt(rmse)
-                pw = float(pw)/cnt
-                cov = 1-(cov/cnt)
+                pw = float(pw)/covcnt
+                cov = 1-(cov/covcnt)
 
                 #saving calculated values
                 if not force:
