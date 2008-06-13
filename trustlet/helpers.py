@@ -718,7 +718,8 @@ def save(key,data,path='.',human=True,time=None):
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
     If human=True it will save another file in plain text for human beings.
-    You can set *time* (integer, in seconds) to indicate the time of computation.
+    DEPRECATED: You can set *time* (integer, in seconds) to indicate the
+    time of computation.
     """
     mkpath(path)
     try:
@@ -742,8 +743,8 @@ def load(key,path='.'):
     Cache.
     Loads data stored by save.
     """
-    if globals().has_key['IGNORECACHE'] and IGNORECACHE:
-        return None
+    #if globals().has_key('IGNORECACHE') and IGNORECACHE:
+    #    return None
     try:
         data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:
