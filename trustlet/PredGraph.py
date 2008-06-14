@@ -229,9 +229,12 @@ class PredGraph(CalcGraph):
         condition as code or as a string if you please to do so."""
         if type(condition) == str:
             condition = eval(condition)
-        for e in self.edges_iter():
-            if condition(self, e):
-                yield e
+        if condition != None:
+            for e in self.edges_iter():
+                #if not false
+                if condition(self, e):
+                    yield e
+            
 
     def edges_cond(self, condition):
         """Return list of edges that satisfy condition."""
@@ -442,7 +445,36 @@ class PredGraph(CalcGraph):
                      'coverage': [select( x,4 ) for x in ls if x]
                      }[toe]
                 
+    
+    def edges_error_iter(self, condition=False ):
+        """
+        as the function edges_error, but return an iterator
+        """
+        leaveNoneOut = lambda pg,e: e[2]['pred'] != UNDEFINED and e[2]['pred'] != None
 
+        if condition:
+            for e in self.edges_cond_iter(leaveNoneOut):
+                if condition( self, e ):
+                    yield (e[0], e[1], math.fabs( e[2]['orig'] - e[2]['pred'] ) )
+        else:
+            for e in self.edges_cond_iter(leaveNoneOut):
+                yield (e[0], e[1], math.fabs( e[2]['orig'] - e[2]['pred'] ) )
+                
+
+
+    def edges_error(self, condition=False):
+        """
+        this function return a list of all edges that statisfy the condition passed,
+        in wich there are the abs error on weight instead of original and predicted value.
+        By default condition is False, Cannot set it to True, if you would a condition
+        pass a function that takes a predgraph, and an edge and return true or false.
+        Parameters:
+           condition = function that takes a predgraph and an edge, and return true or false
+        Return:
+           a list of tuple, the tuple is in this form ( start_node, end_node, abs_error )
+           NOTE: the none or UNDEFINED predicted value will be omitted
+        """
+        return [e for e in self.edges_error_iter( condition )]
 
     def evaluate(self):
         """A bunch of evaluations. DEPRECATED"""
