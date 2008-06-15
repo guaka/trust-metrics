@@ -354,24 +354,24 @@ class PredGraph(CalcGraph):
            #and append it to tuplelist in a tuple (controversiality,error)
             
             abs = None
-            if not force:
+            diz = {'controversiality_level':max} #cache
                 #default cannot be considered
-                if indegree == 5:
-                    diz = {'controversiality_level':max}
-                else:
-                #else insert into keys for the cache
-                    diz = {'controversiality_level':max,'indegree':indegree}
-            
-                if cond == None:
-                    abs = load( diz,
-                                net.path+'/cache'
-                                )
-                else:
-                    diz['condition']=cond
-                    abs = load( diz,
-                                net.path+'/cache'
-                                )
-            #if are cached
+            if indegree != 5:
+                    #into keys for the cache
+                diz['indegree'] = indegree
+                
+            if cond != None:
+                diz['condition'] = cond
+
+            if round_weight:
+                diz['round_weight'] = True
+                #False is not specified
+
+            if not force:                    
+                abs = load( diz,
+                            os.path.join(net.path,'cache')
+                            )
+            #if the result is cached
             if abs != None:
                 (sum,cnt,rmse,pw,cov) = abs
             else:
@@ -416,30 +416,11 @@ class PredGraph(CalcGraph):
                 cov = 1-(cov/covcnt)
 
                 #saving calculated valuesErrors evaluated for 0.200000 controversiality
-                if not force:
-                    ret = save( diz,
-                                (sum,cnt,rmse,pw,cov),
-                                net.path+'/cache'
-                                )
-                else:
-                    if indegree == 5:
-                        diz = {'controversiality_level':max}
-                    else:
-                        #else insert into keys for the cache
-                        diz = {'controversiality_level':max,'indegree':indegree}
-            
-                        if cond == None:
-                            ret = ( diz,
-                                    (sum,cnt,rmse,pw,cov),
-                                    net.path+'/cache'
-                                    )
-                        else:
-                            diz['condition']=cond
-                            ret = save( diz,
-                                        (sum,cnt,rmse,pw,cov),
-                                        net.path+'/cache'
-                                        )
-            
+                ret = save( diz,
+                            (sum,cnt,rmse,pw,cov),
+                            os.path.join(net.path,'cache')
+                            )
+                
 
                 if not ret:
                     print "Warning! i cannot be able to save this computation, check the permission"

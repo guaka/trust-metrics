@@ -691,7 +691,7 @@ def mkpath(fullpath):
     if not fullpath: return
     if fullpath[-1] == os.path.sep:
         fullpath = fullpath[:-1]
-    if not os.path.exists(fullpath):
+    if fullpath and not os.path.exists(fullpath):
         path = os.path.split(fullpath)[0]
         mkpath(path)
         os.mkdir(fullpath)
