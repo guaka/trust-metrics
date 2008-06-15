@@ -30,7 +30,7 @@ from trustlet.helpers import get_name
 
 def display(eval_measure, methods, evals):
     """Display evaluations in table."""
-    from Table import Table
+    from trustlet.Table import Table
     tbl = Table([32] + [20] * len(methods))
     tbl.printHdr([eval_measure] + methods)
     tbl.printSep()
