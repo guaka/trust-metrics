@@ -1,24 +1,31 @@
 from gen_table import *
-from TrustMetric import *
-import PredGraph
-import Advogato
+from trustlet.TrustMetric import *
+from trustlet.PredGraph import *
+from trustlet import AdvogatoNetwork
 
 #G = Kaitiaki() #SqueakFoundation()    
 
+G = AdvogatoNetwork(date="2008-05-12")
+
 evaluated_trust_metrics = [
-                           AdvogatoGlobalTM, #AdvogatoTM,
-                           PageRankGlobalTM,
+                           AdvogatoGlobalTM(G), #AdvogatoTM,
+                           PageRankGlobalTM(G),
                            #PageRankTM0,
-                           AlwaysMaster, AlwaysJourneyer, AlwaysApprentice, AlwaysObserver,
-                           RandomTM,
-                           EbayTM, OutA_TM, OutB_TM, EdgesB_TM, EdgesA_TM,
-                           MoletrustTM_horizon2_threshold0, MoletrustTM_horizon3_threshold0, MoletrustTM_horizon4_threshold0,
-                           MoletrustTM_horizon2_threshold05, MoletrustTM_horizon3_threshold05, MoletrustTM_horizon4_threshold05,
+                           TrustMetric(G,always_master),TrustMetric( G, always_journeyer ),
+                           TrustMetric(G,always_apprentice), TrustMetric(G,always_observer),
+                           TrustMetric(G, random_tm),
+                           TrustMetric(G,ebay_tm), TrustMetric(G,outa_tm), TrustMetric(G,outb_tm),
+                           TrustMetric(G,edges_b_tm ),TrustMetric(G, edges_b_tm),
+                           TrustMetric(G,moletrust_generator(horizon=2)),
+                           TrustMetric(G,moletrust_generator(horizon=3)),
+                           TrustMetric(G,moletrust_generator(horizon=4)),
+                           TrustMetric(G,moletrust_generator(horizon=2,edge_trust_threshold=0.5)),
+                           TrustMetric(G,moletrust_generator(horizon=3,edge_trust_threshold=0.5)),
+                           TrustMetric(G,moletrust_generator(horizon=4,edge_trust_threshold=0.5))
                            #GuakaMoleFullTM, GuakaMoleTM, PaoloMoleTM, IntersectionTM, 
                           ]
 eval_measures = ['coverage_cond', 'abs_error_cond']
 
-G = Advogato.Advogato()
 
 #conds_on_edges = ['and_cond(master, edge_to_connected_node(5))',
 #                  'and_cond(master, not_cond(edge_to_connected_node(5)))',
@@ -49,7 +56,7 @@ conds_on_edges = ['every_edge',
                   ]
 
 
-pred_graphs = map(lambda tm: PredGraph.PredGraph(G,tm), evaluated_trust_metrics)
+pred_graphs = map(lambda tm: PredGraph(tm), evaluated_trust_metrics)
 
 for eval_measure in eval_measures:
     conds, evals = evals_with_conds(pred_graphs, eval_measure, conds_on_edges)

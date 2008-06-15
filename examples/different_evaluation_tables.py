@@ -7,6 +7,8 @@ from trustlet import *
 #create datasets
 dummy = DummyNetwork()
 
+G = KaitiakiNetwork(date="2008-06-11")
+
 #REMOVE: create trust metrics
 # EbayTM = EbayTM()
 # MT2 = Moletrust(2)
@@ -31,10 +33,10 @@ pred_graph = PredGraph(MoleTrust(dummy, horizon = 2),
 # 
 
 evaluated_trust_metrics = [ # an array of already created objects which correspond to trust metrics
-    EbayTM,
-    MoleTrust2,
-    MoleTrust3,
-    AdvogatoLocal
+    TrustMetric( G,ebay_tm ),
+    TrustMetric( G, moletrust_generator(horizon=2) ),
+    TrustMetric( G, moletrust_generator(horizon=3) ),
+    AdvogatoLocal( G ) 
     ]
 
 eval_measures = [#'coverage_cond',
@@ -114,12 +116,9 @@ def evals_with_conds(pred_graphs, eval_measure, conds_on_edges):
     return conds_on_edges, evals
 
 
-G = KaitiakiNetwork()
-
-
 for eval_measure in eval_measures:
     for eval_tm in evaluated_trust_metrics:
-        pred_graph = PredGraph(eval_tm(G))
+        pred_graph = PredGraph(eval_tm)
         conds, evals = evals_with_conds([pred_graph], eval_measure, conds_on_edges)
         display(eval_measure,conds, evals)
         del pred_graph #possibly freeing the memory
