@@ -51,8 +51,8 @@ def call_all_methods(N):
     call_methods(("is_weighted",
                   "has_discrete_weights",
                   "weights", 
-                  "min_weight", 
-                  "max_weight", 
+                  #"min_weight", #doesn't work
+                  #"max_weight", 
                   ))
 
     # TODO: return the number of edges whose value is the smallest of the possible values
@@ -82,7 +82,7 @@ dummy_weighted = DummyWeightedNetwork()
 # unconnected_undirected_unweighted = DummyUnconnectedUndirectedUnweighted() # should read from "data/unconnected_undirected_unweighted.dot"
 # unconnected_directed_weighted = DummyUnconnectedUndirectedUnweighted() # should read from "data/unconnected_directed_weighted.net"
 
-squeak_network = SqueakFoundationNetwork()
+squeak_network = SqueakFoundationNetwork(download=True)
 # advogato_network = AdvogatoNetwork()
 
 # datasets = [dummy, unweighted, undirected, unconnected_undirected_unweighted, unconnected_directed_weighted, advogato]

@@ -172,7 +172,10 @@ class PredGraph(CalcGraph):
         return pg
         
     def _prepare(self):
-        """Prepare. Data"""
+        """
+        Prepare. Data
+        (e.g. add orig value to every edge)
+        """
         ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
 
         # if True:  # check if self has orig
@@ -298,8 +301,17 @@ class PredGraph(CalcGraph):
         sqr_error = self.def_mask * (lambda x: (x*x))(self.pred_trust -
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
-                         
-    def graphcontroversiality( self, maxc, step, force=False, cond=None, toe=None, indegree=5, np=2 ):
+                 
+    def _round_pred_weight(self,weight):
+        """rounds weight to possible values of original network"""
+        #not rount None edges
+        if weight==UNDEFINED or not weight:
+            return weight
+        values = self.dataset.level_map.values()
+        values.sort(lambda x,y: cmp(abs(x-weight),abs(y-weight)))
+        return values[0]
+        
+    def graphcontroversiality( self, maxc, step, force=False, cond=None, toe=None, indegree=5, np=2, round_weight=True ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -322,6 +334,7 @@ class PredGraph(CalcGraph):
            'coverage':return a list with (controversiality,coverage) error
            'percentage_wrong': return a list with foreach step the (controversiality,percentage of wrong predict)
            the length of the list depends by the step
+           'round_weigh': if True `preds' values are round to possible values of original network
         """
         
         start = 0
@@ -375,9 +388,14 @@ class PredGraph(CalcGraph):
                     if cond != None:
                         if cond(e) != True:
                             continue
-
-                    if e[2]['pred'] != None and e[2]['pred'] != UNDEFINED:
-                        abserr = math.fabs( e[weight]['orig'] - e[weight]['pred'] )
+                    if round_weight:
+                        #print 'debug',e[2]['pred'],
+                        pred = self._round_pred_weight(e[2]['pred'])
+                        #print pred
+                    else:
+                        pred = e[2]['pred']
+                    if pred != None and pred != UNDEFINED:
+                        abserr = math.fabs( e[weight]['orig'] - pred )
                         sum += abserr
                         rmse += abserr**2
                         cnt +=1
@@ -397,7 +415,7 @@ class PredGraph(CalcGraph):
                 pw = float(pw)/covcnt
                 cov = 1-(cov/covcnt)
 
-                #saving calculated values
+                #saving calculated valuesErrors evaluated for 0.200000 controversiality
                 if not force:
                     ret = save( diz,
                                 (sum,cnt,rmse,pw,cov),

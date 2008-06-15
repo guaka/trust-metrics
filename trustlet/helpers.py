@@ -728,12 +728,14 @@ def save(key,data,path='.',human=True,time=None):
             f.writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
             if time:
                 f.write('time: %d\n'%time)
-            f.write('data: '+data.__str__())
+            if type(human) is str:
+                f.write('comment: '+human)
+            f.write('data: '+str(data))
 
         if time:
             data = (data,time)
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-    except IOError,PicklingError:
+    except IOError,PicklingError: # I' can't catch TypeError O.o why?
         print 'picking error'
         return False
     return True
