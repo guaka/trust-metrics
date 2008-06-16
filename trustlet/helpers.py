@@ -684,6 +684,7 @@ def splittask(function,input,np=None):
     for proc in xrange(np):
         read,write = os.pipe()
         pinput = map(lambda x: input[x],xrange(proc,len(input),np))
+        #print 'pinput',pinput
         if os.fork()==0:
             #son
             res = []
