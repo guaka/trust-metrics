@@ -641,8 +641,14 @@ def splittask(function,input,np=None):
         if not np:
             np = 4
 
-    ris = []
+    result = []
     pipes = []
+
+    if np==1:
+        #doesn't create other processes
+        for data in input:
+            result.append(function(data))
+        return result
 
     for proc in xrange(np):
         read,write = os.pipe()
@@ -662,7 +668,6 @@ def splittask(function,input,np=None):
             os.close(write)
 
     #wait responce from sons
-    ris = []
     try:
         for pipe in pipes:
             buffer = '_'
@@ -670,13 +675,13 @@ def splittask(function,input,np=None):
             while buffer:
                 buffer = os.read(pipe,100)
                 s += buffer
-        ris += pickle.loads(s)
+        result += pickle.loads(s)
     except EOFError:
         print "A son process is dead"
         print "splittask says: it's not my fault!"
         exit(1)
 
-    return ris
+    return result
 
 
 # == cache ==

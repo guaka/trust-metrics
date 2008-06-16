@@ -159,6 +159,10 @@ class PredGraph(CalcGraph):
     predicted trust is None."""
 
     def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
+        try:
+            TM.dataset
+        except AttributeError:
+            print 'Are you sure that TM is a TM?'
         self.leave_one_out = leave_one_out
         CalcGraph.__init__(self, TM,
                            recreate = recreate,
@@ -302,7 +306,7 @@ class PredGraph(CalcGraph):
                                                       self.orig_trust)
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                  
-    def _round_pred_weight(self,weight):
+    def _round_weight(self,weight):
         """rounds weight to possible values of original network"""
         #not rount None edges
         if weight==UNDEFINED or not weight:
@@ -390,7 +394,7 @@ class PredGraph(CalcGraph):
                             continue
                     if round_weight:
                         #print 'debug',e[2]['pred'],
-                        pred = self._round_pred_weight(e[2]['pred'])
+                        pred = self._round_weight(e[2]['pred'])
                         #print pred
                     else:
                         pred = e[2]['pred']
@@ -416,7 +420,7 @@ class PredGraph(CalcGraph):
                 pw = float(pw)/cnt
                 cov = 1-(cov/covcnt)
 
-                #saving calculated valuesErrors evaluated for 0.200000 controversiality
+                #saving calculated values
                 ret = save( diz,
                             (sum,cnt,rmse,pw,cov),
                             os.path.join(net.path,'cache')
