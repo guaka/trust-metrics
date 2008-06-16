@@ -62,6 +62,8 @@ def allAdvogatoPg( leaveOut = [], date = "2008-05-12" ):
     for tm in tmlist:
         plist[tm] = trustlet.PredGraph( tmlist[tm] )
 
+    return plist
+
 
 
 def human_time(t):
@@ -573,6 +575,7 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
         t.sort()
 
     return t
+
 
 def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
     """

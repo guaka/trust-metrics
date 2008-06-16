@@ -8,15 +8,19 @@ specify on command line space-separated name of trustmetric to leave out.
 from trustlet import *
 
 
-def compareAllTrustMetrics( leaveOut, cond=None ):
+def compareAllTrustMetrics( leaveOut = [], 
+                            cond=None,date = "2008-05-12", allInOne=True, 
+                            path = "/home/ciropom/graphs/", toe = "mae" ):
     
-    A = AdvogatoNetwork( date="2008-05-12" )
+    A = AdvogatoNetwork( date=date )
 
     tmlist = getTrustMetrics( A )
     
     for l in leaveOut:
-        del tmlist[l]
-
+        try:
+            del tmlist[l]
+        except KeyError:
+            print "KeyError! ",l," not deleted"
     plist = []
     
     for tm in tmlist:
@@ -25,18 +29,25 @@ def compareAllTrustMetrics( leaveOut, cond=None ):
     pointlist = []
 
     for p in plist:
-        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe="mae", np=2, cond=cond ) ) )
+        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=2, cond=cond ) ) )
 
-    for p in pointlist:
-        for q in pointlist:
-            if q[0] <= p[0]:
-                continue
-            else:
-                print q[0]+"_vs_"+p[0]
-                prettyplot( [q[1],p[1]], 
-                            "/home/ciropom/graphs/"+q[0]+"_vs_"+p[0]+".png", 
-                            legend=(q[0],p[0]), 
-                            showlines=True )
+    if allInOne:
+        prettyplot( [x for (y,x) in pointlist], 
+                    os.path.join( path, toe+"All.png" ),
+                    legend=tuple([y for (y,x) in pointlist]),
+                    showlines=True)
+
+    else:
+        for p in pointlist:
+            for q in pointlist:
+                if q[0] <= p[0]:
+                    continue
+                else:
+                    print q[0]+"_vs_"+p[0]
+                    prettyplot( [q[1],p[1]], 
+                                os.path.join( path, q[0]+"_vs_"+p[0]+".png" ), 
+                                legend=(q[0],p[0]), 
+                                showlines=True )
 
 
 if __name__ == "__main__":
@@ -53,4 +64,4 @@ if __name__ == "__main__":
     
     else:
     
-        compareAllTrustMetrics( [] )
+        compareAllTrustMetrics()
