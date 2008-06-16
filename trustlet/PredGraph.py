@@ -410,8 +410,7 @@ class PredGraph(CalcGraph):
 
                     else:
                         cov += 1
-                        print "test: ",e
-
+                        
                     covcnt += 1
 
                 if cnt == 0:
@@ -419,7 +418,7 @@ class PredGraph(CalcGraph):
 
                 rmse = numpy.sqrt(rmse/cnt)
                 pw = float(pw)/cnt
-                cov = 1-(cov/covcnt)
+                cov = 1-(float(cov)/covcnt)
 
                 #saving calculated values
                 ret = save( diz,

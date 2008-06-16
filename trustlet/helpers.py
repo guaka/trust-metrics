@@ -46,9 +46,9 @@ def getTrustMetrics( net, trivial=False ):
     return trustmetrics
 
 
-def allAdvogatoPg( error, leaveOut, data ):
+def allAdvogatoPg( leaveOut = [], date = "2008-05-12" ):
 
-    A = AdvogatoNetwork( date=data )
+    A = trustlet.AdvogatoNetwork( date=date )
     tmlist = getTrustMetrics( A )
     
     for l in leaveOut:
@@ -60,7 +60,7 @@ def allAdvogatoPg( error, leaveOut, data ):
     plist = {}
     
     for tm in tmlist:
-        plist[tm] = PredGraph( tmlist[tm] )
+        plist[tm] = trustlet.PredGraph( tmlist[tm] )
 
 
 
