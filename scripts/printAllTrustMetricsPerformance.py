@@ -10,7 +10,9 @@ from trustlet import *
 
 def compareAllTrustMetrics( leaveOut = [], 
                             cond=None,date = "2008-05-12", allInOne=True, 
-                            path = "/home/ciropom/graphs/", toe = "mae" ):
+                            path = "/home/ciropom/graphs", toe = "mae", np=1,
+                            x_range=(0.0,0.5),
+                            y_range=None ):
     
     A = AdvogatoNetwork( date=date )
 
@@ -29,13 +31,18 @@ def compareAllTrustMetrics( leaveOut = [],
     pointlist = []
 
     for p in plist:
-        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=2, cond=cond ) ) )
+        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond )) )
 
     if allInOne:
         prettyplot( [x for (y,x) in pointlist], 
                     os.path.join( path, toe+"All.png" ),
                     legend=tuple([y for (y,x) in pointlist]),
-                    showlines=True)
+                    showlines=True,
+                    x_range=x_range,
+                    y_range=y_range,
+                    title='All trust metric for '+toe+' error',
+                    xlabel='controversiality',
+                    ylabel=toe)
 
     else:
         for p in pointlist:
@@ -47,7 +54,11 @@ def compareAllTrustMetrics( leaveOut = [],
                     prettyplot( [q[1],p[1]], 
                                 os.path.join( path, q[0]+"_vs_"+p[0]+".png" ), 
                                 legend=(q[0],p[0]), 
-                                showlines=True )
+                                showlines=True,
+                                x_range=x_range,
+                                y_range=y_range,
+                                xlabel='controversiality',
+                                ylabel=toe )
 
 
 if __name__ == "__main__":

@@ -315,7 +315,11 @@ class PredGraph(CalcGraph):
         values.sort(lambda x,y: cmp(abs(x-weight),abs(y-weight)))
         return values[0]
         
-    def graphcontroversiality( self, maxc, step, force=False, cond=None, toe=None, indegree=5, np=2, round_weight=True ):
+    def graphcontroversiality( self, 
+                               maxc, step, 
+                               force=False, cond=None, toe=None, 
+                               indegree=5, np=2, round_weight=True,
+                               ):
         """
         This function save a graph with
         x axis: level of controversiality (max value = maxc)
@@ -331,7 +335,7 @@ class PredGraph(CalcGraph):
                   included in computation
            force = If set to true, recalculate always the values, and rewite the cache.
            return a list of tuple in this form
-           (controversiality,mae, rmse, percentage_wrong, cov)
+           (controversiality,mae, rmse, percentage_wrong, cov, num_edges_used)
            if toe == None, else if toe is equal to
            'mae': return a list with (controversiality,mae) error, 
            'rmse': return a list with (controversiality,rmse) error
@@ -375,6 +379,7 @@ class PredGraph(CalcGraph):
                 abs = load( diz,
                             os.path.join(net.path,'cache')
                             )
+
             #if the result is cached
             if abs != None:
                 (sum,cnt,rmse,pw,cov) = abs
@@ -434,7 +439,7 @@ class PredGraph(CalcGraph):
                 print "Errors evaluated for %f controversiality" % max
 
             
-            return (max, float(sum)/cnt, rmse, pw, cov,cnt)
+            return (max, float(sum)/cnt, rmse, pw, cov, cnt)
         
         ls = splittask( eval, [(self,max) for max in r], np )
 

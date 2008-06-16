@@ -22,6 +22,9 @@ except:
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
 def getTrustMetrics( net, trivial=False ):
+    """
+    return all trust metric on network passed
+    """
     trustmetrics = {
         "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
@@ -47,6 +50,9 @@ def getTrustMetrics( net, trivial=False ):
 
 
 def allAdvogatoPg( leaveOut = [], date = "2008-05-12" ):
+    """
+    return all predgraph on advogatoNetwork
+    """
 
     A = trustlet.AdvogatoNetwork( date=date )
     tmlist = getTrustMetrics( A )
