@@ -334,6 +334,7 @@ class PredGraph(CalcGraph):
                   that take an edge, and return True if the edge must be
                   included in computation
            force = If set to true, recalculate always the values, and rewite the cache.
+           round_weigh = if True `preds' values are round to possible values of original network
            return a list of tuple in this form
            (controversiality,mae, rmse, percentage_wrong, cov, num_edges_used)
            if toe == None, else if toe is equal to
@@ -342,7 +343,6 @@ class PredGraph(CalcGraph):
            'coverage':return a list with (controversiality,coverage) error
            'percentage_wrong': return a list with foreach step the (controversiality,percentage of wrong predict)
            the length of the list depends by the step
-           'round_weigh': if True `preds' values are round to possible values of original network
         """
         
         start = 0
