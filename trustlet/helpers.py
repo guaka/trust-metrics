@@ -38,9 +38,31 @@ def getTrustMetrics( net, trivial=False ):
 
     if trivial:
         trustmetrics["always_master"] = trustlet.TrustMetric( net , trustlet.always_master)
+        trustmetrics["always_journeyer"] = trustlet.TrustMetric( net , trustlet.always_journeyer)
+        trustmetrics["always_observer"] = trustlet.TrustMetric( net , trustlet.always_observer)
+        trustmetrics["always_apprentice"] = trustlet.TrustMetric( net , trustlet.always_apprentice)
         trustmetrics["intersection_tm"] = trustlet.TrustMetric( net , trustlet.intersection_tm )
     
     return trustmetrics
+
+
+def allAdvogatoPg( error, leaveOut, data ):
+
+    A = AdvogatoNetwork( date=data )
+    tmlist = getTrustMetrics( A )
+    
+    for l in leaveOut:
+        try:
+            del tmlist[l]
+        except KeyError:
+            print "KeyError!", l ," not deleted"
+
+    plist = {}
+    
+    for tm in tmlist:
+        plist[tm] = PredGraph( tmlist[tm] )
+
+
 
 def human_time(t):
     from time import gmtime #(tm_year, tm_mon, tm_mday, tm_hour, tm_min,

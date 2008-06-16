@@ -356,7 +356,7 @@ class PredGraph(CalcGraph):
         def eval( (net, max) ):    
            #calculate some measure error of the edges over the controversiality limit
            #and append it to tuplelist in a tuple (controversiality,error)
-            
+
             abs = None
             diz = {'controversiality_level':max} #cache
                 #default cannot be considered
@@ -398,6 +398,7 @@ class PredGraph(CalcGraph):
                         #print pred
                     else:
                         pred = e[2]['pred']
+                    
                     if  pred <= 1.0 and pred >= 0.4:
                         abserr = math.fabs( e[weight]['orig'] - pred )
                         sum += abserr
@@ -409,7 +410,7 @@ class PredGraph(CalcGraph):
 
                     else:
                         cov += 1
-                        print e
+                        print "test: ",e
 
                     covcnt += 1
 
@@ -432,9 +433,9 @@ class PredGraph(CalcGraph):
                     print "for this path: "+self.path+"/cache"
                         
                 print "Errors evaluated for %f controversiality" % max
+
             
-            return (max, cnt, float(sum)/cnt, rmse, pw, cov)
-        
+            return (max, float(sum)/cnt, rmse, pw, cov,cnt)
         
         ls = splittask( eval, [(self,max) for max in r], np )
 
@@ -443,10 +444,10 @@ class PredGraph(CalcGraph):
         else:
             #take a tuple and a index, and return a tuple with first value and the value n index
             select = lambda tp,s: (tp[0],tp[s])
-            return { 'mae': [select( x,2 ) for x in ls if x],
-                     'rmse': [select( x,3 ) for x in ls if x],
-                     'percentage_wrong': [select( x,4 ) for x in ls if x],
-                     'coverage': [select( x,5 ) for x in ls if x]
+            return { 'mae': [select( x,1 ) for x in ls if x],
+                     'rmse': [select( x,2 ) for x in ls if x],
+                     'percentage_wrong': [select( x,3 ) for x in ls if x],
+                     'coverage': [select( x,4 ) for x in ls if x]
                      }[toe]
                 
     
