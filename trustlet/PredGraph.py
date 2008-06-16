@@ -394,10 +394,10 @@ class PredGraph(CalcGraph):
                         #print pred
                     else:
                         pred = e[2]['pred']
-                    if pred != None and pred != UNDEFINED:
+                    if  pred <= 1.0 and pred >= 0.4:
                         abserr = math.fabs( e[weight]['orig'] - pred )
                         sum += abserr
-                        rmse += abserr**2
+                        rmse += numpy.power(abserr , 2)
                         cnt +=1
 
                         if abserr != 0:
@@ -405,14 +405,15 @@ class PredGraph(CalcGraph):
 
                     else:
                         cov += 1
+                        print e
 
                     covcnt += 1
 
                 if cnt == 0:
                     return None
 
-                rmse = math.sqrt(rmse)
-                pw = float(pw)/covcnt
+                rmse = numpy.sqrt(rmse/cnt)
+                pw = float(pw)/cnt
                 cov = 1-(cov/covcnt)
 
                 #saving calculated valuesErrors evaluated for 0.200000 controversiality
@@ -428,7 +429,7 @@ class PredGraph(CalcGraph):
                         
                 print "Errors evaluated for %f controversiality" % max
             
-            return (max,float(sum)/cnt, rmse, pw, cov)
+            return (max, cnt, float(sum)/cnt, rmse, pw, cov)
         
         
         ls = splittask( eval, [(self,max) for max in r], np )
@@ -438,10 +439,10 @@ class PredGraph(CalcGraph):
         else:
             #take a tuple and a index, and return a tuple with first value and the value n index
             select = lambda tp,s: (tp[0],tp[s])
-            return { 'mae': [select( x,1 ) for x in ls if x],
-                     'rmse': [select( x,2 ) for x in ls if x],
-                     'percentage_wrong': [select( x,3 ) for x in ls if x],
-                     'coverage': [select( x,4 ) for x in ls if x]
+            return { 'mae': [select( x,2 ) for x in ls if x],
+                     'rmse': [select( x,3 ) for x in ls if x],
+                     'percentage_wrong': [select( x,4 ) for x in ls if x],
+                     'coverage': [select( x,5 ) for x in ls if x]
                      }[toe]
                 
     
