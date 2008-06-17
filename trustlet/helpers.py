@@ -289,6 +289,7 @@ def prettyplot( data, path, **args):
         log=False
         showlines=False (old onlypoint)
         istogram=False
+        x_range (tuple)
     """
 
     g = Gnuplot.Gnuplot(persist=1)
@@ -719,24 +720,79 @@ def splittask(function,input,np=None):
     return result
 
 """data: output of pred_graph.cont_num_of_edges()"""
-plot_cont_num_of_edges = lambda data,path='.': prettyplot(data,os.path.join(path,'controv_num_of_edges.png'),
-                                                          title='Number of edges by controversiality',
-                                                          xlabel='controversiality',
-                                                          ylabel='# edges',
-                                                          showlines=True,
-                                                          log=True)
+plot_cont_num_of_edges = lambda data,indegree,dirpath='.': \
+    prettyplot(data,os.path.join(dirpath,'controv num of edges (indegree=%d).png'%indegree),
+               title='Number of edges by controversiality (indegree=%d)'%indegree,
+               xlabel='controversiality',
+               ylabel='# edges',
+               showlines=True)
+
+plot_cont_type_of_edges = lambda data,indegree,dirpath='.',no_observer=False: \
+    prettyplot(data,os.path.join(dirpath,'controv type of edges (indegree=%d).png'%indegree),
+               title='Type of edges by controversiality (indegree=%d%s)'%(indegree,(no_observer and ' no observer' or '')),
+               xlabel='controversiality',
+               ylabel='% edges',
+               legend=['master','journeyer','apprentice'] + (no_observer and [] or ['observer']),
+               x_range=(0.0,0.38),
+               showlines=True)
+
+def plot_cont_graphs(pg, dirpath='.', numbers=None):
+    def fix_conttypeofedges_data(d,no_observer=False):
+        """
+        d: [(cont, master, journeyer, apprentice, observer), ... ]
+        output: [(cont, master), (cont,journeyer), ...]
+        """
+        if no_observer:
+            cut = lambda t: t[1:-1]
+        else:
+            cut = lambda t: t[1:]
+        def perc(t):
+            s = sum(t)
+            if s:
+                return [1.0*x/s for x in t]
+            else:
+                return [0.0 for x in t]
+        return (lambda x: no_observer and x[:3] or x)([
+            [(x[0],perc(cut(x))[0]) for x in d],
+            [(x[0],perc(cut(x))[1]) for x in d],
+            [(x[0],perc(cut(x))[2]) for x in d],
+            [(x[0],perc(cut(x))[-1]) for x in d], # this value is wrong if no_observer, but it will cut
+            ])
+    
+    mkpath(dirpath)
+    if not numbers:
+        numbers = [1,3,5,10,15,20,50,100]
+    for i in numbers:
+        plot_cont_num_of_edges( pg.cont_num_of_edges(number=i), i, dirpath )
+        plot_cont_type_of_edges( fix_conttypeofedges_data(pg.cont_type_of_edges(number=i)),
+                                 i, dirpath )
+        plot_cont_type_of_edges( fix_conttypeofedges_data(pg.cont_type_of_edges(number=i),no_observer=True),
+                                 i, dirpath, no_observer=True )
+
 if False:
     pg = PredGraph(TrustMetric(AdvogatoNetwork(date='2008-05-12'),ebay_tm))
     values = []
     plot_cont_num_of_edges( plot_cont_num_of_edges( pg.cont_num_of_edges(values=values) ))
 
-'''legend='' (describes data. It is a string or a list of strings (one for each set))
-title=''
-xlabel=''
-ylabel=''
-log=False
-showlines=False (old onlypoint)
-istogram=False'''    
+def xfloatrange(*args):
+    """xfloatrange([start,] stop[, step]) -> list of floatss (like xrange)"""
+    if len(args)==1:
+        start = 0.0
+        end = args[0]
+        step = 1.0
+    elif len(args)==2:
+        start = args[0]
+        end = args[1]
+        step = 1.0
+    elif len(args)==3:
+        start,end,step = args
+    else:
+        assert 0
+    while(start<=end):
+        yield float(start)
+        start += step
+
+floatrange = lambda *args: [x for x in xfloatrange(*args)]
 
 # == cache ==
 # save and restore data into/from cache
@@ -772,7 +828,7 @@ def get_sign(key,mdfive=True):
     else:
         return s[:-1]
 
-def save(key,data,path='.',human=False,time=None):
+def save(key,data,path='.',human=False):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
@@ -791,8 +847,6 @@ def save(key,data,path='.',human=False,time=None):
                 f.write('comment: '+human)
             f.write('data: '+str(data))
 
-        if time:
-            data = (data,time)
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
     except IOError,PicklingError: # I' can't catch TypeError O.o why?
         print 'picking error'
@@ -804,8 +858,6 @@ def load(key,path='.'):
     Cache.
     Loads data stored by save.
     """
-    #if globals().has_key('IGNORECACHE') and IGNORECACHE:
-    #    return None
     try:
         data = pickle.load(file(os.path.join(path,get_sign(key))))
     except IOError:

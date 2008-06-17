@@ -307,7 +307,7 @@ class PredGraph(CalcGraph):
         return self.num_defined and math.sqrt(sum(sqr_error) / self.num_defined)
                  
     def _round_weight(self,weight):
-        """rounds weight to possible values of original network"""
+        """rounds weight to nearest possible value of original network"""
         #not rount None edges
         if weight==UNDEFINED or not weight:
             return weight
@@ -319,7 +319,7 @@ class PredGraph(CalcGraph):
                                #maxc == 0.3 because for higher value the there aren't edges
                                maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
-                               indegree=10, np=1, round_weight=True,
+                               indegree=10, np=2, round_weight=True,
                                ):
         """
         This function save a graph with
@@ -499,22 +499,18 @@ class PredGraph(CalcGraph):
         return [(cond, self.abs_error_cond(cond)) for cond in
                 ['master', 'journeyor', 'apprentice', 'observer']]
 
-    def cont_num_of_edges(self,number=10,values=None):
+    def cont_num_of_edges(self,number=10,values=None,force=False):
         if not values:
-            values = []
-            i = 0.0
-            while(i<=0.3):
-                values.append(i)
-                i += 0.01
+            values = floatrange(0.0, 0.3, 0.01)
         
         cachedict = {'func':'controvesiality-numumber-of-edges','number':number}
-        cache = load(cachedict,os.path.join(self.dataset.path,'cache'))
+        cache = force or load(cachedict,os.path.join(self.dataset.path,'cache'))
         if type(cache) is not dict:
             cache = {}
         # cache[controversiality]
         def func(cont):
             if cache.has_key(str(cont)):
-                return cont,float(cache[str(cont)])
+                return cont,cache[str(cont)]
             return cont,len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
         res = splittask(func,values)
         #save cache
@@ -524,33 +520,35 @@ class PredGraph(CalcGraph):
         assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
         return res
 
-    def cont_type_of_edges(self,number=10,values=None):
+    def cont_type_of_edges(self,number=10,values=None,force=False):
         if not values:
-            values = []
-            i = 0.0
-            while(i<=0.3):
-                values.append(i)
-                i += 0.01
+            values = floatrange(0.0, 0.3, 0.01)
         
         cachedict = {'func':'controvesiality-type-of-edges','number':number}
-        cache = load(cachedict,os.path.join(self.dataset.path,'cache'))
+        cache = force or load(cachedict,os.path.join(self.dataset.path,'cache'))
         if type(cache) is not dict:
             cache = {}
         # cache[controversiality]
         def func(cont):
             if cache.has_key(str(cont)):
-                return cont,float(cache[str(cont)])
-            #len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
-            return cont,'----------------------------------'
+                return (cont,)+cache[str(cont)]
+            cont_cond = edge_to_controversial_node(number=number,controversy=cont)
+            return cont, \
+                len(self.edges_cond(and_cond( master, cont_cond ))), \
+                len(self.edges_cond(and_cond( journeyer, cont_cond ))), \
+                len(self.edges_cond(and_cond( apprentice, cont_cond ))), \
+                len(self.edges_cond(and_cond( observer, cont_cond )))
+
         res = splittask(func,values)
+        assert len(values) == len(res)
         #save cache
         for x in res:
-            cache[str(x[0])] = x[1]
+            cache[str(x[0])] = x[1:]
         #print 'cache',cache
         assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
         return res
 
-def edge_to_connected_node(number=5):
+def edge_to_connected_node(number=10):
     """True if the node which is target of the edge received at least
     'number' incoming trust statements."""
     return lambda pg, edge: pg.in_degree(edge[1])>=number
