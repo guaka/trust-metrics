@@ -29,6 +29,7 @@ def getTrustMetrics( net, trivial=False ):
         "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
         "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
+        "edges_b_tm":trustlet.TrustMetric( net , trustlet.edges_b_tm ),
         "outa_tm":trustlet.TrustMetric( net , trustlet.outa_tm ),
         "outb_tm":trustlet.TrustMetric( net , trustlet.outb_tm ),
         "PageRankTM":trustlet.PageRankTM(net),

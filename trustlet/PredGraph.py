@@ -451,7 +451,7 @@ class PredGraph(CalcGraph):
                      }[toe]
                 
     
-    def edges_error_iter(self, condition=False ):
+    def edges_mae_iter(self, condition=False ):
         """
         as the function edges_error, but return an iterator
         """
@@ -467,7 +467,7 @@ class PredGraph(CalcGraph):
                 
 
 
-    def edges_error(self, condition=False):
+    def edges_mae(self, condition=False):
         """
         this function return a list of all edges that statisfy the condition passed,
         in wich there are the abs error on weight instead of original and predicted value.
