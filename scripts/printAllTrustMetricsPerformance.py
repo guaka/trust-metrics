@@ -63,7 +63,7 @@ def compareAllTrustMetrics( leaveOut = [],
                         y_range=y_range,
                         title='All trust metric for '+i[1]+' error',
                         xlabel='controversiality',
-                        ylabel=toe)
+                        ylabel=i[1])
 
         else:
             #each trust metric vs each trust metric
