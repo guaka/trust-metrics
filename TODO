@@ -1,7 +1,7 @@
 - controversiality mae / rmse / percentage of wrong predict / coverage (tutte le metriche una misura alla volta)
  x = controversiality
  y = misura d'errore
- NB: tutte le tm
+ NB: tutte le tm  X
 
 - stessa cosa togliendo gli observer
 - grafico con y=archi considerati (con la cond), x=controversiality (fare 2/3 grafici con vari indegree)

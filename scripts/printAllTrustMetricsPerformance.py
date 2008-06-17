@@ -11,8 +11,14 @@ from trustlet import *
 def compareAllTrustMetrics( leaveOut = [], 
                             cond=None,date = "2008-05-12", allInOne=True, 
                             path = "/home/ciropom/graphs", toe = "mae", np=1,
-                            x_range=(0.0,0.5),
+                            x_range=(0.0,0.4),
                             y_range=None ):
+    """
+    toe can have all possible values PredGraph.graphcontroversiality function, 
+    and a special value "all" that indicates that you would calculate 4 graphs 
+    with all errors measure.
+    """
+
     
     A = AdvogatoNetwork( date=date )
 
@@ -31,34 +37,49 @@ def compareAllTrustMetrics( leaveOut = [],
     pointlist = []
 
     for p in plist:
-        pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond )) )
+        if toe == 'all':
+            pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=None, np=np, cond=cond )) )
+        else:
+            pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond )) )
 
-    if allInOne:
-        prettyplot( [x for (y,x) in pointlist], 
-                    os.path.join( path, toe+"All.png" ),
-                    legend=tuple([y for (y,x) in pointlist]),
-                    showlines=True,
-                    x_range=x_range,
-                    y_range=y_range,
-                    title='All trust metric for '+toe+' error',
-                    xlabel='controversiality',
-                    ylabel=toe)
-
+    if toe == 'all':
+        num = enumerate( ['mae','rmse','percentage_wrong','coverage'] )
     else:
-        for p in pointlist:
-            for q in pointlist:
-                if q[0] <= p[0]:
-                    continue
-                else:
-                    print q[0]+"_vs_"+p[0]
-                    prettyplot( [q[1],p[1]], 
-                                os.path.join( path, q[0]+"_vs_"+p[0]+".png" ), 
-                                legend=(q[0],p[0]), 
-                                showlines=True,
-                                x_range=x_range,
-                                y_range=y_range,
-                                xlabel='controversiality',
-                                ylabel=toe )
+        num = [(0,toe)]
+
+    select = lambda tp,s: (tp[0],tp[s])
+
+    for i in num:
+
+        if allInOne:
+            #all trust metrics in one graph
+            prettyplot( [[select( x,i[0]+1 ) for x in ls if x] for (name,ls) in pointlist], 
+                        os.path.join( path, i[1]+"All.png" ),
+                        legend=tuple([y for (y,x) in pointlist]),
+                        showlines=True,
+                        x_range=x_range,
+                        y_range=y_range,
+                        title='All trust metric for '+i[1]+' error',
+                        xlabel='controversiality',
+                        ylabel=toe)
+
+        else:
+            #each trust metric vs each trust metric
+            for p in pointlist:
+                for q in pointlist:
+                    if q[0] <= p[0]:
+                        continue
+                    else:
+                        print q[0]+"_vs_"+p[0]
+                        prettyplot( [q[1],p[1]], 
+                                    os.path.join( path, q[0]+"_vs_"+p[0]+".png" ), 
+                                    legend=(q[0],p[0]), 
+                                    showlines=True,
+                                    title=q[0]+"_vs_"+p[0]+".png",
+                                    x_range=x_range,
+                                    y_range=y_range,
+                                    xlabel='controversiality',
+                                    ylabel=i[1] )
 
 
 if __name__ == "__main__":
