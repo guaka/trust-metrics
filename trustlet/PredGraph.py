@@ -511,12 +511,38 @@ class PredGraph(CalcGraph):
         cache = load(cachedict,os.path.join(self.dataset.path,'cache'))
         if type(cache) is not dict:
             cache = {}
-        # cache[controversity]
+        # cache[controversiality]
         def func(cont):
             if cache.has_key(str(cont)):
                 return cont,float(cache[str(cont)])
             return cont,len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
-        res = splittask(func,values,np=1)
+        res = splittask(func,values)
+        #save cache
+        for x in res:
+            cache[str(x[0])] = x[1]
+        #print 'cache',cache
+        assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
+        return res
+
+    def cont_type_of_edges(self,number=10,values=None):
+        if not values:
+            values = []
+            i = 0.0
+            while(i<=0.3):
+                values.append(i)
+                i += 0.01
+        
+        cachedict = {'func':'controvesiality-type-of-edges','number':number}
+        cache = load(cachedict,os.path.join(self.dataset.path,'cache'))
+        if type(cache) is not dict:
+            cache = {}
+        # cache[controversiality]
+        def func(cont):
+            if cache.has_key(str(cont)):
+                return cont,float(cache[str(cont)])
+            #len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
+            return cont,'----------------------------------'
+        res = splittask(func,values)
         #save cache
         for x in res:
             cache[str(x[0])] = x[1]
