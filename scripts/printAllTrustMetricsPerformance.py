@@ -12,7 +12,7 @@ def compareAllTrustMetrics( leaveOut = [],
                             cond=None,date = "2008-05-12", allInOne=True, 
                             path = "/home/ciropom/graphs", toe = "mae", np=1,
                             x_range=(0.0,0.4),
-                            y_range=None, ind=10 ):
+                            y_range=(0.0,1.1), ind=10 ):
     """
     toe can have all possible values PredGraph.graphcontroversiality function, 
     and a special value "all" that indicates that you would calculate 4 graphs 

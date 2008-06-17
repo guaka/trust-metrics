@@ -10,3 +10,4 @@
 - in_edges oltre che 5, calcolare anche per 3,10,20,1. (NB: per tutti i grafici precedenti )
 - verificare la tabella 2 (con in_edges 10 e controversiality 0.2) X
  
+- AdvogatoLocal, sostituire UNDEFINED con 0.4! (dove?)
