@@ -728,14 +728,14 @@ plot_cont_num_of_edges = lambda data,indegree,dirpath='.': \
                showlines=True)
 
 plot_cont_type_of_edges = lambda data,indegree,dirpath='.',no_observer=False: \
-    prettyplot(data,os.path.join(dirpath,'controv type of edges (indegree=%d).png'%indegree),
-               title='Type of edges by controversiality (indegree=%d%s)'%(indegree,(no_observer and ' no observer' or '')),
-               xlabel='controversiality',
-               ylabel='% edges',
-               legend=['master','journeyer','apprentice'] + (no_observer and [] or ['observer']),
-               x_range=(0.0,0.38),
-               showlines=True)
-
+    prettyplot(data,os.path.join(dirpath,'controv type of edges (indegree=%d%s).png'%(indegree,(no_observer and ' no observer' or ''))),
+                                 title='Type of edges by controversiality (indegree=%d%s)'%(indegree,(no_observer and ' no observer' or '')),
+                                 xlabel='controversiality',
+                                 ylabel='% edges',
+                                 legend=['master','journeyer','apprentice'] + (no_observer and [] or ['observer']),
+                                 x_range=(0.0,0.38),
+                                 showlines=True)
+               
 def plot_cont_graphs(pg, dirpath='.', numbers=None):
     def fix_conttypeofedges_data(d,no_observer=False):
         """
