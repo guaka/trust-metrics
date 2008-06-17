@@ -319,7 +319,7 @@ class PredGraph(CalcGraph):
                                #maxc == 0.3 because for higher value the there aren't edges
                                maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
-                               indegree=5, np=1, round_weight=True,
+                               indegree=10, np=1, round_weight=True,
                                ):
         """
         This function save a graph with
@@ -430,7 +430,7 @@ class PredGraph(CalcGraph):
 
                 if not ret:
                     print "Warning! i cannot be able to save this computation, check the permission"
-                    print "for this path: "+self.path+"/cache"
+                    print "for this path: "+os.path.join( self.path,"cache" )
                         
                 print "Errors evaluated for %f controversiality" % max
 

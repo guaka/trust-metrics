@@ -12,7 +12,7 @@ def compareAllTrustMetrics( leaveOut = [],
                             cond=None,date = "2008-05-12", allInOne=True, 
                             path = "/home/ciropom/graphs", toe = "mae", np=1,
                             x_range=(0.0,0.4),
-                            y_range=None ):
+                            y_range=None, ind=10 ):
     """
     toe can have all possible values PredGraph.graphcontroversiality function, 
     and a special value "all" that indicates that you would calculate 4 graphs 
@@ -38,9 +38,11 @@ def compareAllTrustMetrics( leaveOut = [],
 
     for p in plist:
         if toe == 'all':
-            pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=None, np=np, cond=cond )) )
+            pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=None, np=np, cond=cond,
+                                                                          indegree = ind )) )
         else:
-            pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond )) )
+            pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond,
+                                                                          indegree = ind)) )
 
     if toe == 'all':
         num = enumerate( ['mae','rmse','percentage_wrong','coverage'] )
