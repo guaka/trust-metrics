@@ -717,6 +717,25 @@ def splittask(function,input,np=None):
 
     return result
 
+"""data: output of pred_graph.cont_num_of_edges()"""
+plot_cont_num_of_edges = lambda data,path='.': prettyplot(data,os.path.join(path,'controv_num_of_edges.png'),
+                                                          title='Number of edges by controversiality',
+                                                          xlabel='controversiality',
+                                                          ylabel='# edges',
+                                                          showlines=True,
+                                                          log=True)
+if False:
+    pg = PredGraph(TrustMetric(AdvogatoNetwork(date='2008-05-12'),ebay_tm))
+    values = []
+    plot_cont_num_of_edges( plot_cont_num_of_edges( pg.cont_num_of_edges(values=values) ))
+
+'''legend='' (describes data. It is a string or a list of strings (one for each set))
+title=''
+xlabel=''
+ylabel=''
+log=False
+showlines=False (old onlypoint)
+istogram=False'''    
 
 # == cache ==
 # save and restore data into/from cache
@@ -752,7 +771,7 @@ def get_sign(key,mdfive=True):
     else:
         return s[:-1]
 
-def save(key,data,path='.',human=True,time=None):
+def save(key,data,path='.',human=False,time=None):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
