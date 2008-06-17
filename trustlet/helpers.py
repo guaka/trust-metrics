@@ -709,7 +709,7 @@ def splittask(function,input,np=None):
             while buffer:
                 buffer = os.read(pipe,100)
                 s += buffer
-        result += pickle.loads(s)
+            result += pickle.loads(s)
     except EOFError:
         print "A son process is dead"
         print "splittask says: it's not my fault!"

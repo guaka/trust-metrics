@@ -499,25 +499,29 @@ class PredGraph(CalcGraph):
         return [(cond, self.abs_error_cond(cond)) for cond in
                 ['master', 'journeyor', 'apprentice', 'observer']]
 
-    #edge_to_controversial_node
     def cont_num_of_edges(self,number=10,values=None):
         if not values:
-            values = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+            values = []
+            i = 0.0
+            while(i<=0.3):
+                values.append(i)
+                i += 0.01
         
         cachedict = {'func':'controvesiality-numumber-of-edges','number':number}
-        cache = load(cachedict,self.dataset.path)
-        if type(cache) is type(None):
+        cache = load(cachedict,os.path.join(self.dataset.path,'cache'))
+        if type(cache) is not dict:
             cache = {}
         # cache[controversity]
         def func(cont):
-            if cache.has_key(cont):
-                return cont,cache[cont]
+            if cache.has_key(str(cont)):
+                return cont,float(cache[str(cont)])
             return cont,len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
         res = splittask(func,values,np=1)
         #save cache
         for x in res:
-            cache[x[0]] = x[1]
-        assert save(cachedict,cache,self.dataset.path)
+            cache[str(x[0])] = x[1]
+        #print 'cache',cache
+        assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
         return res
 
 def edge_to_connected_node(number=5):
