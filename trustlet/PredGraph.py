@@ -316,9 +316,10 @@ class PredGraph(CalcGraph):
         return values[0]
         
     def graphcontroversiality( self, 
-                               maxc, step, 
+                               #maxc == 0.3 because for higher value the there aren't edges
+                               maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
-                               indegree=5, np=2, round_weight=True,
+                               indegree=5, np=1, round_weight=True,
                                ):
         """
         This function save a graph with
@@ -357,7 +358,7 @@ class PredGraph(CalcGraph):
             i += step
         #foreach controversiality level
         
-        def eval( (net, max) ):    
+        def eval( max ):    
            #calculate some measure error of the edges over the controversiality limit
            #and append it to tuplelist in a tuple (controversiality,error)
 
@@ -377,7 +378,7 @@ class PredGraph(CalcGraph):
 
             if not force:                    
                 abs = load( diz,
-                            os.path.join(net.path,'cache')
+                            os.path.join(self.path,'cache')
                             )
 
             #if the result is cached
@@ -389,18 +390,15 @@ class PredGraph(CalcGraph):
                 cnt = 0
                 rmse = 0
                 pw = 0
-                cov = 0
                 covcnt = 0
 
-                for e in net.edges_cond_iter( edge_to_controversial_node( number=indegree, controversy=max ) ):
+                for e in self.edges_cond_iter( edge_to_controversial_node( number=indegree, controversy=max ) ):
                     #leave out the edges that not statisfy the condition
                     if cond != None:
                         if cond(e) != True:
                             continue
                     if round_weight:
-                        #print 'debug',e[2]['pred'],
                         pred = self._round_weight(e[2]['pred'])
-                        #print pred
                     else:
                         pred = e[2]['pred']
                     
@@ -412,9 +410,7 @@ class PredGraph(CalcGraph):
 
                         if abserr != 0:
                             pw += 1
-
-                    else:
-                        cov += 1
+                        
                         
                     covcnt += 1
 
@@ -423,12 +419,12 @@ class PredGraph(CalcGraph):
 
                 rmse = numpy.sqrt(rmse/cnt)
                 pw = float(pw)/cnt
-                cov = 1-(float(cov)/covcnt)
+                cov = float(cnt)/covcnt
 
                 #saving calculated values
                 ret = save( diz,
                             (sum,cnt,rmse,pw,cov),
-                            os.path.join(net.path,'cache')
+                            os.path.join(self.path,'cache')
                             )
                 
 
@@ -441,7 +437,7 @@ class PredGraph(CalcGraph):
             
             return (max, float(sum)/cnt, rmse, pw, cov, cnt)
         
-        ls = splittask( eval, [(self,max) for max in r], np )
+        ls = splittask( eval, [max for max in r], np )
 
         if toe == None:
             return ls
