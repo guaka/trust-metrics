@@ -311,7 +311,11 @@ def prettyplot( data, path, **args):
     if args.has_key('ylabel'):
         g.ylabel(args['ylabel'])
     if args.has_key('x_range'):
-        g('set xrange ['+str(args['x_range'][0])+':'+str(args['x_range'][1])+']')
+        if args['x_range'] != None:
+            g('set xrange ['+str(args['x_range'][0])+':'+str(args['x_range'][1])+']')
+    if args.has_key('y_range'):
+        if args['y_range']:
+            g('set yrange ['+str(args['y_range'][0])+':'+str(args['y_range'][1])+']')
 
     try:
         legend = args['legend']
