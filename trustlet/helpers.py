@@ -36,7 +36,8 @@ def getTrustMetrics( net, trivial=False ):
         "moletrust_2":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=2)),
         "moletrust_3":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=3)),
         "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4)),
-        "AdvogatoLocal":trustlet.AdvogatoLocal(net),
+        #"AdvogatoLocal":trustlet.AdvogatoLocal(net),
+        "AdvogatoLocal-default-observer":trustlet.AdvogatoLocal(net,noneToObserver=True),
         "AdvogatoGlobalTM":trustlet.AdvogatoGlobalTM(net)
         }
 
