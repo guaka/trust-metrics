@@ -46,11 +46,18 @@ class CalcGraph(Network):
         if hasattr(dataset, "filepath"):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
-            if not os.path.exists(self.path):
-                os.mkdir(self.path)
+
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + '.dot')
+            
 
+            noneToObserver = False
+            if hasattr(TM,"noneToObserver") and TM.noneToObserver:
+                noneToObserver = True
+                self.path = os.path.join(self.path,'noneToObserver')
+            if not os.path.exists(self.path):
+                mkpath(self.path)
+                            
             if not recreate and os.path.exists(self.filepath):
                 self._read_dot(self.filepath)
             else:
@@ -242,6 +249,22 @@ class PredGraph(CalcGraph):
                 if condition(self, e):
                     yield e
             
+    def edges_iter(self, *args):
+        """
+        overrides edges_iter in order to replace None values with Observer (if tm.noneToObserver == True)
+        """
+        iter = XDiGraph.edges_iter(self,*args)
+
+        for e in iter:
+            if hasattr( self.TM, "noneToObserver" ) and self.TM.noneToObserver == True:
+                try:
+                    if not ( float(e[2]['pred']) >= 0.4 and float(e[2]['pred']) <= 1.0 ):
+                        e[2]['pred'] = str(0.4)
+                except ValueError:
+                    e[2]['pred'] = str(0.4)
+            
+            yield e
+
 
     def edges_cond(self, condition):
         """Return list of edges that satisfy condition."""
@@ -368,7 +391,7 @@ class PredGraph(CalcGraph):
             if indegree != 5:
                     #into keys for the cache
                 diz['indegree'] = indegree
-                
+
             if cond != None:
                 diz['condition'] = cond
 

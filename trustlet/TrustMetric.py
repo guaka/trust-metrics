@@ -188,10 +188,15 @@ class PageRankGlobalTM(TrustMetric):
 class AdvogatoLocal(TrustMetric):
     """The advogato trust metric."""
 
-    def __init__(self, dataset):
+    def __init__(self, dataset, noneToObserver = False ):
+        """
+        parameter:
+           noneToObserver = fix none value to observer
+        """
         self.dataset = dataset
         self.p = Profiles(Profile, DictCertifications)
         self.p.add_profiles_from_graph(dataset)
+        self.noneToObserver = noneToObserver
 
         levels = dataset.level_map.items()
         levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
