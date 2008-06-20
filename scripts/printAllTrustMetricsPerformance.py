@@ -92,12 +92,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         
-        nleaveOut = len(sys.argv) - 1
-        leaveOut = []
-        for i in xrange(1,nleaveOut):
-            leaveOut.append( sys.argv[i] )
-
-        compareAllTrustMetrics( leaveOut )
+        compareAllTrustMetrics( sys.argv[1:] )
     
     else:
     
