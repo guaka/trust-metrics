@@ -31,7 +31,7 @@ eval_measures = ['coverage_cond', 'abs_error_cond', 'root_mean_squared_error_con
 #                  'and_cond(master, not_cond(edge_to_connected_node(5)))',
 #                  'and_cond(not_cond(master), edge_to_connected_node(5))']
 conds_on_edges = ['every_edge',
-                  'edge_to_controversial_node(10, 0.20)',
+                  'edge_to_controversial_node(10, 0.20)'
                   ]
 
 

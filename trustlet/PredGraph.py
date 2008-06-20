@@ -476,7 +476,7 @@ class PredGraph(CalcGraph):
     
     def edges_mae_iter(self, condition=False ):
         """
-        as the function edges_error, but return an iterator
+        as the function edges_mae, but return an iterator
         """
         leaveNoneOut = lambda pg,e: e[2]['pred'] != UNDEFINED and e[2]['pred'] != None
 
