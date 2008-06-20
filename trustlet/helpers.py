@@ -32,7 +32,7 @@ def getTrustMetrics( net, trivial=False, allAdvogato=True ):
         "edges_b_tm":trustlet.TrustMetric( net , trustlet.edges_b_tm ),
         "outa_tm":trustlet.TrustMetric( net , trustlet.outa_tm ),
         "outb_tm":trustlet.TrustMetric( net , trustlet.outb_tm ),
-        "PageRankTM":trustlet.PageRankTM(net),
+        #"PageRankTM":trustlet.PageRankTM(net),
         "moletrust_2":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=2)),
         "moletrust_3":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=3)),
         "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4)),
@@ -148,7 +148,11 @@ def path_name(obj):
     if hasattr(obj, "path_name"):
         return obj.path_name
     else:
-        return get_name(obj)
+        return get_name(obj).replace('DefaultApprentice','') \
+            .replace('DefaultJourneyer','') \
+            .replace('DefaultMaster','') \
+            .replace('DefaultObserver','') \
+            .replace('DefaultFalse','')
 
 def mean_std(arr):
     """mean and std of array."""
@@ -861,7 +865,7 @@ def save(key,data,path='.',human=False):
             f.write('data: '+str(data))
 
         pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-    except IOError,PicklingError: # I' can't catch TypeError O.o why?
+    except IOError,pickle.PicklingError: #,TypeError: # I' can't catch TypeError O.o why?
         print 'picking error'
         return False
     return True
