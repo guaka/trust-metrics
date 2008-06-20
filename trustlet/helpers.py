@@ -21,7 +21,7 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
-def getTrustMetrics( net, trivial=False ):
+def getTrustMetrics( net, trivial=False, allAdvogato=True ):
     """
     return all trust metric on network passed
     """
@@ -36,10 +36,15 @@ def getTrustMetrics( net, trivial=False ):
         "moletrust_2":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=2)),
         "moletrust_3":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=3)),
         "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4)),
-        #"AdvogatoLocal":trustlet.AdvogatoLocal(net),
-        "AdvogatoLocal-default-observer":trustlet.AdvogatoLocal(net,noneToObserver=True),
+        "AdvogatoLocal":trustlet.AdvogatoLocal(net),
         "AdvogatoGlobalTM":trustlet.AdvogatoGlobalTM(net)
         }
+
+    if allAdvogato:
+        levels = type(allAdvogato) is list and allAdvogato or net.level_map.keys()
+        for level in levels:
+            if level:
+                trustmetrics["AdvogatoLocalDefault"+level] = trustlet.AdvogatoLocal(net,level)
 
     if trivial:
         trustmetrics["always_master"] = trustlet.TrustMetric( net , trustlet.always_master)
@@ -103,7 +108,7 @@ def est_datetime_arr(seconds):
     return date.strftime("%H:%M:%S %A %d %B")
 
 
-def get_name(obj):
+def get_name(obj,append=''):
     """Get name of object or class.
 
     >>> get_name(datetime)
@@ -112,13 +117,16 @@ def get_name(obj):
 
     if hasattr(obj, "__name__"):
         if hasattr(obj, "name"):
-            return obj.name
-        return obj.__name__
+            return obj.name+append
+        return obj.__name__+append
 
     if hasattr(obj, "__class__"):
         if hasattr(obj, "get_name"):
             ret = obj.get_name()
-        ret = get_name(obj.__class__)
+        if hasattr(obj, "defaultPredict") and obj.defaultPredict:
+            ret = get_name(obj.__class__,'Default'+obj.defaultPredict)
+        else:
+            ret = get_name(obj.__class__)
 
     # se e` una classe generica, identifico il predgraph con la funzione tm
     if ret == "TrustMetric":

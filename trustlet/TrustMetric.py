@@ -188,17 +188,29 @@ class PageRankGlobalTM(TrustMetric):
 class AdvogatoLocal(TrustMetric):
     """The advogato trust metric."""
 
-    def __init__(self, dataset, noneToObserver = False ):
+    def __init__(self, dataset, defaultPredict = None ):
         """
-        parameter:
-           noneToObserver = fix none value to observer
+        parameters:
+           defaultPredict = none values to Observer/Apprentice/Journeyer/Master
         """
         self.dataset = dataset
         self.p = Profiles(Profile, DictCertifications)
         self.p.add_profiles_from_graph(dataset)
-        self.noneToObserver = noneToObserver
 
         levels = dataset.level_map.items()
+
+        if defaultPredict:
+            self.noneToValue = type(defaultPredict) is float and defaultPredict or dataset.level_map[defaultPredict]
+        else:
+            self.noneToValue = False
+        self.defaultPredict = str(self.noneToValue)
+        if type(defaultPredict) is str:
+            self.defaultPredict = defaultPredict
+        else:
+            for level in levels:
+                if level[1]==defaultPredict:
+                    self.defaultPredict = level[0]
+
         levels.sort(lambda a,b: cmp(a[1], b[1]))  # sort on trust value
         levels = map((lambda x: x[0]), levels)
         self.t = PymTrustMetric(AdvogatoCertInfo(levels), self.p)

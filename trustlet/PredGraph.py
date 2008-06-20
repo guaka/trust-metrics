@@ -51,10 +51,8 @@ class CalcGraph(Network):
                                          get_name(self) + '.dot')
             
 
-            noneToObserver = False
-            if hasattr(TM,"noneToObserver") and TM.noneToObserver:
-                noneToObserver = True
-                self.path = os.path.join(self.path,'noneToObserver')
+            if hasattr(TM,"noneToValue") and TM.noneToValue:
+                self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
                 mkpath(self.path)
                             
@@ -251,17 +249,17 @@ class PredGraph(CalcGraph):
             
     def edges_iter(self, *args):
         """
-        overrides edges_iter in order to replace None values with Observer (if tm.noneToObserver == True)
+        overrides edges_iter in order to replace None values with TM.noneToValue
         """
         iter = XDiGraph.edges_iter(self,*args)
 
         for e in iter:
-            if hasattr( self.TM, "noneToObserver" ) and self.TM.noneToObserver == True:
+            if hasattr( self.TM, "noneToValue" ) and self.TM.noneToValue:
                 try:
                     if not ( float(e[2]['pred']) >= 0.4 and float(e[2]['pred']) <= 1.0 ):
-                        e[2]['pred'] = str(0.4)
+                        e[2]['pred'] = str(self.TM.noneToValue)
                 except ValueError:
-                    e[2]['pred'] = str(0.4)
+                    e[2]['pred'] = str(self.TM.noneToValue)
             
             yield e
 
