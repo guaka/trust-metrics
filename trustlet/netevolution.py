@@ -12,7 +12,11 @@ import os,time,re
 stringtime2int = lambda s: int(time.mktime( (int(s[:4]), int(s[5:7]), int(s[8:10]), 0, 0, 0, 0, 0, 0) ))
 inttime2string = lambda i: "%.4d-%.2d-%.2d"%time.gmtime(i)[:3]
 
-def trustAverage( fromdate, todate, path ):
+def no_observer(n1,n2,e):
+    return e['level']!='Observer'
+
+
+def trustAverage( fromdate, todate, path, noObserver=False ):
     """
     This function evaluate the trust average on more than one datasets.
     If you evaluate twice the same thing, the evaluate 
@@ -57,9 +61,10 @@ def trustAverage( fromdate, todate, path ):
         print "dataset of ",d ," Evaluated"
         return (d,averagetrust)
     
-    def no_observer(n1,n2,e):
-        return e['level']!='Observer'
-    return evolutionmap( path, eval, (fromdate,todate), no_observer )
+    if noObserver:
+        return evolutionmap( path, eval, (fromdate,todate), no_observer )
+    else:
+        return evolutionmap( path, eval, (fromdate,todate) )
 
 def ta_plot(ta, path, filename="trustAverage.png"):
     prettyplot( ta, os.path.join(path,filename), title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
@@ -136,7 +141,7 @@ def plot_usersgrown(data,path='.'):
                showlines=True
                )
 
-def edgespernode(path,range=None):
+def edgespernode(path,range=None, noObserver=False):
     '''
     return the average number of edges for each user
     '''
@@ -144,7 +149,10 @@ def edgespernode(path,range=None):
         nodes = len(K.nodes())
         return ( nodes , 1.0*len(K.edges())/nodes )
     
-    return evolutionmap(path,edgespernode_nodes,range)
+    if noObserver:
+        return evolutionmap(path,edgespernode_nodes,range,no_observer)
+    else:
+        return evolutionmap(path,edgespernode_nodes,range)
 
 def plot_edgespernode(data,path='.'):
     '''
