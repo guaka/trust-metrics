@@ -2,29 +2,82 @@
 # -*- coding: utf-8 -*-
 
 from xml import sax
+<<<<<<< .mine
+import re
+from trustlet.Dataset.Network import Network
+from networkx import write_dot
+=======
 from string import index
+>>>>>>> .r543
+
+#printable = lambda o: ''.join([c for c in o if ord(c)<128])
+stacknames = lambda stack: [i[0] for i in stack]
+stackdatas = lambda stack: [i[1][:50] for i in stack]
+
+from socket import gethostname
+hostname = gethostname()
 
 def main():
-    #parser = sax.make_parser()
     ch = WikiContentHandler()
-    sax.parse('vecwiki-20080408-pages-meta-current.xml',ch)
+    #sax.parse('vecwiki-20080408-pages-meta-current.xml',ch)
+    if hostname == 'etna2':
+        sax.parse('/home/jonathan/Desktop/raid/vecwiki-20080625-pages-meta-history.xml',ch)
 
-['__doc__', '__getitem__', '__init__', '__len__', '__module__', '_attrs', 'copy', 'get', 'getLength', 'getNameByQName', 'getNames', 'getQNameByName', 'getQNames', 'getType', 'getValue', 'getValueByQName', 'has_key', 'items', 'keys', 'values']
+    #print ch.pages
 
 class WikiContentHandler(sax.handler.ContentHandler):
-    def __init__(self):
+    def __init__(self,use_username=True):
         sax.handler.ContentHandler.__init__(self)
-        self.level = 0
+        self.cstack = []
+        #self.characters = self.characters_ok
+        self.pages = []
+        if use_username:
+            self._node = u'username'
+        else:
+            self._node = u'id'
+
     def startElement(self,name,attrs):
-        self.level += 1
-        print ' '*self.level+name
-        for name in attrs.getNames():
-            print '>',name,attrs.getValue(name),attrs.getType(name)
+        self.cstack.append([name,u''])
+        
+        #disable loading of contents
+        if name == u'text':
+            pass
+            #self.characters = None
+        elif name == u'page':
+            self.pages.append( ('',{}) ) # ( user, dict_edit )
+
+        #print stacknames(self.cstack)
+        #for name in attrs.getNames():
+        #    print '>',name,attrs.getValue(name),attrs.getType(name)
         #print attrs.items()
+
     def endElement(self,name):
-        self.level -= 1
+        storedName,contents = self.cstack.pop()
+        assert name == storedName
+
+        #print ' '*len(self.cstack)+name,self.cstack[-1][1]
+
+        if name == self._node:
+            assert self.cstack[-1][0] == u'contributor'
+            #print stacknames(self.cstack)
+            print self.cstack,'|',self.cstack[-1][1]
+
+            key = self.cstack[-1][1]
+            if self.pages[-1][1].has_key(key):
+                self.pages[-1][1][key] += 1
+            else:
+                self.pages[-1][1][key] = 1
+            #print self.pages[-1][1][key]
+            
+        elif name == u'text':
+            pass
+            #self.characters = self.characters_ok
+
     def characters(self,contents):
-        print str(contents)
+        #print 'contents','('+contents[:50]+')'
+        #print '>>>',self.cstack[-1][0],'@'+contents+'@'
+        self.cstack[-1][1] += contents.strip()
+        #print '>>>',self.cstack[-1][0],'@'+self.cstack[-1][1]+'@'
 
 
 def getCollaborators( name, rawWikiText ):
