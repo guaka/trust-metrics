@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from xml import sax
-<<<<<<< .mine
 import re
 from trustlet.Dataset.Network import Network
 from networkx import write_dot
-=======
 from string import index
->>>>>>> .r543
 
 #printable = lambda o: ''.join([c for c in o if ord(c)<128])
 stacknames = lambda stack: [i[0] for i in stack]
