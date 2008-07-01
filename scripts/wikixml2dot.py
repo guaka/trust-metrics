@@ -15,25 +15,32 @@ hostname = gethostname()
 
 i18n = {
     'vec':('Discussion utente',),
-    'it':('Discussioni utente',),
-    'en':('User talk',),
+    'nap':('Discussioni utente',),
+    'it': ('Discussioni utente',),
+    'en': ('User talk',),
+    'la': ('Disputatio Usoris',),
 }
 
 def main():
-    ch = WikiContentHandler()
-    #sax.parse('vecwiki-20080408-pages-meta-current.xml',ch)
+
     if hostname == 'etna2':
+        ch = WikiContentHandler()
         sax.parse('/home/jonathan/Desktop/raid/vecwiki-20080625-pages-meta-history.xml',ch)
+        #ch = WikiContentHandler(lang='nap')
+        #sax.parse('/home/jonathan/Desktop/raid/napwiki-20080629-pages-meta-history.xml',ch)
+        #ch = WikiContentHandler(lang='la')
+        #sax.parse('/home/jonathan/Desktop/raid/lawiki-20080630-pages-meta-history.xml',ch)
+
+        #file('log','w').write(str(ch.pages))
     elif hostname == 'ciropom.homelinux.net':
         #print getCollaborators( test )
         pass
 
-    file('log','w').write(str(ch.pages))
-
 class WikiContentHandler(sax.handler.ContentHandler):
-    def __init__(self,use_username=True):
+    def __init__(self,use_username=True,lang='vec'):
         sax.handler.ContentHandler.__init__(self)
 
+        self.lang = lang
         self.read = False
         self.validdisc = False # valid discussion
 
@@ -69,7 +76,7 @@ class WikiContentHandler(sax.handler.ContentHandler):
 
             ### 'Discussion utente:Paolo-da-skio'
             title = self.ltitle.partition(':')
-            if title[:2] == (i18n['vec'][0], ':') and title[2]:
+            if title[:2] == (i18n[self.lang][0], ':') and title[2]:
                 self.pages.append( (title[2],{}) ) # ( user, dict_edit )
                 self.validdisc = True
             else:
@@ -81,14 +88,12 @@ class WikiContentHandler(sax.handler.ContentHandler):
         elif self.read == u'title':
             self.ltitle += contents.strip()
 
-    def getNetwork(self,min_indegree=1):
+    def getNetwork(self):
         W = Network()
         
         for user,authors in self.pages:
             W.add_node(user)
             for a,num_edit in authors.iteritems():
-                if num_edit<min_indegree:
-                    continue
                 # add node
                 W.add_node(a)
                 #add edges
