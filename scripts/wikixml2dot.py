@@ -7,12 +7,17 @@ from trustlet.Dataset.Network import Network
 from networkx import write_dot
 from string import index, split
 
-printable = lambda o: ''.join([c for c in o if ord(c)<128])
+#printable = lambda o: ''.join([c for c in o if ord(c)<128])
 stacknames = lambda stack: [i[0] for i in stack]
 stackdatas = lambda stack: [i[1][:50] for i in stack]
 
 from socket import gethostname
 hostname = gethostname()
+
+i18n = {
+    'vec':('Discussion utente',),
+    'it':('Discussioni utente',)
+}
 
 def main():
     ch = WikiContentHandler()
@@ -23,62 +28,58 @@ def main():
         #print getCollaborators( "fuck", test )
         pass
 
-    #print ch.pages
+    file('log','w').write(str(ch.pages))
 
 class WikiContentHandler(sax.handler.ContentHandler):
     def __init__(self,use_username=True):
         sax.handler.ContentHandler.__init__(self)
-        self.cstack = []
-        #self.characters = self.characters_ok
+
+        self.read = False
+        self.validdisc = False
+
         self.pages = []
+
         if use_username:
             self._node = u'username'
         else:
             self._node = u'id'
 
     def startElement(self,name,attrs):
-        self.cstack.append([name,u''])
         
         #disable loading of contents
-        if name == u'text':
-            pass
-            #self.characters = None
-        elif name == u'page':
-            self.pages.append( (u'',{}) ) # ( user, dict_edit )
-
-        #print stacknames(self.cstack)
-        #for name in attrs.getNames():
-        #    print '>',name,attrs.getValue(name),attrs.getType(name)
-        #print attrs.items()
+        if name == self._node:
+            self.read = self._node
+            self.lusername = u''
+        elif name == u'title':
+            self.read = u'title'
+            self.ltitle = u''
+        else:
+            self.read = False
 
     def endElement(self,name):
-        storedName,contents = self.cstack.pop()
-        assert name == storedName
 
-        #print ' '*len(self.cstack)+name,self.cstack[-1][1]
+        if name == self._node and self.validdisc:
 
-        if name == self._node:
-            assert self.cstack[-1][0] == u'contributor'
-            #print stacknames(self.cstack)
-            print self.cstack,'|',self.cstack[-1][1]
-
-            key = self.cstack[-1][1]
-            if self.pages[-1][1].has_key(key):
-                self.pages[-1][1][key] += 1
+            d = self.pages[-1][1]
+            if d.has_key(self.lusername):
+                d[self.lusername] += 1
             else:
-                self.pages[-1][1][key] = 1
-            #print self.pages[-1][1][key]
-            
-        elif name == u'text':
-            pass
-            #self.characters = self.characters_ok
+                d[self.lusername] = 1
+        elif name == u'title':
+
+            ### 'Discussion utente:Paolo-da-skio'
+            title = self.ltitle.partition(':')
+            if title[:2] == (i18n['vec'][0], ':') and title[2]:
+                self.pages.append( (title[2],{}) ) # ( user, dict_edit )
+                self.validdisc = True
+            else:
+                self.validdisc = False
 
     def characters(self,contents):
-        #print 'contents','('+contents[:50]+')'
-        #print '>>>',self.cstack[-1][0],'@'+contents+'@'
-        self.cstack[-1][1] += contents.strip()
-        #print '>>>',self.cstack[-1][0],'@'+self.cstack[-1][1]+'@'
-
+        if self.read == self._node:
+            self.lusername += contents.strip()
+        elif self.read == u'title':
+            self.ltitle += contents.strip()
 
 def getCollaborators( rawWikiText ):
     """
