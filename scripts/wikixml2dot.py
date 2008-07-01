@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+'''
+USAGE:
+   ./wikixml2dot.py xml_file lang [base_path]
+      Default base_path = .
+      If xml_file is - it will use stdin
+
+(* not written yet *)
+'''
+
 from xml import sax
 from trustlet.Dataset.Network import Network
 from networkx import write_dot
 from string import index, split
+from sys import stdin,argv
 
 #printable = lambda o: ''.join([c for c in o if ord(c)<128])
-stacknames = lambda stack: [i[0] for i in stack]
-stackdatas = lambda stack: [i[1][:50] for i in stack]
 
 from socket import gethostname
 hostname = gethostname()
@@ -25,6 +33,7 @@ def main():
 
     if hostname == 'etna2':
         ch = WikiContentHandler()
+        #sax.parse(stdin,ch)
         sax.parse('/home/jonathan/Desktop/raid/vecwiki-20080625-pages-meta-history.xml',ch)
         #ch = WikiContentHandler(lang='nap')
         #sax.parse('/home/jonathan/Desktop/raid/napwiki-20080629-pages-meta-history.xml',ch)
