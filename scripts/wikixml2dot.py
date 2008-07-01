@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from xml import sax
-import re
 from trustlet.Dataset.Network import Network
 from networkx import write_dot
 from string import index, split
@@ -16,7 +15,8 @@ hostname = gethostname()
 
 i18n = {
     'vec':('Discussion utente',),
-    'it':('Discussioni utente',)
+    'it':('Discussioni utente',),
+    'en':('User talk',),
 }
 
 def main():
@@ -25,7 +25,7 @@ def main():
     if hostname == 'etna2':
         sax.parse('/home/jonathan/Desktop/raid/vecwiki-20080625-pages-meta-history.xml',ch)
     elif hostname == 'ciropom.homelinux.net':
-        #print getCollaborators( "fuck", test )
+        #print getCollaborators( test )
         pass
 
     file('log','w').write(str(ch.pages))
@@ -35,7 +35,7 @@ class WikiContentHandler(sax.handler.ContentHandler):
         sax.handler.ContentHandler.__init__(self)
 
         self.read = False
-        self.validdisc = False
+        self.validdisc = False # valid discussion
 
         self.pages = []
 
@@ -80,6 +80,22 @@ class WikiContentHandler(sax.handler.ContentHandler):
             self.lusername += contents.strip()
         elif self.read == u'title':
             self.ltitle += contents.strip()
+
+    def getNetwork(self,min_indegree=1):
+        W = Network()
+        
+        for user,authors in self.pages:
+            W.add_node(user)
+            for a,num_edit in authors.iteritems():
+                if num_edit<min_indegree:
+                    continue
+                # add node
+                W.add_node(a)
+                #add edges
+                W.add_edge(user,a,{'value':str(num_edit)})
+                
+        return W
+                
 
 def getCollaborators( rawWikiText ):
     """
