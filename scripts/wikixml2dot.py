@@ -7,7 +7,7 @@ from trustlet.Dataset.Network import Network
 from networkx import write_dot
 from string import index
 
-#printable = lambda o: ''.join([c for c in o if ord(c)<128])
+printable = lambda o: ''.join([c for c in o if ord(c)<128])
 stacknames = lambda stack: [i[0] for i in stack]
 stackdatas = lambda stack: [i[1][:50] for i in stack]
 
@@ -41,7 +41,7 @@ class WikiContentHandler(sax.handler.ContentHandler):
             pass
             #self.characters = None
         elif name == u'page':
-            self.pages.append( ('',{}) ) # ( user, dict_edit )
+            self.pages.append( (u'',{}) ) # ( user, dict_edit )
 
         #print stacknames(self.cstack)
         #for name in attrs.getNames():
