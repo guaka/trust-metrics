@@ -46,7 +46,8 @@ def main():
         #sax.parse('/home/jonathan/Desktop/raid/napwiki-20080629-pages-meta-history.xml',ch)
         #ch = WikiContentHandler(lang='la')
         #sax.parse('/home/jonathan/Desktop/raid/lawiki-20080630-pages-meta-history.xml',ch)
-        #write_dot(ch.getNetwork(),'graph.dot')
+        #print ch.getNetwork()
+        write_dot(ch.getNetwork(),'graph.dot')
 
         #file('log','w').write(str(ch.pages))
     elif hostname == 'ciropom.homelinux.net':
@@ -109,12 +110,12 @@ class WikiContentHandler(sax.handler.ContentHandler):
         W = Network()
         
         for user,authors in self.pages:
-            W.add_node(user)
+            W.add_node(str(user))
             for a,num_edit in authors.iteritems():
                 # add node
-                W.add_node(a)
+                W.add_node(str(a))
                 #add edges
-                W.add_edge(user,a,{'value':str(num_edit)})
+                W.add_edge(str(user),str(a),{'value':str(num_edit)})
                 
         return W
                 
