@@ -358,7 +358,15 @@ class WikiNetwork(WeightedNetwork):
         WeightedNetwork.__init__(self,base_path=base_path)
         
         try:
-            self._read_dot( os.path.join( os.path.join(self.path,lang ),"graph.dot" ) )
+
+            if dataset == None:
+                self._read_dot( os.path.join( os.path.join(self.path,lang ),"graph.dot" ) )
+            else:
+                if os.path.isfile( dataset ):
+                    self._read_dot( dataset )
+                else:
+                    self._read_dot( os.path.join( dataset, "graph.dot" )
+
         except IOError:
             raise IOError("There aren't a dot file on this path:\n "+
                           self.path+"\nplease specify another path or create dot file with wikixml2dot.py" )
