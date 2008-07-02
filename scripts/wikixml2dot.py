@@ -31,7 +31,7 @@ i18n = {
 
 def main():
 
-    if len(argv[1:]) == 2:
+    if len(argv[1:]) >= 2:
         ch = WikiContentHandler(lang=argv[2])
         sax.parse(argv[1],ch)
         write_dot(ch.getNetwork(),'graph.dot')
