@@ -356,8 +356,11 @@ class WikiNetwork(WeightedNetwork):
     """
         
     def __init__(self, lang, base_path = None, dataset = None, upthreshold = 20):
-        WeightedNetwork.__init__(self,base_path=os.path.join(base_path,lang ))
+        WeightedNetwork.__init__(self,base_path=base_path )
         
+        self.path = os.path.join( self.path, lang )
+        if not os.path.exists( self.path ):
+            os.mkdir(self.path)
         self.upthreshold = upthreshold
         
         try:
@@ -373,7 +376,7 @@ class WikiNetwork(WeightedNetwork):
                     self._read_dot( data )
                                     
                 #save graph.dot in right folder
-                os.system( 'mv '+data+' '+os.path.join(base_path,"graph.dot") )
+                os.system( 'mv '+data+' '+os.path.join(self.path,"graph.dot") )
 
             #end else
 
@@ -384,15 +387,19 @@ class WikiNetwork(WeightedNetwork):
 
         self.weights()
         self.__rescale()
+        
 
     def __map(self, value):
         """
         take a value to rescale in range 0..1
         """
-        
-        if value >= self.upthreshold:
+        val = value
+        if type(value) is str:
+            val = int( value )
+
+        if val >= self.upthreshold:
             return 1.0
-        return 1.0 * value / self.upthreshold
+        return 1.0 * val / self.upthreshold
 
     def __rescale(self):
         """
@@ -402,6 +409,9 @@ class WikiNetwork(WeightedNetwork):
         self._weights = [self.__map(x) for x in self._weights]
 
         return self._weights
+
+    def trust_on_edge(self,edge):
+        return self.__map( edge[2].values()[0] )
 
 
 if __name__ == "__main__":
