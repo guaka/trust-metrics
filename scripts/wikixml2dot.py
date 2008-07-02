@@ -7,7 +7,7 @@ USAGE:
       Default base_path = .
       If xml_file is - it will use stdin
 
-(* not written yet *)
+*base_path not yet implemented*
 '''
 
 from xml import sax
@@ -31,6 +31,13 @@ i18n = {
 
 def main():
 
+    if len(argv[1:]) == 2:
+        ch = WikiContentHandler(lang=argv[2])
+        sax.parse(argv[1],ch)
+        write_dot(ch.getNetwork(),'graph.dot')
+        
+    exit(0)
+
     if hostname == 'etna2':
         ch = WikiContentHandler()
         #sax.parse(stdin,ch)
@@ -39,6 +46,7 @@ def main():
         #sax.parse('/home/jonathan/Desktop/raid/napwiki-20080629-pages-meta-history.xml',ch)
         #ch = WikiContentHandler(lang='la')
         #sax.parse('/home/jonathan/Desktop/raid/lawiki-20080630-pages-meta-history.xml',ch)
+        #write_dot(ch.getNetwork(),'graph.dot')
 
         #file('log','w').write(str(ch.pages))
     elif hostname == 'ciropom.homelinux.net':
