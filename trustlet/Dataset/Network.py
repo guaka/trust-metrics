@@ -346,3 +346,29 @@ class MovieLensNetwork(WeightedNetwork):
             raise IOError("There aren't a dot file on this path:\n "+
                           self.path+"\nplease specify another path or create dot file with movielens.py" )
         
+
+class WikiNetwork(WeightedNetwork):
+    def __init__(self, base_path = None, lang):
+        WeightedNetwork.__init__(self,base_path=base_path)
+        
+        try:
+            self._read_dot( os.path.join( os.path.join(self.path,lang ),"graph.dot" ) )
+        except IOError:
+            raise IOError("There aren't a dot file on this path:\n "+
+                          self.path+"\nplease specify another path or create dot file with wikixml2dot.py" )
+
+        self.weights()
+        self.__rescale()
+
+    def __map(self, value):
+        """
+        take a value to rescale in range 0..1
+        """
+        
+        
+
+    def __rescale(self):
+        """
+        take the _weights field and rescale the value
+        """
+        
