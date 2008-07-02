@@ -348,7 +348,13 @@ class MovieLensNetwork(WeightedNetwork):
         
 
 class WikiNetwork(WeightedNetwork):
-    def __init__(self, base_path = None, lang):
+    """
+    Wikipedia Network Handler.
+    You must pass to it a string with lang of wikipedia, and optionally
+    you can pass a path to a dot file that it will load and save in the dataset folder.
+    """
+        
+    def __init__(self, lang, base_path = None, dataset = None):
         WeightedNetwork.__init__(self,base_path=base_path)
         
         try:
@@ -371,4 +377,11 @@ class WikiNetwork(WeightedNetwork):
         """
         take the _weights field and rescale the value
         """
-        
+
+        self._weights = [self.__map(x) for x in self._weights]
+
+        return self._weights
+
+
+if __name__ == "__main__":
+    WikiNetwork("ve")
