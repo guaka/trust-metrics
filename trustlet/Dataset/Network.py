@@ -350,8 +350,9 @@ class MovieLensNetwork(WeightedNetwork):
 class WikiNetwork(WeightedNetwork):
     """
     Wikipedia Network Handler.
-    You must pass to it a string with lang of wikipedia, and optionally
-    you can pass a path to a dot file that it will load and save in the dataset folder.
+    You must pass to it a string with lang of wikipedia, optionally
+    path to a dot file that it will load and save in the dataset folder
+    and optionally the upthreshold (number of vote to consider edges max trusted)
     """
         
     def __init__(self, lang, base_path = None, dataset = None, upthreshold = 20):
