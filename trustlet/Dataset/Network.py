@@ -356,20 +356,27 @@ class WikiNetwork(WeightedNetwork):
     """
         
     def __init__(self, lang, base_path = None, dataset = None, upthreshold = 20):
-        WeightedNetwork.__init__(self,base_path=base_path)
+        WeightedNetwork.__init__(self,base_path=os.path.join(base_path,lang ))
         
         self.upthreshold = upthreshold
         
         try:
             
             if dataset == None:
-                self._read_dot( os.path.join( os.path.join(self.path,lang ),"graph.dot" ) )
+                self._read_dot( os.path.join( self.path,"graph.dot" ) )
             else:
                 if os.path.isfile( dataset ):
                     self._read_dot( dataset )
+                    data = dataset
                 else:
-                    self._read_dot( os.path.join( dataset, "graph.dot" ) )
+                    data = os.path.join( dataset, "graph.dot" )
+                    self._read_dot( data )
                                     
+                #save graph.dot in right folder
+                os.system( 'mv '+data+' '+os.path.join(base_path,"graph.dot") )
+
+            #end else
+
         except IOError:
                                         
             raise IOError("There aren't a dot file on this path:\n "+
@@ -398,4 +405,4 @@ class WikiNetwork(WeightedNetwork):
 
 
 if __name__ == "__main__":
-    WikiNetwork("ve")
+    WikiNetwork("vec")
