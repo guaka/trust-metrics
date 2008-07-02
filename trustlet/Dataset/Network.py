@@ -354,8 +354,10 @@ class WikiNetwork(WeightedNetwork):
     you can pass a path to a dot file that it will load and save in the dataset folder.
     """
         
-    def __init__(self, lang, base_path = None, dataset = None):
+    def __init__(self, lang, base_path = None, dataset = None, upthreshold = 20):
         WeightedNetwork.__init__(self,base_path=base_path)
+        
+        self.upthreshold = upthreshold
         
         try:
             
@@ -380,7 +382,9 @@ class WikiNetwork(WeightedNetwork):
         take a value to rescale in range 0..1
         """
         
-        
+        if value >= self.upthreshold:
+            return 1.0
+        return 1.0 * value / self.upthreshold
 
     def __rescale(self):
         """
