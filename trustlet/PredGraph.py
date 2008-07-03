@@ -180,13 +180,31 @@ class PredGraph(CalcGraph):
         self._paste_graph(pg)
         return pg
         
+    def get_ratio(self):
+        """
+        give a % of edges predicted
+        """
+
+        notpred_ratio =  0
+        count = 0
+        
+        for x in self.edges_iter():
+            val = x[2]['pred']
+            count += 1
+            if float(val) == 0.0 or val == None or int(val) == UNDEFINED:
+                    notpred_ratio += 1
+            
+
+        return 1.0 * ( count - notpred_ratio ) / count
+                
+
     def _prepare(self):
         """
         Prepare. Data
         (e.g. add orig value to every edge)
         """
         ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
-
+        
         # if True:  # check if self has orig
         if ratio == 1.0:
             # add orig trust value into self
@@ -227,12 +245,15 @@ class PredGraph(CalcGraph):
             if (self.predict_ratio == 1.0 or
                 random() <= self.predict_ratio):
                 predicted_trust = tm.leave_one_out(edge)
+                
                 pred_graph.add_edge(edge[0], edge[1], 
                                     {'pred': str(predicted_trust)})
                                      #'orig': str(self.dataset.trust_on_edge(edge)})
                 count += 1
                 if divmod(count, 100)[1] == 0:
                     self._time_indicator(count, str( (edge, predicted_trust) )+' tm: '+get_name(self.TM) )
+        
+            
         return pred_graph
         
 

@@ -11,7 +11,7 @@ from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
 
 
-import os
+import os,re
 from networkx.xdigraph import XDiGraph
 from networkx import cluster, path, component
 

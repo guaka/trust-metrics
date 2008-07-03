@@ -28,7 +28,7 @@ def avg_or_none(in_list):
     2.5
 
     >>> print avg_or_none([None] * 6)
-    None
+    0.0
     """
     filt_list = [e
                  for e in in_list
