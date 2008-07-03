@@ -108,7 +108,7 @@ def est_datetime_arr(seconds):
     return date.strftime("%H:%M:%S %A %d %B")
 
 
-def get_name(obj,append=''):
+def get_name(obj):
     """Get name of object or class.
 
     >>> get_name(datetime)
@@ -117,14 +117,16 @@ def get_name(obj,append=''):
 
     if hasattr(obj, "__name__"):
         if hasattr(obj, "name"):
-            return obj.name+append
-        return obj.__name__+append
+            return obj.name
+        return obj.__name__
 
     if hasattr(obj, "__class__"):
         if hasattr(obj, "get_name"):
             ret = obj.get_name()
+            #if ret == 'PredGraph':
+            #    ret += 'Upth'+str(obj.dataset.upthreshold)
         if hasattr(obj, "defaultPredict") and obj.defaultPredict:
-            ret = get_name(obj.__class__,'Default'+obj.defaultPredict)
+            ret = get_name(obj.__class__)+'Default'+obj.defaultPredict
         else:
             ret = get_name(obj.__class__)
 
