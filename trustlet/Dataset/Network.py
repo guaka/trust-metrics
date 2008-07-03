@@ -365,7 +365,7 @@ class WikiNetwork(WeightedNetwork):
         if not os.path.exists( self.path ):
             os.mkdir(self.path)
         
-
+        self.filepath = os.path.join( self.path, "graph.dot" )
         self.upthreshold = upthreshold
         
         try:
