@@ -152,7 +152,10 @@ def getCollaborators( rawWikiText ):
     exit = 0; start = 0; search = "User:"; io = 5
 
     def getEnd( rawWikiText, search, start ):
-
+        """
+        return the position of the first 'end character',
+        choosed from search.
+        """
         list = split( search , "," )
         end = []
 

@@ -21,9 +21,13 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
-def getTrustMetrics( net, trivial=False, allAdvogato=True ):
+def getTrustMetrics( net, trivial=False, allAdvogatoLocalDefault=True, advogato=True ):
     """
     return all trust metric on network passed
+    Parameters:
+       trivial = if True, add the trivial function as always_master, always_observer...
+       allAdvogatoLocalDefault = if True, and advogato is True, include AdvogatoLocalDefaultObserver/Journeyer/Master/Apprentice
+       advogato = include advogato trust metrics
     """
     trustmetrics = {
         "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
@@ -35,16 +39,19 @@ def getTrustMetrics( net, trivial=False, allAdvogato=True ):
         "PageRankTM":trustlet.PageRankTM(net),
         "moletrust_2":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=2)),
         "moletrust_3":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=3)),
-        "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4)),
-        "AdvogatoLocal":trustlet.AdvogatoLocal(net),
-        "AdvogatoGlobalTM":trustlet.AdvogatoGlobalTM(net)
+        "moletrust_4":trustlet.TrustMetric( net , trustlet.moletrust_generator(horizon=4))
         }
 
-    if allAdvogato:
-        levels = type(allAdvogato) is list and allAdvogato or net.level_map.keys()
-        for level in levels:
-            if level:
-                trustmetrics["AdvogatoLocalDefault"+level] = trustlet.AdvogatoLocal(net,level)
+    if advogato:
+        trustmetrics["AdvogatoLocal"]=trustlet.AdvogatoLocal(net)
+        trustmetrics["AdvogatoGlobalTM"]=trustlet.AdvogatoGlobalTM(net)
+        
+
+        if allAdvogato:
+            levels = type(allAdvogato) is list and allAdvogato or net.level_map.keys()
+            for level in levels:
+                if level:
+                    trustmetrics["AdvogatoLocalDefault"+level] = trustlet.AdvogatoLocal(net,level)
 
     if trivial:
         trustmetrics["always_master"] = trustlet.TrustMetric( net , trustlet.always_master)
