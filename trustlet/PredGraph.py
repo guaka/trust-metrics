@@ -180,7 +180,7 @@ class PredGraph(CalcGraph):
         self._paste_graph(pg)
         return pg
         
-    def get_ratio(self):
+    def predicted_ratio(self):
         """
         give a % of edges predicted
         """
