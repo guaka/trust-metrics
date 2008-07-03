@@ -137,7 +137,7 @@ class WikiContentHandler(sax.handler.ContentHandler):
         return W
                 
 
-def getCollaborators( rawWikiText ):
+def getCollaborators( rawWikiText, lang ):
     """
     return a list of tuple with ( user, value ), where user is the name of user
     that put a message on the page, and the value is the number of times that
@@ -181,7 +181,7 @@ def getCollaborators( rawWikiText ):
             exit += 1
             start = 0
             io = 7 #index offset from begin of "User:" and begin of Username
-            search = "Utente:"
+            search = i18n[lang]+":"
             if exit >= 2:
                 continue
         #begin of the username
