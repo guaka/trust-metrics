@@ -357,6 +357,8 @@ class WikiNetwork(WeightedNetwork):
     def __init__(self, lang, date, base_path = None, dataset = None, upthreshold = 20):
         WeightedNetwork.__init__(self,base_path=base_path )
         
+        assert re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',date)
+
         self.path = os.path.join( self.path, lang )
         if not os.path.exists( self.path ):
             os.mkdir(self.path)
@@ -387,7 +389,7 @@ class WikiNetwork(WeightedNetwork):
 
         except IOError:
                                         
-            raise IOError("There aren't a dot file on this path:\n "+
+            raise IOError("There isn't a dot file on this path:\n "+
                           self.path+"\nplease specify another path or create dot file with wikixml2dot.py" )
 
         self.weights()
@@ -398,13 +400,12 @@ class WikiNetwork(WeightedNetwork):
         """
         take a value to rescale in range 0..1
         """
-        val = value
         if type(value) is str:
-            val = int( value )
+            value = int(value)
 
-        if val >= self.upthreshold:
+        if value >= self.upthreshold:
             return 1.0
-        return 1.0 * val / self.upthreshold
+        return 1.0 * value / self.upthreshold
 
     def __rescale(self):
         """

@@ -3,20 +3,20 @@
 
 '''
 USAGE:
-   ./wikixml2dot.py xml_file lang [base_path]
-      Default base_path = .
+   ./wikixml2dot.py xml_file lang date [base_path]
+      Default base_path = home dir
       If xml_file is - it will use stdin
-
-*base_path not yet implemented*
 '''
 
 from xml import sax
 from trustlet.Dataset.Network import Network
+from trustlet.helpers import mkpath
 from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
+import os,re
 
-#printable = lambda o: ''.join([c for c in o if ord(c)<128])
+printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 
 from socket import gethostname
 hostname = gethostname()
@@ -31,10 +31,25 @@ i18n = {
 
 def main():
 
-    if len(argv[1:]) >= 2:
-        ch = WikiContentHandler(lang=argv[2])
-        sax.parse(argv[1],ch)
-        write_dot(ch.getNetwork(),'graph.dot')
+    if len(argv[1:]) >= 3:
+        xml,lang,date = argv[1:]
+
+        assert re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',date)
+
+        if argv[4:]:
+            base_path = argv[4]
+        else:
+            assert os.environ.has_key('HOME')
+            base_path = os.environ['HOME']
+
+        path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
+        mkpath(path)
+
+        ch = WikiContentHandler(lang=lang)
+        sax.parse(xml,ch)
+        write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
+    else:
+        print __doc__
         
     exit(0)
 
@@ -110,12 +125,12 @@ class WikiContentHandler(sax.handler.ContentHandler):
         W = Network()
         
         for user,authors in self.pages:
-            W.add_node(str(user))
+            W.add_node(str(printable(user)))
             for a,num_edit in authors.iteritems():
                 # add node
-                W.add_node(str(a))
+                W.add_node(str(printable(a)))
                 #add edges
-                W.add_edge(str(user),str(a),{'value':str(num_edit)})
+                W.add_edge(str(printable(user)),str(printable(a)),{'value':str(num_edit)})
                 
         return W
                 
