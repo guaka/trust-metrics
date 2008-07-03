@@ -181,7 +181,10 @@ def getCollaborators( rawWikiText, lang ):
             exit += 1
             start = 0
             io = 7 #index offset from begin of "User:" and begin of Username
-            search = i18n[lang]+":"
+            try:
+                search = i18n[lang][1]+":"
+            except KeyError:
+                pass
             if exit >= 2:
                 continue
         #begin of the username
