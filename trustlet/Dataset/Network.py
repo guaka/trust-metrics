@@ -1,4 +1,3 @@
-
 """
 Network classes
 
@@ -355,12 +354,18 @@ class WikiNetwork(WeightedNetwork):
     and optionally the upthreshold (number of vote to consider edges max trusted)
     """
         
-    def __init__(self, lang, base_path = None, dataset = None, upthreshold = 20):
+    def __init__(self, lang, date, base_path = None, dataset = None, upthreshold = 20):
         WeightedNetwork.__init__(self,base_path=base_path )
         
         self.path = os.path.join( self.path, lang )
         if not os.path.exists( self.path ):
             os.mkdir(self.path)
+            
+        self.path = os.path.join( self.path, date )
+        if not os.path.exists( self.path ):
+            os.mkdir(self.path)
+        
+
         self.upthreshold = upthreshold
         
         try:
@@ -376,7 +381,7 @@ class WikiNetwork(WeightedNetwork):
                     self._read_dot( data )
                                     
                 #save graph.dot in right folder
-                os.system( 'mv '+data+' '+os.path.join(self.path,"graph.dot") )
+                os.rename( data, os.path.join(self.path,"graph.dot") )
 
             #end else
 
