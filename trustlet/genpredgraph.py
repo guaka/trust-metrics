@@ -6,8 +6,10 @@ from trustlet import *
 
 def main(net):
     #A = AdvogatoNetwork( download=True, base_path=path )
-
-    trustmetrics = getTrustMetrics( net )
+    if get_name(net) == 'AdvogatoNetwork':
+        trustmetrics = getTrustMetrics( net )
+    else:
+        trustmetrics = getTrustMetrics( net, advogato=False )
 
     def eval( tm ):
         P = PredGraph( trustmetrics[tm] )
@@ -21,26 +23,31 @@ def main(net):
 if __name__ == "__main__":
     import sys,re
     from os.path import split
-    path = sys.argv[1]
-    dataset_path = sys.argv[2]
-    dataset = dataset_path
-    type = split( dataset )[1]
+
+    l = len(sys.argv)
+
+    if l > 1:
+        dataset_path = sys.argv[1]
+        dataset = dataset_path
+        type = split( dataset )[1]
+    else:
+        print "USAGE: python genpredgraph.py dataset_path date [lang]"
 
     #try to find type of network
     while( re.match( "[a-zA-Z]+Network", type ) == None ):
         dataset,type = split(dataset)
 
     if type == "WikiNetwork":
-        if len(sys.argv) > 3:
+        if l > 3:
             lang = sys.argv[3]
-            date = sys.argv[4]
-            A = WikiNetwork( lang,date, dataset=dataset_path )
+            date = sys.argv[2]
+            A = WikiNetwork( lang,date )
         else:
             print "you must specify lang and date for wikinetwork!"
             exit(0)
     elif type == "AdvogatoNetwork":
-        if len(sys.argv) > 2:
-            date = sys.argv[3]
+        if l > 2:
+            date = sys.argv[2]
             A = AdvogatoNetwork( date=date )
         else:
             print "you must specify date for advogatonetwork!"
