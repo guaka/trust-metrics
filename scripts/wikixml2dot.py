@@ -185,14 +185,15 @@ def getCollaborators( rawWikiText, lang ):
                 search = i18n[lang][1]+":"
             except KeyError:
                 pass
+
             if exit >= 2:
                 continue
         #begin of the username
         start = iu + io
         end = getEnd( rawWikiText, "|,]", start ) #find end of username (search | or ], take the first one)
         username = rawWikiText[start:end]
-        resname.append( username ) #list of all usernames (possibly more than one times for one)
-        start += end - start + 1 #not consider the |
+        resname.append( username ) # list of all usernames (possibly more than one times for one)
+        start += end - start + 1 # not consider the |
         
     #return a list of tuple, the second value of tuple is the weight    
     return weight( resname )
