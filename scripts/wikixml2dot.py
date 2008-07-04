@@ -3,7 +3,7 @@
 
 '''
 USAGE:
-   ./wikixml2dot.py xml_file lang date [base_path]
+   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path]
       Default base_path = home dir
       If xml_file is - it will use stdin
 '''
@@ -17,22 +17,34 @@ from sys import stdin,argv
 import os,re
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
+node = lambda s: str(printable(s))
 
 from socket import gethostname
 hostname = gethostname()
 
 i18n = {
-    'vec':('Discussion utente',),
-    'nap':('Discussioni utente',),
-    'it': ('Discussioni utente',),
-    'en': ('User talk',),
-    'la': ('Disputatio Usoris',),
+    'vec':('Discussion utente','Utente'),
+    'nap':('Discussioni utente','Utente'),
+    'it': ('Discussioni utente','Utente'),
+    'en': ('User talk','User'),
+    'la': ('Disputatio Usoris','Usor'),
 }
 
 def main():
 
+    if '--current' in argv:
+        WikiContentHandler = WikiCurrentContentHandler
+        
+        argv.remove('--current')
+    else:
+        WikiContentHandler = WikiHistoryContentHandler
+        
+        if '--history' in argv:
+            argv.remove('--history')
+        
     if len(argv[1:]) >= 3:
-        xml,lang,date = argv[1:]
+
+        xml,lang,date = argv[1:4]
         if xml == '-':
             xml = stdin
 
@@ -48,6 +60,7 @@ def main():
         mkpath(path)
 
         ch = WikiContentHandler(lang=lang)
+
         sax.parse(xml,ch)
         write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
     else:
@@ -56,7 +69,7 @@ def main():
     exit(0)
 
     if hostname == 'etna2':
-        ch = WikiContentHandler()
+        ch = WikiHistoryContentHandler()
         #sax.parse(stdin,ch)
         sax.parse('/home/jonathan/Desktop/raid/vecwiki-20080625-pages-meta-history.xml',ch)
         #ch = WikiContentHandler(lang='nap')
@@ -71,8 +84,8 @@ def main():
         #print getCollaborators( test )
         pass
 
-class WikiContentHandler(sax.handler.ContentHandler):
-    def __init__(self,use_username=True,lang='vec'):
+class WikiHistoryContentHandler(sax.handler.ContentHandler):
+    def __init__(self,lang):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
@@ -81,16 +94,11 @@ class WikiContentHandler(sax.handler.ContentHandler):
 
         self.pages = []
 
-        if use_username:
-            self._node = u'username'
-        else:
-            self._node = u'id'
-
     def startElement(self,name,attrs):
         
         #disable loading of contents
-        if name == self._node:
-            self.read = self._node
+        if name == u'username':
+            self.read = u'username'
             self.lusername = u''
         elif name == u'title':
             self.read = u'title'
@@ -100,7 +108,7 @@ class WikiContentHandler(sax.handler.ContentHandler):
 
     def endElement(self,name):
 
-        if name == self._node and self.validdisc:
+        if name == u'username' and self.validdisc:
 
             d = self.pages[-1][1]
             if d.has_key(self.lusername):
@@ -118,7 +126,7 @@ class WikiContentHandler(sax.handler.ContentHandler):
                 self.validdisc = False
 
     def characters(self,contents):
-        if self.read == self._node:
+        if self.read == u'username':
             self.lusername += contents.strip()
         elif self.read == u'title':
             self.ltitle += contents.strip()
@@ -127,15 +135,65 @@ class WikiContentHandler(sax.handler.ContentHandler):
         W = Network()
         
         for user,authors in self.pages:
-            W.add_node(str(printable(user)))
+            W.add_node(node(user))
             for a,num_edit in authors.iteritems():
                 # add node
-                W.add_node(str(printable(a)))
+                W.add_node(node(a))
                 #add edges
-                W.add_edge(str(printable(user)),str(printable(a)),{'value':str(num_edit)})
+                W.add_edge(node(user),node(a),{'value':str(num_edit)})
                 
         return W
-                
+
+
+class WikiCurrentContentHandler(sax.handler.ContentHandler):
+    def __init__(self,lang):
+        sax.handler.ContentHandler.__init__(self)
+
+        self.lang = lang
+        self.read = False
+        self.validdisc = False # valid discussion
+
+        self.network = Network()
+
+    def startElement(self,name,attrs):
+        
+        #disable loading of contents
+        if name == u'text':
+            self.read = u'text'
+            self.ltext = u''
+        elif name == u'title':
+            self.read = u'title'
+            self.ltitle = u''
+            self.lusername = u''
+        else:
+            self.read = False
+
+    def endElement(self,name):
+
+        if name == u'text' and self.validdisc:
+
+            self.network.add_node(node(self.lusername))
+            for u,n in getCollaborators(self.ltext,self.lang):
+                self.network.add_node(node(u))
+                self.network.add_edge(node(u),node(self.lusername),{'value':str(n)})
+        elif name == u'title':
+
+            ### 'Discussion utente:Paolo-da-skio'
+            title = self.ltitle.partition(':')
+            if title[:2] == (i18n[self.lang][0], ':') and title[2]:
+                self.lusername = title[2]
+                self.validdisc = True
+            else:
+                self.validdisc = False
+
+    def characters(self,contents):
+        if self.read == u'username':
+            self.lusername += contents.strip()
+        elif self.read == u'title':
+            self.ltitle += contents.strip()
+
+    def getNetwork(self):        
+        return self.network
 
 def getCollaborators( rawWikiText, lang ):
     """
