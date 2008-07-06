@@ -52,8 +52,6 @@ def compareAllTrustMetrics( leaveOut = [],
             else:
                 pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond,
                                                                               indegree = indegree)) )
-        print 'len(pointlist):',len(pointlist)
-        print num
         for i in num:
 
             if allInOne:

@@ -21,7 +21,7 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
-def getTrustMetrics( net, trivial=False, allAdvogatoLocalDefault=True, advogato=True, allAdvogato=['Observer','Journeyer','Apprentice','Master']):
+def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer','Journeyer','Apprentice','Master']):
     """
     return all trust metric on network passed
     Parameters:
