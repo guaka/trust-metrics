@@ -87,7 +87,7 @@ def no_observer( e ):
     else:
         return e[2]['orig'] != 'Observer'
 
-def func():
+def prepare():
     A = AdvogatoNetwork( date="2008-05-12" )
 
     tmlist = getTrustMetrics( A )
@@ -104,7 +104,9 @@ def func():
     for tm in tmlist:
         plist.append( PredGraph( tmlist[tm] ) )
                 
-                
+    return plist
+
+def calc(plist):
     compareAllTrustMetrics(
         cond=no_observer,
         path='./graphs',
@@ -142,4 +144,4 @@ def func():
         ind=[1]
         )
     
-func()
+calc(prepare())
