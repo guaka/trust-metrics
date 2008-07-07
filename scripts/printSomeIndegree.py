@@ -109,7 +109,6 @@ def func():
         cond=no_observer,
         path='./graphs',
         toe='all',
-        np=4,
         plist=plist,
         ind=[3]
         )
@@ -118,7 +117,6 @@ def func():
         cond=no_observer,
         path='./graphs',
         toe='all',
-        np=4,
         plist=plist,
         ind=[15]
         )
@@ -126,7 +124,6 @@ def func():
         cond=no_observer,
         path='./graphs',
         toe='all',
-        np=4,
         plist=plist,
         ind=[20]
         )
@@ -134,7 +131,6 @@ def func():
         cond=no_observer,
         path='./graphs',
         toe='all',
-        np=4,
         plist=plist,
         ind=[10]
         )
@@ -142,7 +138,6 @@ def func():
         cond=no_observer,
         path='./graphs',
         toe='all',
-        np=4,
         plist=plist,
         ind=[1]
         )
