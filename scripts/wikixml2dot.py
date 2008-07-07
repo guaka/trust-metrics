@@ -258,7 +258,6 @@ def getCollaborators( rawWikiText, lang ):
             
         #begin of the username
         start = iu + io
-        print rawWikiText[start-10:start+30]
         end = getEnd( rawWikiText, "|,],/", start ) #find end of username (search | or ], take the first one)
         username = rawWikiText[start:end]
         resname.append( username ) # list of all usernames (possibly more than one times for one)
