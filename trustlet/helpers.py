@@ -30,7 +30,7 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
        advogato = include advogato trust metrics
     """
     trustmetrics = {
-        "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
+        "random_tmXXXX": trustlet.TrustMetric( net , trustlet.random_tm ),
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
         "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
         "edges_b_tm":trustlet.TrustMetric( net , trustlet.edges_b_tm ),

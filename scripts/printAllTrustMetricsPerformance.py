@@ -8,32 +8,57 @@ specify on command line space-separated name of trustmetric to leave out.
 from trustlet import *
 
 
-def compareAllTrustMetrics( leaveOut = [], 
+def compareAllTrustMetrics( leaveOut = [], new_name=None,
                             cond=None,date = "2008-05-12", allInOne=True, 
                             path = ".", toe = "mae", np=None,
                             x_range=None,
-                            y_range=None, ind=[3,5,10,15,20], plist=None ):
+                            y_range=None, ind=[3,5,10,15,20] ):
     """
-    toe can have all possible values PredGraph.graphcontroversiality function, 
-    and a special value "all" that indicates that you would calculate 4 graphs 
-    with all errors measure.
+    this function compare all the trust metric.
+    Parameters:
+       toe = can have all possible values PredGraph.graphcontroversiality function, 
+             and a special value "all" that indicates that you would calculate 4 graphs 
+             with all errors measure.
+       leaveOut = list of TrustMetric name to exclude from comparation
+       new_name = dictionary with as key the name of trustmetric to rename, 
+                  and as value the new name of trustmetric to plot on graph.
+       cond = function that takes an edge, and return True or False.
+              if cond return True, the edge is included in the computation, instead not.
+       date = the date in format aaaa-mm-dd of the advogatoNetwork, on wich trustmetrics will evaluate.
+       allInOne = specify if the graph contains all trustmetrics (true case), else the script create
+                  n graphs, where 'n' is the cartesian product of the trustmetrics set.
+       path = the path where save the graphs
+       x_range = tuple with the lowest limit and highest limit for x axes
+       y_range = tuple with the lowest limit and highest limit for y axes
+       ind = list with only one element (for an ignote bug the other were ignored)
+             the elements must be integers, and indicates the indegree on wich you would calculate the graphs
+       
     """
 
-    if not plist:
-        A = AdvogatoNetwork( date=date )
+    A = AdvogatoNetwork( date=date )
 
-        tmlist = getTrustMetrics( A )
+    tmlist = getTrustMetrics( A )
     
-        for l in leaveOut:
-            try:
-                del tmlist[l]
-            except KeyError:
-                print "KeyError! ",l," not deleted"
-        plist = []
-    
-        for tm in tmlist:
-            plist.append( PredGraph( tmlist[tm] ) )
+    for l in leaveOut:
+        try:
+            del tmlist[l]
+        except KeyError:
+            print "KeyError! ",l," not deleted"
 
+    plist = []
+    rename = {}
+
+    for tm in tmlist:
+        if new_name == None or not new_name.has_key(tm):
+            #create a fake dictionary map each tm in itself
+            rename[tm] = tm
+        elif new_name.has_key(tm):
+            #add to rename the real dict
+            rename[tm]=new_name[tm]
+
+        plist.append( (tm,PredGraph( tmlist[tm] )) )
+        
+    
     if toe == 'all':
         num = enumerate( ['mae','rmse','percentage_wrong','coverage'] )
     else:
@@ -45,12 +70,13 @@ def compareAllTrustMetrics( leaveOut = [],
         print 'indegree:', indegree
         pointlist = []
 
-        for p in plist:
+        for x in plist:
+            name,p = x
             if toe == 'all':
-                pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=None, np=np, cond=cond,
+                pointlist.append( ( rename[name] , p.graphcontroversiality( 0.3 , 0.01, toe=None, np=np, cond=cond,
                                                                               indegree = indegree )) )
             else:
-                pointlist.append( ( get_name(p.TM) , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond,
+                pointlist.append( ( rename[name] , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond,
                                                                               indegree = indegree)) )
         for i in num:
 
