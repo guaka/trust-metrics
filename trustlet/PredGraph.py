@@ -412,7 +412,7 @@ class PredGraph(CalcGraph):
                 diz['indegree'] = indegree
 
             if cond != None:
-                diz['condition'] = cond
+                diz['condition'] = cond.__name__
 
             if round_weight:
                 diz['round_weight'] = True
