@@ -3,7 +3,7 @@
 
 '''
 USAGE:
-   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path]
+   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path] [--hash]
       Default base_path = home dir
       If xml_file is - it will use stdin
 '''
@@ -18,6 +18,7 @@ import os,re
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s))
+hnode = lambda s: str(hash(s))
 
 from socket import gethostname
 hostname = gethostname()
@@ -31,6 +32,10 @@ i18n = {
 }
 
 def main():
+
+    if '--hash' in argv:
+        globals()['node'] = hnode
+        argv.remove('--hash')
 
     if '--current' in argv:
         WikiContentHandler = WikiCurrentContentHandler
