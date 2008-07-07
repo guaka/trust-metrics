@@ -176,11 +176,12 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
     def endElement(self,name):
 
         if name == u'text' and self.validdisc:
-
+            print self.ltext
             self.network.add_node(node(self.lusername))
             for u,n in getCollaborators(self.ltext,self.lang):
                 self.network.add_node(node(u))
                 self.network.add_edge(node(u),node(self.lusername),{'value':str(n)})
+                print 'u',u,'n',n
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
@@ -196,6 +197,8 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
             self.lusername += contents.strip()
         elif self.read == u'title':
             self.ltitle += contents.strip()
+        elif self.read == u'text':
+            self.ltext += contents.strip()
 
     def getNetwork(self):        
         return self.network
@@ -262,6 +265,8 @@ def getCollaborators( rawWikiText, lang ):
     #return a list of tuple, the second value of tuple is the weight    
     return weight( resname )
 
+
+debug = """[[Discussion utente:Caparo/Archivio 1|Archivio 1]]<div class="usermessage"style="-moz-border-radius:1em;"><center>Se mi volete scrivere lasciatemi un messaggio qui sotto, e poi in [http://it.wikipedia.org/w/index.php?title=Discussioni_utente:Dario_vet&action=edit&section=new segreteria], vi risponderò al più presto</center></div>== Richieste ==''Si'' ti ghéto qualcosa da chiederme, ciàmame. :-P lol. Sałui :-) --[[Utente:Giovanni|<font color=Dodgerblue>'''Giovanni'''</font>]] [[Discussion utente:Giovanni|<small><font color=black>(ghe xé qualcosa che podarìa far?)</font></small>]] 20:18, 27 mar 2007 (UTC)== Re:orfane =='''fato''', ciao --[[Utente:Giovanni|<font color=Dodgerblue>'''Giovanni'''</font>]] [[Discussion utente:Giovanni|<small><font color=black>(ghe xé qualcosa che podarìa far?)</font></small>]] 17:27, 16 apr 2007 (UTC)== Comuni ==Ciao. Gò visto che anca ti sì drìo enserir łe voxi sui comuni :-) Te consejo de mètare el nome en tałian come redirect a ła voxe en vèneto. Grazie comunque! --[[Utente:Giovanni|<font color=Dodgerblue>'''Giovanni'''</font>]] [[Discussion utente:Giovanni|<small><font color=black>(ghe xé qualcosa che podarìa far?)</font></small>]] 17:36, 28 maj 2007 (UTC)==Bot==Visto che lo stai facendo girare, sostituisci Evoluzione con Evołuzsion piuttosto che con Evoluzsione. Ciao. [[Utente:Semolo75|Semoło]]<sup>([[Discussion utente:Semolo75|scrìvame]])</sup>20:34, 28 maj 2007 (UTC):Devi usare i codici '''&# + cifra + ;''' per inserire la&#321; tagliata (maiuscola con la cifra 321 e minuscola con 322, vedi anche codice sorgente). [[Utente:Semolo75|Semoło]]<sup>([[Discussion utente:Semolo75|scrìvame]])</sup>20:51, 28 maj 2007 (UTC)Aministrazsion comunałe (anca qua ła L tajà). [[Utente:Semolo75|Semoło]]<sup>([[Discussion utente:Semolo75|scrìvame]])</sup>20:58, 28 maj 2007 (UTC):Ma non si riesce proprio a inserire la Ł direttamente col bot? Comunque se non si riesce va bene così. [[Utente:Semolo75|Semoło]]<sup>([[Discussion utente:Semolo75|scrìvame]])</sup>21:16, 28 maj 2007 (UTC)== Tai ==Sa continuito a taiar roba a le voxi??:sta bon, go solo comenta se tuto roso :( --''[[Utente:Dario vet|dario ^_^]]<small>([[Discussion utente:Dario vet|cossa ghe se?]])</small>'' 21:56, 16 diç 2007 (UTC)::e po [http://vec.wikipedia.org/w/index.php?title=Circuito_del_Mugello&diff=110815&oldid=110799 qua] go solo sistema :) --''[[Utente:Dario vet|dario ^_^]]<small>([[Discussion utente:Dario vet|cossa ghe se?]])</small>'' 21:57, 16 diç 2007 (UTC)non s'è capio 'na eva, cmunque pazsienzsa==Blocco==Vuto la protezion de la paxena utente, dell'utenzsa o cossa?--{{Utente:Nick1915/firma}} 13:43, 24 diç 2007 (UTC)Se te voi posso rinominarte--{{Utente:Nick1915/firma}} 13:47, 24 diç 2007 (UTC)ok--{{Utente:Nick1915/firma}} 13:49, 24 diç 2007 (UTC)"""
 
 def weight( list ):
     """

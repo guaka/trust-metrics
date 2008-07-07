@@ -12,7 +12,7 @@ import datetime
 import time
 #cache
 import md5
-import pickle
+import pickle,marshal
 
 try:
     import scipy
@@ -720,7 +720,7 @@ def splittask(function,input,np=None):
             res = []
             for data in pinput:
                 res.append(function(data))
-            os.write(write,pickle.dumps(res))
+            os.write(write,marshal.dumps(res))
             os.close(write)
             #sys.exit() # ipython trap this -_-
             os._exit(0) # ipython DOESN'T trap this ^_^
@@ -737,7 +737,7 @@ def splittask(function,input,np=None):
             while buffer:
                 buffer = os.read(pipe,100)
                 s += buffer
-            result += pickle.loads(s)
+            result += marshal.loads(s)
     except EOFError:
         print "A son process is dead"
         print "splittask says: it's not my fault!"
