@@ -867,8 +867,6 @@ def save(key,data,path='.',human=False):
         if human:
             f = file(os.path.join(path,get_sign(key,False)),'w')
             f.writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
-            if time:
-                f.write('time: %d\n'%time)
             if type(human) is str:
                 f.write('comment: '+human)
             f.write('data: '+str(data))
