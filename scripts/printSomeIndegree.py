@@ -143,5 +143,7 @@ def calc(plist):
         plist=plist,
         ind=[1]
         )
-    
-calc(prepare())
+
+
+if __name__ == "__main__":    
+    calc(prepare())
