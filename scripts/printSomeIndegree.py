@@ -127,15 +127,7 @@ def calc(plist):
             ind=[15]
             )
     elif gethostname() == 'silix1600':
-        compareAllTrustMetrics(
-            cond=no_observer,
-            path='./graphs',
-            toe='all',
-            plist=plist,
-            ind=[20],
-            x_range=(0.0,0.45),
-            y_range=(0.0,1.1)
-            )
+        compareAllTrustMetrics(cond=no_observer,path='./graphs',toe='all',plist=plist,ind=[20],x_range=(0.0,0.45),y_range=(0.0,1.1) )
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',

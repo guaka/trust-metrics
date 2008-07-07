@@ -10,9 +10,10 @@ import Gnuplot
 import os,sys
 import datetime
 import time
+import marshal
 #cache
 import md5
-import pickle,marshal
+import pickle
 
 try:
     import scipy
@@ -30,7 +31,7 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
        advogato = include advogato trust metrics
     """
     trustmetrics = {
-        "random_tmXXXX": trustlet.TrustMetric( net , trustlet.random_tm ),
+        "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
         "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
         "edges_b_tm":trustlet.TrustMetric( net , trustlet.edges_b_tm ),
@@ -866,11 +867,13 @@ def save(key,data,path='.',human=False):
     if path.endswith('.c2'):
         mkpath(os.path.split(path)[0])
         if os.path.exists(path):
-            d = pickle.load(path)
+            d = pickle.load(file(path))
         else:
             d = {}
         d[get_sign(key)] = data
-        pickle.dump(d,path)
+        f = file(path,'w')
+        pickle.dump(d,f)
+        f.close()
     else:
         mkpath(path)
         try:
@@ -881,7 +884,9 @@ def save(key,data,path='.',human=False):
                     f.write('comment: '+human)
                 f.write('data: '+str(data))
 
-            pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
+            f = file(os.path.join(path,get_sign(key)),'w')
+            pickle.dump(data,f)
+            f.close()
         except IOError,pickle.PicklingError: #,TypeError: # I' can't catch TypeError O.o why?
             print 'picking error'
             return False
@@ -899,8 +904,8 @@ def load(key,path='.'):
             return None
     elif os.path.isfile(path):
         try:
-            data = pickle.load(path)[get_sign(key)]
-        except IOError:
+            data = pickle.load(file(path))[get_sign(key)]
+        except KeyError,IOError:
             return None
     else:
         return None
