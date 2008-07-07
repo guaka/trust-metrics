@@ -94,4 +94,4 @@ if __name__ == "__main__":
     
     else:
     
-        compareAllTrustMetrics(y_range=(0.0,1.0),toe='all',np=1)
+        compareAllTrustMetrics(y_range=(0.0,1.0),toe='all')

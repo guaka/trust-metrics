@@ -244,8 +244,9 @@ def getCollaborators( rawWikiText, lang ):
             except KeyError:
                 pass
 
-            if exit >= 2:
-                continue
+            continue
+            
+
         #begin of the username
         start = iu + io
         end = getEnd( rawWikiText, "|,]", start ) #find end of username (search | or ], take the first one)
