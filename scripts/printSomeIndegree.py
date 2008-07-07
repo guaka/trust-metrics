@@ -110,7 +110,6 @@ from socket import gethostname
 
 def calc(plist):
 
-    if gethostname() == 'sracls01':
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',
@@ -126,27 +125,32 @@ def calc(plist):
             plist=plist,
             ind=[15]
             )
-    elif gethostname() == 'sracls02':
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',
             toe='all',
             plist=plist,
-            ind=[20]
+            ind=[20],
+            x_range=(0.0,0.45),
+            y_range=(0.0,1.1)
             )
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',
             toe='all',
             plist=plist,
-            ind=[10]
+            ind=[10],
+            x_range=(0.0,0.45),
+            y_range=(0.0,1.1)
             )
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',
             toe='all',
             plist=plist,
-            ind=[1]
+            ind=[1],
+            x_range=(0.0,0.45),
+            y_range=(0.0,1.1)
             )
 
 
