@@ -106,43 +106,48 @@ def prepare():
                 
     return plist
 
-def calc(plist):
-    compareAllTrustMetrics(
-        cond=no_observer,
-        path='./graphs',
-        toe='all',
-        plist=plist,
-        ind=[3]
-        )
+from socket import gethostname
 
-    compareAllTrustMetrics(
-        cond=no_observer,
-        path='./graphs',
-        toe='all',
-        plist=plist,
-        ind=[15]
-        )
-    compareAllTrustMetrics(
-        cond=no_observer,
-        path='./graphs',
-        toe='all',
-        plist=plist,
-        ind=[20]
-        )
-    compareAllTrustMetrics(
-        cond=no_observer,
-        path='./graphs',
-        toe='all',
-        plist=plist,
-        ind=[10]
-        )
-    compareAllTrustMetrics(
-        cond=no_observer,
-        path='./graphs',
-        toe='all',
-        plist=plist,
-        ind=[1]
-        )
+def calc(plist):
+
+    if gethostname() == 'sracls01':
+        compareAllTrustMetrics(
+            cond=no_observer,
+            path='./graphs',
+            toe='all',
+            plist=plist,
+            ind=[3]
+            )
+
+        compareAllTrustMetrics(
+            cond=no_observer,
+            path='./graphs',
+            toe='all',
+            plist=plist,
+            ind=[15]
+            )
+    elif gethostname() == 'sracls02':
+        compareAllTrustMetrics(
+            cond=no_observer,
+            path='./graphs',
+            toe='all',
+            plist=plist,
+            ind=[20]
+            )
+        compareAllTrustMetrics(
+            cond=no_observer,
+            path='./graphs',
+            toe='all',
+            plist=plist,
+            ind=[10]
+            )
+        compareAllTrustMetrics(
+            cond=no_observer,
+            path='./graphs',
+            toe='all',
+            plist=plist,
+            ind=[1]
+            )
 
 
 if __name__ == "__main__":    
