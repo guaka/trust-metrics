@@ -321,7 +321,8 @@ def prettyplot( data, path, **args):
         pass
     
     if args.has_key('showlines') and args['showlines']:
-        g('set data style lines')
+        #g('set data style lines')
+        g('set data style linespoint')
     #else:
     #    g('set parametric')
     if args.has_key('istogram') and args['istogram']:
@@ -862,19 +863,28 @@ def save(key,data,path='.',human=False):
     DEPRECATED: You can set *time* (integer, in seconds) to indicate the
     time of computation.
     """
-    mkpath(path)
-    try:
-        if human:
-            f = file(os.path.join(path,get_sign(key,False)),'w')
-            f.writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
-            if type(human) is str:
-                f.write('comment: '+human)
-            f.write('data: '+str(data))
+    if path.endswith('.c2'):
+        mkpath(os.path.split(path)[0])
+        if os.path.exists(path):
+            d = pickle.load(path)
+        else:
+            d = {}
+        d[get_sign(key)] = data
+        pickle.dump(d,path)
+    else:
+        mkpath(path)
+        try:
+            if human:
+                f = file(os.path.join(path,get_sign(key,False)),'w')
+                f.writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
+                if type(human) is str:
+                    f.write('comment: '+human)
+                f.write('data: '+str(data))
 
-        pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
-    except IOError,pickle.PicklingError: #,TypeError: # I' can't catch TypeError O.o why?
-        print 'picking error'
-        return False
+            pickle.dump(data,file(os.path.join(path,get_sign(key)),'w'))
+        except IOError,pickle.PicklingError: #,TypeError: # I' can't catch TypeError O.o why?
+            print 'picking error'
+            return False
     return True
     
 def load(key,path='.'):
@@ -882,20 +892,19 @@ def load(key,path='.'):
     Cache.
     Loads data stored by save.
     """
-    try:
-        data = pickle.load(file(os.path.join(path,get_sign(key))))
-    except IOError:
+    if os.path.isdir(path):
+        try:
+            data = pickle.load(file(os.path.join(path,get_sign(key))))
+        except IOError:
+            return None
+    elif os.path.isfile(path):
+        try:
+            data = pickle.load(path)[get_sign(key)]
+        except IOError:
+            return None
+    else:
         return None
     return data
-
-def clear(key,path='.'):
-    """
-    Cache.
-    Remove stored data by key
-    """
-    os.remove(os.path.join(path,get_sign(key)))
-    if os.path.exists(os.path.join(path,get_sign(key,False))):
-        os.remove(os.path.join(path,get_sign(key,False)))
 
 if __name__=="__main__":
     from trustlet import *

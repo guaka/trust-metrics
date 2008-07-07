@@ -91,7 +91,7 @@ def prepare():
     A = AdvogatoNetwork( date="2008-05-12" )
 
     tmlist = getTrustMetrics( A )
-    leaveOut=['PageRankTM','AdvogatoGlobalTM','AdvogatoLocal']
+    leaveOut=['PageRankTM','AdvogatoLocal']
         
     for l in leaveOut:
         try:
@@ -126,7 +126,7 @@ def calc(plist):
             plist=plist,
             ind=[15]
             )
-    else:
+    elif gethostname() == 'silix1600':
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',
