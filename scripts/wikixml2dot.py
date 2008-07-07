@@ -176,12 +176,10 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
     def endElement(self,name):
 
         if name == u'text' and self.validdisc:
-            print self.ltext
             self.network.add_node(node(self.lusername))
             for u,n in getCollaborators(self.ltext,self.lang):
                 self.network.add_node(node(u))
                 self.network.add_edge(node(u),node(self.lusername),{'value':str(n)})
-                print 'u',u,'n',n
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
