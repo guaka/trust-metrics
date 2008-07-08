@@ -47,11 +47,25 @@ def main():
         if '--history' in argv:
             argv.remove('--history')
         
+    if '--input-size' in argv[:-1]:
+        i = argv.index('--input-size')
+        inputsize = int(argv[i+1])
+        del argv[i]
+        del argv[i+1]
+    else:
+        inputsize = None
+
     if len(argv[1:]) >= 3:
 
         xml,lang,date = argv[1:4]
         if xml == '-':
             xml = stdin
+            size = None
+        else:
+            size = os.stat(xml).st_size
+
+        if inputsize:
+            size = inputsize
 
         assert re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',date)
 
@@ -64,7 +78,7 @@ def main():
         path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
         mkpath(path)
 
-        ch = WikiContentHandler(lang=lang)
+        ch = WikiContentHandler(lang,xmlsize=size)
 
         sax.parse(xml,ch)
         write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
@@ -90,10 +104,16 @@ def main():
         pass
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang):
+    def __init__(self,lang,xmlsize=None):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
+        
+        #print info
+        self.xmlsize = xmlsize
+        self.count = 0
+        self.last_perc_print=''
+
         self.read = False
         self.validdisc = False # valid discussion
 
@@ -136,6 +156,13 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         elif self.read == u'title':
             self.ltitle += contents.strip()
 
+        if self.xmlsize:
+            self.count += len(contents)
+            perc = 100*self.count/self.xmlsize
+            if perc != self.last_perc_print:
+                print '>%d%% ~%d%%'%(perc,perc*100/87)
+                self.last_perc_print = perc
+
     def getNetwork(self):
         W = Network()
         
@@ -151,7 +178,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang):
+    def __init__(self,lang,xmlsize=None):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang

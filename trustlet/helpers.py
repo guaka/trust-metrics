@@ -2,18 +2,18 @@
 """Collection of random useful stuff."""
 import math
 import numpy
-import os.path
 from trustlet.TrustMetric import *
 from trustlet.trustmetrics import *
 import trustlet
 import Gnuplot
-import os,sys
+import os,sys,re
 import datetime
 import time
 import marshal
 #cache
 import md5
 import pickle
+from gzip import GzipFile
 
 try:
     import scipy
@@ -822,10 +822,7 @@ def xfloatrange(*args):
 
 floatrange = lambda *args: [x for x in xfloatrange(*args)]
 
-# == cache ==
-# save and restore data into/from cache
-# - `key` is a dictionary
-# - `data` can be anything (i hope)
+ismd5 = lambda s: bool(re.match('^[0-9a-f]{32}$',s))
 
 def mkpath(fullpath):
     """
@@ -838,6 +835,12 @@ def mkpath(fullpath):
         path = os.path.split(fullpath)[0]
         mkpath(path)
         os.mkdir(fullpath)
+
+
+# == cache ==
+# save and restore data into/from cache
+# - `key` is a dictionary
+# - `data` can be anything (i hope)
 
 def get_sign(key,mdfive=True):
     """
@@ -863,17 +866,17 @@ def save(key,data,path='.',human=False):
     If human=True it will save another file in plain text for human beings.
     DEPRECATED: You can set *time* (integer, in seconds) to indicate the
     time of computation.
+    If path ends with '.c2' data will save in the new format (less files).
+    human is not suported in the new format.
     """
     if path.endswith('.c2'):
         mkpath(os.path.split(path)[0])
         if os.path.exists(path):
-            d = pickle.load(file(path))
+            d = pickle.load(GzipFile(path))
         else:
             d = {}
         d[get_sign(key)] = data
-        f = file(path,'w')
-        pickle.dump(d,f)
-        f.close()
+        pickle.dump(d,GzipFile(path,'w'))
     else:
         mkpath(path)
         try:
@@ -904,12 +907,20 @@ def load(key,path='.'):
             return None
     elif os.path.isfile(path):
         try:
-            data = pickle.load(file(path))[get_sign(key)]
+            data = pickle.load(GzipFile(path))[get_sign(key)]
         except KeyError,IOError:
             return None
     else:
         return None
     return data
+
+def convert_cache(path1,path2):
+    '''from version 1 to 2'''
+    oldcache = [(x,pickle.load(file(x))) for x in os.listdir(path1) if ismd5(x) and os.path.isfile(x)]
+    newcache = {}
+    for k,v in oldcache:
+        newcache[k] = v
+    pickle.dump(newcache,GzipFile(path2,'w'))
 
 if __name__=="__main__":
     from trustlet import *
