@@ -420,7 +420,7 @@ class PredGraph(CalcGraph):
 
             if not force:                    
                 abs = load( diz,
-                            os.path.join(self.path,'cache')
+                            os.path.join(self.path,'cache.c2')
                             )
 
             #if the result is cached
@@ -466,7 +466,7 @@ class PredGraph(CalcGraph):
                 #saving calculated values
                 ret = save( diz,
                             (sum,cnt,rmse,pw,cov),
-                            os.path.join(self.path,'cache')
+                            os.path.join(self.path,'cache.c2')
                             )
                 
 
@@ -546,7 +546,7 @@ class PredGraph(CalcGraph):
             values = floatrange(0.0, 0.3, 0.01)
         
         cachedict = {'func':'controvesiality-numumber-of-edges','number':number}
-        cache = force or load(cachedict,os.path.join(self.dataset.path,'cache'))
+        cache = force or load(cachedict,os.path.join(self.dataset.path,'cache.c2'))
         if type(cache) is not dict:
             cache = {}
         # cache[controversiality]
@@ -559,7 +559,7 @@ class PredGraph(CalcGraph):
         for x in res:
             cache[str(x[0])] = x[1]
         #print 'cache',cache
-        assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
+        assert save(cachedict,cache,os.path.join(self.dataset.path,'cache.c2'))
         return res
 
     def cont_type_of_edges(self,number=10,values=None,force=False):
@@ -567,7 +567,7 @@ class PredGraph(CalcGraph):
             values = floatrange(0.0, 0.3, 0.01)
         
         cachedict = {'func':'controvesiality-type-of-edges','number':number}
-        cache = force or load(cachedict,os.path.join(self.dataset.path,'cache'))
+        cache = force or load(cachedict,os.path.join(self.dataset.path,'cache.c2'))
         if type(cache) is not dict:
             cache = {}
         # cache[controversiality]
@@ -587,7 +587,7 @@ class PredGraph(CalcGraph):
         for x in res:
             cache[str(x[0])] = x[1:]
         #print 'cache',cache
-        assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
+        assert save(cachedict,cache,os.path.join(self.dataset.path,'cache.c2'))
         return res
 
 def edge_to_connected_node(number=10):

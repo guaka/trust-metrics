@@ -92,7 +92,7 @@ def evolutionmap(path,function,range=None,filter_edges=None):
             cachekey = {'function':function.__name__,'date':date}
             if filter_edges:
                 cachekey['filter edges'] = filter_edges.__name__
-            cache = load(cachekey,path=os.path.join(path,'cache'))
+            cache = load(cachekey,path=os.path.join(path,'cache.c2'))
             if cache:
                 return cache
         
@@ -109,7 +109,7 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         if function.__name__!='<lambda>' and not filter_edges or filter_edges.__name__!='<lambda>':
             if filter_edges:
                 cachekey['filter edges'] = filter_edges.__name__
-            save(cachekey,res,human=True,path=os.path.join(path,'cache'))
+            save(cachekey,res,human=True,path=os.path.join(path,'cache.c2'))
         return res
 
     #return [task(x) for x in dates]
