@@ -12,6 +12,7 @@ import sys,os
 def main():
     if len(sys.argv)==1 or '--help' in sys.argv[1:]:
         print __doc__
+        exit()
     if len(sys.argv)==2:
         srcpath = '.'
         dstpath = argv[1]
