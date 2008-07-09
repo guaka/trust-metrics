@@ -1,5 +1,5 @@
 """
-This script calculate the graphics in gnuplot that compares pair of network.
+This script calculate the graphics in gnuplot that compares pairs of network.
 If there aren't parameters, it take all the trust metric, elsewhere you can
 specify on command line space-separated name of trustmetric to leave out.
 """
@@ -110,14 +110,15 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
                                         xlabel='controversiality',
                                         ylabel=i[1] )
 
+    return None
 
 if __name__ == "__main__":
     import sys
 
     if len(sys.argv) > 1:
         
-        compareAllTrustMetrics( sys.argv[1:] )
+        compareAllTrustMetrics( sys.argv[1:], toe='all' )
     
     else:
     
-        compareAllTrustMetrics(y_range=(0.0,1.0),toe='all')
+        compareAllTrustMetrics(toe='all')
