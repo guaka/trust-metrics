@@ -74,8 +74,9 @@ def evolutionmap(path,function,range=None,filter_edges=None):
     apply function function to each network in range range.
     If you want use cache function and filter_edges cannot be lambda functions.
     '''
+    cachepath = 'netevolution.c2'
     redate = re.compile('[0-9]{4}-[0-9]{2}-[0-9]{2}')
-    dates = [x for x in os.listdir(path) if re.match(redate,x)]
+    dates = [x for x in os.listdir(path) if re.match(redate,x) and os.path.exists(os.path.join(path,x,'graph.dot'))]
 
     if range:
         assert re.match(redate,range[0]) and  re.match(redate,range[1])
@@ -92,11 +93,11 @@ def evolutionmap(path,function,range=None,filter_edges=None):
             cachekey = {'function':function.__name__,'date':date}
             if filter_edges:
                 cachekey['filter edges'] = filter_edges.__name__
-            cache = load(cachekey,path=os.path.join(path,'cache.c2'))
+            cache = load(cachekey,path=os.path.join(path,cachepath))
             if cache:
                 return cache
         
-        G = read_dot(os.path.join(os.path.join(path,date),'graph.dot'))
+        G = read_dot(os.path.join(path,date,'graph.dot'))
         K = Network.WeightedNetwork()
         if filter_edges:
             for e in G.edges_iter():
@@ -109,7 +110,7 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         if function.__name__!='<lambda>' and not filter_edges or filter_edges.__name__!='<lambda>':
             if filter_edges:
                 cachekey['filter edges'] = filter_edges.__name__
-            save(cachekey,res,human=True,path=os.path.join(path,'cache.c2'))
+            save(cachekey,res,human=True,path=os.path.join(path,cachepath))
         return res
 
     #return [task(x) for x in dates]

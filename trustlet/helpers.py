@@ -903,7 +903,7 @@ def load(key,path='.'):
     if os.path.isdir(path):
         try:
             data = pickle.load(file(os.path.join(path,get_sign(key))))
-        except IOError:
+        except:
             return None
     elif os.path.isfile(path):
         try:
@@ -916,7 +916,9 @@ def load(key,path='.'):
 
 def convert_cache(path1,path2):
     '''from version 1 to 2'''
-    oldcache = [(x,pickle.load(file(x))) for x in os.listdir(path1) if ismd5(x) and os.path.isfile(x)]
+    join = os.path.join
+    oldcache = [(x,pickle.load(file(join(path1,x)))) \
+                    for x in os.listdir(path1) if ismd5(x) and os.path.isfile(join(path1,x))]
     newcache = {}
     for k,v in oldcache:
         newcache[k] = v
