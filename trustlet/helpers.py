@@ -877,6 +877,13 @@ def save(key,data,path='.',human=False):
             d = {}
         d[get_sign(key)] = data
         pickle.dump(d,GzipFile(path,'w'))
+
+        #memory cache
+        if not globals().has_key('cachedcache'):
+            #print 'create cache'
+            globals()['cachedcache'] = {}
+        cache = globals()['cachedcache']
+        cache[path] = d
     else:
         mkpath(path)
         try:
@@ -906,10 +913,27 @@ def load(key,path='.'):
         except:
             return None
     elif os.path.isfile(path):
+        #memory cache
+        if not globals().has_key('cachedcache'):
+            #print 'create cache'
+            globals()['cachedcache'] = {}
+        cache = globals()['cachedcache']
+
+        if cache.has_key(path):
+            #print 'found',path
+            if cache[path].has_key(get_sign(key)):
+                return cache[path][get_sign(key)]
+            else:
+                return None
+        
         try:
-            data = pickle.load(GzipFile(path))[get_sign(key)]
+            d = pickle.load(GzipFile(path))
+            data = d[get_sign(key)]
         except KeyError,IOError:
             return None
+
+        #save in memory cache
+        cache[path] = d
     else:
         return None
     return data
