@@ -915,7 +915,10 @@ def load(key,path='.'):
     return data
 
 def convert_cache(path1,path2):
-    '''from version 1 to 2'''
+    '''
+    from version 1 to 2
+    * this function doesn't work *
+    '''
     join = os.path.join
     oldcache = [(x,pickle.load(file(join(path1,x)))) \
                     for x in os.listdir(path1) if ismd5(x) and os.path.isfile(join(path1,x))]
@@ -923,6 +926,22 @@ def convert_cache(path1,path2):
     for k,v in oldcache:
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
+
+def cached_read_dot(filepath,force=False):
+    '''
+    If graph had been read yet this function avoid to reload it from file system.
+    '''
+    if not globals().has_key('globalgraphscache'):
+        globals()['globalgraphscache'] = {}
+    cache = globals()['globalgraphscache']
+
+    if cache.has_key(filepath) and not force:
+        return cache[filepath]
+
+    from networkx import read_dot
+    cache[filepath] = read_dot(filepath)
+
+    return cache[filepath]
 
 if __name__=="__main__":
     from trustlet import *

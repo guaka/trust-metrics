@@ -9,7 +9,8 @@ Each network supported has it's own class to wrap it.
 
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
-
+#from trustlet.helpers import cached_read_dot
+import trustlet
 
 import os,re
 from networkx.xdigraph import XDiGraph
@@ -160,17 +161,18 @@ class Network(XDiGraph):
 
     def _read_dot(self, filepath):
         """Read file."""
-        import networkx
         print "Reading", filepath
-        graph = networkx.read_dot(filepath)
+        #import networkx
+        #graph = networkx.read_dot(filepath)
+        graph = trustlet.helpers.cached_read_dot(filepath)
         self.paste_graph(graph)
         
     def paste_graph(self, graph):
         """Paste graph into object."""
-        for node in graph.nodes():
+        for node in graph.nodes_iter():
             self.add_node(node)
 
-        for edge in graph.edges():
+        for edge in graph.edges_iter():
             self.add_edge(edge)
 
 
