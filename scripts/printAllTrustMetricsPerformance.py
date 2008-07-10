@@ -9,10 +9,12 @@ from trustlet import *
 
 
 def compareAllTrustMetrics( leaveOut = [], new_name=None,
-                            cond=None,date = "2008-05-12", allInOne=True, 
+                            cond=None,
+                            network = None, #AdvogatoNetwork("2008-05-12") 
+                            allInOne=True, 
                             path = ".", toe = "mae", np=None,
                             x_range=None,
-                            y_range=None, ind=[3,5,10,15,20] ):
+                            y_range=None, ind=[3,5,10,15,20], plist = None ):
     """
     this function compare all the trust metric.
     Parameters:
@@ -24,39 +26,56 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
                   and as value the new name of trustmetric to plot on graph.
        cond = function that takes an edge, and return True or False.
               if cond return True, the edge is included in the computation, instead not.
-       date = the date in format aaaa-mm-dd of the advogatoNetwork, on wich trustmetrics will evaluate.
+       network = the network on wich trustmetrics will be evaluated.
        allInOne = specify if the graph contains all trustmetrics (true case), else the script create
                   n graphs, where 'n' is the cartesian product of the trustmetrics set.
        path = the path where save the graphs
        x_range = tuple with the lowest limit and highest limit for x axes
        y_range = tuple with the lowest limit and highest limit for y axes
-       ind = list with only one element (for an ignote bug the other were ignored)
-             the elements must be integers, and indicates the indegree on wich you would calculate the graphs
-       
+       ind = list of the indegree on wich you would calculate the graphs ,
+             NB: the elements must be integers
+       plist = list of tuple as this: [(name_predgraph1,predgraph1),....,(name_predgraphN,predgraphN)]
+               if is set None, it is recalculated with the network passed. You must pass in each case the network parameter.
     """
-
-    A = AdvogatoNetwork( date=date )
-
-    tmlist = getTrustMetrics( A )
     
-    for l in leaveOut:
-        try:
-            del tmlist[l]
-        except KeyError:
-            print "KeyError! ",l," not deleted"
+    A = network
 
-    plist = []
+    if not A or A == None:
+        print "The network must be passed! value of network: ", A
+    
     rename = {}
 
-    for tm in tmlist:
-        if new_name == None or not new_name.has_key(tm):
-            #create a fake dictionary map each tm in itself
-            rename[tm] = tm
-        elif new_name.has_key(tm):
-            #add to rename the real dict
-            rename[tm]=new_name[tm]
+    if plist == None:
+        tmlist = getTrustMetrics( A )
+    
+        for l in leaveOut:
+            try:
+                del tmlist[l]
+            except KeyError:
+                print "KeyError! ",l," not deleted"
 
-        plist.append( (tm,PredGraph( tmlist[tm] )) )
+        plist = []
+
+        for tm in tmlist:
+            if new_name == None or not new_name.has_key(tm):
+                #create a fake dictionary map each tm in itself
+                rename[tm] = tm
+            elif new_name.has_key(tm):
+                #add to rename the real dict
+                rename[tm]=new_name[tm]
+
+            plist.append( (tm,PredGraph( tmlist[tm] )) )
+            
+    else:
+        for x in plist:
+            tm = x[0]
+            if new_name == None or not new_name.has_key(tm):
+                #create a fake dictionary map each tm in itself
+                rename[tm] = tm
+            elif new_name.has_key(tm):
+                #add to rename the real dict
+                rename[tm]=new_name[tm]
+
         
     
     if toe == 'all':
