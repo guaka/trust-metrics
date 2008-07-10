@@ -38,11 +38,12 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
                if is set None, it is recalculated with the network passed. You must pass in each case the network parameter.
     """
     
-    A = network
 
-    if not A or A == None:
-        print "The network must be passed! value of network: ", A
-    
+    if not network or network == None:
+        A = AdvogatoNetwork( date="2008-05-12" )
+    else:
+        A = network
+        
     rename = {}
 
     if plist == None:
