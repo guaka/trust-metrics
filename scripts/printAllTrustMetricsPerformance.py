@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This script calculate the graphics in gnuplot that compares pairs of network.
 If there aren't parameters, it take all the trust metric, elsewhere you can
@@ -134,11 +136,34 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
 
 if __name__ == "__main__":
     import sys
+    
+    if len(sys.argv) < 2:
+        print "USAGE: ./printAllTMPerformance.py [False|True] [True|False] [mae|rmse|percentage_wrong|coverage|all] list_of_TrustMetric_to_include"
+        print "Legend:"
+        print "False|True: if False the list of trustMetric represent the tm that you want, else represent the trustmetric that you would to leave out."
+        print "True|False: if true the trust metric were plotted in one graphics, else it were plotted pair to pair in different graphics."
+        print "all|...: what kind of error you would calculate? choose one, or 'all' that plot in different graphics all the other error"
+        print "list: the list of trustmetric name" 
+        print ""
+        print "NB: the default network is AdvogatoNetwork, date 2008-05-12, if you wuold change it, you must use ipython, import this script,"
+        print "    and call the function compareAllTrustMetrics by hand. For the informations about parameters, see the documentation of the function"
+        exit(0)
 
-    if len(sys.argv) > 1:
-        
-        compareAllTrustMetrics( sys.argv[1:], toe='all' )
-    
+    leaveOut = bool(sys.argv[1])
+    allInOne = bool(sys.argv[2])
+    toe = sys.argv[3]
+    list = sys.argv[3:]
+
+    if leaveOut:
+        compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe )
     else:
-    
-        compareAllTrustMetrics(toe='all')
+        A = AdvogatoNetwork( date="2008-05-12" )
+        
+        tmlist = getAllTrustMetrics( A )
+        plist = []
+
+        for tm in list:
+            plist.append( (tm, PredGraph( tmlist[tm] )) )
+
+        compareAllTrustMetrics( plist = plist, allInOne=allInOne, toe=toe )
+                          
