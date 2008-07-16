@@ -9,7 +9,9 @@ from pymmetry.certs import DictCertifications, CertInfo
 from pymmetry.net_flow import *
 from pymmetry.tm_calc import *
 
-from helpers import hms
+#from helpers import hms
+def hms(a):
+    return ''
 
 
 class AdvogatoCertInfo(CertInfo):

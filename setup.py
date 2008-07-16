@@ -16,7 +16,7 @@ import trustlet
 
 version = trustlet.__version__
 
-if sys.argv[-1] == 'setup.py':
+if not 'install' in sys.argv[1:]:
     print "To install, run 'python setup.py install'"
     print
 
@@ -75,9 +75,10 @@ setup(	name = 'trustlet',
         )
 #copy datasets on home folder
 #os.system( 'cp -Rf ./trustlet/datasets ~' )
-print "Installing script\n"
-os.system( 'cd trustlet && make install && cd ..' )
-os.system( 'cd scripts && make install && cd ..' )
+if False:
+    print "Installing script\n"
+    os.system( 'cd trustlet && make install && cd ..' )
+    os.system( 'cd scripts && make install && cd ..' )
 
 print "IMPORTANT: remember to copy trustlet/datasets folder in your home directory!"
 # It's not very clear how to deal with package dependencies in setup.py

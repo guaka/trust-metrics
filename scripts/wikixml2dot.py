@@ -20,6 +20,9 @@ printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s))
 hnode = lambda s: str(hash(s))
 
+#node = lambda s: str(printable(s))
+node = lambda s: str(hash(s))
+
 from socket import gethostname
 hostname = gethostname()
 
