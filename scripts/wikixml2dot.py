@@ -3,9 +3,10 @@
 
 '''
 USAGE:
-   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path] [--hash]
+   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path] [--hash] [--input-size bytes]
       Default base_path = home dir
       If xml_file is - it will use stdin
+      input-size: useful if xml_file is stdin 
 '''
 
 from xml import sax
@@ -19,9 +20,6 @@ import os,re
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s))
 hnode = lambda s: str(hash(s))
-
-#node = lambda s: str(printable(s))
-node = lambda s: str(hash(s))
 
 from socket import gethostname
 hostname = gethostname()

@@ -836,6 +836,28 @@ def mkpath(fullpath):
         mkpath(path)
         os.mkdir(fullpath)
 
+class Progress:
+    '''
+    print percentage of done work
+    '''
+    def __init__(self,total,roundval=0,description=''):
+        '''
+        roundval: number of significant digits
+        description: will be printed before percentage
+        '''
+        self.desc = description
+        self.roundval = roundval
+        self.print_format = '%.'+str(roundval)+'f%%'
+        if description:
+            self.print_format = description + ' ' + self.print_format
+        self.total = total
+        self.last_print = ''
+        
+    def __call__(self,done_work):
+        val = round(100.0 * done_work / self.total, self.roundval)
+        if val != self.last_print:
+            self.last_print = val
+            print self.print_format % val
 
 # == cache ==
 # save and restore data into/from cache

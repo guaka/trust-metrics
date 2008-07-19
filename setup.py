@@ -76,7 +76,7 @@ setup(	name = 'trustlet',
 #copy datasets on home folder
 #os.system( 'cp -Rf ./trustlet/datasets ~' )
 if False:
-    print "Installing script\n"
+    print "Installing scripts\n"
     os.system( 'cd trustlet && make install && cd ..' )
     os.system( 'cd scripts && make install && cd ..' )
 
