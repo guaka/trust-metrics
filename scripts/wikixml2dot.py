@@ -51,8 +51,8 @@ def main():
     if '--input-size' in argv[:-1]:
         i = argv.index('--input-size')
         inputsize = int(argv[i+1])
-        del argv[i]
         del argv[i+1]
+        del argv[i]
     else:
         inputsize = None
 
