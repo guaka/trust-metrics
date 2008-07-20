@@ -138,7 +138,7 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) < 2:
-        print "USAGE: ./printAllTMPerformance.py [False|True] [True|False] [mae|rmse|percentage_wrong|coverage|all] list_of_TrustMetric_to_include"
+        print "USAGE: ./printAllTMPerformance.py False|True True|False mae|rmse|percentage_wrong|coverage|all list_of_TrustMetric_to_include"
         print "Legend:"
         print "False|True: if False the list of trustMetric represent the tm that you want, else represent the trustmetric that you would to leave out."
         print "True|False: if true the trust metric were plotted in one graphics, else it were plotted pair to pair in different graphics."

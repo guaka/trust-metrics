@@ -142,7 +142,7 @@ class Network(XDiGraph):
             freq[d] += 1
         return freq
 
-    def download_file(self, url, filename):
+    def download_f_le(self, url, filename):
         '''Download url to filename into the right path '''
         filepath = os.path.join(self.path, filename)
         print "Downloading %s to %s " % (url, filepath)
