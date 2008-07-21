@@ -143,10 +143,11 @@ if __name__ == "__main__":
         print "False|True: if False the list of trustMetric represent the tm that you want, else represent the trustmetric that you would to leave out."
         print "True|False: if true the trust metric were plotted in one graphics, else it were plotted pair to pair in different graphics."
         print "all|...: what kind of error you would calculate? choose one, or 'all' that plot in different graphics all the other error"
-        print "list: the list of trustmetric name" 
+        print "list: the list of trustmetric name, space-separated" 
         print ""
         print "NB: the default network is AdvogatoNetwork, date 2008-05-12, if you wuold change it, you must use ipython, import this script,"
-        print "    and call the function compareAllTrustMetrics by hand. For the informations about parameters, see the documentation of the function"
+        print "    and call the function compareAllTrustMetrics by hand. For the informations about parameters," 
+        print "    see the documentation of the function"
         exit(0)
 
     leaveOut = bool(sys.argv[1])
