@@ -3,8 +3,9 @@
 
 '''
 USAGE:
-   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path] [--hash] [--input-size bytes]
+   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path|real<real_path>] [--hash] [--input-size bytes]
       Default base_path = home dir
+      If base_path starts with 'real' graph will save in real_path
       If xml_file is - it will use stdin
       input-size: useful if xml_file is stdin 
 '''
@@ -76,7 +77,10 @@ def main():
             assert os.environ.has_key('HOME')
             base_path = os.environ['HOME']
 
-        path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
+        if base_path.startswith('real'):
+            path = base_path[4:]
+        else:
+            path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
         mkpath(path)
 
         ch = WikiContentHandler(lang,xmlsize=size)
