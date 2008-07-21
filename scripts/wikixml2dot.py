@@ -264,7 +264,9 @@ def getCollaborators( rawWikiText, lang ):
 
         if len(end) == 0:
             print "Damn! I cannot be able to find the end of the username!..."
-            print "can you suggest me how character end the username?"
+            print "can you suggest me how is the end character of the username?"
+            print "This is the raw text:"
+            print rawWikiText[start:start+30]
             exit(0)
 
         end.sort()
