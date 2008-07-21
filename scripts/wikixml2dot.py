@@ -242,6 +242,7 @@ def getCollaborators( rawWikiText, lang ):
        name: name of user 
        rawWikiText: text in wiki format (normally discussion in wiki)
     """
+    import re
 
     resname = []
 
@@ -293,7 +294,14 @@ def getCollaborators( rawWikiText, lang ):
             
         #begin of the username
         start = iu + io
-        end = getEnd( rawWikiText, "|,],/", start ) #find end of username (search | or ], take the first one)
+        #find end of username (search | or ], take the first one)
+        end = re.findall( "[àòèéùìa-zA-Z-.]+",rawWikiText[start:] )[0]
+        if end == '' or end == None:
+            print "Damn! I cannot be able to find the name!"
+            print "This is the raw text:"
+            print rawWikiText[start:start+30]
+            exit(0)
+
         username = rawWikiText[start:end]
         resname.append( username ) # list of all usernames (possibly more than one times for one)
         start += end - start + 1 # not consider the |
