@@ -295,17 +295,15 @@ def getCollaborators( rawWikiText, lang ):
         #begin of the username
         start = iu + io
         #find end of username (search | or ], take the first one)
-        end = re.findall( "[àòèéùìa-zA-Z-.]+",rawWikiText[start:] )[0]
-        print end
-        if end == '' or end == None:
+        username = re.findall( "[àòèéùìa-zA-Z-.]+",rawWikiText[start:] )[0]
+        if username == '' or username == None:
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
             print rawWikiText[start:start+30]
             exit(0)
-
-        username = rawWikiText[start:end]
+ 
         resname.append( username ) # list of all usernames (possibly more than one times for one)
-        start += end - start + 1 # not consider the |
+        start += len(username) + 1 # not consider the end character
         
     #return a list of tuple, the second value of tuple is the weight    
     return weight( resname )
