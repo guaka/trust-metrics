@@ -262,7 +262,10 @@ def getCollaborators( rawWikiText, lang ):
                 #print delimiter
                 pass
 
-        assert len(end) > 0
+        if len(end) == 0:
+            print "Damn! I cannot be able to find the end of the username!..."
+            print "can you suggest me how character end the username?"
+            exit(0)
 
         end.sort()
         return end[0]
