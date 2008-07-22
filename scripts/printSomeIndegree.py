@@ -110,7 +110,7 @@ from socket import gethostname
 
 def calc(plist):
 
-    if gethostname() == 'cippanippa':
+    if gethostname() == 'sracls02':
         compareAllTrustMetrics(
             cond=no_observer,
             path='./graphs',
