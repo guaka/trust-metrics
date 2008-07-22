@@ -378,7 +378,10 @@ class WikiNetwork(WeightedNetwork):
         #load from cache
         cacheddataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,'graph.c2'))
         if cacheddataset:
-            self.paste_graph(cacheddataset)
+            for u,v,e in cacheddataset:
+                self.add_node(u)
+                self.add_node(v)
+                self.add_edge(u,v,e)
         else:
             try:
             

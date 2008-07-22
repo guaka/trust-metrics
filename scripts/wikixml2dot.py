@@ -87,27 +87,9 @@ def main():
 
         sax.parse(xml,ch)
         write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
-        save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,'graph.c2'))
+        assert save({'network':'Wiki','lang':lang,'date':date},ch.getNetwork().edges(),os.path.join(path,'graph.c2'))
     else:
         print __doc__
-        
-    exit(0)
-
-    if hostname == 'etna2':
-        ch = WikiHistoryContentHandler()
-        #sax.parse(stdin,ch)
-        sax.parse('/home/jonathan/Desktop/raid/vecwiki-20080625-pages-meta-history.xml',ch)
-        #ch = WikiContentHandler(lang='nap')
-        #sax.parse('/home/jonathan/Desktop/raid/napwiki-20080629-pages-meta-history.xml',ch)
-        #ch = WikiContentHandler(lang='la')
-        #sax.parse('/home/jonathan/Desktop/raid/lawiki-20080630-pages-meta-history.xml',ch)
-        #print ch.getNetwork()
-        write_dot(ch.getNetwork(),'graph.dot')
-
-        #file('log','w').write(str(ch.pages))
-    elif hostname == 'ciropom.homelinux.net':
-        #print getCollaborators( test )
-        pass
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
     def __init__(self,lang,xmlsize=None):
@@ -149,8 +131,10 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
-            title = self.ltitle.partition(':')
+            ### 'Discussion utente:Paolo-da-skio/Subpage'
+            title = self.ltitle.partition('/')[0].partition(':')
             if title[:2] == (i18n[self.lang][0], ':') and title[2]:
+                assert '/' not in title[2]
                 self.pages.append( (title[2],{}) ) # ( user, dict_edit )
                 self.validdisc = True
             else:
@@ -181,17 +165,6 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 W.add_edge(node(user),node(a),{'value':str(num_edit)})
                 
         return W
-
-    def getPyNetwork(self):
-        '''return list of edges'''
-        W = []
-
-        for user,authors in self.pages:
-            for a,num_edit in authors.iteritems():
-                W.append( (user,a,num_edit) )
-                
-        return W
-
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
     def __init__(self,lang,xmlsize=None):
@@ -226,7 +199,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
-            title = self.ltitle.partition(':')
+            title = self.ltitle.partition('/')[0].partition(':')
             if title[:2] == (i18n[self.lang][0], ':') and title[2]:
                 self.lusername = title[2]
                 self.validdisc = True
@@ -243,10 +216,6 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
     def getNetwork(self):        
         return self.network
-
-    def getPyNetwork(self):
-        '''not supported'''
-        return []
 
 def getCollaborators( rawWikiText, lang ):
     """
