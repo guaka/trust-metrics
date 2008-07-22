@@ -87,7 +87,7 @@ def main():
 
         sax.parse(xml,ch)
         write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
-        assert save({'network':'Wiki','lang':lang,'date':date},ch.getNetwork().edges(),os.path.join(path,'graph.c2'))
+        assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,'graph.c2'))
     else:
         print __doc__
 
@@ -166,6 +166,17 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 
         return W
 
+    def getPyNetwork(self):
+        '''return list of edges'''
+        W = []
+
+        for user,authors in self.pages:
+            for a,num_edit in authors.iteritems():
+                W.append( (user,a,num_edit) )
+                
+        return W
+
+
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
     def __init__(self,lang,xmlsize=None):
         sax.handler.ContentHandler.__init__(self)
@@ -216,6 +227,10 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
     def getNetwork(self):        
         return self.network
+
+    def getPyNetwork(self):
+        '''return list of edges'''
+        return []
 
 def getCollaborators( rawWikiText, lang ):
     """
