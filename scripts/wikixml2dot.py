@@ -295,7 +295,7 @@ def getCollaborators( rawWikiText, lang ):
         #begin of the username
         start = iu + io
         #find end of username (search | or ], take the first one)
-        username = re.findall( "[àòèéùìa-zA-Z0-9-\.]+",rawWikiText[start:] )[0]
+        username = re.findall( "[àòèéùìa-zA-Z0-9\.-]+",rawWikiText[start:] )[0]
         if username == '' or username == None:
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
