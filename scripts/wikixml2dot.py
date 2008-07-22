@@ -254,7 +254,7 @@ def getCollaborators( rawWikiText, lang ):
     that put a message on the page, and the value is the number of times that
     he appear in rawText passed.
     parameter:
-       name: name of user 
+       lang: lang of wiki [it|nap|vec|en|la]
        rawWikiText: text in wiki format (normally discussion in wiki)
     """
     import re
@@ -303,21 +303,20 @@ def getCollaborators( rawWikiText, lang ):
             try:
                 search = i18n[lang][1]+":"
             except KeyError:
-                pass
+                print "I cannot be able to understand this language!"
+                exit(0)
 
             continue
             
         #begin of the username
         start = iu + io
-        #find end of username (search | or ], take the first one)
+        #find end of username with regex
         username = re.findall( "[àòèéùìa-zA-Z0-9.-]+",rawWikiText[start:] )[0]
         if username == '' or username == None:
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
             print rawWikiText[start:start+30]
             exit(0)
-            
-        assert '/' not in username
 
         resname.append( username ) # list of all usernames (possibly more than one times for one)
         start += len(username) + 1 # not consider the end character
