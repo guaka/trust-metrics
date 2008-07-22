@@ -301,7 +301,8 @@ def getCollaborators( rawWikiText, lang ):
             print "This is the raw text:"
             print rawWikiText[start:start+30]
             exit(0)
- 
+            
+        assert '/' not in username
         resname.append( username ) # list of all usernames (possibly more than one times for one)
         start += len(username) + 1 # not consider the end character
         
