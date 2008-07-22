@@ -9,7 +9,6 @@ Each network supported has it's own class to wrap it.
 
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
-#from trustlet.helpers import cached_read_dot
 import trustlet
 
 import os,re
@@ -376,27 +375,32 @@ class WikiNetwork(WeightedNetwork):
         #self.fix_graphdot()
         self.upthreshold = upthreshold
         
-        try:
+        #load from cache
+        cacheddataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,'graph.c2'))
+        if cacheddataset:
+            self.paste_graph(cacheddataset)
+        else:
+            try:
             
-            if dataset == None:
-                self._read_dot( os.path.join( self.path,"graph.dot" ) )
-            else:
-                if os.path.isfile( dataset ):
-                    self._read_dot( dataset )
-                    data = dataset
+                if dataset == None:
+                    self._read_dot( os.path.join( self.path,"graph.dot" ) )
                 else:
-                    data = os.path.join( dataset, "graph.dot" )
-                    self._read_dot( data )
+                    if os.path.isfile( dataset ):
+                        self._read_dot( dataset )
+                        data = dataset
+                    else:
+                        data = os.path.join( dataset, "graph.dot" )
+                        self._read_dot( data )
                                     
-                #save graph.dot in right folder
-                os.rename( data, os.path.join(self.path,"graph.dot") )
+                    #save graph.dot in right folder
+                    os.rename( data, os.path.join(self.path,"graph.dot") )
 
-            #end else
+                #end else
 
-        except IOError:
+            except IOError:
                                         
-            raise IOError("There isn't a dot file on this path:\n "+
-                          self.path+"\nplease specify another path or create dot file with wikixml2dot.py" )
+                raise IOError("There isn't a dot file on this path:\n "+
+                              self.path+"\nplease specify another path or create dot file with wikixml2dot.py" )
 
         self.weights()
         self.__rescale()

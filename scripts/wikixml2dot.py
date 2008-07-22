@@ -12,14 +12,14 @@ USAGE:
 
 from xml import sax
 from trustlet.Dataset.Network import Network
-from trustlet.helpers import mkpath
+from trustlet.helpers import mkpath,save
 from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
 import os,re
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
-node = lambda s: str(printable(s)).replace('"','')
+node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
 hnode = lambda s: str(hash(s))
 
 from socket import gethostname
@@ -87,6 +87,7 @@ def main():
 
         sax.parse(xml,ch)
         write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
+        save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,'graph.c2'))
     else:
         print __doc__
         
@@ -165,7 +166,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
-                print '>%d%% ~%d%%'%(perc,perc*100/87)
+                print '>%d%%'%perc
                 self.last_perc_print = perc
 
     def getNetwork(self):
@@ -178,6 +179,16 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 W.add_node(node(a))
                 #add edges
                 W.add_edge(node(user),node(a),{'value':str(num_edit)})
+                
+        return W
+
+    def getPyNetwork(self):
+        '''return list of edges'''
+        W = []
+
+        for user,authors in self.pages:
+            for a,num_edit in authors.iteritems():
+                W.append( (user,a,num_edit) )
                 
         return W
 
@@ -232,6 +243,10 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
     def getNetwork(self):        
         return self.network
+
+    def getPyNetwork(self):
+        '''not supported'''
+        return []
 
 def getCollaborators( rawWikiText, lang ):
     """
