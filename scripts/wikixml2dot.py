@@ -303,6 +303,7 @@ def getCollaborators( rawWikiText, lang ):
             exit(0)
             
         assert '/' not in username
+
         resname.append( username ) # list of all usernames (possibly more than one times for one)
         start += len(username) + 1 # not consider the end character
         
