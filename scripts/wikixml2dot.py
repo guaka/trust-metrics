@@ -186,6 +186,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.validdisc = False # valid discussion
 
         self.network = Network()
+        self.edges = []
 
     def startElement(self,name,attrs):
         
@@ -207,6 +208,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
             for u,n in getCollaborators(self.ltext,self.lang):
                 self.network.add_node(node(u))
                 self.network.add_edge(node(u),node(self.lusername),{'value':str(n)})
+                self.edges.append( (u,self.lusername,n) )
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
@@ -230,7 +232,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
     def getPyNetwork(self):
         '''return list of edges'''
-        return []
+        return self.edges
 
 def getCollaborators( rawWikiText, lang ):
     """
