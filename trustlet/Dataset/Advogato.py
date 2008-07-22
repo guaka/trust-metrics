@@ -158,7 +158,10 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
                 self.fix_graphdot()
 
     def fix_graphdot(self):
-        """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
+        """
+        Fix syntax of graph.dot (8bit -> blah doesn't work!)
+        Put nodes names into `"`
+        """
         print 'Fixing graph.dot'
         graph_file = open(self.filepath, 'r')
         l_names = graph_file.readlines()

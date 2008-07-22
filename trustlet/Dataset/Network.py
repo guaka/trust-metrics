@@ -373,6 +373,7 @@ class WikiNetwork(WeightedNetwork):
             os.mkdir(self.path)
         
         self.filepath = os.path.join( self.path, "graph.dot" )
+        #self.fix_graphdot()
         self.upthreshold = upthreshold
         
         try:
@@ -424,6 +425,20 @@ class WikiNetwork(WeightedNetwork):
     def trust_on_edge(self,edge):
         return self.__map( edge[2].values()[0] )
 
+    #fix_graphdot = trustlet.Dataset.Advogato.AdvogatoNetwork.fix_graphdot
+    def fix_graphdot(self):
+        """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
+        print 'Fixing graph.dot'
+        graph_file = open(self.filepath, 'r')
+        l_names = graph_file.readlines()
+        graph_file.close()
+        re_fix = re.compile(' (\w+)')
+        fixed_lines = map(lambda s: re_fix.sub(r' "\1"', s), l_names)
+
+        writefile = open(self.filepath, 'w')
+        writefile.writelines(fixed_lines)
+        writefile.close()
+        return self.filepath
 
 if __name__ == "__main__":
     WikiNetwork("vec")

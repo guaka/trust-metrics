@@ -19,7 +19,7 @@ from sys import stdin,argv
 import os,re
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
-node = lambda s: str(printable(s))
+node = lambda s: str(printable(s)).replace('"','')
 hnode = lambda s: str(hash(s))
 
 from socket import gethostname
