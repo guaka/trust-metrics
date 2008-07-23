@@ -14,6 +14,7 @@ import marshal
 import md5
 import pickle
 from gzip import GzipFile
+from bz2 import BZ2File
 
 try:
     import scipy
@@ -976,6 +977,7 @@ def convert_cache(path1,path2):
 def cached_read_dot(filepath,force=False):
     '''
     If graph had been read yet this function avoid to reload it from file system.
+    This function can load bz2 compressed dot
     '''
     if not globals().has_key('globalgraphscache'):
         globals()['globalgraphscache'] = {}
@@ -985,7 +987,15 @@ def cached_read_dot(filepath,force=False):
         return cache[filepath]
 
     from networkx import read_dot
-    cache[filepath] = read_dot(filepath)
+    
+    if os.path.exists(filepath+'.bz2') and not os.path.exists(filepath):
+        tmppath = os.tempnam()
+        f = file(tmppath,'w')
+        f.write(BZ2File(filepath+'.bz2').read())
+        f.close()
+        cache[filepath] = read_dot(tmppath)
+    else:
+        cache[filepath] = read_dot(filepath)
 
     return cache[filepath]
 
