@@ -237,7 +237,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
-                print '>%d%% ~%d%%'%(perc,perc*100/50)
+                print '>%d%% ~%d%%'%(perc,perc*100/88)
                 self.last_perc_print = perc
 
     def getNetwork(self):        
