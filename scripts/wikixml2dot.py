@@ -227,6 +227,13 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         elif self.read == u'text':
             self.ltext += contents.strip()
 
+        if self.xmlsize:
+            self.count += len(contents)
+            perc = 100*self.count/self.xmlsize
+            if perc != self.last_perc_print:
+                print '>%d%%'%perc
+                self.last_perc_print = perc
+
     def getNetwork(self):        
         return self.network
 
