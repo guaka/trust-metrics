@@ -355,7 +355,7 @@ class WikiNetwork(WeightedNetwork):
     and optionally the upthreshold (number of vote to consider edges max trusted)
     """
         
-    def __init__(self, lang, date, base_path = None, dataset = None, upthreshold = 20):
+    def __init__(self, lang, date, base_path = None, dataset = None, upthreshold = 20, force = False):
         WeightedNetwork.__init__(self,base_path=base_path )
         
         assert re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',date)
@@ -376,6 +376,7 @@ class WikiNetwork(WeightedNetwork):
         self.upthreshold = upthreshold
         
         #load from cache
+        print "Reading ", os.path.join(self.path,'graph.c2')
         cacheddataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,'graph.c2'))
         if cacheddataset:
             for u,v,e in cacheddataset:
@@ -386,14 +387,14 @@ class WikiNetwork(WeightedNetwork):
             try:
             
                 if dataset == None:
-                    self._read_dot( os.path.join( self.path,"graph.dot" ) )
+                    self._read_dot( os.path.join( self.path,"graph.dot" ), force )
                 else:
                     if os.path.isfile( dataset ):
-                        self._read_dot( dataset )
+                        self._read_dot( dataset, force )
                         data = dataset
                     else:
                         data = os.path.join( dataset, "graph.dot" )
-                        self._read_dot( data )
+                        self._read_dot( data, force )
                                     
                     #save graph.dot in right folder
                     os.rename( data, os.path.join(self.path,"graph.dot") )
@@ -430,8 +431,22 @@ class WikiNetwork(WeightedNetwork):
         return self._weights
 
     def trust_on_edge(self,edge):
+        """
+        return trust on edge passed
+        """
+        if type(edge[2]) is int:
+            return self.__map( edge[2] )
+
         return self.__map( edge[2].values()[0] )
 
+    def _read_dot(self, filepath, force = False):
+        """Read file."""
+        print "Reading", filepath
+        #import networkx
+        #graph = networkx.read_dot(filepath)
+        graph = trustlet.helpers.cached_read_dot(filepath,force)
+        self.paste_graph(graph)
+        
     #fix_graphdot = trustlet.Dataset.Advogato.AdvogatoNetwork.fix_graphdot
     def fix_graphdot(self):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""

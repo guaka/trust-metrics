@@ -256,32 +256,6 @@ def getCollaborators( rawWikiText, lang ):
 
     exit = 0; start = 0; search = "User:"; io = 5
 
-    def getEnd( rawWikiText, search, start ):
-        """
-        return the position of the first 'end character',
-        choosed from search.
-        """
-        list = split( search , "," )
-        end = []
-
-        for delimiter in list:
-            try:
-                end.append( index( rawWikiText, delimiter, start ) )
-            except ValueError:
-                #print delimiter
-                pass
-
-        if len(end) == 0:
-            print "Damn! I cannot be able to find the end of the username!..."
-            print "can you suggest me how is the end character of the username?"
-            print "This is the raw text:"
-            print rawWikiText[start:start+30]
-            exit(0)
-
-        end.sort()
-        return end[0]
-
-
     #try user, if there aren't, try Utente (italian)
     while exit < 2:
         #search next user
@@ -309,7 +283,17 @@ def getCollaborators( rawWikiText, lang ):
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
             print rawWikiText[start:start+30]
-            exit(0)
+            import sys
+           
+            print "What is the end character? (all the character before first were ignored)"
+            newdelimiter = sys.stdin.readline().strip()[0]
+            
+            try:
+                end.append( index( rawWikiText, newdelimiter, start ) )
+            except ValueError:
+                print "Damn! you give me a wrong character!.."
+                exit(0)
+
 
         resname.append( username ) # list of all usernames (possibly more than one times for one)
         start += len(username) + 1 # not consider the end character
@@ -354,6 +338,44 @@ def weight( list ):
         update( listweight, x )
 
     return listweight
+
+#this function is not useful for now..
+def getCharPosition( rawWikiText, search, start ):
+        """
+        return the position of the first character in rawWikiText,
+        choosed from search. If doesn't find any end character,
+        show 30 character after start position in rawWikiText,
+        and get end character by standard input.
+        """
+        list = split( search , "," )
+        end = []
+
+        for delimiter in list:
+            try:
+                end.append( index( rawWikiText, delimiter, start ) )
+            except ValueError:
+                #print delimiter
+                pass
+
+        if len(end) == 0:
+            print "Damn! I cannot be able to find the end of the username!..."
+            print "can you suggest me how is the end character of the username?"
+            print "This is the raw text:"
+            print rawWikiText[start:start+30]
+            import sys
+           
+            print "What is the end character? (all the character before first were ignored)"
+            newdelimiter = sys.stdin.readline().strip()[0]
+            
+            try:
+                end.append( index( rawWikiText, newdelimiter, start ) )
+            except ValueError:
+                print "Damn! you give me a wrong character!.."
+                exit(0)
+
+        end.sort()
+        return end[0]
+
 
 
 if __name__=="__main__":
