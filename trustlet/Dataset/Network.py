@@ -384,9 +384,11 @@ class WikiNetwork(WeightedNetwork):
         
         #load from cache
         print "Reading ", os.path.join(self.path,filename+'.c2')
-        cacheddataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,filename+'.c2'))
-        if cacheddataset:
-            for u,v,e in cacheddataset:
+        pydataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,filename+'.c2'))
+        if pydataset:
+            for u in nodes:
+                self.add_node(u)
+            for u,v,e in edges:
                 self.add_node(u)
                 self.add_node(v)
                 self.add_edge(u,v,e)
