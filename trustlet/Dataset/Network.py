@@ -355,10 +355,15 @@ class WikiNetwork(WeightedNetwork):
     and optionally the upthreshold (number of vote to consider edges max trusted)
     """
         
-    def __init__(self, lang, date, base_path = None, dataset = None, upthreshold = 20, force = False):
+    def __init__(self, lang, date, base_path = None, dataset = None, upthreshold = 20, force = False, current=True):
         WeightedNetwork.__init__(self,base_path=base_path )
         
         assert re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',date)
+
+        if current:
+            filename = "graphCurrent"
+        else:
+            filename = "graphHistory"
 
         if upthreshold != 20:
             print "Warning: upthreshold isn't 20. Saved PredGraph might not what you want."
@@ -371,13 +376,13 @@ class WikiNetwork(WeightedNetwork):
         if not os.path.exists( self.path ):
             os.mkdir(self.path)
         
-        self.filepath = os.path.join( self.path, "graph.dot" )
+        self.filepath = os.path.join( self.path, filename )
         #self.fix_graphdot()
         self.upthreshold = upthreshold
         
         #load from cache
-        print "Reading ", os.path.join(self.path,'graph.c2')
-        cacheddataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,'graph.c2'))
+        print "Reading ", os.path.join(self.path,filename+'.c2')
+        cacheddataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,filename+'.c2'))
         if cacheddataset:
             for u,v,e in cacheddataset:
                 self.add_node(u)
@@ -387,17 +392,17 @@ class WikiNetwork(WeightedNetwork):
             try:
             
                 if dataset == None:
-                    self._read_dot( os.path.join( self.path,"graph.dot" ), force )
+                    self._read_dot( os.path.join( self.path,filename+'.dot' ), force )
                 else:
                     if os.path.isfile( dataset ):
                         self._read_dot( dataset, force )
                         data = dataset
                     else:
-                        data = os.path.join( dataset, "graph.dot" )
+                        data = os.path.join( dataset, filename+'.dot' )
                         self._read_dot( data, force )
                                     
                     #save graph.dot in right folder
-                    os.rename( data, os.path.join(self.path,"graph.dot") )
+                    os.rename( data, os.path.join(self.path,filename+'.dot') )
 
                 #end else
 

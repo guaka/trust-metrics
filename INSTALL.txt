@@ -12,6 +12,7 @@ Try:
 * pygraphviz
 * pyparsing
 * python-gnuplot
+* python-bz2
 
 === scipy ===
 
