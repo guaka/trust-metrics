@@ -41,10 +41,12 @@ def main():
 
     if '--current' in argv:
         WikiContentHandler = WikiCurrentContentHandler
+        outputname = 'graphCurrent'
         
         argv.remove('--current')
     else:
         WikiContentHandler = WikiHistoryContentHandler
+        outputname = 'graphHistory'
         
         if '--history' in argv:
             argv.remove('--history')
@@ -86,8 +88,8 @@ def main():
         ch = WikiContentHandler(lang,xmlsize=size)
 
         sax.parse(xml,ch)
-        write_dot(ch.getNetwork(),os.path.join(path,'graph.dot'))
-        assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,'graph.c2'))
+        write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
+        assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,outputname+'.c2'))
     else:
         print __doc__
 
@@ -139,6 +141,10 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 self.validdisc = True
             else:
                 self.validdisc = False
+
+            #check
+            if self.lang!='en' and title[:2] == (i18n['en'][0], ':'):
+                print 'O.o',title
 
     def characters(self,contents):
         if self.read == u'username':
