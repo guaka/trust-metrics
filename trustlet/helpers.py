@@ -14,7 +14,6 @@ import marshal
 import md5
 import pickle
 from gzip import GzipFile
-from bz2 import BZ2File
 
 try:
     import scipy
@@ -991,8 +990,12 @@ def cached_read_dot(filepath,force=False):
     if os.path.exists(filepath+'.bz2') and not os.path.exists(filepath):
         tmppath = os.tempnam()
         f = file(tmppath,'w')
-        f.write(BZ2File(filepath+'.bz2').read())
-        f.close()
+        try:
+            from bz2 import BZ2File
+            f.write(BZ2File(filepath+'.bz2').read())
+            f.close()
+        except ImportError:
+            os.system('bzcat %s > %s' % (filepath,tmppath))
         cache[filepath] = read_dot(tmppath)
     else:
         cache[filepath] = read_dot(filepath)
