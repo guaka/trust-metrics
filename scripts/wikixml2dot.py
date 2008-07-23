@@ -88,7 +88,7 @@ def main():
         ch = WikiContentHandler(lang,xmlsize=size)
 
         sax.parse(xml,ch)
-        write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
+        #write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
         assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,outputname+'.c2'))
     else:
         print __doc__
@@ -126,25 +126,27 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         if name == u'username' and self.validdisc:
 
             d = self.pages[-1][1]
-            if d.has_key(self.lusername):
-                d[self.lusername] += 1
-            else:
-                d[self.lusername] = 1
+            if self.lusername != self.pages[-1][0]:
+                #remove edges: userX -> userX
+                if d.has_key(self.lusername):
+                    d[self.lusername] += 1
+                else:
+                    d[self.lusername] = 1
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
             ### 'Discussion utente:Paolo-da-skio/Subpage'
             title = self.ltitle.partition('/')[0].partition(':')
             if title[:2] == (i18n[self.lang][0], ':') and title[2]:
-                assert '/' not in title[2]
+                #assert '/' not in title[2]
                 self.pages.append( (title[2],{}) ) # ( user, dict_edit )
                 self.validdisc = True
             else:
                 self.validdisc = False
 
             #check
-            if self.lang!='en' and title[:2] == (i18n['en'][0], ':'):
-                print 'O.o',title
+            #if self.lang!='en' and title[:2] == (i18n['en'][0], ':'):
+            #    print 'O.o',title
 
     def characters(self,contents):
         if self.read == u'username':
@@ -199,6 +201,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         self.network = Network()
         self.edges = []
+        self.nodes = []
 
     def startElement(self,name,attrs):
         
@@ -217,7 +220,10 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
-            for u,n in getCollaborators(self.ltext,self.lang):
+            collaborators = getCollaborators(self.ltext,self.lang)
+            if not collaborators:
+                self.nodes.append(self.lusername)
+            for u,n in collaborators:
                 self.network.add_node(node(u))
                 self.network.add_edge(node(u),node(self.lusername),{'value':str(n)})
                 self.edges.append( (u,self.lusername,n) )
@@ -251,7 +257,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
     def getPyNetwork(self):
         '''return list of edges'''
-        return self.edges
+        return (self.nodes,self.edges)
 
 def getCollaborators( rawWikiText, lang ):
     """
