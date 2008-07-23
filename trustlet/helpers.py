@@ -995,7 +995,7 @@ def cached_read_dot(filepath,force=False):
             f.write(BZ2File(filepath+'.bz2').read())
             f.close()
         except ImportError:
-            os.system('bzcat %s > %s' % (filepath,tmppath))
+            os.system('bzcat "%s" > "%s"' % (filepath,tmppath))
         cache[filepath] = read_dot(tmppath)
     else:
         cache[filepath] = read_dot(filepath)

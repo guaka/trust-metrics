@@ -188,6 +188,8 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.read = False
         self.validdisc = False # valid discussion
         self.xmlsize = xmlsize
+        self.count = 0
+        self.last_perc_print = ''
 
         self.network = Network()
         self.edges = []

@@ -386,6 +386,7 @@ class WikiNetwork(WeightedNetwork):
         print "Reading ", os.path.join(self.path,filename+'.c2')
         pydataset = trustlet.helpers.load({'network':'Wiki','lang':lang,'date':date},os.path.join(self.path,filename+'.c2'))
         if pydataset:
+            nodes,edges = pydataset
             for u in nodes:
                 self.add_node(u)
             for u,v,e in edges:
