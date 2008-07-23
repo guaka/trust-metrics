@@ -150,7 +150,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
-                print '>%d%%'%perc
+                print '>%d%% ~%d%%'%(perc,perc*100/48)
                 self.last_perc_print = perc
 
     def getNetwork(self):
@@ -168,13 +168,16 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
     def getPyNetwork(self):
         '''return list of edges'''
-        W = []
+        nodes = []
+        edges = []
 
         for user,authors in self.pages:
+            if not authors:
+                nodes.append(user)
             for a,num_edit in authors.iteritems():
-                W.append( (user,a,num_edit) )
+                edges.append( (user,a,{'value':num_edit}) )
                 
-        return W
+        return (nodes,edges)
 
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
@@ -184,6 +187,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.lang = lang
         self.read = False
         self.validdisc = False # valid discussion
+        self.xmlsize = xmlsize
 
         self.network = Network()
         self.edges = []
@@ -231,7 +235,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
-                print '>%d%%'%perc
+                print '>%d%% ~%d%%'%(perc,perc*100/50)
                 self.last_perc_print = perc
 
     def getNetwork(self):        
