@@ -12,7 +12,7 @@ def main(net):
         trustmetrics = getTrustMetrics( net, advogato=False )
 
     def eval( tm ):
-        if hasattr( tm.dataset, "lang" ):
+        if hasattr( trustmetrics[tm].dataset, "lang" ):
             P = WikiPredGraph( trustmetrics[tm] )
         else:
             P = PredGraph( trustmetrics[tm] )
