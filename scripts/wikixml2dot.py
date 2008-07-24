@@ -30,6 +30,7 @@ i18n = {
     'nap':('Discussioni utente','Utente'),
     'it': ('Discussioni utente','Utente'),
     'en': ('User talk','User'),
+    'simple':('User talk','User'),
     'la': ('Disputatio Usoris','Usor'),
 }
 

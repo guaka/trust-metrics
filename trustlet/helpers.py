@@ -961,6 +961,9 @@ def load(key,path='.'):
     return data
 
 def erase_cachedcache():
+    '''
+    useful to reload cache from disc
+    '''
     globals()['cachedcache'] = {}
 
 def convert_cache(path1,path2):
