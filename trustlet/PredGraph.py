@@ -42,31 +42,39 @@ class CalcGraph(Network):
         self.predict_ratio = predict_ratio
 
         self.start_time = time.time()
-
+        
         if hasattr(dataset, "filepath"):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
 
-            self.filepath = os.path.join(self.path, 
-                                         get_name(self) + '.dot')
-            
+            self.__set_filepath()
 
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
                 mkpath(self.path)
-                            
+            
+                        
             if not recreate and os.path.exists(self.filepath):
                 self._read_dot(self.filepath)
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
+            
+            
                 
         self._set_arrays()
         self._prepare()
         if hasattr(self.TM, 'rescale') and self.TM.rescale:
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
+
+
+    def __set_filepath(self):
+        
+        self.filepath = os.path.join(self.path, 
+                                     get_name(self) + '.dot')
+            
 
     def get_name(self):
         """Override get_name."""
@@ -594,6 +602,98 @@ class PredGraph(CalcGraph):
         assert save(cachedict,cache,os.path.join(self.dataset.path,'cache'))
         return res
 
+#Wiki Prediction Graph
+
+class CalcWikiGraph(CalcGraph):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0):
+        """Create object from dataset using TM as trustmetric.
+        predict_ratio is the part of the edges that will randomly be
+        picked for prediction.
+        NB: The save format for wiki, is different from the save format
+            for Advogato, and other datasets"""
+        self.TM = TM
+        self.dataset = dataset = TM.dataset
+        self.predict_ratio = predict_ratio
+
+        self.start_time = time.time()
+        
+        if hasattr(dataset, "filepath"):
+            self.path = os.path.join(os.path.split(dataset.filepath)[0],
+                                     path_name(TM))
+
+            self.__set_filepath()
+
+            if hasattr(TM,"noneToValue") and TM.noneToValue:
+                self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
+            if not os.path.exists(self.path):
+                mkpath(self.path)
+                        
+            if not recreate and os.path.exists(self.filepath):
+                self._read_dot(self.filepath)
+            else:
+                graph = self._generate()
+                self._write_pred_graph_dot(graph)
+            
+            
+                
+        self._set_arrays()
+        self._prepare()
+        if hasattr(self.TM, 'rescale') and self.TM.rescale:
+            self._rescale()
+        print "Init took", hms(time.time() - self.start_time)
+
+            
+    #override filepath
+    def __set_filepath(self):
+        
+        if self.dataset.current:
+            self.filepath = os.path.join(self.path, 
+                                         get_name(self) + 'Current.c2')
+        else:
+            self.filepath = os.path.join(self.path, 
+                                         get_name(self) + 'History.c2')
+
+
+    # override read and write functions, for WikiFormat
+    def _read_dot(self, filepath):
+        """
+        read cache file
+        """
+        path,file = os.path.split( filepath )
+        path,date = os.path.split( path )
+        path,lang = os.path.split( path )
+
+        return load({'lang':lang,'data':data}, filepath )
+
+    def _write_pred_graph_dot(self):
+        """Write PredGraph.c2"""
+        print "Writing", self.filepath,
+        print "-", len(pred_graph.nodes()),
+        print "nodes", len(pred_graph.edges()), "edges"
+        
+        if self.filepath[-3:] != '.c2':
+            print "Error!, the filepath is not a c2 file! exiting"
+            exit(0)
+        
+        save({'lang':self.dataset.lang,'date':self.dataset.date},pred_graph, self.filepath)
+
+class WikiPredGraph(PredGraph,CalcWikiGraph):
+    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
+        
+        try:
+            TM.dataset
+        except AttributeError:
+            print 'Are you sure that TM is a TM?'
+        
+        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
+
+        self.leave_one_out = leave_one_out
+        
+
+
+
+
+# general utility
 def edge_to_connected_node(number=10):
     """True if the node which is target of the edge received at least
     'number' incoming trust statements."""
