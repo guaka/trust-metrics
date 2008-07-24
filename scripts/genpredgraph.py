@@ -43,6 +43,7 @@ if __name__ == "__main__":
         type = date = split( dataset_path )[1]
     else:
         print "USAGE: python genpredgraph.py dataset_path [lang]"
+        exit(0)
 
     #try to find type of network
     while( check(type_path) and ( re.match( "[a-zA-Z]+Network", type ) == None ) ):
