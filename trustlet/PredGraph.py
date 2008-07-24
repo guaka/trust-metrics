@@ -422,6 +422,10 @@ class PredGraph(CalcGraph):
                 abs = load( diz,
                             os.path.join(self.path,'cache')
                             )
+                if abs == None:
+                    abs = load( diz,
+                            os.path.join(self.path,'cache.c2')
+                            )
 
             #if the result is cached
             if abs != None:
@@ -466,7 +470,7 @@ class PredGraph(CalcGraph):
                 #saving calculated values
                 ret = save( diz,
                             (sum,cnt,rmse,pw,cov),
-                            os.path.join(self.path,'cache')
+                            os.path.join(self.path,'cache.c2')
                             )
                 
 

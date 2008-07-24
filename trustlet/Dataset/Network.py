@@ -393,7 +393,11 @@ class WikiNetwork(WeightedNetwork):
                 self.add_node(u)
                 self.add_node(v)
                 self.add_edge(u,v,e)
+                
+            self.filepath += '.c2'
         else:
+            self.filepath += '.dot'
+
             try:
             
                 if dataset == None:
@@ -408,7 +412,7 @@ class WikiNetwork(WeightedNetwork):
                                     
                     #save graph.dot in right folder
                     os.rename( data, os.path.join(self.path,filename+'.dot') )
-
+                
                 #end else
 
             except IOError:
