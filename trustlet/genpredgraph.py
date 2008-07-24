@@ -12,7 +12,10 @@ def main(net):
         trustmetrics = getTrustMetrics( net, advogato=False )
 
     def eval( tm ):
-        P = PredGraph( trustmetrics[tm] )
+        if hasattr( tm.dataset, "lang" ):
+            P = WikiPredGraph( trustmetrics[tm] )
+        else:
+            P = PredGraph( trustmetrics[tm] )
         return None
     
     splittask( eval , [tm for tm in trustmetrics], np=4 )
