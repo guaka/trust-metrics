@@ -960,6 +960,9 @@ def load(key,path='.'):
         return None
     return data
 
+def erase_cachedcache():
+    globals()['cachedcache'] = {}
+
 def convert_cache(path1,path2):
     '''
     from version 1 to 2
