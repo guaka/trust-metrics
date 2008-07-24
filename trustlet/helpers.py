@@ -556,7 +556,7 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
         "moletrust standard" : trustlet.MoleTrustTM( Network ),
         "moletrust generator" : trustlet.TrustMetric( Network , 
                                                       trustlet.moletrust_generator( 6 , 0.0 , 0.0 ) ),
-        "pagerank" : trustlet.PageRankTM( Network )
+        #"pagerank" : trustlet.PageRankTM( Network )
         #"pagerank global": PageRankGlobalTM( K )
         }
     
