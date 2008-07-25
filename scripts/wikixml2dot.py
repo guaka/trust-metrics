@@ -17,6 +17,7 @@ from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
 import os,re
+from gzip import GzipFile
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
@@ -91,6 +92,7 @@ def main():
         sax.parse(xml,ch)
         #write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
         assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,outputname+'.c2'))
+        #save_raw_graph(ch.getPyNetwork(),os.path.join(path,outputname+'.rawgraph'))
     else:
         print __doc__
 
@@ -396,6 +398,41 @@ def getCharPosition( rawWikiText, search, start ):
         return end[0]
 
 
+def save_raw_graph(pynetwork,path):
+    '''save graph in a gzip compressed text file'''
+
+    writelines = lambda f,lines: f.writelines([x+'\n' for x in lines])
+
+    #version 0
+    nodes,edges = pynetwork
+
+    #f = GzipFile(path,'w')
+    f = file(path,'w')
+    writelines(f,['0',str(len(nodes)),str(len(edges))])
+    writelines(f,nodes)
+    for edge in edges:
+        writelines(f,[edge[0],edge[1],str(edge[2]['value'])])
+    f.close()
+
+def load_raw_graph(path):
+    '''load a pynetwork'''
+    #f = GzipFile(path)
+    f = file(path)
+    version = f.readline()
+    if version == '0':
+        num_nodes = int(f.readline())
+        num_edges = int(f.readline())
+        nodes = []
+        for i in xrange(num_nodes):
+            nodes.append(f.readline())
+        edges = []
+        for i in xrange(num_edges):
+            edges.append( (f.readline(),f.readline(),{'value':int(f.readline())}) )
+        pynetwork = (nodes,edges)
+    else:
+        pynetwork = None
+    f.close()
+    return pynetwork
 
 if __name__=="__main__":
     main()
