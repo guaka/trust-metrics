@@ -29,6 +29,7 @@ hostname = gethostname()
 i18n = {
     'vec':('Discussion utente','Utente'),
     'nap':('Discussioni utente','Utente'),
+    'fur':('Discussion utent','Utent'),
     'it': ('Discussioni utente','Utente'),
     'en': ('User talk','User'),
     'simple':('User talk','User'),
