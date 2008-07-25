@@ -275,26 +275,16 @@ def getCollaborators( rawWikiText, lang ):
 
     resname = []
 
-    exit = 0; start = 0; search = "User:"; io = 5
+    exit = 0; start = 0
+    search = i18l[lang][1]+":"
+    io = len(search)
 
-    #try user, if there aren't, try Utente (italian)
-    while exit < 2:
+    while True:
         #search next user
         try:
             iu = index( rawWikiText, search, start ) #index of username
         except ValueError:
-            #if doesn't find, try to find "Utente:"
-            #if doesn't find utente, exit
-            exit += 1
-            start = 0
-            io = 7 #index offset from begin of "User:" and begin of Username
-            try:
-                search = i18n[lang][1]+":"
-            except KeyError:
-                print "I cannot be able to understand this language!"
-                exit(0)
-
-            continue
+            break
             
         #begin of the username
         start = iu + io
