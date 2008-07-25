@@ -276,7 +276,7 @@ def getCollaborators( rawWikiText, lang ):
     resname = []
 
     exit = 0; start = 0
-    search = i18l[lang][1]+":"
+    search = i18n[lang][1]+":"
     io = len(search)
 
     while True:
