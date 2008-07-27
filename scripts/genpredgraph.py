@@ -7,9 +7,9 @@ from trustlet import *
 def main(net):
     #A = AdvogatoNetwork( download=True, base_path=path )
     if get_name(net) == 'AdvogatoNetwork':
-        trustmetrics = getTrustMetrics( net )
+        trustmetrics = getTrustMetrics( net, trivial=True )
     else:
-        trustmetrics = getTrustMetrics( net, advogato=False )
+        trustmetrics = getTrustMetrics( net, advogato=False, trivial=True )
 
     def eval( tm ):
         if hasattr( trustmetrics[tm].dataset, "lang" ):
