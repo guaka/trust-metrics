@@ -665,7 +665,7 @@ class CalcWikiGraph(CalcGraph):
 
         return load({'lang':lang,'data':data}, filepath )
 
-    def _write_pred_graph_dot(self):
+    def _write_pred_graph_dot(self,pred_graph):
         """Write PredGraph.c2"""
         print "Writing", self.filepath,
         print "-", len(pred_graph.nodes()),
@@ -675,7 +675,7 @@ class CalcWikiGraph(CalcGraph):
             print "Error!, the filepath is not a c2 file! exiting"
             exit(0)
         
-        save({'lang':self.dataset.lang,'date':self.dataset.date},pred_graph, self.filepath)
+        return save({'lang':self.dataset.lang,'date':self.dataset.date},pred_graph, self.filepath)
 
 class WikiPredGraph(PredGraph,CalcWikiGraph):
     def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
