@@ -135,6 +135,7 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
 
     def info(self):
         WeightedNetwork.info(self)
+        self.show_reciprocity_matrix()
         print "Level distribution:"
         for l in self.level_distribution():
             print l

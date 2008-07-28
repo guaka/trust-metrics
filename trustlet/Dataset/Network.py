@@ -263,7 +263,6 @@ class WeightedNetwork(Network):
         
     def info(self):
         Network.info(self)
-        self.show_reciprocity_matrix()
 
     def min_weight(self):
         """Minimum weight."""
