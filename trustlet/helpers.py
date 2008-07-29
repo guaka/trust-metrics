@@ -338,7 +338,7 @@ def prettyplot( data, path, **args):
     # setting format of x axis to date, as in http://theochem.ki.ku.dk/on_line_docs/gnuplot/gnuplot_16.html
     if args.has_key('x_date'):
         g('set xdata time')
-        g('set timefmt "%m/%d/%y"')
+        g('set timefmt "%Y-%m-%d"')
     if args.has_key('x_range'):
         if args['x_range'] != None:
             g('set xrange ['+str(args['x_range'][0])+':'+str(args['x_range'][1])+']')
