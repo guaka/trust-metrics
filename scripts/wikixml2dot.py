@@ -11,7 +11,6 @@ USAGE:
 '''
 
 from xml import sax
-import trustlet
 from trustlet.Dataset.Network import Network
 from trustlet.helpers import *
 from networkx import write_dot
@@ -71,7 +70,7 @@ def main():
         if inputsize:
             size = inputsize
 
-        assert trustlet.helpers.isdate(date)
+        assert isdate(date)
 
         if argv[4:]:
             base_path = argv[4]
