@@ -71,7 +71,7 @@ def main():
         if inputsize:
             size = inputsize
 
-        assert isdate(date)
+        assert trustlet.helpers.isdate(date)
 
         if argv[4:]:
             base_path = argv[4]
