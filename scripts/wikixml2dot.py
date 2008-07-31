@@ -21,7 +21,6 @@ from gzip import GzipFile
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
-hnode = lambda s: str(hash(s))
 
 from socket import gethostname
 hostname = gethostname()
@@ -30,6 +29,7 @@ i18n = {
     'vec':('Discussion utente','Utente'),
     'nap':('Discussioni utente','Utente'),
     'fur':('Discussion utent','Utent'),
+    'eml': ('Discussioni utente','Utente'),
     'it': ('Discussioni utente','Utente'),
     'en': ('User talk','User'),
     'simple':('User talk','User'),
@@ -37,10 +37,6 @@ i18n = {
 }
 
 def main():
-
-    if '--hash' in argv:
-        globals()['node'] = hnode
-        argv.remove('--hash')
 
     if '--current' in argv:
         WikiContentHandler = WikiCurrentContentHandler
@@ -94,7 +90,12 @@ def main():
         #write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
         assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,outputname+'.c2'))
         #save_raw_graph(ch.getPyNetwork(),os.path.join(path,outputname+'.rawgraph'))
-        print 'Number of users of whole graph:',len(ch.allusers)
+        numallusers = len(ch.allusers)
+        print 'Number of users of whole graph:',numallusers
+        f = file('wikixml2dot.log','a')
+        f.write('Network: %s %s\n'%(lang,date))
+        f.write('Number of users of whole graph: %d\n'%numallusers)
+        f.close()
     else:
         print __doc__
 
