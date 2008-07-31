@@ -841,6 +841,9 @@ def mkpath(fullpath):
         mkpath(path)
         os.mkdir(fullpath)
 
+redate = re.compile('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+isdate = lambda x: bool(re.match(redate,x))
+
 class Progress:
     '''
     print percentage of done work
@@ -956,7 +959,8 @@ def load(key,path='.'):
         try:
             d = pickle.load(GzipFile(path))
             data = d[get_sign(key)]
-        except KeyError,IOError:
+        #except KeyError,IOError:
+        except:
             return None
 
         #save in memory cache
