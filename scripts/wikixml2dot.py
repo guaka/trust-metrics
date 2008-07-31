@@ -94,6 +94,7 @@ def main():
         #write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
         assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,outputname+'.c2'))
         #save_raw_graph(ch.getPyNetwork(),os.path.join(path,outputname+'.rawgraph'))
+        print 'Number of users of whole graph:',len(ch.allusers)
     else:
         print __doc__
 
@@ -112,6 +113,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         self.validdisc = False # valid discussion
 
         self.pages = []
+        self.allusers = set()
 
     def startElement(self,name,attrs):
         
@@ -147,10 +149,9 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 self.validdisc = True
             else:
                 self.validdisc = False
-
-            #check
-            #if self.lang!='en' and title[:2] == (i18n['en'][0], ':'):
-            #    print 'O.o',title
+            
+            if title[0] in (i18n[self.lang][1],i18n[self.lang][0]) and title[1]==':' and title[2]:
+                self.allusers.add(title[2])
 
     def characters(self,contents):
         if self.read == u'username':
@@ -203,6 +204,8 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.count = 0
         self.last_perc_print = ''
 
+        self.allusers = set()
+
         self.network = Network()
         self.edges = []
         self.nodes = []
@@ -240,6 +243,9 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
                 self.validdisc = True
             else:
                 self.validdisc = False
+
+            if title[0] in (i18n[self.lang][1],i18n[self.lang][0]) and title[1] == ':' and title[2]:
+                self.allusers.add(title[2])
 
     def characters(self,contents):
         if self.read == u'username':
