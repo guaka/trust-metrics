@@ -12,7 +12,7 @@ USAGE:
 
 from xml import sax
 from trustlet.Dataset.Network import Network
-from trustlet.helpers import mkpath,save,isip,isdate
+from trustlet.helpers import *
 from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
@@ -105,14 +105,8 @@ def main():
 def del_ips(pynetwork):
     nodes,edges = pynetwork
 
-    a = len(nodes)
-    b = len(edges)
-
     nodes = [x for x in nodes if not isip(x)]
     edges = [x for x in edges if not isip(x[0]) and not isip(x[1])]
-
-    print a,len(nodes)
-    print b,len(edges)
 
     return nodes,edges
 
