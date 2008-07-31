@@ -915,9 +915,9 @@ def save(key,data,path='.',human=False):
     """
     if path.endswith('.c2'):
         mkpath(os.path.split(path)[0])
-        if os.path.exists(path):
+        try:
             d = pickle.load(GzipFile(path))
-        else:
+        except:
             d = {}
         d[get_sign(key)] = data
         pickle.dump(d,GzipFile(path,'w'))
