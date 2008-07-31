@@ -827,8 +827,6 @@ def xfloatrange(*args):
 
 floatrange = lambda *args: [x for x in xfloatrange(*args)]
 
-ismd5 = lambda s: bool(re.match('^[0-9a-f]{32}$',s))
-
 def mkpath(fullpath):
     """
     makes all missed directory of a path
@@ -843,6 +841,11 @@ def mkpath(fullpath):
 
 redate = re.compile('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
 isdate = lambda x: bool(re.match(redate,x))
+remd5 = re.compile('^[0-9a-fA-F]{32}$')
+ismd5 = lambda x: bool(re.match(remd5,x))
+reip = re.compile('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
+                  '(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
+isip = lambda x: bool(re.match(reip,x))
 
 class Progress:
     '''
@@ -866,6 +869,17 @@ class Progress:
         if val != self.last_print:
             self.last_print = val
             print self.print_format % val
+
+def getfiles(basedir,dir=''):
+    join = os.path.join
+    curpath = join(basedir,dir)
+    ret = []
+    for f in os.listdir(curpath):
+        if os.path.isdir(join(curpath,f)):
+            ret += getfiles(basedir,join(dir,f))
+        else:
+            ret.append(join(dir,f))
+    return ret
 
 # == cache ==
 # save and restore data into/from cache

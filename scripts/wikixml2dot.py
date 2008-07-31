@@ -12,7 +12,7 @@ USAGE:
 
 from xml import sax
 from trustlet.Dataset.Network import Network
-from trustlet.helpers import mkpath,save
+from trustlet.helpers import mkpath,save,isip,isdate
 from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
@@ -70,7 +70,7 @@ def main():
         if inputsize:
             size = inputsize
 
-        assert re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',date)
+        assert isdate(date)
 
         if argv[4:]:
             base_path = argv[4]
@@ -87,9 +87,12 @@ def main():
         ch = WikiContentHandler(lang,xmlsize=size)
 
         sax.parse(xml,ch)
-        #write_dot(ch.getNetwork(),os.path.join(path,outputname+'.dot'))
-        assert save({'network':'Wiki','lang':lang,'date':date},ch.getPyNetwork(),os.path.join(path,outputname+'.c2'))
-        #save_raw_graph(ch.getPyNetwork(),os.path.join(path,outputname+'.rawgraph'))
+
+        pynet = del_ips(ch.getPyNetwork())
+
+        assert save({'network':'Wiki','lang':lang,'date':date},pynet,os.path.join(path,outputname+'.c2'))
+        #write_dot(pynet,os.path.join(path,outputname+'.dot'))
+        #save_raw_graph(pynet,os.path.join(path,outputname+'.rawgraph'))
         numallusers = len(ch.allusers)
         print 'Number of users of whole graph:',numallusers
         f = file('wikixml2dot.log','a')
@@ -98,6 +101,20 @@ def main():
         f.close()
     else:
         print __doc__
+
+def del_ips(pynetwork):
+    nodes,edges = pynetwork
+
+    a = len(nodes)
+    b = len(edges)
+
+    nodes = [x for x in nodes if not isip(x)]
+    edges = [x for x in edges if not isip(x[0]) and not isip(x[1])]
+
+    print a,len(nodes)
+    print b,len(edges)
+
+    return nodes,edges
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
     def __init__(self,lang,xmlsize=None):
