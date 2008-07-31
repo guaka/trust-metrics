@@ -11,6 +11,7 @@ USAGE:
 '''
 
 from xml import sax
+import trustlet
 from trustlet.Dataset.Network import Network
 from trustlet.helpers import *
 from networkx import write_dot
