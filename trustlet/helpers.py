@@ -701,7 +701,9 @@ def getnp():
 def splittask(function,input,np=None):
     """
     create <np> processes with <input>[i] data,
-    the result will return in a list
+    the result will return in a list.
+
+    splittask(function,input) is equivalent to [function(x) for x in input]
     """
 
     if not np:
@@ -714,9 +716,7 @@ def splittask(function,input,np=None):
 
     if np==1:
         #doesn't create other processes
-        for data in input:
-            result.append(function(data))
-        return result
+        return [function(x) for x in input]
 
     for proc in xrange(np):
         read,write = os.pipe()
@@ -742,7 +742,7 @@ def splittask(function,input,np=None):
             buffer = '_'
             s = ''
             while buffer:
-                buffer = os.read(pipe,100)
+                buffer = os.read(pipe,1000)
                 s += buffer
             result += marshal.loads(s)
     except EOFError:

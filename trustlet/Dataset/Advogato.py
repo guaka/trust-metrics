@@ -141,9 +141,8 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
             print l
 
     def level_distribution(self):
-        return map(lambda s: (s, len([e
-                                      for e in self.edges_iter()
-                                      if e[2].values()[0] == s])), self.level_map.keys())
+        return filter(lambda x:x[0],map(lambda s: (s, len([e for e in self.edges_iter()
+                                      if e[2].values()[0] == s])), self.level_map.keys()))
         
 
     def download(self, only_if_needed = False):

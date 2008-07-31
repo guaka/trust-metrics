@@ -3,7 +3,7 @@
 This package contains all the function 
 on the evolution of a network
 """
-from trustlet.helpers import prettyplot,splittask,save,load
+from trustlet.helpers import prettyplot,splittask,save,load,mkpath
 from trustlet.Dataset import Network
 from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
@@ -110,7 +110,7 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         if function.__name__!='<lambda>' and not filter_edges or filter_edges.__name__!='<lambda>':
             if filter_edges:
                 cachekey['filter edges'] = filter_edges.__name__
-            save(cachekey,res,human=True,path=os.path.join(path,cachepath))
+            assert save(cachekey,res,os.path.join(path,cachepath))
         return res
 
     #return [task(x) for x in dates]
@@ -122,7 +122,7 @@ def usersgrown(path,range=None):
     return the number of user for each network in date range
     '''
     def usersgrown(K,date):
-        return ( stringtime2int(date),len(K.nodes()) )
+        return ( stringtime2int(date),K.number_of_nodes() )
         #return ( date,len(K.nodes()) )
     
     return evolutionmap(path,usersgrown,range)
@@ -141,6 +141,33 @@ def plot_usersgrown(data,path='.'):
                ylabel='n. of users',
                showlines=True
                )
+
+
+def numedges(path,range=None):
+    '''
+    return the number of user for each network in date range
+    '''
+    def numedges(K,date):
+        return ( stringtime2int(date),K.number_of_nodes() )
+        #return ( date,len(K.nodes()) )
+    
+    return evolutionmap(path,numedges,range)
+
+def plot_numedges(data,path='.'):
+    '''
+    data is the output of usersgrown
+    >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
+    '''
+    data.sort()
+    fromdate = inttime2string(data[0][0])
+    todate = inttime2string(data[-1][0])
+    prettyplot(data,os.path.join(path,'numedges (%s %s).png'%(fromdate,todate)),
+               title='Number of edges',
+               xlabel='date [s] (from %s to %s)'%(fromdate,todate),
+               ylabel='n. of edges',
+               showlines=True
+               )
+
 
 def edgespernode(path,range=None, noObserver=False):
     '''
@@ -252,13 +279,15 @@ if __name__ == "__main__":
     startdate = sys.argv[1]
     enddate = sys.argv[2]
     path = sys.argv[3]
-    savepath = sys.argv[4]    
+    savepath = sys.argv[4]
 
+    mkpath(savepath)
 
     ta = trustAverage( startdate, enddate, path)
     ta.sort()
     
     ta_plot( [(stringtime2int(x),y) for (x,y) in ta], savepath )
+    plot_numedges( numedges( path,(startdate,enddate) ), savepath )
     plot_edgespernode( edgespernode( path,(startdate,enddate) ), savepath )
     plot_usersgrown( usersgrown( path,(startdate,enddate) ), savepath )
 

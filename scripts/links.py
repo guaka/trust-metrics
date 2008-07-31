@@ -26,15 +26,17 @@ DEFDEVPATH = './trustlet'
 DEFINSPATH = '/usr/lib/python2.5/site-packages/trustlet/'
 
 def main():
-    print "links.py is dangerous!"
-    print "backup your installation dir!"
-    raw_input()
 
     if DEBUG:
         print "DEBUG MODE"
     if 'help' in sys.argv[1:] or '--help' in sys.argv[1:]:
         print USAGE
         sys.exit()
+    
+    print "links.py is dangerous!"
+    print "backup your installation dir!"
+    raw_input("Press enter key to continue.")
+
     try:
         devpath = sys.argv[1]
     except IndexError:
