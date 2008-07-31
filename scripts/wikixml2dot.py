@@ -6,6 +6,7 @@ USAGE:
    ./wikixml2dot.py xml_file [--history|--current] lang date [base_path|real<real_path>] [--hash] [--input-size bytes]
       Default base_path = home dir
       If base_path starts with 'real' graph will save in real_path
+      If lang and date are both '-' wikixml2dot will read them from file name
       If xml_file is - it will use stdin
       input-size: useful if xml_file is stdin 
 '''
@@ -66,6 +67,13 @@ def main():
             size = None
         else:
             size = os.stat(xml).st_size
+            if (lang,date) == ('-','-'):
+                s = os.path.split(xml)[1]
+
+                lang = s[:s.index('wiki')]
+                res = re.search('wiki-(\d{4})(\d{2})(\d{2})-',s)
+                date = '-'.join([res.group(x) for x in xrange(1,4)])
+                print lang,date
 
         if inputsize:
             size = inputsize
