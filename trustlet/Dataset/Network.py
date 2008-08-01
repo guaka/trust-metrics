@@ -456,28 +456,18 @@ class WikiNetwork(WeightedNetwork):
 
         return self.__map( edge[2].values()[0] )
 
-    def _read_dot(self, filepath, force = False):
-        """Read file."""
-        print "Reading", filepath
-        #import networkx
-        #graph = networkx.read_dot(filepath)
-        graph = trustlet.helpers.cached_read_dot(filepath,force)
-        self.paste_graph(graph)
+    def ignored_users(self):
+        '''
+        Users with in_degree and out_degree both equal to 0 aren't returned.
+        '''
+        return [x for x in self.nodes_iter() if self.out_degree(x) and not self.in_degree(x)]
+
+    def passive_users(self):
+        '''
+        Users with in_degree and out_degree both equal to 0 aren't returned.
+        '''
+        return [x for x in self.nodes_iter() if not self.out_degree(x) and self.in_degree(x)]
+
         
-    #fix_graphdot = trustlet.Dataset.Advogato.AdvogatoNetwork.fix_graphdot
-    def fix_graphdot(self):
-        """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
-        print 'Fixing graph.dot'
-        graph_file = open(self.filepath, 'r')
-        l_names = graph_file.readlines()
-        graph_file.close()
-        re_fix = re.compile(' (\w+)')
-        fixed_lines = map(lambda s: re_fix.sub(r' "\1"', s), l_names)
-
-        writefile = open(self.filepath, 'w')
-        writefile.writelines(fixed_lines)
-        writefile.close()
-        return self.filepath
-
 if __name__ == "__main__":
-    WikiNetwork("vec")
+    pass

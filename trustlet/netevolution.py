@@ -106,7 +106,7 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         else:
             K.paste_graph(G)
         res = function(K,date)
-        if function.__name__!='<lambda>' and not filter_edges or filter_edges.__name__!='<lambda>':
+        if function.__name__!='<lambda>':# and not filter_edges or filter_edges.__name__!='<lambda>':
             if filter_edges:
                 cachekey['filter edges'] = filter_edges.__name__
             assert save(cachekey,res,os.path.join(path,cachepath))
@@ -166,7 +166,6 @@ def plot_numedges(data,path='.'):
                showlines=True
                )
 
-
 def plot_numedges_no_observer(data,path='.'):
     '''
     data is the output of usersgrown
@@ -208,6 +207,42 @@ def plot_edgespernode(data,path='.'):
                ylabel='number of edges per node',
                showlines=True
                )
+
+def meandegree(path,range=None,filter_edges=None):
+    def meandegree(K,date):
+        return ( stringtime2int(date),K.avg_degree() )
+    
+    return evolutionmap(path,meandegree,range,filter_edges=filter_edges)
+
+def plot_meandegree(data,path='.'):
+    data.sort()
+    fromdate = inttime2string(data[0][0])
+    todate = inttime2string(data[-1][0])
+    prettyplot(data,os.path.join(path,'meandegree (%s %s).png'%(fromdate,todate)),
+               #title='Number of edges',
+               #xlabel='date [s] (from %s to %s)'%(fromdate,todate),
+               #ylabel='n. of edges',
+               showlines=True
+               )
+
+
+def genericevaluation(path,function,range=None,filter_edges=None):
+    '''
+    function: f(network,date) -> points to print
+    '''
+    return evolutionmap(path,lambda K,date: (stringtime2int(date),function(K)),range,filter_edges=filter_edges)
+
+def plot_genericevaluation(data,path='.',title=''):
+    data.sort()
+    fromdate = inttime2string(data[0][0])
+    todate = inttime2string(data[-1][0])
+    prettyplot(
+        data,
+        os.path.join(path,'%s (%s %s).png'%(title,fromdate,todate)),
+        title=title,
+        showlines=True
+        )
+
 
 def createHTML( points ):
     """
@@ -299,8 +334,11 @@ if __name__ == "__main__":
     #ta = trustAverage( startdate, enddate, path)
     #ta.sort()
     #ta_plot( [(stringtime2int(x),y) for (x,y) in ta], savepath )
-    plot_numedges( numedges( path,(startdate,enddate) ), savepath )
-    plot_numedges_no_observer( numedges( path,(startdate,enddate),filter_edges=no_observer ), savepath )
+    #plot_numedges( numedges( path,(startdate,enddate) ), savepath )
+    #plot_numedges_no_observer( numedges( path,(startdate,enddate),filter_edges=no_observer ), savepath )
+    #plot_meandegree( meandegree( path,(startdate,enddate) ), savepath )
+    #plot_genericevaluation( genericevaluation( path,networkx.closeness_centrality ,(startdate,enddate) ), savepath, title='closeness_centrality' )
+    plot_genericevaluation( genericevaluation( path,networkx.average_clustering ,(startdate,enddate) ), savepath, title='average_clustering' )
     #plot_usersgrown( usersgrown( path,(startdate,enddate) ), savepath )
     #plot_edgespernode( edgespernode( path,(startdate,enddate) ), savepath )
 

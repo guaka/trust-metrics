@@ -30,7 +30,7 @@ i18n = {
     'vec':('Discussion utente','Utente'),
     'nap':('Discussioni utente','Utente'),
     'fur':('Discussion utent','Utent'),
-    'eml': ('Discussioni utente','Utente'),
+    'eml':('Discussioni utente','Utente'),
     'it': ('Discussioni utente','Utente'),
     'en': ('User talk','User'),
     'simple':('User talk','User'),
@@ -107,6 +107,9 @@ def main():
         f.write('Network: %s %s\n'%(lang,date))
         f.write('Number of users of whole graph: %d\n'%numallusers)
         f.close()
+        for u in ch.allusers:
+            if not isip(u):
+                print u
     else:
         print __doc__
 
