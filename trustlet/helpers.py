@@ -5,7 +5,6 @@ import numpy
 from trustlet.TrustMetric import *
 from trustlet.trustmetrics import *
 import trustlet
-import Gnuplot
 import os,sys,re
 import datetime
 import time
@@ -241,60 +240,24 @@ def recur_log_rescale(arr):
 def indication_of_dist(arr, stepsize = 0.2):
     """Some kind of histogram-type info."""
     for start in numpy.arange(min(arr), max(arr), step = stepsize):
-        print start, sum((arr >= start) * (arr < start + stepsize))
+        print start, sum((arr >= start) * (arr < start + stepsize))            
 
-    
-            
-#made by Danilo Tomasoni            
-
-def plotparameters( tuplelist, path, onlyshow=False, title='Moletrust Accuracy', xlabel='horizon', ylabel='abs error', log=False, onlypoint=False, istogram=False ):
-    """
-    Print a graphics of the list passed.
-    path is the location in wich the png image will be saved,
-    if you wouldn't save it, set the onlyshow parameter to True
-    title parameter, set the title of the plot
-    
-    DEPRECATED (only because i don't like function signature)
-    """
-    g = Gnuplot.Gnuplot()
-    g.title( title )
-    
-    if onlypoint:
-        g('set parametric')
+#test prettyplot
+if 1 and __name__=="__main__":
+    if 1:
+        prettyplot([("2008-01-02",34),("2008-01-05",33),("2008-01-09",34),("2008-02-15",100),("2008-09-05",2)],
+                   'prova',legend='ciao',xlabel='X',ylabel='ErrORReeeee',plotnow=True,
+                   histogram=True,comment='Grafico di prova')
+        #prettyplot([[(0,0),(1,0.1),(2,0.2),(3,0.3)],[(0,1),(1,2),(2,3)]],'prova',showlines=True,legend=['ciao',''],xlabel='X',ylabel='ErrORReeeee',x_range=(0,13),y_range=(-5,12),plotnow=True)
     else:
-        g('set data style lines')
-    
-    if istogram:
-        g('set style data boxes')    
-        
-    if log:
-        g('set logscale y 1.5' )
-    g.xlabel( xlabel )
-    g.ylabel( ylabel )
-    #first place horizon, sencond place abs error (converted in float)
-    #i must delete the None object in list.
-    
-    points = map(lambda x:(float(x[0]),float(x[1])), [t for t in tuplelist if t])
-    
-    points.sort()
-    g.plot( points )
+        prettyplot([(0,0),(1,0),(2,0),(0,1),(1,2),(2,3)],'prova',plotnow=True)
+    exit(0)
 
-    if not onlyshow:
-        g('set terminal png')
-        g('set filename '+path)
-        #this doesn't work
-
-        g.hardcopy(
-            filename=path,
-            terminal='png'
-            )
-    
-    return None
 
 def prettyplot( data, path, **args):
     """
     Print a graphics of the list passed.
-    *path* is the location in wich the png image will be saved.
+    *path* is the location in wich the script will be saved.
 
     *data* is ...
         a list of points
@@ -310,42 +273,55 @@ def prettyplot( data, path, **args):
         xlabel=''
         ylabel=''
         log=False
-        showlines=False (old onlypoint)
-        istogram=False
-        x_date=True
-        x_range (tuple)
+        showlines=True (old onlypoint)
+        histogram=False
+        x_range (from,to)
+        y_range (from,to)
+
+        plotnow=True (create png image)
+        comment='' (a string to describe graph)
     """
 
-    g = Gnuplot.Gnuplot(persist=1)
+    assert not path.endswith('.png')
+    if args.has_key('istogram'):
+        print '*** histogram, not istogram ;) ***'
+        args['histogram'] = args['istogram']
+
+    if path.endswith('.gnuplot'):
+        path = path[:-8]
+
+    addquotes = lambda x: '"'+str(x)+'"'
+
+    #append
+    a = lambda x: script.append(x)
+    ac = lambda x: comments.append(x)
+
+    comments = []
+    script = [] #script
+
     try:
-        g.title(args['title'])
+        a(args['title'])
+        ac('Title: '+args['title'])
     except KeyError:
         pass
+
+    ac('Date: '+time.asctime())
     
     if args.has_key('showlines') and args['showlines']:
-        #g('set data style lines')
-        g('set data style linespoint')
-    #else:
-    #    g('set parametric')
-    if args.has_key('istogram') and args['istogram']:
-        g('set style data boxes')
+        #a('set data style lines')
+        a('set data style linespoint')
+    if args.has_key('histogram') and args['histogram']:
+        a('set style data boxes')
     if args.has_key('log') and args['log']:
-        g('set logscale y 1.5' )
+        if type(args['log']) is float:
+            scale = args['log']
+        else:
+            scale = 1.5
+        a('set logscale y %f'%scale )
     if args.has_key('xlabel'):
-        g.xlabel(args['xlabel'])
+        a('set xlabel "%s"'%args['xlabel'])
     if args.has_key('ylabel'):
-        g.ylabel(args['ylabel'])
-    # setting format of x axis to date, as in http://theochem.ki.ku.dk/on_line_docs/gnuplot/gnuplot_16.html
-    if args.has_key('x_date'):
-        g('set xdata time')
-        g('set timefmt "%Y-%m-%d"')
-    if args.has_key('x_range'):
-        if args['x_range'] != None:
-            g('set xrange ['+str(args['x_range'][0])+':'+str(args['x_range'][1])+']')
-    if args.has_key('y_range'):
-        if args['y_range']:
-            g('set yrange ['+str(args['y_range'][0])+':'+str(args['y_range'][1])+']')
-
+        a('set ylabel "%s"'%args['ylabel'])
     try:
         legend = args['legend']
     except:
@@ -354,52 +330,71 @@ def prettyplot( data, path, **args):
     if not data:
         print "prettyplot: no input data"
         return
+    #formatting data
     if type(data) is list and type(data[0]) is list and data[0] and type(data[0][0]) is tuple:
-        pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in set if t]) for set in data]
+        #only one list of points
+        data = [map(lambda x:(x[0],x[1]), [t for t in set if t]) for set in data]
     else:
-        pointssets = [map(lambda x:(float(x[0]),float(x[1])), [t for t in data if t])]
+        data = [map(lambda x:(x[0],x[1]), [t for t in data if t])]
         if legend:
             legend = [legend]
 
-    p = []
-    for name,points in legend and zip(legend,pointssets) or zip([None for x in pointssets[0]],pointssets):
-        points.sort()
-        if name:
-            p.append(Gnuplot.PlotItems.Data(points, title=name))
-        else:
-            p.append(Gnuplot.PlotItems.Data(points))
-        
-    g.plot(*p)
+    # check if first x value is a date
+    if isdate(data[0][0][0]):
+        # setting format of x axis to date,
+        # as in http://theochem.ki.ku.dk/on_line_docs/gnuplot/gnuplot_16.html
+        a('set xdata time')
+        a('set timefmt "%Y-%m-%d"')
 
-    g.hardcopy(
-        filename=path,
-        terminal='png'
-        )
+    if args.has_key('x_range'):
+        if args['x_range']:
+            if isdate(args['x_range'][0]):
+                assert isdate(args['x_range'][1])
+                args['x_range'] = tuple(map(addquotes,args['x_range']))
+            a('set xrange [%s:%s]'%args['x_range'])
+    if args.has_key('y_range'):
+        if args['y_range']:
+            a('set yrange [%s:%s]'%args['y_range'])
 
-#test prettyplot
-if 0 and __name__=="__main__":
+    a('set terminal png')
+    a('set output "%s.png"'%path)
 
-    import Gnuplot
+    #plot [0:131828] [0:1.2] "./osim_data.txt" using 1:2 title 'osim' with points
 
-    gp = Gnuplot.Gnuplot(persist = 1)
-    gp('set data style lines')
-    
-    data1 = [(0, 0), (1, 1), (2, 4), (3, 9), (4, 16)]    # The first data set (a quadratic)
-    data2 = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4]]     # The second data set (a straight line)
-    
-    # Make the plot items
-    plot1 = Gnuplot.PlotItems.Data(data1, with="lines", title="Quadratic")
-    plot2 = Gnuplot.PlotItems.Data(data2, with="points 3", title=None)  # No title
+    #p = []
+    #import Gnuplot
+    #for name,points in legend and zip(legend,data) or zip([None for x in data[0]],data):
+    #    points.sort()
+    #    if name:
+    #        p.append(Gnuplot.PlotItems.Data(points, title=name))
+    #    else:
+    #        p.append(Gnuplot.PlotItems.Data(points))
 
-    #gp.plot(plot1, plot2)
-    #exit(0)
-
-    if 1:
-        s = prettyplot([[(0,0),(1,0.1),(2,0.2),(3,0.3)],[(0,1),(1,2),(2,3)]],'image.png',showlines=True,legend=['ciao',''],xlabel='X',ylabel='ErrORReeeee',istogram=True)
+    if legend:
+        a('plot '+', '.join(['"-" using 1:2 title "%s"'%x for x in legend]))
     else:
-        s = prettyplot([(0,0),(1,0),(2,0),(0,1),(1,2),(2,3)],'image.png',legend='uno',showlines=True)
-    print s
-    exit(0)
+        a('plot '+', '.join(['"-" using 1:2 title ""' for x in data]))
+
+    for points in data:
+        for point in points:
+            a(' '.join(map(str,point)))
+        a('e')
+        
+    if args.has_key('comment'):
+        for line in args['comment'].split('\n'):
+            ac(line)
+
+    f = file(path+'.gnuplot','w')
+    f.writelines(['#!/usr/bin/env gnuplot\n']+
+                 ['# '+x+'\n' for x in comments]+
+                 ['\n'])
+    f.writelines([x+'\n' for x in script])
+    f.close()
+
+    if not os.system('which gnuplot > /dev/null') and args.has_key('plotnow') and args['plotnow']:
+        gnuplot = os.popen('gnuplot','w')
+        gnuplot.writelines([x+'\n' for x in script])
+        gnuplot.close()
 
 def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=4 ):
     """
@@ -840,7 +835,7 @@ def mkpath(fullpath):
         os.mkdir(fullpath)
 
 redate = re.compile('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
-isdate = lambda x: bool(re.match(redate,x))
+isdate = lambda x: bool(re.match(redate,str(x)))
 remd5 = re.compile('^[0-9a-fA-F]{32}$')
 ismd5 = lambda x: bool(re.match(remd5,x))
 reip = re.compile('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
