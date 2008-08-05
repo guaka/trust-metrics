@@ -243,7 +243,7 @@ def indication_of_dist(arr, stepsize = 0.2):
         print start, sum((arr >= start) * (arr < start + stepsize))            
 
 #test prettyplot
-if 1 and __name__=="__main__":
+if 0 and __name__=="__main__":
     if 1:
         prettyplot([("2008-01-02",34),("2008-01-05",33),("2008-01-09",34),("2008-02-15",100),("2008-09-05",2)],
                    'prova',legend='ciao',xlabel='X',ylabel='ErrORReeeee',plotnow=True,
@@ -300,7 +300,7 @@ def prettyplot( data, path, **args):
     script = [] #script
 
     try:
-        a(args['title'])
+        a('set title "%s"'%args['title'])
         ac('Title: '+args['title'])
     except KeyError:
         pass
@@ -359,23 +359,14 @@ def prettyplot( data, path, **args):
     a('set terminal png')
     a('set output "%s.png"'%path)
 
-    #plot [0:131828] [0:1.2] "./osim_data.txt" using 1:2 title 'osim' with points
-
-    #p = []
-    #import Gnuplot
-    #for name,points in legend and zip(legend,data) or zip([None for x in data[0]],data):
-    #    points.sort()
-    #    if name:
-    #        p.append(Gnuplot.PlotItems.Data(points, title=name))
-    #    else:
-    #        p.append(Gnuplot.PlotItems.Data(points))
-
     if legend:
         a('plot '+', '.join(['"-" using 1:2 title "%s"'%x for x in legend]))
     else:
         a('plot '+', '.join(['"-" using 1:2 title ""' for x in data]))
 
     for points in data:
+        #sorting: useful with lines
+        points.sort(lambda x,y:cmp(x[0],y[0]))
         for point in points:
             a(' '.join(map(str,point)))
         a('e')
@@ -391,7 +382,7 @@ def prettyplot( data, path, **args):
     f.writelines([x+'\n' for x in script])
     f.close()
 
-    if not os.system('which gnuplot > /dev/null') and args.has_key('plotnow') and args['plotnow']:
+    if not os.system('which gnuplot > /dev/null') and (not args.has_key('plotnow') or not args['plotnow']):
         gnuplot = os.popen('gnuplot','w')
         gnuplot.writelines([x+'\n' for x in script])
         gnuplot.close()
@@ -749,7 +740,7 @@ def splittask(function,input,np=None):
 
 """data: output of pred_graph.cont_num_of_edges()"""
 plot_cont_num_of_edges = lambda data,indegree,dirpath='.': \
-    prettyplot(data,os.path.join(dirpath,'controv num of edges (indegree=%d).png'%indegree),
+    prettylot(data,os.path.join(dirpath,'controv num of edges (indegree=%d).png'%indegree),
                title='Number of edges by controversiality (indegree=%d)'%indegree,
                xlabel='controversiality',
                ylabel='# edges',

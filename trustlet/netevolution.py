@@ -9,13 +9,6 @@ from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
 import os,time,re
 
-stringtime2int = lambda s: int(time.mktime( (int(s[:4]), int(s[5:7]), int(s[8:10]), 0, 0, 0, 0, 0, 0) ))
-inttime2string = lambda i: "%.4d-%.2d-%.2d"%time.gmtime(i)[:3]
-
-#filter_edges
-def no_observer(n1,n2,e):
-    return e['level']!='Observer'
-
 def trustAverage( fromdate, todate, path, noObserver=False ):
     """
     This function evaluate the trust average on more than one datasets.
@@ -37,11 +30,14 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
     avg = lambda ls:float(sum(ls))/len(ls)
     #filtered date
     
-    def eval( K, d ):
+    def trustaverage( K, d ):
     #for d in fdate:
-        at = load( {'function':'trustAverage', 'date':d}, os.path.join(path,d) )
-        if at != None:
-            return (d,at)
+
+        # evolutionmap managa cache (use thae name of function 'trustaverage')
+
+        #at = load( {'function':'trustAverage', 'date':d}, os.path.join(path,d) )
+        #if at != None:
+        #    return (d,at)
 
         print "Evaluating dataset of ", d
         #temporary path
@@ -56,23 +52,26 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
             except KeyError:
                 averagetrust = avg([val[0] for val in [x.values() for x in weight]])
 
-        save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
+        #save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
         
         print "dataset of ",d ," Evaluated"
         return (d,averagetrust)
     
     if noObserver:
-        return evolutionmap( path, eval, (fromdate,todate), no_observer )
+        return evolutionmap( path, trustaverage, (fromdate,todate), no_observer )
     else:
-        return evolutionmap( path, eval, (fromdate,todate) )
+        return evolutionmap( path, trustaverage, (fromdate,todate) )
 
-def ta_plot(ta, path, filename="trustAverage.png"):
-    prettyplot( ta, os.path.join(path,filename), title="Trust Average on time", showlines=True, xlabel='date in seconds',ylabel='trust average')
+def ta_plot(ta, path, filename="trustAverage"):
+    prettyplot( ta, os.path.join(path,filename),
+                title="Trust Average on time", showlines=True,
+                xlabel='date in seconds',ylabel='trust average',
+               comment='Network: Advogato')
 
-def evolutionmap(path,function,range=None,filter_edges=None):
+def evolutionmap(path,function,range=None):
     '''
     apply function function to each network in range range.
-    If you want use cache function and filter_edges cannot be lambda functions.
+    If you want use cache `function` cannot be lambda functions.
     '''
     cachepath = 'netevolution.c2'
     dates = [x for x in os.listdir(path) if isdate(x) and os.path.exists(os.path.join(path,x,'graph.dot'))]
@@ -81,16 +80,16 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         assert isdate(range[0]) and  isdate(range[1])
         dates = [x for x in dates if x>=range[0] and x<=range[1]]
 
-    print "There are %d networks" % len(dates)
+    if function.__name__!='<lambda>':
+        print 'Task:',function.__name__
+    print 'There are %d networks' % len(dates)
     
     def task(date):
         #cache
-        if function.__name__=='<lambda>' or filter_edges and filter_edges.__name__=='<lambda>':
+        if function.__name__=='<lambda>':
             print "i can't save cache with lambda funtions"
         else:
             cachekey = {'function':function.__name__,'date':date}
-            if filter_edges:
-                cachekey['filter edges'] = filter_edges.__name__
             cache = load(cachekey,path=os.path.join(path,cachepath))
             if cache:
                 return cache
@@ -98,17 +97,9 @@ def evolutionmap(path,function,range=None,filter_edges=None):
         print date
         G = read_dot(os.path.join(path,date,'graph.dot'))
         K = Network.WeightedNetwork()
-        if filter_edges:
-            for e in G.edges_iter():
-                if filter_edges(*e):
-                    K.add_edge(*e)
-            print "keeped nodes %.2f%%" % (100.0 * K.number_of_edges() / G.number_of_edges())
-        else:
-            K.paste_graph(G)
+        K.paste_graph(G)
         res = function(K,date)
-        if function.__name__!='<lambda>':# and not filter_edges or filter_edges.__name__!='<lambda>':
-            if filter_edges:
-                cachekey['filter edges'] = filter_edges.__name__
+        if function.__name__!='<lambda>':
             assert save(cachekey,res,os.path.join(path,cachepath))
         return res
 
@@ -121,8 +112,7 @@ def usersgrown(path,range=None):
     return the number of user for each network in date range
     '''
     def usersgrown(K,date):
-        return ( stringtime2int(date),K.number_of_nodes() )
-        #return ( date,len(K.nodes()) )
+        return ( date,K.number_of_nodes() )
     
     return evolutionmap(path,usersgrown,range)
 
@@ -131,114 +121,152 @@ def plot_usersgrown(data,path='.'):
     data is the output of usersgrown
     >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
-    data.sort()
-    fromdate = inttime2string(data[0][0])
-    todate = inttime2string(data[-1][0])
-    prettyplot(data,os.path.join(path,'usersgrown (%s %s).png'%(fromdate,todate)),
+    fromdate = data[0][0]
+    todate = data[-1][0]
+    prettyplot(data,os.path.join(path,'usersgrown (%s %s)'%(fromdate,todate)),
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of users',
-               showlines=True
+               showlines=True,
+               comment='Network: Advogato'
                )
 
 
-def numedges(path,range=None,filter_edges=None):
+def numedges(path,range=None):
     '''
     return the number of user for each network in date range
     '''
     def numedges(K,date):
-        return ( stringtime2int(date),K.number_of_edges() )
+        return ( date,K.number_of_edges() )
     
-    return evolutionmap(path,numedges,range,filter_edges=filter_edges)
+    return evolutionmap(path,numedges,range)
 
 def plot_numedges(data,path='.'):
     '''
-    data is the output of usersgrown
-    >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
+    >>> plot_*(*('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
-    data.sort()
-    fromdate = inttime2string(data[0][0])
-    todate = inttime2string(data[-1][0])
-    prettyplot(data,os.path.join(path,'numedges (%s %s).png'%(fromdate,todate)),
+    fromdate = data[0][0]
+    todate = data[-1][0]
+    prettyplot(data,os.path.join(path,'numedges (%s %s)'%(fromdate,todate)),
                title='Number of edges',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of edges',
-               showlines=True
+               showlines=True,
+               comment='Network: Advogato'
                )
 
-def plot_numedges_no_observer(data,path='.'):
-    '''
-    data is the output of usersgrown
-    >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
-    '''
-    data.sort()
-    fromdate = inttime2string(data[0][0])
-    todate = inttime2string(data[-1][0])
-    prettyplot(data,os.path.join(path,'numedges no ob (%s %s).png'%(fromdate,todate)),
-               title='Number of edges (no observer)',
-               xlabel='date [s] (from %s to %s)'%(fromdate,todate),
-               ylabel='n. of edges',
-               showlines=True
-               )
-
-def edgespernode(path,range=None, noObserver=False):
+def edgespernode(path,range=None):
     '''
     return the average number of edges for each user
     '''
     def edgespernode_nodes(K,date):
-        nodes = len(K.nodes())
-        return ( nodes , 1.0*len(K.edges())/nodes )
+        nodes = K.number_of_nodes()
+        return ( date , 1.0*K.number_of_edges()/nodes )
     
-    if noObserver:
-        return evolutionmap(path,edgespernode_nodes,range,no_observer)
-    else:
-        return evolutionmap(path,edgespernode_nodes,range)
+    return evolutionmap(path,edgespernode_nodes,range)
 
 def plot_edgespernode(data,path='.'):
     '''
     data is the output of edgespernode
     '''
-    data.sort()
     fromnnodes = data[0][0]
     tonnodes = data[-1][0]
-    prettyplot(data,os.path.join(path,'edgespernode (%d %d).png'%(fromnnodes,tonnodes)),
+    prettyplot(data,os.path.join(path,'edgespernode (%s %s)'%(fromnnodes,tonnodes)),
                title='Average Edges per Node',
                xlabel='nodes',
                ylabel='number of edges per node',
-               showlines=True
+               showlines=True,
+               comment='Network: Advogato'
                )
 
-def meandegree(path,range=None,filter_edges=None):
+def meandegree(path,range=None):
     def meandegree(K,date):
-        return ( stringtime2int(date),K.avg_degree() )
+        return ( date,K.avg_degree() )
     
-    return evolutionmap(path,meandegree,range,filter_edges=filter_edges)
+    return evolutionmap(path,meandegree,range)
 
 def plot_meandegree(data,path='.'):
-    data.sort()
-    fromdate = inttime2string(data[0][0])
-    todate = inttime2string(data[-1][0])
-    prettyplot(data,os.path.join(path,'meandegree (%s %s).png'%(fromdate,todate)),
-               #title='Number of edges',
-               #xlabel='date [s] (from %s to %s)'%(fromdate,todate),
-               #ylabel='n. of edges',
-               showlines=True
+    fromdate = data[0][0]
+    todate = data[-1][0]
+    prettyplot(data,os.path.join(path,'meandegree (%s %s)'%(fromdate,todate)),
+               showlines=True,
+               comment='Network: Advogato'
+               )
+
+def level_distribution(path,range=None):
+    #'Master','Journeyer','Apprentice','Observer'
+    '''
+    Advogato only!
+    '''
+
+    def level_distribution(K,date):
+        """
+        *** don't try to understand this ***
+        (rewrite this code is quicker)
+        see AdvogatoNetwork class
+        """
+        d = dict(filter(lambda x:x[0],
+                        map(lambda s: (s,
+                                       len([e for e in K.edges_iter()
+                                            if e[2].values()[0] == s])),
+                            _obs_app_jour_mas_map)))
+        l = [d['Master'],d['Journeyer'],d['Apprentice'],d['Observer']]
+        return ( date, map(lambda x:100.0*x/sum(l),l))
+    
+    return evolutionmap(path,level_distribution,range)    
+
+
+def plot_level_distribution(data,path='.'):
+
+    # formatted data:
+    # from: [(a,(b,c,d,e)), (a1,(b1,c1,d1,e1)), ...]
+    # to:   [ [(a,b), (a1,b1), ...],[(a,c), (a1,c1), ...], [(a,d), ...], ... ]
+    # lists of ['Master','Journeyer','Apprentice','Observer']
+    f_data = [[],[],[],[]]
+    for t in data:
+        for i,l in enumerate(f_data):
+            l.append((t[0],t[1][i]))
+
+    prettyplot(f_data,os.path.join(path,'level distribution (%s %s)'%(data[0][0],data[-1][0])),
+               title='Level distribution',
+               xlabel='dates (from %s to %s)'%(data[0][0],data[-1][0]),
+               ylabel='percentage of edges',
+               legend=['Master','Journeyer','Apprentice','Observer'],
+               showlines=True,
+               comment='Network: Advogato'
                )
 
 
-def genericevaluation(path,function,range=None,filter_edges=None):
+def genericevaluation(path,function,range=None):
     '''
-    function: f(network,date) -> points to print
+    function: f(network) -> value on y axis
+
+    genericevaluation implements cache support
     '''
-    return evolutionmap(path,lambda K,date: (stringtime2int(date),function(K)),range,filter_edges=filter_edges)
+    f = lambda K,date: (date,function(K))
+    if function.__name__!='<lambda>':
+        f.__name__ = 'generic(%s)'%function.__name__
+    return evolutionmap(path,f,range)
 
 def plot_genericevaluation(data,path='.',title=''):
-    data.sort()
-    fromdate = inttime2string(data[0][0])
-    todate = inttime2string(data[-1][0])
+    '''
+    plot output of genericevolution
+
+    example:
+
+    >>> plot_genericevaluation(
+            genericevaluation('path/AdvogatoNetwork',networkx.average_clustering ,None),
+            '.', title='Average clustering'
+            )
+    '''
+
+    fromdate = data[0][0]
+    todate = data[-1][0]
+    if not title:
+        title = 'Untitled'
     prettyplot(
         data,
-        os.path.join(path,'%s (%s %s).png'%(title,fromdate,todate)),
+        os.path.join(path,'%s (%s %s)'%(title,fromdate,todate)),
         title=title,
         showlines=True
         )
@@ -331,18 +359,16 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    #ta = trustAverage( startdate, enddate, path)
-    #ta.sort()
-    #ta_plot( [(stringtime2int(x),y) for (x,y) in ta], savepath )
-    #plot_numedges( numedges( path,(startdate,enddate) ), savepath )
-    #plot_numedges_no_observer( numedges( path,(startdate,enddate),filter_edges=no_observer ), savepath )
-    #plot_meandegree( meandegree( path,(startdate,enddate) ), savepath )
-    #plot_genericevaluation( genericevaluation( path,networkx.closeness_centrality ,(startdate,enddate) ), savepath, title='closeness_centrality' )
+    ta = trustAverage( startdate, enddate, path)
+    ta_plot( ta, savepath )
+    plot_numedges( numedges( path,(startdate,enddate) ), savepath )
+    plot_meandegree( meandegree( path,(startdate,enddate) ), savepath )
     plot_genericevaluation( genericevaluation( path,networkx.average_clustering ,(startdate,enddate) ), savepath, title='average_clustering' )
-    #plot_usersgrown( usersgrown( path,(startdate,enddate) ), savepath )
-    #plot_edgespernode( edgespernode( path,(startdate,enddate) ), savepath )
+    plot_usersgrown( usersgrown( path,(startdate,enddate) ), savepath )
+    plot_edgespernode( edgespernode( path,(startdate,enddate) ), savepath )
+    plot_level_distribution( level_distribution( path,(startdate,enddate) ), savepath )
 
-
+    # can we erase this?
     if len(sys.argv) == 6:
         html = sys.argv[5]
         f = file( os.path.join( savepath, html ) , 'w' )
