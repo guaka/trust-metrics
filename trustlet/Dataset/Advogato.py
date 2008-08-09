@@ -151,7 +151,8 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
             return
 
         if not os.path.exists(self.filepath+'.bz2') and not only_if_needed:
-            raise IOError( "dot file does not exists (%s), if you would download it,\nset 'download' parameter to True"%self.filepath)
+            raise IOError("dot file does not exist (%s), if you would download it,\n"
+                          "set 'download' parameter to True" % self.filepath)
         else:
             if only_if_needed and (not os.path.exists(self.filepath)):
                 self.download_file(self.url, self.dotfile)

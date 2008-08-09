@@ -10,7 +10,7 @@ D = DummyNetwork()
 D.info() # show information
 
 # create Kaitiaki dataset
-K = KaitiakiNetwork()
+K = KaitiakiNetwork(download = True)
 K.info() # show information
 
 # create SqueakFoundation dataset
