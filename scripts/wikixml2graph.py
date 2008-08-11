@@ -17,7 +17,7 @@ from trustlet.helpers import *
 from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
-import os,re
+import os,re,time
 import urllib
 from gzip import GzipFile
 
@@ -111,13 +111,23 @@ def main():
         #write_dot(pynet,os.path.join(path,outputname+'.dot'))
         #save_raw_graph(pynet,os.path.join(path,outputname+'.rawgraph'))
 
-        # this code doesn't count all users (but it counts ip addresses)
-        numallusers = len(ch.allusers)
-        print 'Number of users of whole graph:',numallusers
-        f = file('wikixml2dot.log','a')
+        users,bots = get_list_users(lang,os.path.join(base_path,'datasets','WikiNetwork'))
+        lenusers = len(users)
+        print 'Number of users of whole graph:',lenusers
+        print 'Number of bots:',len(bots)
+        f = file('wikixml2graph.log','a')
         f.write('Network: %s %s\n'%(lang,date))
-        f.write('Number of users of whole graph: %d\n'%numallusers)
+        f.write('Number of users of whole graph: %d\n'%lenusers)
+        f.write('Number of bots: %d\n'%len(bots))
         f.close()
+
+        pynet = (
+            list( set(pynet[0]) - set(bots) ),
+            [x for x in pynet[1] if x[0] not in bots and x[1] not in bots]
+            )
+
+        assert save({'network':'Wiki','lang':lang,'date':date,'users':'nobots'},
+                    pynet,os.path.join(path,outputname+'-nobots.c2'))
 
     else:
         print __doc__
@@ -130,10 +140,47 @@ def del_ips(pynetwork):
 
     return nodes,edges
 
-def get_list_bots(lang):
+def get_list_users(lang,cachepath=None,force=False):
+    '''
+    Return users and bots lists
+     - cachepath is a directory
+    '''
     url = 'http://%s.wikipedia.org/w/index.php?title=Special:ListUsers&limit=5000' % lang
-    
-    
+    if not cachepath:
+        cachepath = os.path.join(os.environ['HOME'],'.wikixml2graph','listusers.c2')
+    else:
+        assert not cachepath.endswith('.c2')
+        cachepath = os.path.join(cachepath,'listusers.c2')
+    re_user = re.compile('title="Utente:[^"]+">([^<]+)')
+    re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>.*?Bot.*?</li>')
+
+    # title="Utente:!! Roberto Valentino !! (pagina inesistente)">!! Roberto Valentino !!</a></li>
+
+    MONTHS = 60*60*24*30
+    WEEKS = 60*60*24*7
+
+    users = []
+    bots = []
+    ll = 1
+    pageurl = url
+    count = 0
+    while ll:
+        print count
+        page = load({'url':pageurl},cachepath)
+        if page: t,page = page
+
+        if not page or force or time.time()-t>2*WEEKS or not re.findall(re_user,page):
+            page = getpage(pageurl)
+            save({'url':pageurl},(time.time(),page),cachepath)
+        newusers = re.findall(re_user,page)
+        bots += re.findall(re_bot,page)
+        if newusers:
+            pageurl = url + '&' + urllib.urlencode({'offset':newusers[-1]})
+            #print pageurl
+        ll = len(newusers)
+        count += ll
+        users += newusers
+    return users,bots
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
