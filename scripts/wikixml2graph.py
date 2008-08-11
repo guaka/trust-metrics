@@ -3,7 +3,7 @@
 
 '''
 USAGE:
-   ./wikixml2dot.py xml_file [--history|--current] lang date [base_path|real<real_path>] [--hash] [--input-size bytes]
+   ./wikixml2graph.py xml_file [--history|--current] lang date [base_path|real<real_path>] [--hash] [--input-size bytes]
       Default base_path = home dir
       If base_path starts with 'real' graph will save in real_path
       If lang and date are both '-' wikixml2dot will read them from file name
@@ -18,7 +18,16 @@ from networkx import write_dot
 from string import index, split
 from sys import stdin,argv
 import os,re
+import urllib
 from gzip import GzipFile
+
+
+# set User-Agent (Wikiperdia doesn't give special pages to Python :@ )
+class URLopener(urllib.FancyURLopener):
+    version = "wikixml2graph/0"
+urllib._urlopener = URLopener()
+
+getpage = lambda url: urllib.urlopen(url).read()
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
@@ -101,15 +110,15 @@ def main():
         assert save({'network':'Wiki','lang':lang,'date':date},pynet,os.path.join(path,outputname+'.c2'))
         #write_dot(pynet,os.path.join(path,outputname+'.dot'))
         #save_raw_graph(pynet,os.path.join(path,outputname+'.rawgraph'))
+
+        # this code doesn't count all users (but it counts ip addresses)
         numallusers = len(ch.allusers)
         print 'Number of users of whole graph:',numallusers
         f = file('wikixml2dot.log','a')
         f.write('Network: %s %s\n'%(lang,date))
         f.write('Number of users of whole graph: %d\n'%numallusers)
         f.close()
-        for u in ch.allusers:
-            if not isip(u):
-                print u
+
     else:
         print __doc__
 
@@ -120,6 +129,12 @@ def del_ips(pynetwork):
     edges = [x for x in edges if not isip(x[0]) and not isip(x[1])]
 
     return nodes,edges
+
+def get_list_bots(lang):
+    url = 'http://%s.wikipedia.org/w/index.php?title=Special:ListUsers&limit=5000' % lang
+    
+    
+    
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
     def __init__(self,lang,xmlsize=None):
@@ -321,7 +336,7 @@ def getCollaborators( rawWikiText, lang ):
         #find end of username with regex
         #username = re.findall( "[àòèéùìa-zA-Z0-9.-]+",rawWikiText[start:] )[0] # ¡bug!
         username = re.findall( "[^]|/]+",rawWikiText[start:] )[0]
-        print 'debug',username
+        #print 'debug',username
         if username == '' or username == None:
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
