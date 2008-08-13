@@ -21,6 +21,8 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
+avg = lambda l: 1.0*sum(l)/len(l)
+
 def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer','Journeyer','Apprentice','Master']):
     """
     return all trust metric on network passed
@@ -357,7 +359,9 @@ def prettyplot( data, path, **args):
             a('set yrange [%s:%s]'%args['y_range'])
 
     a('set terminal png')
-    a('set output "%s.png"'%path)
+    a('set output "%s.png"'%os.path.split(path)[1]) #to file
+    outputline = 'set output "%s.png"'%path #to gnuplot
+    outputindex = len(script) - 1 #line to change
 
     if legend:
         a('plot '+', '.join(['"-" using 1:2 title "%s"'%x for x in legend]))
@@ -372,7 +376,9 @@ def prettyplot( data, path, **args):
         a('e')
         
     if args.has_key('comment'):
-        for line in args['comment'].split('\n'):
+        if type(args['comment']) is str:
+            args['comment'] = args['comment'].split('\n')
+        for line in args['comment']:
             ac(line)
 
     f = file(path+'.gnuplot','w')
@@ -383,6 +389,7 @@ def prettyplot( data, path, **args):
     f.close()
 
     if not os.system('which gnuplot > /dev/null') and (not args.has_key('plotnow') or not args['plotnow']):
+        script[outputindex] = outputline #change the path of output
         gnuplot = os.popen('gnuplot','w')
         gnuplot.writelines([x+'\n' for x in script])
         gnuplot.close()
@@ -987,6 +994,13 @@ def convert_cache(path1,path2):
     for k,v in oldcache:
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
+
+def merge_cache(path1,path2):
+    c1 = pickle.load(GzipFile(path1))
+    c2 = pickle.load(GzipFile(path2))
+    for k in c2:
+        c1[k] = c2[k]
+    pickle.dump(c1,GzipFile(path1+'+'+os.path.split(path2)[1],'w'))
 
 def cached_read_dot(filepath,force=False):
     '''

@@ -1,6 +1,8 @@
 #!/usr/bin/env gnuplot
 # Title: Average Edges per Node
-# Date: Tue Aug  5 20:48:30 2008
+# Date: Wed Aug 13 19:10:00 2008
+# Network: Advogato
+# >>> plot_edgespernode(edgespernode(...))
 
 set title "Average Edges per Node"
 set data style linespoint
@@ -9,7 +11,7 @@ set ylabel "number of edges per node"
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "netevolution/edgespernode (2001-02-13 2007-11-01).png"
+set output "edgespernode (2001-02-13 2007-11-01).png"
 plot "-" using 1:2 title ""
 2000-02-25 7.03
 2000-07-18 8.37414030261

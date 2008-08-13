@@ -167,12 +167,12 @@ class Network(XDiGraph):
             print "Cannot download dataset"
 
 
-    def _read_dot(self, filepath):
+    def _read_dot(self, filepath,force=False):
         """Read file."""
         print "Reading", filepath
         #import networkx
         #graph = networkx.read_dot(filepath)
-        graph = trustlet.helpers.cached_read_dot(filepath)
+        graph = trustlet.helpers.cached_read_dot(filepath,force)
         self.paste_graph(graph)
         
     def paste_graph(self, graph):

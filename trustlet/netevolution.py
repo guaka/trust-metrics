@@ -66,7 +66,10 @@ def ta_plot(ta, path, filename="trustAverage"):
     prettyplot( ta, os.path.join(path,filename),
                 title="Trust Average on time", showlines=True,
                 xlabel='date in seconds',ylabel='trust average',
-               comment='Network: Advogato')
+                comment=['Network: Advogato',
+                         '>>> trustAverage( fromdate, todate, path, noObserver=False )'
+            ]
+                )
 
 def evolutionmap(path,function,range=None):
     '''
@@ -152,7 +155,7 @@ def plot_numedges(data,path='.'):
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of edges',
                showlines=True,
-               comment='Network: Advogato'
+               comment=['Network: Advogato','>>> plot_numedges(numedges(...))']
                )
 
 def edgespernode(path,range=None):
@@ -176,7 +179,7 @@ def plot_edgespernode(data,path='.'):
                xlabel='nodes',
                ylabel='number of edges per node',
                showlines=True,
-               comment='Network: Advogato'
+               comment=['Network: Advogato','>>> plot_edgespernode(edgespernode(...))']
                )
 
 def meandegree(path,range=None):
@@ -190,7 +193,7 @@ def plot_meandegree(data,path='.'):
     todate = data[-1][0]
     prettyplot(data,os.path.join(path,'meandegree (%s %s)'%(fromdate,todate)),
                showlines=True,
-               comment='Network: Advogato'
+               comment=['Network: Advogato','>>> plot_meandegree(meandegree(...))']
                )
 
 def level_distribution(path,range=None):
@@ -211,7 +214,7 @@ def level_distribution(path,range=None):
                                             if e[2].values()[0] == s])),
                             _obs_app_jour_mas_map)))
         l = [d['Master'],d['Journeyer'],d['Apprentice'],d['Observer']]
-        return ( date, map(lambda x:100.0*x/sum(l),l))
+        return ( date, map(lambda x:1.0*x/sum(l),l))
     
     return evolutionmap(path,level_distribution,range)    
 
@@ -233,7 +236,8 @@ def plot_level_distribution(data,path='.'):
                ylabel='percentage of edges',
                legend=['Master','Journeyer','Apprentice','Observer'],
                showlines=True,
-               comment='Network: Advogato'
+               comment=['Network: Advogato',
+                        '>>> plot_level_distribution(level_distribution(...))']
                )
 
 
@@ -248,7 +252,7 @@ def genericevaluation(path,function,range=None):
         f.__name__ = 'generic(%s)'%function.__name__
     return evolutionmap(path,f,range)
 
-def plot_genericevaluation(data,path='.',title=''):
+def plot_genericevaluation(data,path='.',title='',comment=''):
     '''
     plot output of genericevolution
 
@@ -268,8 +272,10 @@ def plot_genericevaluation(data,path='.',title=''):
         data,
         os.path.join(path,'%s (%s %s)'%(title,fromdate,todate)),
         title=title,
-        showlines=True
+        showlines=True,
+        comment=comment,
         )
+
 
 
 def createHTML( points ):
@@ -354,6 +360,7 @@ if __name__ == "__main__":
 
     startdate = sys.argv[1]
     enddate = sys.argv[2]
+    range = (startdate,enddate)
     path = sys.argv[3]
     savepath = sys.argv[4]
 
@@ -361,14 +368,123 @@ if __name__ == "__main__":
 
     ta = trustAverage( startdate, enddate, path)
     ta_plot( ta, savepath )
-    plot_numedges( numedges( path,(startdate,enddate) ), savepath )
-    plot_meandegree( meandegree( path,(startdate,enddate) ), savepath )
-    plot_genericevaluation( genericevaluation( path,networkx.average_clustering ,(startdate,enddate) ), savepath, title='average_clustering' )
-    plot_usersgrown( usersgrown( path,(startdate,enddate) ), savepath )
-    plot_edgespernode( edgespernode( path,(startdate,enddate) ), savepath )
-    plot_level_distribution( level_distribution( path,(startdate,enddate) ), savepath )
+    plot_numedges( numedges( path,range ), savepath )
+    plot_meandegree( meandegree( path,range ), savepath )
+    plot_usersgrown( usersgrown( path,range ), savepath )
+    plot_edgespernode( edgespernode( path,range ), savepath )
+    plot_level_distribution( level_distribution( path,range ), savepath )
 
-    # can we erase this?
+    #generic evaluation
+
+    plot_genericevaluation(
+        genericevaluation( path,networkx.average_clustering ,range ),
+        savepath, title='average_clustering', comment='Function: nx.average_clustering'
+        )
+
+    eval=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
+    eval.__name__='diameter-largest-connected-component'
+    plot_genericevaluation(
+        genericevaluation(path,eval,range),
+        savepath, title='diameter',
+        comment='eval = nx.diameter(networkx.connected_component_subgraphs'
+                '(G.to_undirected())[0])'
+        )
+
+    eval=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
+    eval.__name__='radius-largest-connected-component'
+    plot_genericevaluation(
+        genericevaluation(path,eval,range),
+        savepath, title='radius',
+        comment='eval = nx.radius(networkx.connected_component_subgraphs'
+                '(G.to_undirected())[0])'
+        )
+
+    plot_genericevaluation(
+        genericevaluation( path,networkx.density ,range ),
+        savepath, title='density', comment='Function: nx.density'
+        )
+
+    eval = lambda G: avg(
+        networkx.betweenness_centrality(G,normalized=True, weighted_edges=False).values()
+        )
+    eval.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
+        comment='eval = avg(nx.betweenness_centrality'
+                '(G,normalized=True,weighted_edges=False).values())'
+        )
+
+    eval = lambda G: avg(
+        networkx.betweenness_centrality(G,normalized=True, weighted_edges=True).values()
+        )
+    eval.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
+        comment='eval = avg(nx.betweenness_centrality'
+                '(G,normalized=True,weighted_edges=True).values())'
+        )
+
+    eval = lambda G: avg(
+        networkx.betweenness_centrality(G,normalized=False, weighted_edges=False).values()
+        )
+    eval.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='betweenness_centrality no-normalized no-weighted_edges',
+        comment='eval = avg(nx.betweenness_centrality'
+                '(G,normalized=False,weighted_edges=False).values())'
+        )
+
+    eval = lambda G: avg(
+        networkx.closeness_centrality(G,weighted_edges=False).values()
+        )
+    eval.__name__ = 'closeness_centrality-no-weighted_edges'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='closeness_centrality no-weighted_edges',
+        comment='eval = avg(nx.closeness_centrality'
+                '(G,weighted_edges=False).values())'
+        )
+
+    eval = lambda G: avg(
+        networkx.closeness_centrality(G,weighted_edges=True).values()
+        )
+    eval.__name__ = 'closeness_centrality-yes-weighted_edges'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='closeness_centrality yes-weighted_edges',
+        comment='eval = avg(nx.closeness_centrality'
+                '(G,weighted_edges=True).values())'
+        )
+
+    eval = lambda G: avg(
+        networkx.newman_betweenness_centrality(G).values()
+        )
+    eval.__name__ = 'newman_betweenness_centrality'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='newman betweenness centrality',
+        comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
+        )
+
+    plot_genericevaluation(
+        genericevaluation( path, networx.number_of_cliques ,range ),
+        savepath, title='number of cliques',
+        comment='Function: networkx.number_of_cliques'
+        )
+
+    eval = lambda G: networkx.number_connected_components(G.to_undirected())
+    eval.__name__ = 'number_connected_components'
+    plot_genericevaluation(
+        genericevaluation( path, eval ,range ),
+        savepath, title='number_connected_components',
+        comment='eval = nx.number_connected_components(G.to_undirected())'
+        )
+
+
+    # can we erase this
     if len(sys.argv) == 6:
         html = sys.argv[5]
         f = file( os.path.join( savepath, html ) , 'w' )

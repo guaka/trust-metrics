@@ -1,6 +1,8 @@
 #!/usr/bin/env gnuplot
 # Title: Level distribution
-# Date: Tue Aug  5 20:48:30 2008
+# Date: Wed Aug 13 19:10:00 2008
+# Network: Advogato
+# >>> plot_level_distribution(level_distribution(...))
 
 set title "Level distribution"
 set data style linespoint
@@ -9,7 +11,7 @@ set ylabel "percentage of edges"
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "netevolution/level distribution (2001-02-13 2007-11-01).png"
+set output "level distribution (2001-02-13 2007-11-01).png"
 plot "-" using 1:2 title "Master", "-" using 1:2 title "Journeyer", "-" using 1:2 title "Apprentice", "-" using 1:2 title "Observer"
 2000-02-25 33.2385016596
 2000-07-18 32.0220105125

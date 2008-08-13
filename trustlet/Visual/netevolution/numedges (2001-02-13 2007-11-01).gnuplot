@@ -1,6 +1,8 @@
 #!/usr/bin/env gnuplot
 # Title: Number of edges
-# Date: Tue Aug  5 20:48:30 2008
+# Date: Wed Aug 13 19:09:59 2008
+# Network: Advogato
+# >>> plot_numedges(numedges(...))
 
 set title "Number of edges"
 set data style linespoint
@@ -9,7 +11,7 @@ set ylabel "n. of edges"
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "netevolution/numedges (2001-02-13 2007-11-01).png"
+set output "numedges (2001-02-13 2007-11-01).png"
 plot "-" using 1:2 title ""
 2000-02-25 2109
 2000-07-18 12176

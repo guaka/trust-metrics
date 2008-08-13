@@ -1,13 +1,14 @@
 #!/usr/bin/env gnuplot
 # Title: average_clustering
-# Date: Tue Aug  5 20:48:30 2008
+# Date: Wed Aug 13 19:10:00 2008
+# Function: nx.average_clustering
 
 set title "average_clustering"
 set data style linespoint
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "netevolution/average_clustering (2001-02-13 2007-11-01).png"
+set output "average_clustering (2001-02-13 2007-11-01).png"
 plot "-" using 1:2 title ""
 2000-02-25 0.197967041534
 2000-07-18 0.186163009089

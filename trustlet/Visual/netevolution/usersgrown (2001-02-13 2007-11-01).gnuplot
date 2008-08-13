@@ -1,6 +1,7 @@
 #!/usr/bin/env gnuplot
 # Title: Users Grown
-# Date: Tue Aug  5 20:48:30 2008
+# Date: Wed Aug 13 19:10:00 2008
+# Network: Advogato
 
 set title "Users Grown"
 set data style linespoint
@@ -9,7 +10,7 @@ set ylabel "n. of users"
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "netevolution/usersgrown (2001-02-13 2007-11-01).png"
+set output "usersgrown (2001-02-13 2007-11-01).png"
 plot "-" using 1:2 title ""
 2000-02-25 300
 2000-07-18 1454
