@@ -162,11 +162,11 @@ def edgespernode(path,range=None):
     '''
     return the average number of edges for each user
     '''
-    def edgespernode_nodes(K,date):
+    def edgespernode(K,date):
         nodes = K.number_of_nodes()
         return ( date , 1.0*K.number_of_edges()/nodes )
     
-    return evolutionmap(path,edgespernode_nodes,range)
+    return evolutionmap(path,edgespernode,range)
 
 def plot_edgespernode(data,path='.'):
     '''
@@ -376,7 +376,7 @@ if __name__ == "__main__":
 
     #generic evaluation
 
-    if gethostname()=='sracls01':
+    if True or gethostname()=='sracls01':
 
         plot_genericevaluation(
             genericevaluation( path,networkx.average_clustering ,range ),
@@ -428,7 +428,7 @@ if __name__ == "__main__":
                     '(G,normalized=True,weighted_edges=True).values())'
             ) 
 
-    elif gethostname()=='sracls03':
+    #elif gethostname()=='sracls03':
 
         eval = lambda G: avg(
             networkx.betweenness_centrality(G,normalized=False, weighted_edges=False).values()
