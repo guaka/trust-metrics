@@ -111,7 +111,13 @@ def main():
         #write_dot(pynet,os.path.join(path,outputname+'.dot'))
         #save_raw_graph(pynet,os.path.join(path,outputname+'.rawgraph'))
 
-        users,bots = get_list_users(lang,os.path.join(base_path,'datasets','WikiNetwork'))
+        users,bots,blockedusers = get_list_users(lang,
+                                                 os.path.join(base_path,'datasets','WikiNetwork'))
+
+        assert save({'lang':lang,'list':'bots'},bots,os.path.join(path,outputname+'.c2'))
+        assert save({'lang':lang,'list':'blockedusers'},blockedusers,
+                    os.path.join(path,outputname+'.c2'))
+
         lenusers = len(users)
         print 'Number of users of whole graph:',lenusers
         print 'Number of bots:',len(bots)
@@ -121,6 +127,7 @@ def main():
         f.write('Number of bots: %d\n'%len(bots))
         f.close()
 
+        #¡¡¡deprecated!!!
         for x in pynet[1]:
             print x[0], x[1]
             x[0] not in bots and x[1] not in bots
@@ -185,7 +192,7 @@ def get_list_users(lang,cachepath=None,force=False):
         ll = len(newusers)
         count += ll
         users += newusers
-    return users,bots
+    return users,bots,[]
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
