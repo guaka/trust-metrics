@@ -36,14 +36,14 @@ from socket import gethostname
 hostname = gethostname()
 
 i18n = {
-    'vec':('Discussion utente','Utente'),
-    'nap':('Discussioni utente','Utente'),
-    'fur':('Discussion utent','Utent'),
-    'eml':('Discussioni utente','Utente'),
-    'it': ('Discussioni utente','Utente'),
-    'en': ('User talk','User'),
-    'simple':('User talk','User'),
-    'la': ('Disputatio Usoris','Usor'),
+    'vec':('Discussion utente','Utente','Bot'),
+    'nap':('Discussioni utente','Utente','Bot'),
+    'fur':('Discussion utent','Utent','Bot'),
+    'eml':('Discussioni utente','Utente','Bot'),
+    'it': ('Discussioni utente','Utente','Bot'),
+    'en': ('User talk','User','Bot'),
+    'simple':('User talk','User','Bot'),
+    'la': ('Disputatio Usoris','Usor','automaton'),
 }
 
 def main():
@@ -121,6 +121,10 @@ def main():
         f.write('Number of bots: %d\n'%len(bots))
         f.close()
 
+        for x in pynet[1]:
+            print x[0], x[1]
+            x[0] not in bots and x[1] not in bots
+
         pynet = (
             list( set(pynet[0]) - set(bots) ),
             [x for x in pynet[1] if x[0] not in bots and x[1] not in bots]
@@ -152,7 +156,8 @@ def get_list_users(lang,cachepath=None,force=False):
         assert not cachepath.endswith('.c2')
         cachepath = os.path.join(cachepath,'listusers.c2')
     re_user = re.compile('title="Utente:[^"]+">([^<]+)')
-    re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>.*?Bot.*?</li>')
+    #re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>.*?Bot.*?</li>')#bug
+    re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>(.*?)</li>')
 
     # title="Utente:!! Roberto Valentino !! (pagina inesistente)">!! Roberto Valentino !!</a></li>
 
@@ -173,7 +178,7 @@ def get_list_users(lang,cachepath=None,force=False):
             page = getpage(pageurl)
             save({'url':pageurl},(time.time(),page),cachepath)
         newusers = re.findall(re_user,page)
-        bots += re.findall(re_bot,page)
+        bots += [x[0] for x in re.findall(re_bot,page) if i18n[lang][2] in x[1]]
         if newusers:
             pageurl = url + '&' + urllib.urlencode({'offset':newusers[-1]})
             #print pageurl
