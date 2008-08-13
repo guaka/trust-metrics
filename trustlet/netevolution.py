@@ -376,112 +376,116 @@ if __name__ == "__main__":
 
     #generic evaluation
 
-    plot_genericevaluation(
-        genericevaluation( path,networkx.average_clustering ,range ),
-        savepath, title='average_clustering', comment='Function: nx.average_clustering'
-        )
+    if gethostname()=='sracls01':
 
-    eval=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
-    eval.__name__='diameter-largest-connected-component'
-    plot_genericevaluation(
-        genericevaluation(path,eval,range),
-        savepath, title='diameter',
-        comment='eval = nx.diameter(networkx.connected_component_subgraphs'
-                '(G.to_undirected())[0])'
-        )
+        plot_genericevaluation(
+            genericevaluation( path,networkx.average_clustering ,range ),
+            savepath, title='average_clustering', comment='Function: nx.average_clustering'
+            )
+        
+        eval=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
+        eval.__name__='diameter-largest-connected-component'
+        plot_genericevaluation(
+            genericevaluation(path,eval,range),
+            savepath, title='diameter',
+            comment='eval = nx.diameter(networkx.connected_component_subgraphs'
+            '(G.to_undirected())[0])'
+            )
 
-    eval=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
-    eval.__name__='radius-largest-connected-component'
-    plot_genericevaluation(
-        genericevaluation(path,eval,range),
-        savepath, title='radius',
-        comment='eval = nx.radius(networkx.connected_component_subgraphs'
-                '(G.to_undirected())[0])'
-        )
+        eval=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
+        eval.__name__='radius-largest-connected-component'
+        plot_genericevaluation(
+            genericevaluation(path,eval,range),
+            savepath, title='radius',
+            comment='eval = nx.radius(networkx.connected_component_subgraphs'
+                    '(G.to_undirected())[0])'
+            )
 
-    plot_genericevaluation(
-        genericevaluation( path,networkx.density ,range ),
-        savepath, title='density', comment='Function: nx.density'
-        )
+        plot_genericevaluation(
+            genericevaluation( path,networkx.density ,range ),
+            savepath, title='density', comment='Function: nx.density'
+            )
 
-    eval = lambda G: avg(
-        networkx.betweenness_centrality(G,normalized=True, weighted_edges=False).values()
-        )
-    eval.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
-        comment='eval = avg(nx.betweenness_centrality'
-                '(G,normalized=True,weighted_edges=False).values())'
-        )
+        eval = lambda G: avg(
+            networkx.betweenness_centrality(G,normalized=True, weighted_edges=False).values()
+            )
+        eval.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
+            comment='eval = avg(nx.betweenness_centrality'
+                    '(G,normalized=True,weighted_edges=False).values())'
+            )
 
-    eval = lambda G: avg(
-        networkx.betweenness_centrality(G,normalized=True, weighted_edges=True).values()
-        )
-    eval.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
-        comment='eval = avg(nx.betweenness_centrality'
-                '(G,normalized=True,weighted_edges=True).values())'
-        )
+        eval = lambda G: avg(
+            networkx.betweenness_centrality(G,normalized=True, weighted_edges=True).values()
+            )
+        eval.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
+            comment='eval = avg(nx.betweenness_centrality'
+                    '(G,normalized=True,weighted_edges=True).values())'
+            ) 
 
-    eval = lambda G: avg(
-        networkx.betweenness_centrality(G,normalized=False, weighted_edges=False).values()
-        )
-    eval.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='betweenness_centrality no-normalized no-weighted_edges',
-        comment='eval = avg(nx.betweenness_centrality'
-                '(G,normalized=False,weighted_edges=False).values())'
-        )
+    elif gethostname()=='sracls03':
 
-    eval = lambda G: avg(
-        networkx.closeness_centrality(G,weighted_edges=False).values()
-        )
-    eval.__name__ = 'closeness_centrality-no-weighted_edges'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='closeness_centrality no-weighted_edges',
-        comment='eval = avg(nx.closeness_centrality'
-                '(G,weighted_edges=False).values())'
-        )
+        eval = lambda G: avg(
+            networkx.betweenness_centrality(G,normalized=False, weighted_edges=False).values()
+            )
+        eval.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='betweenness_centrality no-normalized no-weighted_edges',
+            comment='eval = avg(nx.betweenness_centrality'
+                   '(G,normalized=False,weighted_edges=False).values())'
+            )
 
-    eval = lambda G: avg(
-        networkx.closeness_centrality(G,weighted_edges=True).values()
-        )
-    eval.__name__ = 'closeness_centrality-yes-weighted_edges'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='closeness_centrality yes-weighted_edges',
-        comment='eval = avg(nx.closeness_centrality'
-                '(G,weighted_edges=True).values())'
-        )
+        eval = lambda G: avg(
+            networkx.closeness_centrality(G,weighted_edges=False).values()
+            )
+        eval.__name__ = 'closeness_centrality-no-weighted_edges'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='closeness_centrality no-weighted_edges',
+            comment='eval = avg(nx.closeness_centrality'
+                    '(G,weighted_edges=False).values())'
+            )
 
-    eval = lambda G: avg(
-        networkx.newman_betweenness_centrality(G).values()
-        )
-    eval.__name__ = 'newman_betweenness_centrality'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='newman betweenness centrality',
-        comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
-        )
+        eval = lambda G: avg(
+            networkx.closeness_centrality(G,weighted_edges=True).values()
+            )
+        eval.__name__ = 'closeness_centrality-yes-weighted_edges'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='closeness_centrality yes-weighted_edges',
+            comment='eval = avg(nx.closeness_centrality'
+                    '(G,weighted_edges=True).values())'
+            )
 
-    plot_genericevaluation(
-        genericevaluation( path, networx.number_of_cliques ,range ),
-        savepath, title='number of cliques',
-        comment='Function: networkx.number_of_cliques'
-        )
+        eval = lambda G: avg(
+            networkx.newman_betweenness_centrality(G).values()
+            )
+        eval.__name__ = 'newman_betweenness_centrality'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='newman betweenness centrality',
+            comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
+            )
 
-    eval = lambda G: networkx.number_connected_components(G.to_undirected())
-    eval.__name__ = 'number_connected_components'
-    plot_genericevaluation(
-        genericevaluation( path, eval ,range ),
-        savepath, title='number_connected_components',
-        comment='eval = nx.number_connected_components(G.to_undirected())'
-        )
+        plot_genericevaluation(
+            genericevaluation( path, networx.number_of_cliques ,range ),
+            savepath, title='number of cliques',
+            comment='Function: networkx.number_of_cliques'
+            )
+
+        eval = lambda G: networkx.number_connected_components(G.to_undirected())
+        eval.__name__ = 'number_connected_components'
+        plot_genericevaluation(
+            genericevaluation( path, eval ,range ),
+            savepath, title='number_connected_components',
+            comment='eval = nx.number_connected_components(G.to_undirected())'
+            )
 
 
     # can we erase this

@@ -13,6 +13,7 @@ import marshal
 import md5
 import pickle
 from gzip import GzipFile
+from socket import gethostname
 
 try:
     import scipy
