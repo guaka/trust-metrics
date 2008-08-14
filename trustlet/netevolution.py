@@ -488,12 +488,12 @@ if __name__ == "__main__":
             networkx.closeness_centrality(G,weighted_edges=True).values()
             )
         eval.__name__ = 'closeness_centrality-yes-weighted_edges'
-        plot_genericevaluation(
-            genericevaluation( path, eval ,range ),
-            savepath, title='closeness_centrality yes-weighted_edges',
-            comment='eval = avg(nx.closeness_centrality'
-                    '(G,weighted_edges=True).values())'
-            )
+        #plot_genericevaluation(
+        #    genericevaluation( path, eval ,range ),
+        #    savepath, title='closeness_centrality yes-weighted_edges',
+        #    comment='eval = avg(nx.closeness_centrality'
+        #            '(G,weighted_edges=True).values())'
+        #    )
 
         eval = lambda G: avg(
             networkx.newman_betweenness_centrality(G).values()
