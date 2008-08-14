@@ -133,8 +133,8 @@ def plot_usersgrown(data,path='.'):
     data is the output of usersgrown
     >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
-    fromdate = data[0][0]
-    todate = data[-1][0]
+    fromdate = min(data,key=lambda x:x[0])[0]
+    todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data,os.path.join(path,'usersgrown (%s %s)'%(fromdate,todate)),
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
@@ -157,8 +157,8 @@ def plot_numedges(data,path='.'):
     '''
     >>> plot_*(*('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
-    fromdate = data[0][0]
-    todate = data[-1][0]
+    fromdate = min(data,key=lambda x:x[0])[0]
+    todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data,os.path.join(path,'numedges (%s %s)'%(fromdate,todate)),
                title='Number of edges',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
@@ -181,8 +181,8 @@ def plot_edgespernode(data,path='.'):
     '''
     data is the output of edgespernode
     '''
-    fromnnodes = data[0][0]
-    tonnodes = data[-1][0]
+    fromnnodes = min(data,key=lambda x:x[0])[0]
+    tonnodes = max(data,key=lambda x:x[0])[0]
     prettyplot(data,os.path.join(path,'edgespernode (%s %s)'%(fromnnodes,tonnodes)),
                title='Average Edges per Node',
                xlabel='nodes',
@@ -198,8 +198,8 @@ def meandegree(path,range=None):
     return evolutionmap(path,meandegree,range)
 
 def plot_meandegree(data,path='.'):
-    fromdate = data[0][0]
-    todate = data[-1][0]
+    fromdate = min(data,key=lambda x:x[0])[0]
+    todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data,os.path.join(path,'meandegree (%s %s)'%(fromdate,todate)),
                showlines=True,
                comment=['Network: Advogato','>>> plot_meandegree(meandegree(...))']
@@ -238,10 +238,10 @@ def plot_level_distribution(data,path='.'):
     for t in data:
         for i,l in enumerate(f_data):
             l.append((t[0],t[1][i]))
-
-    prettyplot(f_data,os.path.join(path,'level distribution (%s %s)'%(data[0][0],data[-1][0])),
+    r = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0])
+    prettyplot(f_data,os.path.join(path,'level distribution (%s %s)'%r),
                title='Level distribution',
-               xlabel='dates (from %s to %s)'%(data[0][0],data[-1][0]),
+               xlabel='dates (from %s to %s)'%r,
                ylabel='percentage of edges',
                legend=['Master','Journeyer','Apprentice','Observer'],
                showlines=True,
