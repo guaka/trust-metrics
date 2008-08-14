@@ -401,7 +401,7 @@ class WikiNetwork(WeightedNetwork):
             for u,v,e in edges:
                 self.add_node(u)
                 self.add_node(v)
-                self.add_edge(u,v,e)
+                self.add_edge(u,v,{'value':e})
                 
             self.filepath += '.c2'
         else:
