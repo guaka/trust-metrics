@@ -6,7 +6,7 @@ Try:
 
 == Depending packages ==
 
-* NetworkX 
+* NetworkX >=0.35.1
 * scipy
 * graphviz
 * pygraphviz

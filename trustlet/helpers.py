@@ -1000,6 +1000,8 @@ def merge_cache(path1,path2):
     c1 = pickle.load(GzipFile(path1))
     c2 = pickle.load(GzipFile(path2))
     for k in c2:
+        if c1.has_key(k) and c1[k]!=c2[k]:
+            print 'Warning: some data is lost!'
         c1[k] = c2[k]
     pickle.dump(c1,GzipFile(path1+'+'+os.path.split(path2)[1],'w'))
 

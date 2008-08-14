@@ -77,7 +77,16 @@ def evolutionmap(path,function,range=None):
     If you want use cache `function` cannot be lambda functions.
     '''
     cachepath = 'netevolution.c2'
-    dates = [x for x in os.listdir(path) if isdate(x) and os.path.exists(os.path.join(path,x,'graph.dot'))]
+    dates = [x for x in os.listdir(path)
+             if isdate(x) and os.path.exists(os.path.join(path,x,'graph.dot'))]
+    
+    #if not dates:
+    #    dates = [x for x in os.listdir(path)
+    #             if isdate(x) and os.path.exists(os.path.join(path,x,'graphCurrent.c2'))]
+
+    if not dates:
+        print "There isn't any network in this path"
+        return
 
     if range:
         assert isdate(range[0]) and  isdate(range[1])
@@ -240,7 +249,6 @@ def plot_level_distribution(data,path='.'):
                         '>>> plot_level_distribution(level_distribution(...))']
                )
 
-
 def genericevaluation(path,function,range=None):
     '''
     function: f(network) -> value on y axis
@@ -264,8 +272,8 @@ def plot_genericevaluation(data,path='.',title='',comment=''):
             )
     '''
 
-    fromdate = data[0][0]
-    todate = data[-1][0]
+    fromdate = min(data,key=lambda x:x[0])[0]
+    todate = max(data,key=lambda x:x[0])[0]
     if not title:
         title = 'Untitled'
     prettyplot(
@@ -277,6 +285,30 @@ def plot_genericevaluation(data,path='.',title='',comment=''):
         )
 
 
+def avgcontroversiality(K,min_in_degree=10):
+
+    cont = [] # controversiality array
+
+    for n in K.nodes_iter():
+        in_edges = K.in_edges(n)
+        
+        if len(in_edges)<min_in_degree:
+            continue
+
+        cont.append(
+            numpy.std([_obs_app_jour_mas_map[x[2]['level']] for x in in_edges])
+        )
+
+    if not cont:
+        return None
+    else:
+        return avg(cont)
+
+avgcont10 = lambda G: avgcontroversiality(G,10)
+avgcont10.__name__ = 'avgcontroversiality-min_in_degree-10'
+
+avgcont20 = lambda G: avgcontroversiality(G,20)
+avgcont20.__name__ = 'avgcontroversiality-min_in_degree-20'
 
 def createHTML( points ):
     """
@@ -421,12 +453,12 @@ if __name__ == "__main__":
             networkx.betweenness_centrality(G,normalized=True, weighted_edges=True).values()
             )
         eval.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
-        plot_genericevaluation(
-            genericevaluation( path, eval ,range ),
-            savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
-            comment='eval = avg(nx.betweenness_centrality'
-                    '(G,normalized=True,weighted_edges=True).values())'
-            ) 
+        #plot_genericevaluation(
+        #    genericevaluation( path, eval ,range ),
+        #    savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
+        #    comment='eval = avg(nx.betweenness_centrality'
+        #            '(G,normalized=True,weighted_edges=True).values())'
+        #    ) 
 
     #elif gethostname()=='sracls03':
 
@@ -487,8 +519,31 @@ if __name__ == "__main__":
             comment='eval = nx.number_connected_components(G.to_undirected())'
             )
 
+        # avg of (standard deviation in trust received by a user
+        # who received at least x trust statements)
+        comment='''\
+    cont = [] # controversiality array
 
-    # can we erase this
+    for n in K.nodes_iter():
+        in_edges = K.in_edges(n)
+        
+        # min_in_degree -> writte in name of function
+        if len(in_edges)<min_in_degree:
+            continue
+
+        cont.append(
+            numpy.std([_obs_app_jour_mas_map[x[2]['level']] for x in in_edges])
+        )
+
+    return avg(cont)'''
+        plot_genericevaluation(
+            genericevaluation( path, avgcont20 ,range ),
+            savepath, title='avg of standard deviation in received trust',
+            comment='eval = nx.number_connected_components(G.to_undirected())'
+            )
+
+
+    # can we erase this?
     if len(sys.argv) == 6:
         html = sys.argv[5]
         f = file( os.path.join( savepath, html ) , 'w' )
