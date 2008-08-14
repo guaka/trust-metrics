@@ -539,7 +539,7 @@ if __name__ == "__main__":
         plot_genericevaluation(
             genericevaluation( path, avgcont20 ,range ),
             savepath, title='avg of standard deviation in received trust',
-            comment='eval = nx.number_connected_components(G.to_undirected())'
+            comment=comment
             )
 
 
