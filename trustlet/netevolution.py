@@ -506,7 +506,7 @@ if __name__ == "__main__":
             )
 
         plot_genericevaluation(
-            genericevaluation( path, networx.number_of_cliques ,range ),
+            genericevaluation( path, networkx.number_of_cliques ,range ),
             savepath, title='number of cliques',
             comment='Function: networkx.number_of_cliques'
             )
@@ -527,7 +527,7 @@ if __name__ == "__main__":
     for n in K.nodes_iter():
         in_edges = K.in_edges(n)
         
-        # min_in_degree -> writte in name of function
+        # min_in_degree -> written in name of function
         if len(in_edges)<min_in_degree:
             continue
 
