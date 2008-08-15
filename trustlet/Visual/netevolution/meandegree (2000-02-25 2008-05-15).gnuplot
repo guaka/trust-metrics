@@ -1,5 +1,5 @@
 #!/usr/bin/env gnuplot
-# Date: Fri Aug 15 11:54:37 2008
+# Date: Sat Aug 16 00:18:48 2008
 # Network: Advogato
 # >>> plot_meandegree(meandegree(...))
 

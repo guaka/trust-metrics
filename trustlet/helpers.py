@@ -389,7 +389,7 @@ def prettyplot( data, path, **args):
     f.writelines([x+'\n' for x in script])
     f.close()
 
-    if not os.system('which gnuplot > /dev/null') and (not args.has_key('plotnow') or not args['plotnow']):
+    if not os.system('which gnuplot > /dev/null') and (not args.has_key('plotnow') or args['plotnow']):
         script[outputindex] = outputline #change the path of output
         gnuplot = os.popen('gnuplot','w')
         gnuplot.writelines([x+'\n' for x in script])

@@ -1,14 +1,14 @@
 #!/usr/bin/env gnuplot
-# Title: betweenness_centrality yes-normalized no-weighted_edges
-# Date: Sat Aug 16 00:21:59 2008
-# eval = avg(nx.betweenness_centrality(G,normalized=True,weighted_edges=False).values())
+# Title: newman betweenness centrality
+# Date: Sat Aug 16 00:23:10 2008
+# eval = avg(networkx.newman_betweenness_centrality(G).values())
 
-set title "betweenness_centrality yes-normalized no-weighted_edges"
+set title "newman betweenness centrality"
 set data style linespoint
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "betweenness_centrality yes-normalized no-weighted_edges (2000-02-25 2008-05-15).png"
+set output "newman betweenness centrality (2000-02-25 2008-05-15).png"
 plot "-" using 1:2 title ""
 2000-02-25 0.0040950446305
 2000-07-18 0.000938964295911
