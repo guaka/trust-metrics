@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: diameter
-# Date: Thu Aug 14 20:34:25 2008
+# Date: Fri Aug 15 11:54:39 2008
 # eval = nx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
 
 set title "diameter"

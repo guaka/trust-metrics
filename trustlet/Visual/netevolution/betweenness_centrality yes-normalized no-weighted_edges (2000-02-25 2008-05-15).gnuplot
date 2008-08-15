@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: betweenness_centrality yes-normalized no-weighted_edges
-# Date: Thu Aug 14 20:34:26 2008
+# Date: Fri Aug 15 11:54:40 2008
 # eval = avg(nx.betweenness_centrality(G,normalized=True,weighted_edges=False).values())
 
 set title "betweenness_centrality yes-normalized no-weighted_edges"

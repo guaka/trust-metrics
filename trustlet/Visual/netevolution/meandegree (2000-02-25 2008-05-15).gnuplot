@@ -1,11 +1,13 @@
 #!/usr/bin/env gnuplot
-# Date: Tue Aug  5 17:27:28 2008
+# Date: Fri Aug 15 11:54:37 2008
+# Network: Advogato
+# >>> plot_meandegree(meandegree(...))
 
 set data style linespoint
 set xdata time
 set timefmt "%Y-%m-%d"
 set terminal png
-set output "netevolution/meandegree (2000-02-25 2008-05-15).png"
+set output "meandegree (2000-02-25 2008-05-15).png"
 plot "-" using 1:2 title ""
 2000-02-25 14.06
 2000-07-18 16.7482806052
