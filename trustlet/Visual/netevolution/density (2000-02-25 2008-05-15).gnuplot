@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: density
-# Date: Sat Aug 16 00:21:35 2008
+# Date: Sat Aug 16 07:18:04 2008
 # Function: nx.density
 
 set title "density"
