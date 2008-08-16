@@ -897,7 +897,26 @@ def get_sign(key,mdfive=True):
     else:
         return s[:-1]
 
-def save(key,data,path='.',human=False):
+def hashable(x):
+    """
+    Cache.
+    Return an hashable object that can be used as key in dictionary cache.
+    """
+    if type(x) in (str,tuple,frozenset,int,float):
+        return x
+    if type(x) is list:
+        return (list,)+tuple(x)
+    if type(x) is set:
+        return frozenset(x)
+    if type(x) is dict:
+        tupleslist = []
+        for k,v in x.iteritems():
+            tupleslist.append( (k,v) )
+        return frozenset(tupleslist)
+
+    raise TypeError,"I don't know this type"
+
+def save(key,data,path='.',human=False,version=2):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
@@ -913,7 +932,15 @@ def save(key,data,path='.',human=False):
             d = pickle.load(GzipFile(path))
         except:
             d = {}
-        d[get_sign(key)] = data
+        #new version
+        if version==3:
+            # yet beta
+            gen_key = hashable
+        else:
+            print version
+            gen_key = get_sign
+
+        d[gen_key(key)] = data
         pickle.dump(d,GzipFile(path,'w'))
 
         #memory cache
@@ -923,6 +950,7 @@ def save(key,data,path='.',human=False):
         cache = globals()['cachedcache']
         cache[path] = d
     else:
+        #version 1
         mkpath(path)
         try:
             if human:
@@ -960,15 +988,26 @@ def load(key,path='.'):
         if cache.has_key(path):
             #print 'found',path
             if cache[path].has_key(get_sign(key)):
+                #version 2
                 return cache[path][get_sign(key)]
+            elif cache[path].has_key(hashable(key)):
+                #version 3
+                return cache[path][hashable(key)]
             else:
                 return None
         
         try:
             d = pickle.load(GzipFile(path))
-            data = d[get_sign(key)]
-        #except KeyError,IOError:
         except:
+            return None
+        
+        if d.has_key(get_sign(key)):
+            #version 2
+            data = d[get_sign(key)]
+        elif d.has_key(hashable(key)):
+            #version 3
+            data = d[hashable(key)]
+        else:
             return None
 
         #save in memory cache

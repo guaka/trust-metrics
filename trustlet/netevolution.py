@@ -286,7 +286,6 @@ def plot_genericevaluation(data,path='.',title='',comment=''):
         title=title,
         showlines=True,
         comment=comment,
-        plotnow=False,
         )
 
 
