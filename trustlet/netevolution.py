@@ -57,8 +57,8 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
         print "dataset of ",d ," Evaluated"
         return (d,averagetrust)
     
-    assert not noObserver,"evolutionmap does'n implements "+\
-                          "filter_edges: you may implements "+\
+    assert not noObserver,"evolutionmap doesn't implement "+\
+                          "filter_edges: you may implement "+\
                           "it in this function"
 
     if noObserver:

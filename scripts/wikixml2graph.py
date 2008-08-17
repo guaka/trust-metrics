@@ -463,6 +463,10 @@ def getCharPosition( rawWikiText, search, start ):
         choosed from search. If doesn't find any end character,
         show 30 character after start position in rawWikiText,
         and get end character by standard input.
+        Parameter:
+           rawWikiText: wiki text
+           search: string comma-separated, with the search character
+           start: an integer with the start position in rawWikiText
         """
         list = split( search , "," )
         end = []
