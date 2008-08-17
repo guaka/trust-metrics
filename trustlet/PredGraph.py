@@ -604,7 +604,7 @@ class PredGraph(CalcGraph):
 
 #Wiki Prediction Graph
 
-class CalcWikiGraph(CalcGraph,WikiNetwork):
+class CalcWikiGraph(CalcGraph):
     def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
