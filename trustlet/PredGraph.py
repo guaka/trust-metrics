@@ -7,7 +7,7 @@ Analysis of trust metrics through predicting edges.
 
 """
 
-from Dataset.Network import Network
+from Dataset.Network import Network,WikiNetwork
 from helpers import *
 from TrustMetric import *
 
