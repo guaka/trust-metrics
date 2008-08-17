@@ -604,7 +604,7 @@ class PredGraph(CalcGraph):
 
 #Wiki Prediction Graph
 
-class CalcWikiGraph(CalcGraph):
+class CalcWikiGraph(CalcGraph,WikiNetwork):
     def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
@@ -641,6 +641,13 @@ class CalcWikiGraph(CalcGraph):
         if hasattr(self.TM, 'rescale') and self.TM.rescale:
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
+
+    def _generate(self):
+        """Generate the prediction graph."""
+        print "Generating", self.filepath
+        pg = self._predict_existing()
+        self._paste_graph(pg)
+        return pg
 
             
     #override filepath

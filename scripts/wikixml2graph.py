@@ -499,7 +499,7 @@ def getCharPosition( rawWikiText, search, start ):
 
 
 def save_raw_graph(pynetwork,path):
-    '''save graph in a gzip compressed text file'''
+    '''save graph in a text file'''
 
     writelines = lambda f,lines: f.writelines([x+'\n' for x in lines])
 

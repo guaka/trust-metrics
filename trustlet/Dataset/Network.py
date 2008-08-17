@@ -381,7 +381,7 @@ class WikiNetwork(WeightedNetwork):
             filename += '-nobots'
 
         if upthreshold != 20:
-            print "Warning: upthreshold isn't 20. Saved PredGraph might not what you want."
+            print "Warning: upthreshold isn't 20. Saved PredGraph might not be what do you want."
 
         self.path = os.path.join( self.path, lang, date )
         trustlet.helpers.mkpath(self.path)
@@ -427,7 +427,7 @@ class WikiNetwork(WeightedNetwork):
             except IOError:
                                         
                 raise IOError("There isn't a dot file on this path:\n "+
-                              self.path+"\nplease specify another path or create dot file with wikixml2dot.py" )
+                              self.path+"\nplease specify another path or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
 
         self.weights()
         self.__rescale()
