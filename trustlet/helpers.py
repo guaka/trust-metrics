@@ -33,7 +33,6 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
        advogato = include advogato trust metrics
     """
     trustmetrics = {
-        "random_tm": trustlet.TrustMetric( net , trustlet.random_tm ),
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
         "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
         "edges_b_tm":trustlet.TrustMetric( net , trustlet.edges_b_tm ),
@@ -48,7 +47,10 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
     if advogato:
         trustmetrics["AdvogatoLocal"]=trustlet.AdvogatoLocal(net)
         trustmetrics["AdvogatoGlobalTM"]=trustlet.AdvogatoGlobalTM(net)
-        
+        trustmetrics["random_tm"] = trustlet.TrustMetric( net , trustlet.random_tm )
+    else:
+        trustmetrics["random_tm"] = trustlet.TrustMetric( net , trustlet.wikiRandom_tm )
+
 
         if allAdvogato:
             levels = type(allAdvogato) is list and allAdvogato or net.level_map.keys()
