@@ -47,8 +47,10 @@ class CalcGraph(Network):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
 
-            self.__set_filepath()
-
+            
+            self.filepath = os.path.join(self.path, 
+                                         get_name(self) + '.dot')
+    
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
@@ -70,10 +72,6 @@ class CalcGraph(Network):
         print "Init took", hms(time.time() - self.start_time)
 
 
-    def __set_filepath(self):
-        
-        self.filepath = os.path.join(self.path, 
-                                     get_name(self) + '.dot')
             
 
     def get_name(self):
@@ -611,6 +609,8 @@ class CalcWikiGraph(CalcGraph):
         picked for prediction.
         NB: The save format for wiki, is different from the save format
             for Advogato, and other datasets"""
+        Network.__init__(self, make_base_path = False)
+
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
@@ -621,18 +621,20 @@ class CalcWikiGraph(CalcGraph):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
 
-            self.__set_filepath()
+            
+            self.__set_filepath() 
 
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
                 mkpath(self.path)
+            
                         
             if not recreate and os.path.exists(self.filepath):
-                self._read_dot(self.filepath)
+                graph = self._readCache(self.filepath)
             else:
                 graph = self._generate()
-                self._write_pred_graph_dot(graph)
+                self._writeCache(graph)
             
             
                 
@@ -641,13 +643,6 @@ class CalcWikiGraph(CalcGraph):
         if hasattr(self.TM, 'rescale') and self.TM.rescale:
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
-
-    def _generate(self):
-        """Generate the prediction graph."""
-        print "Generating", self.filepath
-        pg = self._predict_existing()
-        self._paste_graph(pg)
-        return pg
 
             
     #override filepath
@@ -662,17 +657,22 @@ class CalcWikiGraph(CalcGraph):
 
 
     # override read and write functions, for WikiFormat
-    def _read_dot(self, filepath):
+    def _readCache(self, filepath):
         """
         read cache file
         """
+        print "Reading ", filepath
         path,file = os.path.split( filepath )
         path,date = os.path.split( path )
         path,lang = os.path.split( path )
 
-        return load({'lang':lang,'data':data}, filepath )
+        self._paste_graph( 
+                load({'lang':lang,'date':date}, filepath )
+                )
+        
+        return None
 
-    def _write_pred_graph_dot(self,pred_graph):
+    def _writeCache(self,pred_graph):
         """Write PredGraph.c2"""
         print "Writing", self.filepath,
         print "-", len(pred_graph.nodes()),
@@ -680,7 +680,7 @@ class CalcWikiGraph(CalcGraph):
         
         if self.filepath[-3:] != '.c2':
             print "Error!, the filepath is not a c2 file! exiting"
-            exit(0)
+            exit()
         
         return save({'lang':self.dataset.lang,'date':self.dataset.date},pred_graph, self.filepath)
 

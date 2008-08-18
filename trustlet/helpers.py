@@ -1014,6 +1014,7 @@ def load(key,path='.'):
         cache[path] = d
     else:
         return None
+
     return data
 
 def erase_cachedcache():

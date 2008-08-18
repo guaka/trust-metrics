@@ -137,6 +137,9 @@ def random_tm(G, a, b):
     """Return a random value between 0.4 and 1.0"""
     return random.random()*0.6+0.4
 
+def wikiRandom_tm(G, a, b):
+    """ Return a random number between 0.0 and 1.0 """
+    return random.random()
 
 def intersection_tm(G, a, b):
     """Find the intersection (nodes between a and b, say ni), and
