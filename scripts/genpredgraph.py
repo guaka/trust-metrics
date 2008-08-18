@@ -64,7 +64,7 @@ if __name__ == "__main__":
     if type == "WikiNetwork":
         if l > 2:
             lang = sys.argv[2]
-            A = WikiNetwork( lang,date )
+            A = WikiNetwork( lang,date,bots=True )
         else:
             print "WikiNetwork must have lang!"
             exit(0)
