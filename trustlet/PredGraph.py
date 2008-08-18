@@ -359,9 +359,12 @@ class PredGraph(CalcGraph):
         #not rount None edges
         if weight==UNDEFINED or not weight:
             return weight
-        values = self.dataset.level_map.values()
-        values.sort(lambda x,y: cmp(abs(x-weight),abs(y-weight)))
-        return values[0]
+        if hasattr( self.dataset, 'level_map' ):
+            values = self.dataset.level_map.values()
+            values.sort(lambda x,y: cmp(abs(x-weight),abs(y-weight)))
+            return values[0]
+        else:
+            return round(weight,2)
         
     def graphcontroversiality( self, 
                                #maxc == 0.3 because for higher value the there aren't edges
@@ -663,13 +666,21 @@ class CalcWikiGraph(CalcGraph):
         """
         print "Reading ", filepath
         path,file = os.path.split( filepath )
+        path,tm = os.path.split( path )
         path,date = os.path.split( path )
         path,lang = os.path.split( path )
 
-        self._paste_graph( 
+        try:
+            self._paste_graph( 
                 load({'lang':lang,'date':date}, filepath )
                 )
-        
+        except AttributeError:
+            print "I cannot be able to read filepath!"
+            print "function load, takes this two keys:"
+            print "lang:",lang,"date:",date
+
+            return None
+
         return None
 
     def _writeCache(self,pred_graph):
