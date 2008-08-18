@@ -48,15 +48,16 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
         trustmetrics["AdvogatoLocal"]=trustlet.AdvogatoLocal(net)
         trustmetrics["AdvogatoGlobalTM"]=trustlet.AdvogatoGlobalTM(net)
         trustmetrics["random_tm"] = trustlet.TrustMetric( net , trustlet.random_tm )
-    else:
-        trustmetrics["random_tm"] = trustlet.TrustMetric( net , trustlet.wikiRandom_tm )
-
 
         if allAdvogato:
             levels = type(allAdvogato) is list and allAdvogato or net.level_map.keys()
             for level in levels:
                 if level:
                     trustmetrics["AdvogatoLocalDefault"+level] = trustlet.AdvogatoLocal(net,level)
+
+    else:
+        trustmetrics["random_tm"] = trustlet.TrustMetric( net , trustlet.wikiRandom_tm )
+
 
     if trivial:
         trustmetrics["always_master"] = trustlet.TrustMetric( net , trustlet.always_master)
