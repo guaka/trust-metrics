@@ -929,8 +929,30 @@ def save(key,data,path='.',human=False,version=2):
     If path ends with '.c2' data will save in the new format (less files).
     human is not suported in the new format.
     """
+
+    def lock():
+        TIMEOUT = 300 # 5min
+        def readall(fname):
+            f = file(fname)
+            data = f.read()
+            f.close()
+            return data
+        def writeall(fname,data):
+            f = file(fname,'w')
+            f.write(data)
+            f.close()
+        while True:
+            if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
+                writeall(path+'.lock',str(time.time()))
+                return
+            time.sleep(1)
+
+    def unlock():
+        os.remove(path+'.lock')
+
     if path.endswith('.c2'):
         mkpath(os.path.split(path)[0])
+        lock()
         try:
             d = pickle.load(GzipFile(path))
         except:
@@ -940,11 +962,11 @@ def save(key,data,path='.',human=False,version=2):
             # yet beta
             gen_key = hashable
         else:
-            print version
             gen_key = get_sign
 
         d[gen_key(key)] = data
         pickle.dump(d,GzipFile(path,'w'))
+        unlock()
 
         #memory cache
         if not globals().has_key('cachedcache'):
@@ -1023,6 +1045,7 @@ def load(key,path='.'):
 def erase_cachedcache():
     '''
     useful to reload cache from disc
+    * doesn't work *
     '''
     globals()['cachedcache'] = {}
 
@@ -1042,10 +1065,7 @@ def convert_cache(path1,path2):
 def merge_cache(path1,path2):
     c1 = pickle.load(GzipFile(path1))
     c2 = pickle.load(GzipFile(path2))
-    for k in c2:
-        if c1.has_key(k) and c1[k]!=c2[k]:
-            print 'Warning: some data is lost!'
-        c1[k] = c2[k]
+    c1.update(c2)
     pickle.dump(c1,GzipFile(path1+'+'+os.path.split(path2)[1],'w'))
 
 def cached_read_dot(filepath,force=False):
