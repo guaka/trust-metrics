@@ -175,10 +175,26 @@ class PredGraph(CalcGraph):
         except AttributeError:
             print 'Are you sure that TM is a TM?'
         self.leave_one_out = leave_one_out
-        CalcGraph.__init__(self, TM,
-                           recreate = recreate,
-                           predict_ratio = predict_ratio)
 
+        if hasattr( TM.dataset, "lang" ) and hasattr( TM.dataset, "bots" ):
+            print "I cannot be able to create this prediction network!"
+            print "I suppose that this is a Wikipedia Network.."
+            print "In order to create a Wikipedia prediction graph,"
+            print "you must use the WikiPredGraph class"
+            
+            return None
+
+        try:
+            CalcGraph.__init__(self, TM,
+                               recreate = recreate,
+                               predict_ratio = predict_ratio)
+        except:
+            print "I cannot be able to create this prediction network!"
+            print "Is this an Advogato/Kaitiaki/SqueakFoundation network?"
+            print "If it is a Wikipedia Network you must use the WikiPredGraph class"
+            print "instead of PredGraph."
+            
+            
     def _generate(self):
         """Generate the prediction graph."""
         print "Generating", self.filepath
@@ -653,10 +669,16 @@ class CalcWikiGraph(CalcGraph):
         
         if self.dataset.current:
             self.filepath = os.path.join(self.path, 
-                                         get_name(self) + 'Current.c2')
+                                         get_name(self) + 'Current')
         else:
             self.filepath = os.path.join(self.path, 
-                                         get_name(self) + 'History.c2')
+                                         get_name(self) + 'History')
+
+        if not self.dataset.bots:
+            self.filepath += "-nobots"
+
+        self.filepath += ".c2"
+
 
 
     # override read and write functions, for WikiFormat
@@ -696,6 +718,10 @@ class CalcWikiGraph(CalcGraph):
         return save({'lang':self.dataset.lang,'date':self.dataset.date},pred_graph, self.filepath)
 
 class WikiPredGraph(PredGraph,CalcWikiGraph):
+    """
+    Create a prediction graph for the Wikipedia Network.
+    The methods are the same of the PredGraph class.
+    """
     def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
         
         try:

@@ -370,7 +370,7 @@ class WikiNetwork(WeightedNetwork):
         
         assert trustlet.helpers.isdate(date)
 
-        self.lang = lang; self.date = date; self.current = current; self.upthreshold = upthreshold
+        self.lang = lang; self.date = date; self.current = current; self.upthreshold = upthreshold; self.bots = bots
 
         if current:
             filename = "graphCurrent"
