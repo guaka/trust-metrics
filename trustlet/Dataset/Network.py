@@ -175,18 +175,31 @@ class Network(XDiGraph):
         graph = trustlet.helpers.cached_read_dot(filepath,force)
         self.paste_graph(graph)
         
-    def paste_graph(self, graph):
-        """Paste graph into object."""
-        for node in graph.nodes_iter():
-            self.add_node(node)
+    def paste_graph(self, graph, avoidset=None):
+        """
+        Paste graph into object.
+        Parameter:
+           graph: the graph
+           avoidset: the set object that contains all the nodes leaved out from the copying
+        """
+        if avoidset:
+            for node in [x for x in graph.nodes_iter() if x not in avoidset]:
+                self.add_node(node)
 
-        for edge in graph.edges_iter():
-            self.add_edge(edge)
+            for edge in [x for x in graph.edges_iter() if (x[0] not in avoidset) and (x[1] not in avoidset)]:
+                self.add_edge(edge)
+        else:
+            for node in graph.nodes_iter():
+                self.add_node(node)
+
+            for edge in graph.edges_iter():
+                self.add_edge(edge)
+    
 
 
-    def _paste_graph(self, graph):
+    def _paste_graph(self, graph, avoidset=None):
         """Deprecated."""
-        self.paste_graph(graph)
+        self.paste_graph(graph, avoidset)
 
     def ditch_components(self, threshold = 3):
         """Ditch components with less than [threshold] nodes"""
@@ -377,8 +390,8 @@ class WikiNetwork(WeightedNetwork):
         else:
             filename = "graphHistory"
 
-        if not bots:
-            filename += '-nobots'
+        #if not bots:
+        #    filename += '-nobots'
 
         if upthreshold != 20:
             print "Warning: upthreshold isn't 20. Saved PredGraph might not be what do you want."
@@ -389,21 +402,44 @@ class WikiNetwork(WeightedNetwork):
         self.filepath = os.path.join( self.path, filename )
 
         #load from cache
-        print "Reading ", os.path.join(self.path,filename+'.c2')
-        cachedict = {'network':'Wiki','lang':lang,'date':date}
-        if not bots:
-            cachedict['users'] = 'nobots'
-        pydataset = trustlet.helpers.load(cachedict,os.path.join(self.path,filename+'.c2'))
+        print "Reading ", self.filepath+'.c2'
+        cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
+        #if not bots:
+        #    cachedict['users'] = 'nobots'
+        
+        pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
+        
         if pydataset:
-            nodes,edges = pydataset
-            for u in nodes:
-                self.add_node(u)
-            for u,v,e in edges:
-                self.add_node(u)
-                self.add_node(v)
-                self.add_edge(u,v,{'value':e})
-                
+            #now I'm sure that this network is in a c2 file
             self.filepath += '.c2'
+            
+            nodes,edges = pydataset
+            if not bots:
+                #implement here the nobots control
+                botset = trustlet.helpers.load({'lang':lang,'list':'bots'}, self.filepath )
+                
+                self.botset = botset #save botset for future use
+                
+                if botset:
+                    for u in [x for x in nodes if x not in botset]:
+                        self.add_node(u)
+                    for u,v,e in [x for x in edges if (x[0] not in botset) or (x[1] not in botset)]:
+                        self.add_node(u)
+                        self.add_node(v)
+                        self.add_edge(u,v,{'value':e})
+                        
+                else:
+                    #if botset is None
+                    raise IOError("Warning!!!! The list of bots is not present in this c2 file,\n and you have required the no-bots network! (default value for bots parameter is False, try to set it to True)" )
+            else:
+                #if bots is True
+                for u in nodes:
+                        self.add_node(u)
+                for u,v,e in edges:
+                    self.add_node(u)
+                    self.add_node(v)
+                    self.add_edge(u,v,{'value':e})
+                    
         else:
             self.filepath += '.dot'
 
