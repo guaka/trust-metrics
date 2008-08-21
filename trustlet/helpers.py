@@ -688,6 +688,14 @@ def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
 
         return lris
 
+def tempnam():
+    '''soppress warning'''
+    stderr = sys.stderr
+    sys.stderr = file('/dev/null','w')
+    name = os.tempnam()
+    sys.stderr = stderr
+    return name
+
 def getnp():
     """Return None or the number of processors"""
     try:
