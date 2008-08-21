@@ -515,14 +515,6 @@ if __name__ == "__main__":
             savepath, title='newman betweenness centrality',
             comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
             )
-        
-        eval = lambda G: avg(networkx.number_of_cliques())
-        eval.__name__ = 'avg_of_number_of_cliques'
-        plot_genericevaluation(
-            genericevaluation( path, networkx.number_of_cliques ,range ),
-            savepath, title='number of cliques',
-            comment='Function: avg(networkx.number_of_cliques)'
-            )
 
         eval = lambda G: networkx.number_connected_components(G.to_undirected())
         eval.__name__ = 'number_connected_components'

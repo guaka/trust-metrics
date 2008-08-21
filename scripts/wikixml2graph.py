@@ -22,9 +22,9 @@ import urllib
 from gzip import GzipFile
 
 
-# set User-Agent (Wikiperdia doesn't give special pages to Python :@ )
+# set User-Agent (Wikipedia doesn't give special pages to Python :@ )
 class URLopener(urllib.FancyURLopener):
-    version = "wikixml2graph/0"
+    version = "Mozilla/5.0 (X11; U; Linux i686; it; rv:1.9.0.1) Gecko/2008071719 Firefox/3.0.1"
 urllib._urlopener = URLopener()
 
 getpage = lambda url: urllib.urlopen(url).read()
@@ -114,31 +114,29 @@ def main():
         users,bots,blockedusers = get_list_users(lang,
                                                  os.path.join(base_path,'datasets','WikiNetwork'))
 
-        assert save({'lang':lang,'list':'bots'},bots,os.path.join(path,outputname+'.c2'))
+        assert save({'lang':lang,'list':'bots'},bots,os.path.join(path,outputname+'.c2'),version=3)
         assert save({'lang':lang,'list':'blockedusers'},blockedusers,
-                    os.path.join(path,outputname+'.c2'))
+                    os.path.join(path,outputname+'.c2'),version=3)
 
         lenusers = len(users)
+        assert save({'lang':lang,'info':'number of users'},lenusers)
+        #assert save({'lang':lang,'info':'number of bots'},len(bots))
+        # -> not useful: there is the list of bots in .c2 file
+
+        
         print 'Number of users of whole graph:',lenusers
         print 'Number of bots:',len(bots)
-        f = file('wikixml2graph.log','a')
-        f.write('Network: %s %s\n'%(lang,date))
-        f.write('Number of users of whole graph: %d\n'%lenusers)
-        f.write('Number of bots: %d\n'%len(bots))
-        f.close()
 
         #¡¡¡deprecated!!!
-        for x in pynet[1]:
-            print x[0], x[1]
-            x[0] not in bots and x[1] not in bots
+        #for x in pynet[1]:
+        #    x[0] not in bots and x[1] not in bots
 
-        pynet = (
-            list( set(pynet[0]) - set(bots) ),
-            [x for x in pynet[1] if x[0] not in bots and x[1] not in bots]
-            )
-
-        assert save({'network':'Wiki','lang':lang,'date':date,'users':'nobots'},
-                    pynet,os.path.join(path,outputname+'-nobots.c2'))
+        #pynet = (
+        #    list( set(pynet[0]) - set(bots) ),
+        #    [x for x in pynet[1] if x[0] not in bots and x[1] not in bots]
+        #    )
+        #assert save({'network':'Wiki','lang':lang,'date':date,'users':'nobots'},
+        #            pynet,os.path.join(path,outputname+'-nobots.c2'))
 
     else:
         print __doc__
@@ -153,7 +151,7 @@ def del_ips(pynetwork):
 
 def get_list_users(lang,cachepath=None,force=False):
     '''
-    Return users and bots lists
+    Return users, bots and blocked users lists
      - cachepath is a directory
     '''
     url = 'http://%s.wikipedia.org/w/index.php?title=Special:ListUsers&limit=5000' % lang
@@ -163,7 +161,6 @@ def get_list_users(lang,cachepath=None,force=False):
         assert not cachepath.endswith('.c2')
         cachepath = os.path.join(cachepath,'listusers.c2')
     re_user = re.compile('title="Utente:[^"]+">([^<]+)')
-    #re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>.*?Bot.*?</li>')#bug
     re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>(.*?)</li>')
 
     # title="Utente:!! Roberto Valentino !! (pagina inesistente)">!! Roberto Valentino !!</a></li>
@@ -176,6 +173,7 @@ def get_list_users(lang,cachepath=None,force=False):
     ll = 1
     pageurl = url
     count = 0
+    print 'Number of users read:'
     while ll:
         print count
         page = load({'url':pageurl},cachepath)
@@ -183,7 +181,7 @@ def get_list_users(lang,cachepath=None,force=False):
 
         if not page or force or time.time()-t>2*WEEKS or not re.findall(re_user,page):
             page = getpage(pageurl)
-            save({'url':pageurl},(time.time(),page),cachepath)
+            save({'url':pageurl},(time.time(),page),cachepath,version=3)
         newusers = re.findall(re_user,page)
         bots += [x[0] for x in re.findall(re_bot,page) if i18n[lang][2] in x[1]]
         if newusers:
@@ -192,7 +190,33 @@ def get_list_users(lang,cachepath=None,force=False):
         ll = len(newusers)
         count += ll
         users += newusers
-    return users,bots,[]
+
+    # get IPBlockList
+    url = 'http://%s.wikipedia.org/wiki/Special:IPBlockList&limit=5000' % lang
+    re_busers = re.compile('title="Utente:[^"]+">([^<]+)')
+    busers = [] #blocked users
+    ll = 1
+    pageurl = url
+    count = 0
+    print 'Number of blocked users read:'
+    while ll:
+        print count
+        page = load({'url':pageurl},cachepath)
+        if page: t,page = page
+
+        if not page or force or time.time()-t>2*WEEKS or not re.findall(re_buser,page):
+            page = getpage(pageurl)
+            save({'url':pageurl},(time.time(),page),cachepath,version=3)
+        newusers = re.findall(re_buser,page)
+        if newusers:
+            pageurl = url + '&' + urllib.urlencode({'offset':newusers[-1]})
+            #print pageurl
+        ll = len(newusers)
+        count += ll
+        busers += newusers
+
+
+    return users,bots,busers
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
@@ -380,7 +404,7 @@ def getCollaborators( rawWikiText, lang ):
     resname = []
 
     exit = 0; start = 0
-    search = i18n[lang][1]+":"
+    search = '[['+i18n[lang][1]+":"
     io = len(search)
 
     while True:
