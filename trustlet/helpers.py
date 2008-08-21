@@ -927,7 +927,7 @@ def hashable(x):
 
     raise TypeError,"I don't know this type"
 
-def save(key,data,path='.',human=False,version=2):
+def save(key,data,path='.',human=False,version=3):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
