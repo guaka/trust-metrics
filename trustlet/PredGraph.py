@@ -57,7 +57,7 @@ class CalcGraph(Network):
                 mkpath(self.path)
             
                         
-            if not recreate and os.path.exists(self.filepath):
+            if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
                 self._read_dot(self.filepath)
             else:
                 graph = self._generate()
@@ -116,7 +116,21 @@ class CalcGraph(Network):
         print "Writing", self.filepath,
         print "-", len(pred_graph.nodes()),
         print "nodes", len(pred_graph.edges()), "edges"
-        write_dot(pred_graph, self.filepath)
+        
+        import os
+        
+        name = os.tempnam()
+        
+        write_dot(pred_graph, name)
+
+        try:
+            from bz2 import BZ2File
+        
+            BZ2File( self.filepath , 'w' ).write( file( name ).read() )
+        except:
+            os.system( 'bzip2 -z "'+name+'" -c > "'+self.filepath+'.bz2"' )
+        
+        
 
     def _defined_list(self):
         """List of defined predictions."""
@@ -386,7 +400,7 @@ class PredGraph(CalcGraph):
                                #maxc == 0.3 because for higher value the there aren't edges
                                maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
-                               indegree=10, np=2, round_weight=True,
+                               indegree=10, round_weight=True,
                                ):
         """
         This function save a graph with
@@ -397,7 +411,6 @@ class PredGraph(CalcGraph):
                                         in the graph
            step = from 0.0 to maxc with step == step
            indegree = the min indegree
-           np = number of processes
            cond = if None, calculate all the edges, else it must be a function
                   that take an edge, and return True if the edge must be
                   included in computation
@@ -508,7 +521,7 @@ class PredGraph(CalcGraph):
             
             return (max, float(sum)/cnt, rmse, pw, cov, cnt)
         
-        ls = splittask( eval, [max for max in r], np )
+        ls = splittask( eval, [max for max in r] )
 
         if toe == None:
             return ls
