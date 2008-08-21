@@ -419,7 +419,7 @@ if __name__ == "__main__":
 
     #generic evaluation
 
-    if False or gethostname()=='sracls01':
+    if True or gethostname()=='sracls01':
 
         plot_genericevaluation(
             genericevaluation( path,networkx.average_clustering ,range ),
@@ -532,7 +532,7 @@ if __name__ == "__main__":
             comment='eval = nx.number_connected_components(G.to_undirected())'
             )
 
-    elif True:
+    #elif True:
 
         # avg of (standard deviation in trust received by a user
         # who received at least x trust statements)
@@ -555,6 +555,12 @@ if __name__ == "__main__":
             genericevaluation( path, avgcont20 ,range ),
             savepath, title='avg of standard deviation in received trust (in degree=20)',
             comment=comment
+            )
+
+        plot_genericevaluation(
+            genericevaluation( path, graph_number_of_cliques ,range ),
+            savepath, title='graph number of cliques',
+            comment='eval = nx.graph_number_of_cliques(K)'
             )
 
 
