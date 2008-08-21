@@ -43,7 +43,8 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
         #temporary path
         #can be advogato/kaitiaki style, or directly with a integer weights
         weight = K.weights()
-        
+        #try to use some dictionary, because
+        #sometimes the key is 'value' and sometimes is 'level'
         try:
             averagetrust = avg([_obs_app_jour_mas_map[val[0]] for val in [x.values() for x in weight]])
         except KeyError:
@@ -221,6 +222,10 @@ def level_distribution(path,range=None):
         (rewrite this code is quicker)
         see AdvogatoNetwork class
         """
+
+        # we use values()[0] instead of the key of dict because sometimes
+        # the key is 'value' and sometimes it's 'level'
+        # *need to fix this*
         d = dict(filter(lambda x:x[0],
                         map(lambda s: (s,
                                        len([e for e in K.edges_iter()
@@ -300,7 +305,9 @@ def avgcontroversiality(K,min_in_degree=10):
             continue
 
         cont.append(
-            numpy.std([_obs_app_jour_mas_map[x[2]['level']] for x in in_edges])
+            numpy.std([_obs_app_jour_mas_map[x[2].values()[0]] for x in in_edges])
+            # We get the first value because the key is sometimes
+            # 'value' and sometimes 'level'
         )
 
     if not cont:
@@ -544,7 +551,7 @@ if __name__ == "__main__":
     return avg(cont)'''
         plot_genericevaluation(
             genericevaluation( path, avgcont20 ,range ),
-            savepath, title='avg of standard deviation in received trust',
+            savepath, title='avg of standard deviation in received trust (in degree=20)',
             comment=comment
             )
 
