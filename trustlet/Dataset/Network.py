@@ -182,6 +182,7 @@ class Network(XDiGraph):
            graph: the graph
            avoidset: the set object that contains all the nodes leaved out from the copying
         """
+        
         if avoidset:
             for node in [x for x in graph.nodes_iter() if x not in avoidset]:
                 self.add_node(node)
@@ -383,7 +384,7 @@ class WikiNetwork(WeightedNetwork):
         
         assert trustlet.helpers.isdate(date)
 
-        self.lang = lang; self.date = date; self.current = current; self.upthreshold = upthreshold; self.bots = bots
+        self.lang = lang; self.date = date; self.current = current; self.upthreshold = upthreshold; self.bots = bots; self.botset = None
 
         if current:
             filename = "graphCurrent"

@@ -706,9 +706,12 @@ class CalcWikiGraph(CalcGraph):
         path,lang = os.path.split( path )
 
         try:
+
             self._paste_graph( 
-                load({'lang':lang,'date':date}, filepath )
+                load({'lang':lang,'date':date}, filepath ),
+                self.dataset.botset
                 )
+
         except AttributeError:
             print "I cannot be able to read filepath!"
             print "function load, takes this two keys:"
