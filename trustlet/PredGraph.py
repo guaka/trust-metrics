@@ -394,7 +394,7 @@ class PredGraph(CalcGraph):
             values.sort(lambda x,y: cmp(abs(x-weight),abs(y-weight)))
             return values[0]
         else:
-            return round(weight,2)
+            return round(weight,4)
         
     def graphcontroversiality( self, 
                                #maxc == 0.3 because for higher value the there aren't edges

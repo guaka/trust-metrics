@@ -269,7 +269,7 @@ class WeightedNetwork(Network):
 
     def weights(self):
         """
-        Return a list with the weight of all edges
+        Return a list with the weights of all edges
         """
         if hasattr(self, "_weights") and self._weights:
             ws = self._weights
@@ -467,6 +467,23 @@ class WikiNetwork(WeightedNetwork):
 
         self.weights()
         self.__rescale()
+        
+
+    def weights(self):
+        """
+        Return a list with the weights of all edges
+        """
+        if hasattr(self, "_weights") and self._weights:
+            ws = self._weights
+        else:
+            ws = []
+            for n in self.edges_iter():
+                x = self.__map( float(n[2]['value']) )
+                ws.append( x )
+            
+            self._weights = ws
+        
+        return ws
         
 
     def __map(self, value):
