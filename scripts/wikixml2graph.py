@@ -193,7 +193,7 @@ def get_list_users(lang,cachepath=None,force=False):
 
     # get IPBlockList
     url = 'http://%s.wikipedia.org/wiki/Special:IPBlockList&limit=5000' % lang
-    re_busers = re.compile('title="Utente:[^"]+">([^<]+)')
+    re_buser = re.compile('title="Utente:[^"]+">([^<]+)')
     busers = [] #blocked users
     ll = 1
     pageurl = url

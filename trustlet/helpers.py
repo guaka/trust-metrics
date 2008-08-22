@@ -1076,6 +1076,10 @@ def merge_cache(path1,path2):
     c1.update(c2)
     pickle.dump(c1,GzipFile(path1+'+'+os.path.split(path2)[1],'w'))
 
+def read_c2(path):
+    '''return all cache dictionary'''
+    return pickle.load(GzipFile(path))
+
 def cached_read_dot(filepath,force=False):
     '''
     If graph had been read yet this function avoid to reload it from file system.
