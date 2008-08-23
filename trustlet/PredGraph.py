@@ -31,7 +31,7 @@ except:
 class CalcGraph(Network):
     """Generic calculation graph class"""
     
-    def __init__(self, TM, recreate = False, predict_ratio = 1.0):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0, download=True):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
@@ -40,6 +40,7 @@ class CalcGraph(Network):
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
+        self.url = '' #unknown url... :( set this
 
         self.start_time = time.time()
         
@@ -56,9 +57,13 @@ class CalcGraph(Network):
             if not os.path.exists(self.path):
                 mkpath(self.path)
             
-                        
+            if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
+                pass #self.download_file(self.url,self.os.path.split(self.filepath)[1])
+
             if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
+                
                 self._read_dot(self.filepath)
+                
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
@@ -70,9 +75,7 @@ class CalcGraph(Network):
         if hasattr(self.TM, 'rescale') and self.TM.rescale:
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
-
-
-            
+    
 
     def get_name(self):
         """Override get_name."""
@@ -635,7 +638,7 @@ class PredGraph(CalcGraph):
 #Wiki Prediction Graph
 
 class CalcWikiGraph(CalcGraph):
-    def __init__(self, TM, recreate = False, predict_ratio = 1.0):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0,download=True):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction.
@@ -646,6 +649,7 @@ class CalcWikiGraph(CalcGraph):
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
+        self.url = '' #set this
 
         self.start_time = time.time()
         
@@ -661,6 +665,10 @@ class CalcWikiGraph(CalcGraph):
             if not os.path.exists(self.path):
                 mkpath(self.path)
             
+            if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
+                pass #self.download_file(self.url,self.os.path.split(self.filepath)[1])
+                     #if os.path.exists( self.filepath+'.bz2' ):
+                     #   os.system( 'bzip2 -d '+self.filepath+'.bz2' )
                         
             if not recreate and os.path.exists(self.filepath):
                 graph = self._readCache(self.filepath)
@@ -716,9 +724,8 @@ class CalcWikiGraph(CalcGraph):
             print "I cannot be able to read filepath!"
             print "function load, takes this two keys:"
             print "lang:",lang,"date:",date
-
-            return None
-
+                
+                
         return None
 
     def _writeCache(self,pred_graph):
@@ -738,14 +745,14 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
     Create a prediction graph for the Wikipedia Network.
     The methods are the same of the PredGraph class.
     """
-    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
+    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0, download = True):
         
         try:
             TM.dataset
         except AttributeError:
             print 'Are you sure that TM is a TM?'
         
-        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
+        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio, download=download)
 
         self.leave_one_out = leave_one_out
         

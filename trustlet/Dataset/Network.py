@@ -163,8 +163,15 @@ class Network(XDiGraph):
             f.close()
             asock.close()
         except urllib2.HTTPError, e:
-            print e.code
-            print "Cannot download dataset"
+            try:
+                asock = urllib2.urlopen(url+'.bz2')
+                f = open(filepath+'.bz2', 'w')
+                f.write(asock.read())
+                f.close()
+                asock.close()
+            except urllib2.HTTPError, e:
+                print e.code
+                print "Cannot download dataset"
 
 
     def _read_dot(self, filepath,force=False):
