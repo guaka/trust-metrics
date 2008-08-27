@@ -67,6 +67,7 @@ class CalcGraph(Network):
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
+                # self.upload(graph)
             
             
                 
@@ -675,6 +676,7 @@ class CalcWikiGraph(CalcGraph):
             else:
                 graph = self._generate()
                 self._writeCache(graph)
+                # self.upload(graph)
             
             
                 
