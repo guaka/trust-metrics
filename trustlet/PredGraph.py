@@ -40,34 +40,38 @@ class CalcGraph(Network):
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
-        self.url = '' #unknown url... :( set this
-
-        self.start_time = time.time()
+        
         
         if hasattr(dataset, "filepath"):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
-
             
-            self.filepath = os.path.join(self.path, 
-                                         get_name(self) + '.dot')
-    
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
                 mkpath(self.path)
             
-            if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
-                pass #self.download_file(self.url,self.os.path.split(self.filepath)[1])
+            self.filepath = os.path.join(self.path, 
+                                         get_name(self) + '.dot')
+    
 
-            if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
+        relpath = self.relative_path( self.path, 'datasets' )
+        
+        self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
+        self.filename = os.path.split(self.filepath)[1]
+
+        self.start_time = time.time()
+            
+        if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
+            self.download_file( os.path.join(self.url,self.filename) , self.filename )
+
+        if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
+            self._read_dot(self.filepath)
                 
-                self._read_dot(self.filepath)
-                
-            else:
-                graph = self._generate()
-                self._write_pred_graph_dot(graph)
-                # self.upload(graph)
+        else:
+            graph = self._generate()
+            self._write_pred_graph_dot(graph)
+            self.upload(graph)
             
             
                 
@@ -77,7 +81,31 @@ class CalcGraph(Network):
             self._rescale()
         print "Init took", hms(time.time() - self.start_time)
     
+    def relative_path(self, path, folder ):
+        """
+        return the path relative to a passed folder folder
+        """
+        toadd = ''; relpathlist = [] ; relpath = ''
 
+        while( os.path.split( path )[1] != folder ):
+            path,toadd = os.path.split( path )
+            relpathlist.append( toadd )
+
+        relpathlist.reverse()
+
+        for i in relpathlist:
+            relpath = os.path.join( relpath, i )
+
+        return relpath
+
+
+    def upload(self, graph):
+        """
+        upload to svn the dataset passed.
+        """
+        #must implement it before server-side 
+        pass
+        
     def get_name(self):
         """Override get_name."""
         name = self.__class__.__name__
@@ -194,6 +222,7 @@ class PredGraph(CalcGraph):
             print 'Are you sure that TM is a TM?'
         self.leave_one_out = leave_one_out
 
+        #attribute tipically of WikiNetwork... I can do it better
         if hasattr( TM.dataset, "lang" ) and hasattr( TM.dataset, "bots" ):
             print "I cannot be able to create this prediction network!"
             print "I suppose that this is a Wikipedia Network.."
@@ -202,16 +231,10 @@ class PredGraph(CalcGraph):
             
             return None
 
-        try:
-            CalcGraph.__init__(self, TM,
-                               recreate = recreate,
-                               predict_ratio = predict_ratio)
-        except:
-            print "I cannot be able to create this prediction network!"
-            print "Is this an Advogato/Kaitiaki/SqueakFoundation network?"
-            print "If it is a Wikipedia Network you must use the WikiPredGraph class"
-            print "instead of PredGraph."
-            
+        CalcGraph.__init__(self, TM,
+                           recreate = recreate,
+                           predict_ratio = predict_ratio)
+        
             
     def _generate(self):
         """Generate the prediction graph."""
