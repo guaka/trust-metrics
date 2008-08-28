@@ -412,7 +412,7 @@ class WikiNetwork(WeightedNetwork):
 
         relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
 
-        if download and ( not os.path.exists(self.filepath+'c2') and not os.path.exists(self.filepath+'.c2.bz2')):
+        if download and ( not os.path.exists(self.filepath+'.c2') and not os.path.exists(self.filepath+'.c2.bz2')):
             self.download_file(os.path.join(self.url,relpath+'.c2'),self.filepath+'.c2')
             if os.path.exists( self.filepath+'.c2.bz2' ):
                 os.system( 'bzip2 -d '+self.filepath+'.c2.bz2' )
