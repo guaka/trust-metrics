@@ -41,6 +41,7 @@ class CalcGraph(Network):
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
         
+        self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
@@ -55,49 +56,31 @@ class CalcGraph(Network):
                                          get_name(self) + '.dot')
     
 
-        relpath = self.relative_path( self.path, 'datasets' )
+            relpath = relative_path( self.path, 'datasets' )
         
-        self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
-        self.filename = os.path.split(self.filepath)[1]
+            self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
+            self.filename = os.path.split(self.filepath)[1]
 
-        self.start_time = time.time()
-            
-        if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
-            self.download_file( os.path.join(self.url,self.filename) , self.filename )
+            if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
+                self.download_file( os.path.join(self.url,self.filename) , self.filename )
 
-        if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
-            self._read_dot(self.filepath)
+            if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
+                self._read_dot(self.filepath)
                 
-        else:
-            graph = self._generate()
-            self._write_pred_graph_dot(graph)
-            self.upload(graph)
+            else:
+                graph = self._generate()
+                self._write_pred_graph_dot(graph)
+                self.upload(graph)
             
             
                 
-        self._set_arrays()
-        self._prepare()
-        if hasattr(self.TM, 'rescale') and self.TM.rescale:
-            self._rescale()
+            self._set_arrays()
+            self._prepare()
+            if hasattr(self.TM, 'rescale') and self.TM.rescale:
+                self._rescale()
+        
         print "Init took", hms(time.time() - self.start_time)
     
-    def relative_path(self, path, folder ):
-        """
-        return the path relative to a passed folder folder
-        """
-        toadd = ''; relpathlist = [] ; relpath = ''
-
-        while( os.path.split( path )[1] != folder ):
-            path,toadd = os.path.split( path )
-            relpathlist.append( toadd )
-
-        relpathlist.reverse()
-
-        for i in relpathlist:
-            relpath = os.path.join( relpath, i )
-
-        return relpath
-
 
     def upload(self, graph):
         """
@@ -673,40 +656,43 @@ class CalcWikiGraph(CalcGraph):
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
-        self.url = '' #set this
-
+        self.url = 'http://www.trustlet.org/datasets/svn/'
+        
         self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
 
-            
-            self.__set_filepath() 
-
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
                 mkpath(self.path)
             
+            self.__set_filepath() 
+                
+            relpath = self.relative_path( self.path, 'datasets' )
+        
+            self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
+            self.filename = os.path.split(self.filepath)[1]
+            
             if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
-                pass #self.download_file(self.url,self.os.path.split(self.filepath)[1])
-                     #if os.path.exists( self.filepath+'.bz2' ):
-                     #   os.system( 'bzip2 -d '+self.filepath+'.bz2' )
+                self.download_file(os.path.join(self.url,self.filename),self.filepath)
+                if os.path.exists( self.filepath+'.bz2' ):
+                    os.system( 'bzip2 -d '+self.filepath+'.bz2' )
                         
             if not recreate and os.path.exists(self.filepath):
                 graph = self._readCache(self.filepath)
             else:
                 graph = self._generate()
                 self._writeCache(graph)
-                # self.upload(graph)
-            
-            
+                self.upload(graph)
                 
-        self._set_arrays()
-        self._prepare()
-        if hasattr(self.TM, 'rescale') and self.TM.rescale:
-            self._rescale()
+            self._set_arrays()
+            self._prepare()
+            if hasattr(self.TM, 'rescale') and self.TM.rescale:
+                self._rescale()
+
         print "Init took", hms(time.time() - self.start_time)
 
             
@@ -719,9 +705,6 @@ class CalcWikiGraph(CalcGraph):
         else:
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + 'History')
-
-        if not self.dataset.bots:
-            self.filepath += "-nobots"
 
         self.filepath += ".c2"
 

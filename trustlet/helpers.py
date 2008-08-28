@@ -1109,6 +1109,25 @@ def cached_read_dot(filepath,force=False):
 
     return cache[filepath]
 
+def relative_path( path, folder ):
+    """
+    return a path created starting by 'path' parameter 
+    but relative to the passed folder
+    """
+    toadd = ''; relpathlist = [] ; relpath = ''
+
+    while( os.path.split( path )[1] != folder ):
+        path,toadd = os.path.split( path )
+        relpathlist.append( toadd )
+
+    relpathlist.reverse()
+        
+    for i in relpathlist:
+        relpath = os.path.join( relpath, i )
+        
+    return relpath
+
+
 if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
