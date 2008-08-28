@@ -1,4 +1,0 @@
-function=eval
-date=2006-12-01
-filter edges=no_observer
-data: ('2006-12-01', 0.78986171473727784)
