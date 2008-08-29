@@ -173,6 +173,16 @@ class Network(XDiGraph):
                 print e.code
                 print "Cannot download dataset"
 
+    def download_dataset(self, url, filepath ):
+        """
+        download a dataset from a url to a filepath, if it not exist
+        """
+        
+        filename = os.path.split( filepath )[1] 
+
+        if not os.path.exists(filepath) and not os.path.exists(filepath+'.bz2'):
+            self.download_file( os.path.join(url,filename) , filename )
+
 
     def _read_dot(self, filepath,force=False):
         """Read file."""
@@ -411,9 +421,11 @@ class WikiNetwork(WeightedNetwork):
         self.filepath = os.path.join( self.path, filename )
 
         relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+        #                                  the first value is the name of the file
+        self.url = os.path.join( self.url, os.path.split(relpath)[0] )
 
-        if download and ( not os.path.exists(self.filepath+'.c2') and not os.path.exists(self.filepath+'.c2.bz2')):
-            self.download_file(os.path.join(self.url,relpath+'.c2'),self.filepath+'.c2')
+        if download:
+            self.download_dataset( self.url , self.filepath+'.c2')
             if os.path.exists( self.filepath+'.c2.bz2' ):
                 os.system( 'bzip2 -d '+self.filepath+'.c2.bz2' )
             
@@ -460,8 +472,8 @@ class WikiNetwork(WeightedNetwork):
             self.filepath += '.dot'; self.filename = filename + '.dot'
 
             try:
-                if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
-                    self.download_file(os.path.join(self.url,self.filename),self.filepath)
+                if download:
+                    self.download_dataset(os.path.join(self.url,self.filename),self.filepath)
                     if os.path.exists( self.filepath+'.bz2' ):
                         os.system( 'bzip2 -d '+self.filepath+'.bz2' )
         

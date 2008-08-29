@@ -61,8 +61,8 @@ class CalcGraph(Network):
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
 
-            if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
-                self.download_file( os.path.join(self.url,self.filename) , self.filename )
+            if download:
+                self.download_dataset( self.url , self.filepath )
 
             if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
                 self._read_dot(self.filepath)
@@ -411,6 +411,7 @@ class PredGraph(CalcGraph):
                                maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
                                indegree=10, round_weight=True,
+                               download = True
                                ):
         """
         This function save a graph with
@@ -433,6 +434,7 @@ class PredGraph(CalcGraph):
            'rmse': return a list with (controversiality,rmse) error
            'coverage':return a list with (controversiality,coverage) error
            'percentage_wrong': return a list with foreach step the (controversiality,percentage of wrong predict)
+           download: let me download the cache file used to avoid the longer calculation of the result if possible
            the length of the list depends by the step
         """
         
@@ -471,9 +473,18 @@ class PredGraph(CalcGraph):
                             os.path.join(self.path,'cache')
                             )
                 if abs == None:
-                    abs = load( diz,
-                            os.path.join(self.path,'predgraphcontrov.c2')
-                            )
+                    if type( cachename ) is list:
+                        for i in cachename:
+                            abs = load( diz,
+                                    os.path.join(self.path, i )
+                                    )
+                            if abs != None:
+                                break
+
+                    else:
+                        abs = load( diz,
+                                    os.path.join(self.path, cachename )
+                                    )
 
             #if the result is cached
             if abs != None:
@@ -531,7 +542,32 @@ class PredGraph(CalcGraph):
             
             return (max, float(sum)/cnt, rmse, pw, cov, cnt)
         
+        predgraphcontrov_path = os.path.join( self.path, 'predgraphcontrov.c2' )
+        cache_path = os.path.join( self.path, 'cache.c2' )
+        cachename = 'predgraphcontrov.c2'
+
+        if download and not ( os.path.exists( predgraphcontrov_path ) or os.path.exists( cache_path ) ):
+            
+            if not os.path.exists( predgraphcontrov_path ):
+                print "Trying to download predgraphcontrov.c2 from www.trustlet.org..."
+                print "" #carriage return ;-)
+                
+                self.download_dataset( self.url,  predgraphcontrov_path )
+                cachename = 'predgraphcontrov.c2'
+                
+            if not os.path.exists( predgraphcontrov_path ):
+                print "Trying to download cache.c2 from www.trustlet.org..."
+                print "" #carriage return ;-)
+                
+                self.download_dataset( self.url, cache_path )
+                cachename = 'cache.c2'
+                
+        if os.path.exists( predgraphcontrov_path ) or os.path.exists( cache_path ):
+            cachename = ['cache.c2','predgraphcontrov.c2']
+
         ls = splittask( eval, [max for max in r] )
+
+        #upload predgraphcontrov.c2... TODO!
 
         if toe == None:
             return ls
@@ -671,13 +707,13 @@ class CalcWikiGraph(CalcGraph):
             
             self.__set_filepath() 
                 
-            relpath = self.relative_path( self.path, 'datasets' )
+            relpath = relative_path( self.path, 'datasets' )
         
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
             
-            if download and ( not os.path.exists(self.filepath) and not os.path.exists(self.filepath+'.bz2')):
-                self.download_file(os.path.join(self.url,self.filename),self.filepath)
+            if download:
+                self.download_dataset(self.url,self.filepath)
                 if os.path.exists( self.filepath+'.bz2' ):
                     os.system( 'bzip2 -d '+self.filepath+'.bz2' )
                         
@@ -759,6 +795,22 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
             TM.dataset
         except AttributeError:
             print 'Are you sure that TM is a TM?'
+
+        
+        if hasattr( TM.dataset, "url" ):
+            if TM.dataset.url.find( 'advogato' ) != -1:
+                print "I cannot be able to create this prediction network!"
+                print "I suppose that this is a Advogato Network.."
+                print "In order to create a Advogato prediction graph,"
+                print "you must use the PredGraph class"
+                return
+        else:
+            print "I cannot be able to create this prediction network!"
+            print "I don't know what kind of Network is this...."
+            print "I think that you have passed to me a wrong object"
+            return
+        
+
         
         CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio, download=download)
 
