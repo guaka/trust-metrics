@@ -83,6 +83,9 @@ if False:
 print "IMPORTANT: remember to create a simbolic link to 
 trustlet/datasets folder in 
 your home directory!"
+print "If you would partecipate in development of trustlet, and you"
+print "wouldn't edit file in your installation dir, you can use 
+links.py in scripts/ folder"
 # It's not very clear how to deal with package dependencies in setup.py
 
 #import pkg_resources
