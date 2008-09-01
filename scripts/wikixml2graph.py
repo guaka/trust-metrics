@@ -309,7 +309,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             if not authors:
                 nodes.append(user)
             for a,num_edit in authors.iteritems():
-                edges.append( (user,a,{'value':num_edit}) )
+                edges.append( (user,a,num_edit) )
                 
         return (nodes,edges)
 
