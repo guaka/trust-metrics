@@ -80,7 +80,9 @@ if False:
     os.system( 'cd trustlet && make install && cd ..' )
     os.system( 'cd scripts && make install && cd ..' )
 
-print "IMPORTANT: remember to copy trustlet/datasets folder in your home directory!"
+print "IMPORTANT: remember to create a simbolic link to 
+trustlet/datasets folder in 
+your home directory!"
 # It's not very clear how to deal with package dependencies in setup.py
 
 #import pkg_resources

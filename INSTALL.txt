@@ -9,10 +9,11 @@ Try:
 * NetworkX >=0.35.1
 * scipy
 * graphviz
-* pygraphviz
+* pygraphviz (need [graphviz-dev|graphviz-devel] )
 * pyparsing
 * python-gnuplot (not required from r716)
 * python-bz2 (might included in Python)
+* pynetconv (included in svn repo, or in relase >= 0.1 )
 
 === scipy ===
 
