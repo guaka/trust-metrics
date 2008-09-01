@@ -513,9 +513,11 @@ class WikiNetwork(WeightedNetwork):
         else:
             ws = []
             for n in self.edges_iter():
-                print n[2]
-                x = self.__map( float(n[2]['value']) )
-                ws.append( x )
+                try:
+                    x = self.__map( float(n[2]['value']) )
+                    ws.append( x )
+                except:
+                    raise "This edge value is malformed:", n[2]['value'], "\nI cannot be able to read this value"
             
             self._weights = ws
         
