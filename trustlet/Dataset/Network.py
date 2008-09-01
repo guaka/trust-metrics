@@ -508,6 +508,7 @@ class WikiNetwork(WeightedNetwork):
         """
         Return a list with the weights of all edges
         """
+
         if hasattr(self, "_weights") and self._weights:
             ws = self._weights
         else:
