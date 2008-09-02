@@ -300,7 +300,30 @@ class WeightedNetwork(Network):
             self._weights = ws
         
         return ws
+    
+    def weights_dictionary(self):
+        """
+        Return a dictionary with the weights of all edges
+        """
+        if hasattr(self, "_weights_dictionary") and self._weights_dictionary:
+            ws = self._weights_dictionary
+        else:
+            ws = {}
+            for n in self.edges_iter():
+                x = n[2]
+                if type(x) is float or type(x) is int:
+                    ws[str(x)] = x
+                else:
+                    if hasattr( x, 'keys' ):
+                        ws[x.values()[0]] = self.level_map[ x.values()[0] ]
+                    else:
+                        ws[x[0]] = x[1]
+            
+            self._weights_dictionary = ws
         
+        return ws
+    
+    
     def info(self):
 
         Network.info(self)
@@ -342,8 +365,8 @@ class WeightedNetwork(Network):
     def show_reciprocity_matrix(self):
         if self.has_discrete_weights:
             recp_mtx = self.reciprocity_matrix()
-            tbl = Table([12] + [12] * len(self.weights()))
-            tbl.printHdr(['reciprocity'] + self.weights().keys())
+            tbl = Table([12] + [12] * len(self.weights_dictionary()))
+            tbl.printHdr(['reciprocity'] + self.weights_dictionary().keys())
             tbl.printSep()
             for k, v in recp_mtx.items():
                 tbl.printRow([k] + v)
@@ -358,9 +381,9 @@ class WeightedNetwork(Network):
         
         if self.has_discrete_weights:
             table = {}
-            for v in self.weights().keys():
+            for v in self.weights_dictionary().keys():
                 line = []
-                for w in self.weights().keys():
+                for w in self.weights_dictionary().keys():
                     line.append(sum([value_on_edge(self.get_edge(e[1], e[0])) == w
                                      for e in self.edges_iter()
                                      if (self.has_edge(e[1], e[0]) and 
@@ -524,7 +547,7 @@ class WikiNetwork(WeightedNetwork):
             self._weights = ws
         
         return ws
-       
+    
 
     def __map(self, value):
         """
