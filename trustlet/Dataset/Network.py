@@ -518,8 +518,8 @@ class WikiNetwork(WeightedNetwork):
                     x = self.__map( float(n[2]['value']) )
                     ws.append( x )
                 except:
-                    raise "This edge value is malformed:", n[2]['value'], "\nI cannot be able to read this value"
-            
+                    raise "Cannot read dataset. The edges was malformed.\nThis is a malformed edge:", n
+                                
             self._weights = ws
         
         return ws
