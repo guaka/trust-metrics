@@ -302,6 +302,7 @@ class WeightedNetwork(Network):
         return ws
         
     def info(self):
+
         Network.info(self)
 
     def min_weight(self):
