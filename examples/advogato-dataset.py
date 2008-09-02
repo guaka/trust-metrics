@@ -14,11 +14,11 @@ K = KaitiakiNetwork(download = True)
 K.info() # show information
 
 # create SqueakFoundation dataset
-S = SqueakFoundationNetwork()
+S = SqueakFoundationNetwork(download=True)
 S.info()
 
 # create Advogato dataset
-A = AdvogatoNetwork()
+A = AdvogatoNetwork(download=True)
 A.info() 
 
 # create Advogato dataset as it was on a certain date.
