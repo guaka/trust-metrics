@@ -203,10 +203,10 @@ class AdvogatoLocal(TrustMetric):
             self.noneToValue = type(defaultPredict) is float and defaultPredict or dataset.level_map[defaultPredict]
         else:
             self.noneToValue = False
+            
         self.defaultPredict = str(self.noneToValue)
-        if type(defaultPredict) is str:
-            self.defaultPredict = defaultPredict
-        else:
+        
+        if type(defaultPredict) is not str:
             for level in levels:
                 if level[1]==defaultPredict:
                     self.defaultPredict = level[0]

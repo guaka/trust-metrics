@@ -171,7 +171,7 @@ class Network(XDiGraph):
                 asock.close()
             except urllib2.HTTPError, e:
                 print e.code
-                print "Cannot download dataset, for a complete list of it, go to www.trustlet.org/datasets/svn"
+                print "Cannot download dataset, for a complete list of it, go to ", url
 
     def download_dataset(self, url, filepath ):
         """
@@ -495,6 +495,10 @@ class WikiNetwork(WeightedNetwork):
                     self.add_edge(u,v,{'value':e})
                     
         else:
+            if os.path.exists( self.filepath+'.c2' ):
+                print "Warning! the c2 file does not contain the dataset.."
+                print "the key used were: ", cachedict
+
             self.filepath += '.dot'; self.filename = filename + '.dot'
 
             try:

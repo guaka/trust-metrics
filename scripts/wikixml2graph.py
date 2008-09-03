@@ -44,6 +44,7 @@ i18n = {
     'en': ('User talk','User','Bot'),
     'simple':('User talk','User','Bot'),
     'la': ('Disputatio Usoris','Usor','automaton'),
+    'de': ('Benutzer Diskussion', 'Benutzer', 'Bot')
 }
 
 def main():
