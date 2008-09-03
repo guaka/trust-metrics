@@ -7,7 +7,7 @@ from trustlet import *
 #create datasets
 dummy = DummyNetwork()
 
-G = KaitiakiNetwork(date="2008-06-11")
+G = KaitiakiNetwork(date="2008-09-01",download=True)
 
 #REMOVE: create trust metrics
 # EbayTM = EbayTM()
