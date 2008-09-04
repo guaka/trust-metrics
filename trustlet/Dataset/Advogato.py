@@ -101,10 +101,10 @@ http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
         #if not weights:
             # until 2006-05-20 there were colors on the edges
             
-            #if date <= "2006-05-20":
-            #    weights = _color_map
-            #else:
-            #    weights = _obs_app_jour_mas_map
+        if date <= "2006-05-20":
+            weights = _color_map
+        #else:
+           #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
         WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
