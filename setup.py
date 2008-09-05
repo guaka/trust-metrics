@@ -80,6 +80,22 @@ if False:
     os.system( 'cd trustlet && make install && cd ..' )
     os.system( 'cd scripts && make install && cd ..' )
 
+print "Now we try to checkout all the datasets from www.trustlet.org This operation maybe longer."
+print "If you have always the internet connection enabled, when the datasets were used"
+print "they can be automatically downloaded from www.trustlet.org, and then you don't need"
+print "to check out all of them now. But if you think to work on a isolate pc"
+print "without an internet connection, is better to download all now."
+print "RECCOMENDED: don't download now"
+print "QUESTION: Do you want to download all the datasets now? [N,y]"
+c = raw_input()[0]
+if c == 'y':
+    print "Wait this operation maybe longer..."
+    print "Important: Do not stop this"
+    os.system( 'svn co -q --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
+else:
+    print "Wait a moment please.. "
+    os.system( 'svn co -q --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 0' )
+
 print "IMPORTANT: remember to create a simbolic link to 
 trustlet/datasets folder in 
 your home directory!"

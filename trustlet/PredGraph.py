@@ -91,10 +91,21 @@ class CalcGraph(Network):
         #go in the dataset path.. important because else the svn command don't work
         os.system( 'cd '+os.realpath(self.datasetPath)+' &> /dev/null' )
         relpath = self.relpath
+        toAddList = []
 
         #find the base point to add
         while( os.system( 'svn add '+relpath+' &> /dev/null' ) != 0 ):
-            relpath = os.path.split( relpath )[0]
+            relpath,toadd = os.path.split( relpath )[0]
+            toAddList.append( toadd )
+
+        toAddList.reverse()
+
+        for i in toAddList:
+            os.path.join( relpath, i )
+            if os.system( 'svn add '+relpath+' &> /dev/null' ) != 0:
+                print "Warning! Cannot add",relpath, "to svn"
+                
+        os.system( 'svn --username anybody --password a commit' )
 
         return
         
