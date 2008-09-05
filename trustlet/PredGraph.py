@@ -31,7 +31,7 @@ except:
 class CalcGraph(Network):
     """Generic calculation graph class"""
     
-    def __init__(self, TM, recreate = False, predict_ratio = 1.0, download=True):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0, download=True,upload=True):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
@@ -56,9 +56,9 @@ class CalcGraph(Network):
                                          get_name(self) + '.dot')
     
 
-            self.datasetPath,relpath = relative_path( self.path, 'datasets' )
+            self.PGPath,relpath = relative_path( self.path, 'datasets' )
 
-            self.datasetPath = os.path.join( self.datasetPath, 'datasets' )
+            self.PGPath = os.path.join( self.PGPath, 'datasets' )
 
             self.relpath = relpath #path relative to svn directory
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
@@ -73,7 +73,8 @@ class CalcGraph(Network):
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
-                self._upload(graph)
+                if upload:
+                    self._upload(graph)
                         
                 
             self._set_arrays()
@@ -88,8 +89,14 @@ class CalcGraph(Network):
         """
         upload to svn the dataset passed.
         """
+        print "Wait, we try to upload this dataset.. The operation may take a while"
+
         #go in the dataset path.. important because else the svn command don't work
-        os.system( 'cd '+os.realpath(self.datasetPath)+' &> /dev/null' )
+        if os.system( 'cd '+os.realpath(self.PGPath)+' &> /dev/null' ) != 0:
+            print "This path",os.realpath(self.PGPath), "does not exists"
+            print "Upload Aborted"
+            return
+
         relpath = self.relpath
         toAddList = []
 
@@ -703,7 +710,7 @@ class PredGraph(CalcGraph):
 #Wiki Prediction Graph
 
 class CalcWikiGraph(CalcGraph):
-    def __init__(self, TM, recreate = False, predict_ratio = 1.0,download=True):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0,download=True,upload=True):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction.
@@ -729,8 +736,10 @@ class CalcWikiGraph(CalcGraph):
             
             self.__set_filepath() 
                 
-            relpath = relative_path( self.path, 'datasets' )
+            self.PGPath,relpath = relative_path( self.path, 'datasets' )
             self.relpath = relpath
+            self.PGPath = os.path.join( self.PGPath, 'datasets' )
+
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
             
@@ -744,7 +753,8 @@ class CalcWikiGraph(CalcGraph):
             else:
                 graph = self._generate()
                 self._writeCache(graph)
-                self._upload(graph)
+                if upload:
+                    self._upload(graph)
                 
             self._set_arrays()
             self._prepare()
@@ -811,7 +821,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
     Create a prediction graph for the Wikipedia Network.
     The methods are the same of the PredGraph class.
     """
-    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0, download = True):
+    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0, download = True, upload = True):
         
         try:
             TM.dataset
@@ -834,7 +844,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
         
 
         
-        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio, download=download)
+        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio, download=download, upload=upload)
 
         self.leave_one_out = leave_one_out
         

@@ -87,21 +87,20 @@ print "to check out all of them now. But if you think to work on a isolate pc"
 print "without an internet connection, is better to download all now."
 print "RECCOMENDED: don't download now"
 print "QUESTION: Do you want to download all the datasets now? [N,y]"
-c = raw_input()[0]
-if c == 'y':
-    print "Wait this operation maybe longer..."
+c = raw_input()
+if 'y' in c:
+    print "Wait this operation maybe longer... Try to download datasets"
     print "Important: Do not stop this"
     os.system( 'svn co -q --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
 else:
-    print "Wait a moment please.. "
+    print "Wait a moment please.. Try to download datasets.."
     os.system( 'svn co -q --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 0' )
 
-print "IMPORTANT: remember to create a simbolic link to 
-trustlet/datasets folder in 
-your home directory!"
+os.chmod( 'trustlet/datasets', 777 )
+
+print "IMPORTANT: remember to create a simbolic link to trustlet/datasets folder in your home directory!"
 print "If you would partecipate in development of trustlet, and you"
-print "wouldn't edit file in your installation dir, you can use 
-links.py in scripts/ folder"
+print "wouldn't edit file in your installation dir, you can use links.py in scripts/ folder"
 # It's not very clear how to deal with package dependencies in setup.py
 
 #import pkg_resources
