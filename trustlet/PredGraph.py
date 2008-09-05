@@ -56,8 +56,11 @@ class CalcGraph(Network):
                                          get_name(self) + '.dot')
     
 
-            relpath = relative_path( self.path, 'datasets' )
-        
+            self.datasetPath,relpath = relative_path( self.path, 'datasets' )
+
+            self.datasetPath = os.path.join( self.datasetPath, 'datasets' )
+
+            self.relpath = relpath #path relative to svn directory
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
 
@@ -70,9 +73,8 @@ class CalcGraph(Network):
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
-                self.upload(graph)
-            
-            
+                self._upload(graph)
+                        
                 
             self._set_arrays()
             self._prepare()
@@ -82,12 +84,21 @@ class CalcGraph(Network):
         print "Init took", hms(time.time() - self.start_time)
     
 
-    def upload(self, graph):
+    def _upload(self, graph):
         """
         upload to svn the dataset passed.
         """
-        #must implement it before server-side 
-        pass
+        #go in the dataset path.. important because else the svn command don't work
+        os.system( 'cd '+os.realpath(self.datasetPath)+' &> /dev/null' )
+        relpath = self.relpath
+
+        #find the base point to add
+        while( os.system( 'svn add '+relpath+' &> /dev/null' ) != 0 ):
+            relpath = os.path.split( relpath )[0]
+
+        return
+        
+
         
     def get_name(self):
         """Override get_name."""
@@ -708,7 +719,7 @@ class CalcWikiGraph(CalcGraph):
             self.__set_filepath() 
                 
             relpath = relative_path( self.path, 'datasets' )
-        
+            self.relpath = relpath
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
             
@@ -722,7 +733,7 @@ class CalcWikiGraph(CalcGraph):
             else:
                 graph = self._generate()
                 self._writeCache(graph)
-                self.upload(graph)
+                self._upload(graph)
                 
             self._set_arrays()
             self._prepare()

@@ -1111,8 +1111,11 @@ def cached_read_dot(filepath,force=False):
 
 def relative_path( path, folder ):
     """
-    return a path created starting by 'path' parameter 
-    but relative to the passed folder
+    split a path relatively to the passed folder
+    es.
+    
+    In: relative_path( '/home/ciropom/Scrivania' , 'ciropom' )
+    Out: ('/home','Scrivania/')
     """
     toadd = ''; relpathlist = [] ; relpath = ''
 
@@ -1125,7 +1128,7 @@ def relative_path( path, folder ):
     for i in relpathlist:
         relpath = os.path.join( relpath, i )
         
-    return relpath
+    return (path,relpath)
 
 
 if __name__=="__main__":
