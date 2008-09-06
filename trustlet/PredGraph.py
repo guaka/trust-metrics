@@ -89,7 +89,7 @@ class CalcGraph(Network):
         """
         upload to svn the dataset passed.
         """
-        print "Wait, we try to upload this dataset.. The operation may take a while"
+        print "Try to upload the dataset.. this operation may take a while."
 
         #go in the dataset path.. important because else the svn command don't work
         if os.system( 'cd '+os.realpath(self.PGPath)+' &> /dev/null' ) != 0:
