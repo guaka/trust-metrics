@@ -962,6 +962,7 @@ def save(key,data,path='.',human=False,version=3):
         mkpath(os.path.split(path)[0])
         lock()
         try:
+            # I can't use cachedcache because data might be obsolete.
             d = pickle.load(GzipFile(path))
         except:
             d = {}
@@ -984,6 +985,8 @@ def save(key,data,path='.',human=False,version=3):
         cache[path] = d
     else:
         #version 1
+        print "WARNING: don't use this cache version!"
+        print "Add .c2 in path"
         mkpath(path)
         try:
             if human:
