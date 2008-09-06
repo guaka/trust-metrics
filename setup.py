@@ -91,10 +91,10 @@ c = raw_input()
 if 'y' in c:
     print "Wait this operation maybe longer... Try to download datasets"
     print "Important: Do not stop this"
-    os.system( 'svn co -q --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
+    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
 else:
     print "Wait a moment please.. Try to download datasets.."
-    os.system( 'svn co -q --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 0' )
+    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 0' )
 
 os.chmod( 'trustlet/datasets', 777 )
 
