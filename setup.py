@@ -94,7 +94,7 @@ if 'y' in c:
     os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
 else:
     print "Wait a moment please.. Try to download datasets.."
-    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 19' ) #19 is an empty revision
+    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 24' ) #19 and 2 is an empty revision
 
 os.chdir( './trustlet' )
 os.system( 'chmod -Rf 777 ./datasets' )

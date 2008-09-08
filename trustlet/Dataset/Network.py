@@ -427,7 +427,7 @@ class WikiNetwork(WeightedNetwork):
         
         assert trustlet.helpers.isdate(date)
 
-        self.url = 'http://www.trustlet.org/datasets/svn/'
+        self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang; self.date = date; self.current = current; self.upthreshold = upthreshold; self.bots = bots; self.botset = None
 
         if current:

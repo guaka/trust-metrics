@@ -59,7 +59,7 @@ class CalcGraph(Network):
             self.PGPath,relpath = relative_path( self.path, 'datasets' )
             
             self.relpath = relpath #path relative to svn directory
-            self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
+            self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
 
             if download:
@@ -718,7 +718,6 @@ class CalcWikiGraph(CalcGraph):
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
-        self.url = 'http://www.trustlet.org/datasets/svn/'
         
         self.start_time = time.time()
         
@@ -735,7 +734,7 @@ class CalcWikiGraph(CalcGraph):
                 
             self.PGPath,self.relpath = relative_path( self.path, 'datasets' )
 
-            self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', self.relpath ) 
+            self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', self.relpath ) 
             self.filename = os.path.split(self.filepath)[1]
             
             if download:
