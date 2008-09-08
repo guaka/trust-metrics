@@ -26,6 +26,7 @@ def rec_delete(path):
 if __name__ == '__main__':
     
     import sys
+    from shutil import rmtree
 
     if len(sys.argv) > 1:
         path = sys.argv[1]
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     l = rec_delete(path)
     
     for x in l:
-        os.system('rm -Rf '+x)
+        rmtree( x )
 
     print ".svn folder removed!"
     

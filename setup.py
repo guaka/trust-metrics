@@ -88,19 +88,23 @@ print "without an internet connection, is better to download all now."
 print "RECCOMENDED: don't download now"
 print "QUESTION: Do you want to download all the datasets now? [N,y]"
 c = raw_input()
+
+print "Important: Do not stop this operation"
 if 'y' in c:
     print "Wait this operation maybe longer... Try to download datasets"
-    print "Important: Do not stop this"
     os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
 else:
     print "Wait a moment please.. Try to download datasets.."
-    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 24' ) #19 and 2 is an empty revision
+    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 24' ) #19 and 24 are empty revision
 
 os.chdir( './trustlet' )
 os.system( 'chmod -Rf 777 ./datasets' )
 os.chdir( '..' )
 
-print "IMPORTANT: remember to create a simbolic link to trustlet/datasets folder in your home directory!"
+print "Creating symbolic link in your home directory.."
+print ""
+os.system( 'ln -s '+os.path.realpath( 'trustlet/datasets' )+' ~/datasets' )
+#print "IMPORTANT: remember to create a simbolic link to trustlet/datasets folder in your home directory!"
 print "If you would partecipate in development of trustlet, and you"
 print "wouldn't edit file in your installation dir, you can use links.py in scripts/ folder"
 # It's not very clear how to deal with package dependencies in setup.py
