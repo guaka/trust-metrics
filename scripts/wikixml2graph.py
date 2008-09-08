@@ -27,7 +27,17 @@ class URLopener(urllib.FancyURLopener):
     version = "Mozilla/5.0 (X11; U; Linux i686; it; rv:1.9.0.1) Gecko/2008071719 Firefox/3.0.1"
 urllib._urlopener = URLopener()
 
-getpage = lambda url: urllib.urlopen(url).read()
+#getpage = lambda url: urllib.urlopen(url).read()
+def getpage(url):
+    page = urllib.urlopen(url).read()
+    #logging
+    logpath = os.path.join(os.environ['HOME'],'.wikixml2graph','log')
+    mkpath(logpath)
+    logname = os.path.split(tempnam())[1]
+    logfullpath = os.path.join(logpath,logname)
+    file(logfullpath,'w').write(page)
+    file(os.path.join(logpath,'index'),'a').write('%s: %s %s\n'%(logname,time.asctime(),url))
+    return page
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
@@ -121,8 +131,8 @@ def main():
                     os.path.join(path,outputname+'.c2'),version=3)
 
         lenusers = len(users)
-        assert save({'lang':lang,'info':'number of users'},lenusers)
-        #assert save({'lang':lang,'info':'number of bots'},len(bots))
+        assert save({'lang':lang,'info':'number of users'},lenusers,os.path.join(path,outputname+'.c2'))
+        #assert save({'lang':lang,'info':'number of bots'},len(bots),os.path.join(path,outputname+'.c2'))
         # -> not useful: there is the list of bots in .c2 file
 
         
@@ -162,6 +172,8 @@ def get_list_users(lang,cachepath=None,force=False):
     else:
         assert not cachepath.endswith('.c2')
         cachepath = os.path.join(cachepath,'listusers.c2')
+    logpath = os.path.join(os.path.split(cachepath)[0],'log')
+    mkpath(logpath)
     re_user = re.compile('title="Utente:[^"]+">([^<]+)')
     re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>(.*?)</li>')
 
@@ -194,7 +206,7 @@ def get_list_users(lang,cachepath=None,force=False):
         users += newusers
 
     # get IPBlockList
-    url = 'http://%s.wikipedia.org/wiki/Special:IPBlockList&limit=5000' % lang
+    url = 'http://%s.wikipedia.org/wiki/Special:IPBlockList?limit=5000' % lang
     re_buser = re.compile('title="Utente:[^"]+">([^<]+)')
     busers = [] #blocked users
     ll = 1
@@ -213,6 +225,7 @@ def get_list_users(lang,cachepath=None,force=False):
         if newusers:
             pageurl = url + '&' + urllib.urlencode({'offset':newusers[-1]})
             #print pageurl
+        print pageurl
         ll = len(newusers)
         count += ll
         busers += newusers
