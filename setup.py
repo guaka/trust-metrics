@@ -94,9 +94,11 @@ if 'y' in c:
     os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
 else:
     print "Wait a moment please.. Try to download datasets.."
-    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 0' )
+    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 19' ) #19 is an empty revision
 
-os.chmod( 'trustlet/datasets', 777 )
+os.chdir( './trustlet' )
+os.system( 'chmod -Rf 777 ./datasets' )
+os.chdir( '..' )
 
 print "IMPORTANT: remember to create a simbolic link to trustlet/datasets folder in your home directory!"
 print "If you would partecipate in development of trustlet, and you"

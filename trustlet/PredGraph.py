@@ -57,9 +57,7 @@ class CalcGraph(Network):
     
 
             self.PGPath,relpath = relative_path( self.path, 'datasets' )
-
-            self.PGPath = os.path.join( self.PGPath, 'datasets' )
-
+            
             self.relpath = relpath #path relative to svn directory
             self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
@@ -92,28 +90,28 @@ class CalcGraph(Network):
         print "Try to upload the dataset.. this operation may take a while."
 
         #go in the dataset path.. important because else the svn command don't work
-        if os.system( 'cd '+os.realpath(self.PGPath)+' &> /dev/null' ) != 0:
-            print "This path",os.realpath(self.PGPath), "does not exists"
+        if os.system( 'cd '+os.path.realpath(self.PGPath)+' &> /dev/null' ) != 0:
+            print "This path",os.path.realpath(self.PGPath), "does not exists"
             print "Upload Aborted"
             return
 
-        relpath = self.relpath
+        realpath = self.relpath
         toAddList = []
 
         #find the base point to add
-        while( os.system( 'svn add '+relpath+' &> /dev/null' ) != 0 ):
-            relpath,toadd = os.path.split( relpath )[0]
+        while( os.system( 'svn add '+realpath+'' ) != 0 ):
+            realpath,toadd = os.path.split( realpath )
             toAddList.append( toadd )
 
         toAddList.reverse()
 
         for i in toAddList:
-            os.path.join( relpath, i )
-            if os.system( 'svn add '+relpath+' &> /dev/null' ) != 0:
-                print "Warning! Cannot add",relpath, "to svn"
+            realpath = os.path.join( realpath, i )
+            if os.system( 'svn add '+realpath+'' ) != 0:
+                print "Warning! Cannot add",realpath, "to svn"
                 
-        os.system( 'svn --username anybody --password a commit' )
-
+        os.system( "svn --username anybody --password a commit -m 'automatic upload'" )
+        
         return
         
 
@@ -583,8 +581,7 @@ class PredGraph(CalcGraph):
                 
                 self.download_dataset( self.url,  predgraphcontrov_path )
                 cachename = 'predgraphcontrov.c2'
-                
-            if not os.path.exists( predgraphcontrov_path ):
+            else:
                 print "Trying to download cache.c2 from www.trustlet.org..."
                 print "" #carriage return ;-)
                 
@@ -736,11 +733,9 @@ class CalcWikiGraph(CalcGraph):
             
             self.__set_filepath() 
                 
-            self.PGPath,relpath = relative_path( self.path, 'datasets' )
-            self.relpath = relpath
-            self.PGPath = os.path.join( self.PGPath, 'datasets' )
+            self.PGPath,self.relpath = relative_path( self.path, 'datasets' )
 
-            self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', relpath ) 
+            self.url = os.path.join( 'http://www.trustlet.org/datasets/svn/', self.relpath ) 
             self.filename = os.path.split(self.filepath)[1]
             
             if download:
