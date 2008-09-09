@@ -121,14 +121,13 @@ def main():
 
         assert save({'network':'Wiki','lang':lang,'date':date},pynet,os.path.join(path,outputname+'.c2'))
         #write_dot(pynet,os.path.join(path,outputname+'.dot'))
-        #save_raw_graph(pynet,os.path.join(path,outputname+'.rawgraph'))
 
         users,bots,blockedusers = get_list_users(lang,
                                                  os.path.join(base_path,'datasets','WikiNetwork'))
 
         assert save({'lang':lang,'list':'bots'},bots,os.path.join(path,outputname+'.c2'),version=3)
         assert save({'lang':lang,'list':'blockedusers'},blockedusers,
-                    os.path.join(path,outputname+'.c2'),version=3)
+                    os.path.join(path,outputname+'.c2'))
 
         lenusers = len(users)
         assert save({'lang':lang,'info':'number of users'},lenusers,os.path.join(path,outputname+'.c2'))
@@ -174,8 +173,8 @@ def get_list_users(lang,cachepath=None,force=False):
         cachepath = os.path.join(cachepath,'listusers.c2')
     logpath = os.path.join(os.path.split(cachepath)[0],'log')
     mkpath(logpath)
-    re_user = re.compile('title="Utente:[^"]+">([^<]+)')
-    re_bot = re.compile('title="Utente:[^"]+">([^<]+)</a>(.*?)</li>')
+    re_user = re.compile('title="%s:[^"]+">([^<]+)'%i18n[lang][1])
+    re_bot = re.compile('title="%s:[^"]+">([^<]+)</a>(.*?)</li>'%i18n[lang][1])
 
     # title="Utente:!! Roberto Valentino !! (pagina inesistente)">!! Roberto Valentino !!</a></li>
 
@@ -207,7 +206,7 @@ def get_list_users(lang,cachepath=None,force=False):
 
     # get IPBlockList
     url = 'http://%s.wikipedia.org/wiki/Special:IPBlockList?limit=5000' % lang
-    re_buser = re.compile('title="Utente:[^"]+">([^<]+)')
+    re_buser = re.compile('title="%s:[^"]+">([^<]+)'%i18n[lang][1])
     busers = [] #blocked users
     ll = 1
     pageurl = url
@@ -220,7 +219,7 @@ def get_list_users(lang,cachepath=None,force=False):
 
         if not page or force or time.time()-t>2*WEEKS or not re.findall(re_buser,page):
             page = getpage(pageurl)
-            save({'url':pageurl},(time.time(),page),cachepath,version=3)
+            save({'url':pageurl},(time.time(),page),cachepath)
         newusers = re.findall(re_buser,page)
         if newusers:
             pageurl = url + '&' + urllib.urlencode({'offset':newusers[-1]})
@@ -535,43 +534,6 @@ def getCharPosition( rawWikiText, search, start ):
 
         end.sort()
         return end[0]
-
-
-def save_raw_graph(pynetwork,path):
-    '''save graph in a text file'''
-
-    writelines = lambda f,lines: f.writelines([x+'\n' for x in lines])
-
-    #version 0
-    nodes,edges = pynetwork
-
-    #f = GzipFile(path,'w')
-    f = file(path,'w')
-    writelines(f,['0',str(len(nodes)),str(len(edges))])
-    writelines(f,nodes)
-    for edge in edges:
-        writelines(f,[edge[0],edge[1],str(edge[2]['value'])])
-    f.close()
-
-def load_raw_graph(path):
-    '''load a pynetwork'''
-    #f = GzipFile(path)
-    f = file(path)
-    version = f.readline()
-    if version == '0':
-        num_nodes = int(f.readline())
-        num_edges = int(f.readline())
-        nodes = []
-        for i in xrange(num_nodes):
-            nodes.append(f.readline())
-        edges = []
-        for i in xrange(num_edges):
-            edges.append( (f.readline(),f.readline(),{'value':int(f.readline())}) )
-        pynetwork = (nodes,edges)
-    else:
-        pynetwork = None
-    f.close()
-    return pynetwork
 
 if __name__=="__main__":
     main()
