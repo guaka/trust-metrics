@@ -90,7 +90,9 @@ class CalcGraph(Network):
         print "Try to upload the dataset.. this operation may take a while."
 
         #go in the dataset path.. important because else the svn command don't work
-        if os.system( 'cd '+os.path.realpath(self.PGPath)+' &> /dev/null' ) != 0:
+        try:
+            os.chdir( os.path.realpath(self.PGPath) )
+        except OSError:
             print "This path",os.path.realpath(self.PGPath), "does not exists"
             print "Upload Aborted"
             return
@@ -99,7 +101,7 @@ class CalcGraph(Network):
         toAddList = []
 
         #find the base point to add
-        while( os.system( 'svn add '+realpath+'' ) != 0 ):
+        while( os.system( 'svn add '+realpath+' &> /dev/null' ) != 0 ):
             realpath,toadd = os.path.split( realpath )
             toAddList.append( toadd )
 
@@ -110,8 +112,11 @@ class CalcGraph(Network):
             if os.system( 'svn add '+realpath+'' ) != 0:
                 print "Warning! Cannot add",realpath, "to svn"
                 
-        os.system( "svn --username anybody --password a commit -m 'automatic upload'" )
         
+        if os.system( "svn --username anybody --password a commit -m 'automatic upload' &> /dev/null" ) == 0:
+            print "upload successfully"
+        else:
+            print "upload failed!"
         return
         
 
