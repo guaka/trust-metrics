@@ -1134,6 +1134,43 @@ def relative_path( path, folder ):
     return (path,relpath)
 
 
+def getNetworkList( datasetPath ):
+    """
+    get a list of network avaiable on www.trustlet.org
+    Parameters:
+       datasetPath = path in wich is located your datasets directory (maybe in the home directory)
+    """
+    path = os.path.realpath( datasetPath )
+    
+    os.chdir( path )
+
+    name = tempnam()
+    os.system( 'svn list -R > '+name )
+    
+    fd = file( name )
+    lines = fd.readlines()
+    paths = []
+    fd.close()
+    
+    os.remove( name )
+
+    for line in lines:
+        sline = line.strip()
+        if sline[-1] == '/':
+            sline = sline[0:-1] #remove /
+        
+        while sline != '':
+            if os.path.isdir( sline ):
+                if sline not in paths:
+                    paths.append( sline )
+                break
+            else:
+                sline = os.path.split( sline )[0]
+
+    return paths
+    
+
+
 if __name__=="__main__":
     from trustlet import *
     from pprint import pprint

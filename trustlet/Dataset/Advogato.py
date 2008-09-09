@@ -68,8 +68,10 @@ _obs_app_jour_mas_map = {
 class AdvogatoNetwork(WeightedNetwork):
     """The Advogato dataset.
 
-http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
-"""
+    http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
+    
+    NB: if you would know what kind of network are hosted on www.trustlet.org invoke getNetworkList() from trustlet.helpers
+    """
     orig_url = "http://www.advogato.org/person/graph.dot"
     dotfile = 'graph.dot'
 
