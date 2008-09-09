@@ -119,20 +119,23 @@ def main():
 
         pynet = del_ips(ch.getPyNetwork())
 
-        assert save({'network':'Wiki','lang':lang,'date':date},pynet,os.path.join(path,outputname+'.c2'))
+        output = os.path.join(path,outputname+'.c2')
+
+        assert save({'network':'Wiki','lang':lang,'date':date},pynet,output)
         #write_dot(pynet,os.path.join(path,outputname+'.dot'))
 
         users,bots,blockedusers = get_list_users(lang,
                                                  os.path.join(base_path,'datasets','WikiNetwork'))
 
-        assert save({'lang':lang,'list':'bots'},bots,os.path.join(path,outputname+'.c2'),version=3)
-        assert save({'lang':lang,'list':'blockedusers'},blockedusers,
-                    os.path.join(path,outputname+'.c2'))
+        assert save({'lang':lang,'list':'bots'},bots,output)
+        assert save({'lang':lang,'list':'blockedusers'},blockedusers,output)
 
         lenusers = len(users)
-        assert save({'lang':lang,'info':'number of users'},lenusers,os.path.join(path,outputname+'.c2'))
-        #assert save({'lang':lang,'info':'number of bots'},len(bots),os.path.join(path,outputname+'.c2'))
+        assert save({'lang':lang,'info':'number of users'},lenusers,output)
+        #assert save({'lang':lang,'info':'number of bots'},len(bots),output)
         # -> not useful: there is the list of bots in .c2 file
+
+        print 'Output file:',output
 
         
         print 'Number of users of whole graph:',lenusers
@@ -206,29 +209,37 @@ def get_list_users(lang,cachepath=None,force=False):
 
     # get IPBlockList
     url = 'http://%s.wikipedia.org/wiki/Special:IPBlockList?limit=5000' % lang
-    re_buser = re.compile('title="%s:[^"]+">([^<]+)'%i18n[lang][1])
+    re_rows = re.compile('<li>(.*?)</li>')
+    re_offset = re.compile('offset=(\d{14})\D+')
     busers = [] #blocked users
-    ll = 1
     pageurl = url
-    count = 0
     print 'Number of blocked users read:'
-    while ll:
-        print count
+    while pageurl:
+        print len(busers)
         page = load({'url':pageurl},cachepath)
         if page: t,page = page
 
-        if not page or force or time.time()-t>2*WEEKS or not re.findall(re_buser,page):
+        if not page or force or time.time()-t>2*WEEKS or not re.findall(re_rows,page):
             page = getpage(pageurl)
             save({'url':pageurl},(time.time(),page),cachepath)
-        newusers = re.findall(re_buser,page)
-        if newusers:
-            pageurl = url + '&' + urllib.urlencode({'offset':newusers[-1]})
-            #print pageurl
-        print pageurl
-        ll = len(newusers)
-        count += ll
-        busers += newusers
 
+        for row in re.findall(re_rows,page):
+            users12 = re.findall(re_user,row)
+            assert len(users12)<=2
+            if len(users12)==2:
+                # a user blocked another user
+                busers.append(users12[1])
+
+        try:
+            newpageurl = url + '&offset=' + min(re.findall(re_offset,page))
+            if newpageurl == pageurl:
+                pageurl = None
+            else:
+                pageurl = newpageurl
+            #print 'New url:',pageurl
+        except ValueError:
+            pageurl = None
+        #print '¡¡¡ warning: load *only* the first 5000 blocked users !!!'
 
     return users,bots,busers
     
