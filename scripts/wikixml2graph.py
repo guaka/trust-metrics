@@ -88,6 +88,7 @@ def main():
         if xml == '-':
             xml = stdin
             size = None
+            nograph = False
         elif xml == 'no-graph':
             nograph = True
         else:
@@ -244,7 +245,6 @@ def get_list_users(lang,cachepath=None,force=False):
             #print 'New url:',pageurl
         except ValueError:
             pageurl = None
-        #print '¡¡¡ warning: load *only* the first 5000 blocked users !!!'
 
     return users,bots,busers
     
