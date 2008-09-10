@@ -3,12 +3,14 @@
 
 '''
 USAGE:
-   ./wikixml2graph.py xml_file [--history|--current] lang date [base_path|real<real_path>] [--hash] [--input-size bytes]
-      Default base_path = home dir
-      If base_path starts with 'real' graph will save in real_path
-      If lang and date are both '-' wikixml2dot will read them from file name
-      If xml_file is - it will use stdin
-      input-size: useful if xml_file is stdin 
+   ./wikixml2graph.py xml_file [--history|--current] lang date
+      [base_path|real<real_path>] [--hash] [--input-size bytes]
+          Default base_path = home dir
+          If base_path starts with 'real' graph will save in real_path
+          If lang and date are both '-' wikixml2dot will read them from file name
+          If xml_file is - it will use stdin
+          If xml_file is no-graph will insert only lists of users in .c2
+          input-size: useful if xml_file is stdin
 '''
 
 from xml import sax
@@ -86,7 +88,10 @@ def main():
         if xml == '-':
             xml = stdin
             size = None
+        elif xml == 'no-graph':
+            nograph = True
         else:
+            nograph = False
             size = os.stat(xml).st_size
             if (lang,date) == ('-','-'):
                 s = os.path.split(xml)[1]
@@ -113,16 +118,17 @@ def main():
             path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
         mkpath(path)
 
-        ch = WikiContentHandler(lang,xmlsize=size)
-
-        sax.parse(xml,ch)
-
-        pynet = del_ips(ch.getPyNetwork())
-
         output = os.path.join(path,outputname+'.c2')
 
-        assert save({'network':'Wiki','lang':lang,'date':date},pynet,output)
-        #write_dot(pynet,os.path.join(path,outputname+'.dot'))
+        if not nograph:
+            ch = WikiContentHandler(lang,xmlsize=size)
+
+            sax.parse(xml,ch)
+
+            pynet = del_ips(ch.getPyNetwork())
+
+            assert save({'network':'Wiki','lang':lang,'date':date},pynet,output)
+            #write_dot(pynet,os.path.join(path,outputname+'.dot'))
 
         users,bots,blockedusers = get_list_users(lang,
                                                  os.path.join(base_path,'datasets','WikiNetwork'))
@@ -225,8 +231,7 @@ def get_list_users(lang,cachepath=None,force=False):
 
         for row in re.findall(re_rows,page):
             users12 = re.findall(re_user,row)
-            assert len(users12)<=2
-            if len(users12)==2:
+            if len(users12)>=2:
                 # a user blocked another user
                 busers.append(users12[1])
 
