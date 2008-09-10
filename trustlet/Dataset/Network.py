@@ -446,6 +446,7 @@ class WikiNetwork(WeightedNetwork):
         self.path = os.path.join( self.path, lang, date )
         trustlet.helpers.mkpath(self.path)
         
+        self.level_map = __map
         self.filepath = os.path.join( self.path, filename )
 
         path,relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
