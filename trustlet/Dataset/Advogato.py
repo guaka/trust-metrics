@@ -184,7 +184,7 @@ class AdvogatoNetwork(WeightedNetwork):
         self._read_dot(filepath)
 
 
-class RobotsNetNetwork(AdvogatoNetwork):
+class Robots_netNetwork(AdvogatoNetwork):
     """
     See http://trustlet.org/wiki/Robots.net
     Problem: spaces in graph.dot
@@ -209,7 +209,7 @@ class RobotsNetNetwork(AdvogatoNetwork):
         open(self.filepath + 'test', 'w').writelines(fixed_lines)
         return self.filepath + 'test'
 
-class SqueakFoundationNetwork(AdvogatoNetwork):
+class SqueakfoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
@@ -225,7 +225,7 @@ class SqueakFoundationNetwork(AdvogatoNetwork):
         return self.level_map[edge[2]['color']]
 
 
-class KaitiakiNetwork(SqueakFoundationNetwork):
+class KaitiakiNetwork(SqueakfoundationNetwork):
     """Kaitaki dataset"""
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
@@ -235,6 +235,6 @@ class KaitiakiNetwork(SqueakFoundationNetwork):
 
 
 if __name__ == "__main__":
-    S = SqueakFoundationNetwork(date = '2007-12-20')
+    S = SqueakfoundationNetwork(date = '2007-12-20')
     
     

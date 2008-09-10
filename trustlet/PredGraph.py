@@ -55,12 +55,13 @@ class CalcGraph(Network):
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + '.dot')
     
+            
             #splits path, PGPath is the path to c2 dataset, relative to datasets folder,
             #relpath is the absolutepath to datasets folder
             self.basePath,relpath = relative_path( self.filepath, 'datasets' )
-            
+
             self.relpath = relpath #path to dataset relative to svn directory
-            self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', relpath ) 
+            self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( relpath )[0] ) 
             self.filename = os.path.split(self.filepath)[1]
 
             if download:
@@ -173,14 +174,14 @@ class CalcGraph(Network):
         
         import os
         
-        name = os.tempnam()
+        name = tempnam()
         
         write_dot(pred_graph, name)
 
         try:
             from bz2 import BZ2File
         
-            BZ2File( self.filepath , 'w' ).write( file( name ).read() )
+            BZ2File( self.filepath+'.bz2' , 'w' ).write( file( name ).read() )
         except:
             os.system( 'bzip2 -z "'+name+'" -c > "'+self.filepath+'.bz2"' )
         
@@ -450,7 +451,7 @@ class PredGraph(CalcGraph):
                                maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
                                indegree=10, round_weight=True,
-                               download = True
+                               download = True, upload = True
                                ):
         """
         This function save a graph with
@@ -475,6 +476,8 @@ class PredGraph(CalcGraph):
            'percentage_wrong': return a list with foreach step the (controversiality,percentage of wrong predict)
            download: let me download the cache file used to avoid the longer calculation of the result if possible
            the length of the list depends by the step
+           upload: let me upload the cache file to the svn server, so the other users can take this and 
+                   don't need to re-calculate it.
         """
         
         start = 0
@@ -586,27 +589,42 @@ class PredGraph(CalcGraph):
         cachename = 'predgraphcontrov.c2'
 
         if download and not ( os.path.exists( predgraphcontrov_path ) or os.path.exists( cache_path ) ):
-            
             if not os.path.exists( predgraphcontrov_path ):
                 print "Trying to download predgraphcontrov.c2 from www.trustlet.org..."
                 print "" #carriage return ;-)
                 
                 self.download_dataset( self.url,  predgraphcontrov_path )
+
+                if os.path.exists( predgraphcontrov_path ):
+                    downloaded = True
+                else:
+                    downloaded = False
+
                 cachename = 'predgraphcontrov.c2'
             else:
                 print "Trying to download cache.c2 from www.trustlet.org..."
                 print "" #carriage return ;-)
                 
                 self.download_dataset( self.url, cache_path )
+                if os.path.exists( cache_path ):
+                    downloaded = True
+                else:
+                    downloaded = False
+
                 cachename = 'cache.c2'
                 
+        else:
+            downloaded = False
+        
+    
         if os.path.exists( predgraphcontrov_path ) or os.path.exists( cache_path ):
             cachename = ['cache.c2','predgraphcontrov.c2']
 
         ls = splittask( eval, [max for max in r] )
 
-        base,cache = relative_path( predgraphcontrov_path , "datasets" )
-        self._upload( base,cache  ) #totest
+        if upload and os.path.exists( predgraphcontrov_path ) and not downloaded:
+            base,cache = relative_path( predgraphcontrov_path , "datasets" )
+            self._upload( base,cache  ) 
 
         if toe == None:
             return ls

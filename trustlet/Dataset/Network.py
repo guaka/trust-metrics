@@ -176,6 +176,7 @@ class Network(XDiGraph):
     def download_dataset(self, url, filepath ):
         """
         download a dataset from a url to a filepath, if it not exist
+        NB: automatically add filename to url
         """
         
         filename = os.path.split( filepath )[1] 

@@ -398,7 +398,7 @@ def prettyplot( data, path, **args):
         gnuplot.writelines([x+'\n' for x in script])
         gnuplot.close()
 
-def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=4 ):
+def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, force=False, np=1 ):
     """
     This function, print for a network passed, the best parameters
     for the moletrust_tm trustmetric
@@ -419,8 +419,8 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
     """
 
     def plot(data):
-        plotparameters( map(lambda x:(x[1],x[0]), data) , path+'BestMoletrustGraphic.png' )
-        plotparameters( map(lambda x:(x[1],x[-1]), data) , path+'BestMoletrusTimeGraphic.png', log=False, ylabel='time [s]', title='Time of computation' )
+        prettyplot( map(lambda x:(x[1],x[0]), data) , path+'BestMoletrustGraphic' )
+        prettyplot( map(lambda x:(x[1],x[-1]), data) , path+'BestMoletrusTimeGraphic', log=False, ylabel='time [s]', title='Time of computation' )
                 
 
     path = os.path.join(K.path, "bestMoletrustParameters/" )
@@ -452,7 +452,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                         avgsaved = load( {'func':'bestmoletrust',
                                           'horizon':horizon,
                                           'pnt':float( pnt/maxhorizon ),
-                                          'et':float( et/maxhorizon )} , path+"/cache" )
+                                          'et':float( et/maxhorizon )} , path+"/cache.c2" )
                         #yes
                         if avgsaved != None:
                             avg = avgsaved
@@ -479,11 +479,11 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                                   'et':float( et/maxhorizon )},
                                  
                                 avg, 
-                                path+"/cache"
+                                path+"/cache.c2"
                                 )
                             if not ret:
                                 print "Warning! i cannot be able to save this computation, check the permission"
-                                print "for the "+path+"/cache"+"path"
+                                print "for the "+path+"/cache.c2"+"path"
                             
                     
                         if avg < bestvalue:
@@ -1098,7 +1098,7 @@ def cached_read_dot(filepath,force=False):
     from networkx import read_dot
     
     if os.path.exists(filepath+'.bz2') and not os.path.exists(filepath):
-        tmppath = os.tempnam()
+        tmppath = tempnam()
         f = file(tmppath,'w')
         try:
             from bz2 import BZ2File
@@ -1139,13 +1139,19 @@ def getNetworkList( datasetPath ):
     get a list of network avaiable on www.trustlet.org
     Parameters:
        datasetPath = path in wich is located your datasets directory (maybe in the home directory)
+    
+    NB: this function use the internet connection. If you haven't an internet connection enabled
+        you cannot use it.
     """
     path = os.path.realpath( datasetPath )
     
     os.chdir( path )
 
     name = tempnam()
-    os.system( 'svn list -R > '+name )
+    
+    if os.system( 'svn list -R > '+name ) != 0:
+        print "svn error! check your internet connection"
+        return None
     
     fd = file( name )
     lines = fd.readlines()
