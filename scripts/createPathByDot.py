@@ -5,7 +5,7 @@ and create a default path with the information stored in the name of the file.
 ex:
 robots_net-graph-2008-07-24.dot --> robots_net/2008-07-24/graph.dot
 
-You can use this script to automatially create a default structure for the datasets folder
+You can use this script to automatically create a default structure for the datasets folder
 """
 from trustlet.helpers import mkpath
 from shutil import move
@@ -26,6 +26,7 @@ def main( graphList ):
         print "processing", graph
 
         path,graphname = split( graph )
+        
 
         try:
             date = redate.findall( graphname )[0]
@@ -33,7 +34,9 @@ def main( graphList ):
         except:
             continue
 
-        dest = join( path , name , date )
+        classname = name[0].upper()+name[1:]+'Network'
+
+        dest = join( path , classname , date )
         mkpath( dest )
         move( graph, join( dest, "graph.dot" ) )
         
@@ -51,7 +54,7 @@ and create a default path with the information stored in the name of the file.
 ex:
 robots_net-graph-2008-07-24.dot --> robots_net/2008-07-24/graph.dot
 
-You can use this script to automatially create a default structure for the datasets folder
+You can use this script to automatically create a default structure for the datasets folder
 """
 
         main( sys.argv[1:] )
@@ -62,6 +65,6 @@ and create a default path with the information stored in the name of the file.
 ex:
 robots_net-graph-2008-07-24.dot --> robots_net/2008-07-24/graph.dot
 
-You can use this script to automatially create a default structure for the datasets folder
+You can use this script to automatically create a default structure for the datasets folder
 """
         
