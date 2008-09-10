@@ -950,7 +950,12 @@ def save(key,data,path='.',human=False,version=3):
             f.write(data)
             f.close()
         while True:
-            if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
+            try:
+                if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
+                    writeall(path+'.lock',str(time.time()))
+                    return
+            except IOError:
+                #file .lock suddenly disappeared
                 writeall(path+'.lock',str(time.time()))
                 return
             time.sleep(1)

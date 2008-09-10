@@ -120,7 +120,6 @@ def evolutionmap(path,function,range=None):
             assert save(cachekey,res,os.path.join(path,cachepath),version=3)
         return res
 
-    #return [task(x) for x in dates]
     return splittask(task,dates)
 
 
@@ -212,17 +211,21 @@ def plot_meandegree(data,path='.'):
 
 def level_distribution(path,range=None):
     #'Master','Journeyer','Apprentice','Observer'
+    #and other level maps
     '''
     Advogato only!
     '''
 
     def level_distribution(K,date):
         """
-        *** don't try to understand this ***
-        (rewrite this code is quicker)
         see AdvogatoNetwork class
+        this code (d = dict(...)) is copyed from there
         """
-
+        
+        #level map = color map + obs_app_jour_mas map
+        level_map = _obs_app_jour_mas_map.copy()
+        level_map.update(_color_map)
+        
         # we use values()[0] instead of the key of dict because sometimes
         # the key is 'value' and sometimes it's 'level'
         # *need to fix this*
@@ -230,8 +233,10 @@ def level_distribution(path,range=None):
                         map(lambda s: (s,
                                        len([e for e in K.edges_iter()
                                             if e[2].values()[0] == s])),
-                            _obs_app_jour_mas_map)))
-        l = [d['Master'],d['Journeyer'],d['Apprentice'],d['Observer']]
+                            level_map)))
+        #order k from higher to lower values (Master to Observer)
+        l = [d[k] for k,v in sorted(level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
+
         return ( date, map(lambda x:1.0*x/sum(l),l))
     
     return evolutionmap(path,level_distribution,range)    
@@ -398,11 +403,12 @@ if __name__ == "__main__":
     if len(sys.argv) < 5:
         #prog startdate enddate path
         print "USAGE: netevolution startdate enddate dataset_path save_path [html file]"
+        print "You can use '-' to skip {start,end}date"
         sys.exit(1)
 
 
-    startdate = sys.argv[1]
-    enddate = sys.argv[2]
+    startdate = sys.argv[1] == '-' and '0000-00-00' or sys.argv[1]
+    enddate = sys.argv[2] == '-' and '9999-99-99' or sys.argv[2]
     range = (startdate,enddate)
     path = sys.argv[3]
     savepath = sys.argv[4]
