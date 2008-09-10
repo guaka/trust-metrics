@@ -46,9 +46,9 @@ class CalcGraph(Network):
         if hasattr(dataset, "filepath"):
             self.path = os.path.join(os.path.split(dataset.filepath)[0],
                                      path_name(TM))
-            
-            if hasattr(TM,"noneToValue") and TM.noneToValue:
-                self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
+            #not necessary
+            #if hasattr(TM,"noneToValue") and TM.noneToValue:
+            #    self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             if not os.path.exists(self.path):
                 mkpath(self.path)
             

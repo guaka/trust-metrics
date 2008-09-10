@@ -422,8 +422,8 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
         prettyplot( map(lambda x:(x[1],x[0]), data) , path+'BestMoletrustGraphic' )
         prettyplot( map(lambda x:(x[1],x[-1]), data) , path+'BestMoletrusTimeGraphic', log=False, ylabel='time [s]', title='Time of computation' )
                 
-
     path = os.path.join(K.path, "bestMoletrustParameters/" )
+    cache_path = os.path.join( path,"cache.c2" )
     
     if not os.path.exists( path ):
         os.mkdir( path )
@@ -452,7 +452,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                         avgsaved = load( {'func':'bestmoletrust',
                                           'horizon':horizon,
                                           'pnt':float( pnt/maxhorizon ),
-                                          'et':float( et/maxhorizon )} , path+"/cache.c2" )
+                                          'et':float( et/maxhorizon )} , cache_path )
                         #yes
                         if avgsaved != None:
                             avg = avgsaved
@@ -462,15 +462,15 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                                                        trustlet.moletrust_generator( horizon , float( pnt/maxhorizon ) , float( et/maxhorizon ) ) 
                                                        )
                 
-                            cnt = s = 0
-                
-                            for edge in tm.dataset.edges_iter():
-                                orig_trust = tm.dataset.trust_on_edge(edge)
-                                pred_trust = tm.leave_one_out(edge)
-                                s = s + math.fabs( orig_trust - pred_trust )
-                                cnt += 1
+                            #cnt = s = 0
+                            avg = trustlet.PredGraph( tm ).abs_error()
+                            #for edge in tm.dataset.edges_iter():
+                            #    orig_trust = tm.dataset.trust_on_edge(edge)
+                            #    pred_trust = tm.leave_one_out(edge)
+                            #    s = s + math.fabs( orig_trust - pred_trust )
+                            #    cnt += 1
                     
-                            avg = float(s)/cnt
+                            #avg = float(s)/cnt
                             #save avg
                             ret = save(
                                 {'func':'bestmoletrust',
@@ -479,11 +479,11 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                                   'et':float( et/maxhorizon )},
                                  
                                 avg, 
-                                path+"/cache.c2"
+                                cache_path
                                 )
                             if not ret:
                                 print "Warning! i cannot be able to save this computation, check the permission"
-                                print "for the "+path+"/cache.c2"+"path"
+                                print "for the "+cache_path+"path"
                             
                     
                         if avg < bestvalue:
@@ -515,7 +515,7 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
 
     #sort for the first value of the tuple
     ris.sort()
-    fd = file( path+"bestparam", "w" )
+    fd = file( os.path.join( path,"bestparam" ), "w" )
     
     #writes on file computed values
     for i in xrange(maxhorizon):
@@ -617,7 +617,7 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
     return t
 
 
-def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
+def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
     """
     This function test a single trust metric or all the trust metrics, 
     on a specific network
@@ -638,12 +638,17 @@ def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
     if bpath == None:
         bpath = net.path
 
-    path = os.path.join(bpath,'TrustMetrics')
+    path = os.path.join(bpath,'TestTrustMetrics')
     if not os.path.exists(path):
         os.mkdir(path)
 
         #for each trust metric, print the predicted value for each edge
-    trustmetrics = getTrustMetrics( net )
+    nname = get_name( net )
+        
+    if 'Advogato' in nname or 'Kaitiaki' in nname or 'Squeakfoundation' in nname or 'Robots_net' in nname:
+        trustmetrics = getTrustMetrics( net, allAdvogato=net.level_map.keys() )
+    else:
+        trustmetrics = getTrustMetrics( net, advogato=False )
 	#parameters:
 	#path is the path on which to save the computation
 	#tm is the trustMetric class 
@@ -654,7 +659,7 @@ def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
 
         sum = 0
         cnt = 0
-        abs = load( {'tm':tm},path+'/cache' )
+        abs = load( {'tm':tm},path+'/cache.c2' )
         
         if abs != None:
             error = abs
@@ -662,7 +667,7 @@ def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
             P = trustlet.PredGraph( trustmetrics[tm] )
             error = P.abs_error()
         
-            save({'tm':tm},error,path+'/cache')
+            save({'tm':tm},error,path+'/cache.c2')
                     
         return ( error, tm )
 
@@ -674,11 +679,11 @@ def testTM( net, bpath=None, np=4, onlybest=False, plot = False ):
         return lris[0]
     else:
         if plot:    
-            plotparameters( [x for x in enumerate([x for (x,s) in lris])], path+'/TrustMetricsHistogram.png', 
-                            title = 'MAE for each trustmetric on '+get_name(net)+' network',
-                            xlabel='trust metrics',
-                            ylabel='MAE',
-                            istogram = True )
+            prettyplot( [x for x in enumerate([x for (x,s) in lris])], path+'/TrustMetricsHistogram', 
+                        title = 'MAE for each trustmetric on '+get_name(net)+' network',
+                        xlabel='trust metrics',
+                        ylabel='MAE',
+                        histogram = True )
             
         fd = file( path+'/HistogramLegend', 'w' )
         fd.write( '\n'.join( [str(n)+': '+s for (n,s) in enumerate([y+' '+str(x) for (x,y) in lris])] ) )

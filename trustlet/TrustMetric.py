@@ -191,7 +191,7 @@ class AdvogatoLocal(TrustMetric):
     def __init__(self, dataset, defaultPredict = None ):
         """
         parameters:
-           defaultPredict = none values to Observer/Apprentice/Journeyer/Master
+           defaultPredict = none values to Observer/Apprentice/Journeyer/Master or other
         """
         self.dataset = dataset
         self.p = Profiles(Profile, DictCertifications)
