@@ -55,10 +55,11 @@ class CalcGraph(Network):
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + '.dot')
     
-
-            self.PGPath,relpath = relative_path( self.path, 'datasets' )
+            #splits path, PGPath is the path to c2 dataset, relative to datasets folder,
+            #relpath is the absolutepath to datasets folder
+            self.basePath,relpath = relative_path( self.filepath, 'datasets' )
             
-            self.relpath = relpath #path relative to svn directory
+            self.relpath = relpath #path to dataset relative to svn directory
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', relpath ) 
             self.filename = os.path.split(self.filepath)[1]
 
@@ -72,7 +73,7 @@ class CalcGraph(Network):
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
                 if upload:
-                    self._upload(graph)
+                    self._upload( self.basePath, self.relpath )
                         
                 
             self._set_arrays()
@@ -83,22 +84,28 @@ class CalcGraph(Network):
         print "Init took", hms(time.time() - self.start_time)
     
 
-    def _upload(self, graph):
+    def _upload(self, basepath, datasetpath):
         """
         upload to svn the dataset passed.
+        Parameters:
+           basepath: path to 'datasets' folder, the root svn directory
+           datasetpath: path to dataset c2 file, relative to basepath
+           
+           NB: to create this two path from the abs path of the dataset
+               you can use the relative_path function in trustlet.helpers
         """
         print "Try to upload the dataset.. this operation may take a while."
 
         #go in the dataset path.. important because else the svn command don't work
         try:
-            os.chdir( os.path.realpath(self.PGPath) )
+            os.chdir( os.path.realpath(basepath) )
         except OSError:
-            print "This path",os.path.realpath(self.PGPath), "does not exists"
+            print "This path",os.path.realpath(basepath), "does not exists"
             print "Upload Aborted"
             return
 
-        realpath = self.relpath
         toAddList = []
+        realpath = datasetpath
 
         #find the base point to add
         while( os.system( 'svn add '+realpath+' &> /dev/null' ) != 0 ):
@@ -109,12 +116,12 @@ class CalcGraph(Network):
 
         for i in toAddList:
             realpath = os.path.join( realpath, i )
-            if os.system( 'svn add '+realpath+'' ) != 0:
+            if os.system( 'svn add '+realpath+' &> /dev/null' ) != 0:
                 print "Warning! Cannot add",realpath, "to svn"
                 
         
         if os.system( "svn --username anybody --password a commit -m 'automatic upload' &> /dev/null" ) == 0:
-            print "upload successfully"
+            print "upload successfully executed"
         else:
             print "upload failed!"
         return
@@ -598,7 +605,8 @@ class PredGraph(CalcGraph):
 
         ls = splittask( eval, [max for max in r] )
 
-        #upload predgraphcontrov.c2... TODO!
+        base,cache = relative_path( predgraphcontrov_path , "datasets" )
+        self._upload( base,cache  ) #totest
 
         if toe == None:
             return ls
@@ -737,7 +745,7 @@ class CalcWikiGraph(CalcGraph):
             
             self.__set_filepath() 
                 
-            self.PGPath,self.relpath = relative_path( self.path, 'datasets' )
+            self.basePath,self.relpath = relative_path( self.filepath, 'datasets' )
 
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', self.relpath ) 
             self.filename = os.path.split(self.filepath)[1]
@@ -753,7 +761,7 @@ class CalcWikiGraph(CalcGraph):
                 graph = self._generate()
                 self._writeCache(graph)
                 if upload:
-                    self._upload(graph)
+                    self._upload(self.basePath,self.relpath)
                 
             self._set_arrays()
             self._prepare()

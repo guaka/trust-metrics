@@ -27,9 +27,12 @@ def main( graphList ):
 
         path,graphname = split( graph )
 
-        date = redate.findall( graphname )[0]
-        name = rename.findall( graphname )[0]
-        
+        try:
+            date = redate.findall( graphname )[0]
+            name = rename.findall( graphname )[0]
+        except:
+            continue
+
         dest = join( path , name , date )
         mkpath( dest )
         move( graph, join( dest, "graph.dot" ) )
