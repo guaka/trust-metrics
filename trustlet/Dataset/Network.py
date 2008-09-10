@@ -22,6 +22,7 @@ average = lambda x: x and float(sum(x)) / len(x)
 
 def dataset_dir(path=None):
     """Create datasets/ directory if needed."""
+    
     if not path:
         path = ''
         if os.environ.has_key('HOME'):
@@ -52,6 +53,32 @@ class Network(XDiGraph):
 
         if from_graph:
             self.paste_graph(from_graph)
+
+    
+        
+    def download_file(self, url, filename):
+        '''Download url to filename into the right path '''
+        filepath = os.path.join(self.path, filename)
+        print "Downloading %s to %s " % (url, filepath)
+
+        import urllib2
+        try:
+            asock = urllib2.urlopen(url)
+            f = open(filepath, 'w')
+            f.write(asock.read())
+            f.close()
+            asock.close()
+        except urllib2.HTTPError, e:
+            try:
+                asock = urllib2.urlopen(url+'.bz2')
+                f = open(filepath+'.bz2', 'w')
+                f.write(asock.read())
+                f.close()
+                asock.close()
+            except urllib2.HTTPError, e:
+                print e.code
+                print "Cannot download dataset, for a complete list of it, go to ", os.path.split( os.path.split( url )[0] )[0]
+
 
     def connected_components(self):
         G = self
@@ -150,29 +177,7 @@ class Network(XDiGraph):
             freq[d] += 1
         return freq
 
-    def download_file(self, url, filename):
-        '''Download url to filename into the right path '''
-        filepath = os.path.join(self.path, filename)
-        print "Downloading %s to %s " % (url, filepath)
-
-        import urllib2
-        try:
-            asock = urllib2.urlopen(url)
-            f = open(filepath, 'w')
-            f.write(asock.read())
-            f.close()
-            asock.close()
-        except urllib2.HTTPError, e:
-            try:
-                asock = urllib2.urlopen(url+'.bz2')
-                f = open(filepath+'.bz2', 'w')
-                f.write(asock.read())
-                f.close()
-                asock.close()
-            except urllib2.HTTPError, e:
-                print e.code
-                print "Cannot download dataset, for a complete list of it, go to ", os.path.split( os.path.split( url )[0] )[0]
-
+    
     def download_dataset(self, url, filepath ):
         """
         download a dataset from a url to a filepath, if it not exist

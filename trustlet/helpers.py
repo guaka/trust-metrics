@@ -1185,9 +1185,8 @@ def getNetworkList( datasetPath ):
                 sline = os.path.split( sline )[0]
 
     return paths
+
     
-
-
 if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
