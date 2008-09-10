@@ -644,7 +644,8 @@ def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
 
         #for each trust metric, print the predicted value for each edge
     nname = get_name( net )
-        
+    print "Retrieving all the trust metrics avaiable for this network..."
+    
     if 'Advogato' in nname or 'Kaitiaki' in nname or 'Squeakfoundation' in nname or 'Robots_net' in nname:
         trustmetrics = getTrustMetrics( net, allAdvogato=net.level_map.keys() )
     else:
@@ -659,19 +660,19 @@ def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
 
         sum = 0
         cnt = 0
-        abs = load( {'tm':tm},path+'/cache.c2' )
+        abs = load( {'tm':tm},os.path.join( path,'cache.c2' ) )
         
         if abs != None:
             error = abs
         else:
-            P = trustlet.PredGraph( trustmetrics[tm] )
-            error = P.abs_error()
+            error = trustlet.PredGraph( trustmetrics[tm] ).abs_error()
         
-            save({'tm':tm},error,path+'/cache.c2')
+            save({'tm':tm},error,os.path.join( path,'cache.c2' ) )
                     
         return ( error, tm )
 
 	# we use splittask so that we can split the computation in parallel across different processors (splittask is defined in helpers.py). Neet to check how much this is efficient or needed.
+    print "Evaluating...."
     lris = splittask( eval , [(path,tm) for tm in trustmetrics], np ) 
 
     if onlybest:
@@ -679,13 +680,13 @@ def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
         return lris[0]
     else:
         if plot:    
-            prettyplot( [x for x in enumerate([x for (x,s) in lris])], path+'/TrustMetricsHistogram', 
+            prettyplot( [x for x in enumerate([x for (x,s) in lris])], os.path.join( path,'TrustMetricsHistogram' ), 
                         title = 'MAE for each trustmetric on '+get_name(net)+' network',
                         xlabel='trust metrics',
                         ylabel='MAE',
                         histogram = True )
             
-        fd = file( path+'/HistogramLegend', 'w' )
+        fd = file( os.path.join( path,'HistogramLegend' ), 'w' )
         fd.write( '\n'.join( [str(n)+': '+s for (n,s) in enumerate([y+' '+str(x) for (x,y) in lris])] ) )
         fd.close()
         
@@ -1190,5 +1191,5 @@ def getNetworkList( datasetPath ):
 if __name__=="__main__":
     from trustlet import *
     from pprint import pprint
-    k = KaitiakiNetwork(download=True)
+    k = AdvogatoNetwork(date="2008-05-12",download=True)
     testTM( k )
