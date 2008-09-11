@@ -671,7 +671,9 @@ def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
                     
         return ( error, tm )
 
-	# we use splittask so that we can split the computation in parallel across different processors (splittask is defined in helpers.py). Neet to check how much this is efficient or needed.
+    # we use splittask so that we can split the computation in
+    # parallel across different processors (splittask is defined
+    # in helpers.py). Neet to check how much this is efficient or needed.
     print "Evaluating...."
     lris = splittask( eval , [(path,tm) for tm in trustmetrics], np ) 
 
@@ -947,27 +949,29 @@ def save(key,data,path='.',human=False,version=3):
     def lock():
         TIMEOUT = 300 # 5min
         def readall(fname):
-            f = file(fname)
-            data = f.read()
-            f.close()
-            return data
+            try:
+                f = file(fname)
+                data = f.read()
+                f.close()
+            except:
+                data = ''
+            return data or '0.0'
         def writeall(fname,data):
             f = file(fname,'w')
             f.write(data)
             f.close()
         while True:
-            try:
-                if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
-                    writeall(path+'.lock',str(time.time()))
-                    return
-            except IOError:
-                #file .lock suddenly disappeared
+            if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
                 writeall(path+'.lock',str(time.time()))
                 return
+
             time.sleep(1)
 
     def unlock():
-        os.remove(path+'.lock')
+        try:
+            os.remove(path+'.lock')
+        except OSError:
+            pass
 
     if path.endswith('.c2'):
         mkpath(os.path.split(path)[0])

@@ -7,7 +7,8 @@ USAGE:
       [base_path|real<real_path>] [--hash] [--input-size bytes]
           Default base_path = home dir
           If base_path starts with 'real' graph will save in real_path
-          If lang and date are both '-' wikixml2dot will read them from file name
+          If lang and date are both '-' wikixml2dot will
+              read them from file name
           If xml_file is - it will use stdin
           If xml_file is no-graph will insert only lists of users in .c2
           input-size: useful if xml_file is stdin

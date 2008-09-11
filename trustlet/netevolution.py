@@ -117,7 +117,7 @@ def evolutionmap(path,function,range=None):
         K.paste_graph(G)
         res = function(K,date)
         if function.__name__!='<lambda>':
-            assert save(cachekey,res,os.path.join(path,cachepath),version=3)
+            assert save(cachekey,res,os.path.join(path,cachepath))
         return res
 
     return splittask(task,dates)
