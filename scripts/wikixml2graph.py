@@ -31,15 +31,19 @@ class URLopener(urllib.FancyURLopener):
 urllib._urlopener = URLopener()
 
 #getpage = lambda url: urllib.urlopen(url).read()
+LIGHTLOG = True
 def getpage(url):
     page = urllib.urlopen(url).read()
     #logging
     logpath = os.path.join(os.environ['HOME'],'.wikixml2graph','log')
     mkpath(logpath)
-    logname = os.path.split(tempnam())[1]
-    logfullpath = os.path.join(logpath,logname)
-    file(logfullpath,'w').write(page)
-    file(os.path.join(logpath,'index'),'a').write('%s: %s %s\n'%(logname,time.asctime(),url))
+    if LIGHTLOG:
+        file(os.path.join(logpath,'index'),'a').write("{'url':'%s'}: %s\n"%(url,time.asctime()))
+    else:
+        logname = os.path.split(tempnam())[1]
+        logfullpath = os.path.join(logpath,logname)
+        file(logfullpath,'w').write(page)
+        file(os.path.join(logpath,'index'),'a').write('%s: %s %s\n'%(logname,time.asctime(),url))
     return page
 
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
@@ -182,8 +186,7 @@ def get_list_users(lang,cachepath=None,force=False):
     else:
         assert not cachepath.endswith('.c2')
         cachepath = os.path.join(cachepath,'listusers.c2')
-    logpath = os.path.join(os.path.split(cachepath)[0],'log')
-    mkpath(logpath)
+
     re_user = re.compile('title="%s:[^"]+">([^<]+)'%i18n[lang][1])
     re_bot = re.compile('title="%s:[^"]+">([^<]+)</a>(.*?)</li>'%i18n[lang][1])
 
