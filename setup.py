@@ -81,13 +81,18 @@ if False:
     os.system( 'cd scripts && make install && cd ..' )
 
 print "Now we try to checkout all the datasets from www.trustlet.org This operation maybe longer."
+
+#THE UPLOAD DOESN'T WORK IF CHECKED OUT A EMPTY REVISION... :(
 print "If you have always the internet connection enabled, when the datasets were used"
 print "they can be automatically downloaded from www.trustlet.org, and then you don't need"
 print "to check out all of them now. But if you think to work on a isolate pc"
 print "without an internet connection, is better to download all now."
-print "RECCOMENDED: don't download now"
+print "Moreover if you don't download all datasets now, the upload of your calculated datasets don't work."
+print ""
+print "RECCOMENDED: download now (if you don't download an this is the 0.1.1 version, you cannot upload)"
 print "QUESTION: Do you want to download all the datasets now? [N,y]"
 c = raw_input()
+#c = 'y'
 
 print "Important: Do not stop this operation"
 if 'y' in c:
