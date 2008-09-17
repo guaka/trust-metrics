@@ -512,15 +512,17 @@ class PredGraph(CalcGraph):
 
             if not force:                    
                 abs = load( diz,
-                            os.path.join(self.path,'cache')
+                            os.path.join(self.path,'cache'),
+                            fault=False
                             )
-                if abs == None:
+                if abs == False:
                     if type( cachename ) is list:
                         for i in cachename:
                             abs = load( diz,
-                                    os.path.join(self.path, i )
-                                    )
-                            if abs != None:
+                                        os.path.join(self.path, i ),
+                                        fault=False
+                                        )
+                            if abs != False:
                                 break
 
                     else:
@@ -529,7 +531,9 @@ class PredGraph(CalcGraph):
                                     )
 
             #if the result is cached
-            if abs != None:
+            if abs != False:
+                if abs == None:
+                    return None
                 (sum,cnt,rmse,pw,cov) = abs
             else:
                 #else calculate and save
@@ -562,6 +566,11 @@ class PredGraph(CalcGraph):
                     covcnt += 1
 
                 if cnt == 0:
+                    save( diz,
+                          None,
+                          os.path.join(self.path,'predgraphcontrov.c2')
+                          )
+
                     return None
 
                 rmse = numpy.sqrt(rmse/cnt)
