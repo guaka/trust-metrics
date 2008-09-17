@@ -1019,16 +1019,18 @@ def save(key,data,path='.',human=False,version=3):
             return False
     return True
     
-def load(key,path='.'):
+def load(key,path='.',fault=None):
     """
     Cache.
     Loads data stored by save.
+    fault is the value returned if key is not stored in cache.
     """
+
     if os.path.isdir(path):
         try:
             data = pickle.load(file(os.path.join(path,get_sign(key))))
         except:
-            return None
+            return fault
     elif os.path.isfile(path):
         #memory cache
         if not globals().has_key('cachedcache'):
@@ -1045,12 +1047,12 @@ def load(key,path='.'):
                 #version 3
                 return cache[path][hashable(key)]
             else:
-                return None
+                return fault
         
         try:
             d = pickle.load(GzipFile(path))
         except:
-            return None
+            return fault
         
         if d.has_key(get_sign(key)):
             #version 2
@@ -1059,12 +1061,12 @@ def load(key,path='.'):
             #version 3
             data = d[hashable(key)]
         else:
-            return None
+            return fault
 
         #save in memory cache
         cache[path] = d
     else:
-        return None
+        return fault
 
     return data
 
