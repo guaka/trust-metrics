@@ -452,7 +452,6 @@ class WikiNetwork(WeightedNetwork):
         self.path = os.path.join( self.path, lang, date )
         trustlet.helpers.mkpath(self.path)
         
-        self.level_map = self.__map
         self.filepath = os.path.join( self.path, filename )
 
         path,relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
@@ -552,7 +551,7 @@ class WikiNetwork(WeightedNetwork):
             ws = []
             for n in self.edges_iter():
                 try:
-                    x = self.__map( float(n[2]['value']) )
+                    x = self.map( float(n[2]['value']) )
                     ws.append( x )
                 except:
                     raise "Cannot read dataset. The edges was malformed.\nThis is a malformed edge:", n
@@ -562,7 +561,7 @@ class WikiNetwork(WeightedNetwork):
         return ws
     
 
-    def __map(self, value):
+    def map(self, value):
         """
         take a value to rescale in range 0..1
         """
@@ -578,7 +577,7 @@ class WikiNetwork(WeightedNetwork):
         take the _weights field and rescale the value
         """
 
-        self._weights = [self.__map(x) for x in self._weights]
+        self._weights = [self.map(x) for x in self._weights]
 
         return self._weights
 
@@ -587,9 +586,9 @@ class WikiNetwork(WeightedNetwork):
         return trust on edge passed
         """
         if type(edge[2]) is int:
-            return self.__map( edge[2] )
+            return self.map( edge[2] )
 
-        return self.__map( edge[2].values()[0] )
+        return self.map( edge[2].values()[0] )
 
     def ignored_users(self):
         '''
