@@ -279,9 +279,9 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None):
+    def __init__(self, has_discrete_weights = True, base_path = None):
         Network.__init__(self, base_path=base_path)
-        self._weights = weights
+        self._weights = None
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
 
@@ -333,7 +333,7 @@ class WeightedNetwork(Network):
         
         return ws
     
-    
+
     def info(self):
 
         Network.info(self)

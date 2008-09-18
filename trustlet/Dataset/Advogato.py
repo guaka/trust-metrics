@@ -109,7 +109,7 @@ class AdvogatoNetwork(WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
-        WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
+        WeightedNetwork.__init__(self, base_path = base_path)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
