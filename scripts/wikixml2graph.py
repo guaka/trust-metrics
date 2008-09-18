@@ -49,8 +49,8 @@ def getpage(url):
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
 
-from socket import gethostname
-hostname = gethostname()
+#from socket import gethostname
+#hostname = gethostname()
 
 i18n = {
     'vec':('Discussion utente','Utente','Bot'),

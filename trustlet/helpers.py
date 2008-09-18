@@ -1192,6 +1192,11 @@ def getNetworkList( datasetPath ):
 
     return paths
 
+def plot_weight_edges_histogram(net):
+    '''
+    Given a network plot its frequency weights histogram.
+    '''
+    pass
     
 if __name__=="__main__":
     from trustlet import *
