@@ -424,6 +424,20 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         '''return list of edges'''
         return (self.nodes,self.edges)
 
+
+def getRevertGraph( rList ):
+    """
+    """
+    G = WeightedNetwork( )
+    
+    #label. it's only use is to make more user friendly the code
+    page = 0
+    user = 1
+    ts = 2 #time stamp
+
+    history = [(a,b,x) for (x,(a,b)) in enumerate(rList)]
+
+
 def getCollaborators( rawWikiText, lang ):
     """
     return a list of tuple with ( user, value ), where user is the name of user
