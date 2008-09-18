@@ -605,6 +605,27 @@ class WikiNetwork(WeightedNetwork):
         '''
         return [x for x in self.nodes_iter() if not self.out_degree(x) and self.in_degree(x)]
 
+    
+    def plot_weight_edges_histogram(self):
+        '''
+        Plot the network frequency weights histogram.
+        '''
+        
+        data = {}
+
+        for w in self.edges_iter():
+            w = w[2]['value']
+            if w in data:
+                data[w] += 1
+            else:
+                data[w] = 1
+            
+        trustlet.helpers.prettyplot(data.items(),os.path.join(self.path,'weights histogram'),
+                                    xlabel='weights',
+                                    ylabel='frequency',
+                                    title='Frequency weights histogram',
+                                    histogram=True)
+        print 'Graph saved in',self.path
         
 if __name__ == "__main__":
     pass
