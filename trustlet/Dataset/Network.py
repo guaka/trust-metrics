@@ -281,7 +281,7 @@ class WeightedNetwork(Network):
     
     def __init__(self, has_discrete_weights = True, base_path = None):
         Network.__init__(self, base_path=base_path)
-        self._weights = None
+        self._weights_dictionary = weights
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
 
@@ -340,11 +340,11 @@ class WeightedNetwork(Network):
 
     def min_weight(self):
         """Minimum weight."""
-        return min(self.weights().values())
+        return min(self.weights())
 
     def max_weight(self):
         """Maximum weight."""
-        return max(self.weights().values())
+        return max(self.weights())
 
     def node_controversiality(self, node):
         """Controversiality of node: the standard deviation of incoming weights."""
@@ -540,7 +540,6 @@ class WikiNetwork(WeightedNetwork):
                 raise IOError("There isn't a dot file on this path:\n "+
                               self.path+"\nplease specify another path or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
 
-        self.weights()
         self.__rescale()
         
 
