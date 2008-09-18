@@ -46,12 +46,13 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
         #try to use some dictionary, because
         #sometimes the key is 'value' and sometimes is 'level'
         try:
-            averagetrust = avg([_obs_app_jour_mas_map[val[0]] for val in [x.values() for x in weight]])
+            averagetrust = avg([_obs_app_jour_mas_map[val.values()[0]] for val in weight])
         except KeyError:
             try:
-                averagetrust = avg([_color_map[val[0]] for val in [x.values() for x in weight]])
+                averagetrust = avg([_color_map[val.values()[0]] for val in weight])
             except KeyError:
-                averagetrust = avg([val[0] for val in [x.values() for x in weight]])
+                #print val
+                averagetrust = avg([val.values()[0] for val in weight])
 
         #save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
         

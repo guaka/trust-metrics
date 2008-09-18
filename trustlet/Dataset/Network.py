@@ -433,7 +433,7 @@ class WikiNetwork(WeightedNetwork):
     NB: if you would know what kind of network are hosted on www.trustlet.org invoke getNetworkList() from trustlet.helpers
     """
         
-    def __init__(self, lang, date, current=False, bots=True, base_path = None, dataset = None, upthreshold = 20, force = False, download=True):
+    def __init__(self, lang, date, current=False, bots=True, base_path = None, dataset = None, upthreshold = 20, force = False, download=True,rescale=True):
         WeightedNetwork.__init__(self,base_path=base_path )
         
         assert trustlet.helpers.isdate(date)
@@ -540,7 +540,11 @@ class WikiNetwork(WeightedNetwork):
                               self.path+"\nplease specify another path or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
 
         self.weights()
-        self.__rescale()
+        if rescale:
+            self.__rescale()
+        else:
+            print 'This network is not rescaled.'
+            print 'Be careful!'
         
 
     def weights(self):

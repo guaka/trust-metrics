@@ -1195,8 +1195,22 @@ def getNetworkList( datasetPath ):
 def plot_weight_edges_histogram(net):
     '''
     Given a network plot its frequency weights histogram.
+    net is a WeightedNetwork.
+    I assume that edge[2].values()[0] is an int
     '''
-    pass
+
+    data = {}
+
+    for w in net.weights():
+        w = w.values()[0]
+        assert type(w) is int,'w is not an integer'
+        if w in data:
+            data[w] += 1
+        else:
+            data[w] = 1
+
+    return data
+    
     
 if __name__=="__main__":
     from trustlet import *
