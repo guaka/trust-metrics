@@ -323,7 +323,7 @@ class WeightedNetwork(Network):
                 if type(x) is float or type(x) is int:
                     ws[str(x)] = x
                 else:
-                    if hasattr( x, 'keys' ) and hasattr( self, level_map ):
+                    if hasattr( x, 'keys' ) and hasattr( self, 'level_map' ):
                         ws[x.values()[0]] = self.level_map[ x.values()[0] ]
                     elif type(x) is tuple:
                         ws[x[0]] = x[1]
