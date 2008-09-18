@@ -281,7 +281,6 @@ class WeightedNetwork(Network):
     
     def __init__(self, has_discrete_weights = True, base_path = None):
         Network.__init__(self, base_path=base_path)
-        self._weights_dictionary = weights
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
 
@@ -540,6 +539,7 @@ class WikiNetwork(WeightedNetwork):
                 raise IOError("There isn't a dot file on this path:\n "+
                               self.path+"\nplease specify another path or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
 
+        self.weights()
         self.__rescale()
         
 
