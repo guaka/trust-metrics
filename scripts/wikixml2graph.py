@@ -427,16 +427,49 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
 def getRevertGraph( rList ):
     """
+    to test
     """
     G = WeightedNetwork( )
     
+    def getBeforeVersion( toCmp ):
+        min = []
+
+        for y in SHistory:
+            if y[page] == toCmp[page]:
+                min = y[ts]
+            else:
+                break
+
+        return min
+
     #label. it's only use is to make more user friendly the code
     page = 0
     user = 1
     ts = 2 #time stamp
 
     history = [(a,b,x) for (x,(a,b)) in enumerate(rList)]
+    sHistory = history
+    sHistory.sort(reverse=True)
+    
+    for x in sHistory:
+        max = x[ts]
+        min = getBeforeVersion( x )
 
+        for i in xrange( min, max ):
+
+            if x[page] == history[i][page]:
+                continue 
+
+            try:
+                val = G.get_edge( max[user], history[i][user] )
+            except NetworkXError:
+                G.add_edge( max[user], history[i][user], 1 )
+                continue
+            
+            G.add_edge( max[user], history[i][user], val+1 )
+        
+
+    return G
 
 def getCollaborators( rawWikiText, lang ):
     """
