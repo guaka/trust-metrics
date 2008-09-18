@@ -5,7 +5,7 @@
 #
 #   Copyright (C) 2007  Kasper Souren <kasper.souren@gmail.com>, Paolo Massa <massa@itc.it>
 #
-#   This program is free software; you can redistribute it and/or modify
+#   This program is free software; you can redsistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
 #   the Free Software Foundation; either version 2 of the License, or
 #   (at your option) any later version.
@@ -109,7 +109,7 @@ class AdvogatoNetwork(WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
-        WeightedNetwork.__init__(self, base_path = base_path)
+        WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
