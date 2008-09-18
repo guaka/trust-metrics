@@ -311,7 +311,7 @@ class WeightedNetwork(Network):
         Return a dictionary with the weights of all edges
         Work only in advogato-like function
         """
-        if get_name( self ) == 'WikiNetwork':
+        if trustlet.helpers.get_name( self ) == 'WikiNetwork':
             return None
 
         if hasattr(self, "_weights_dictionary") and self._weights_dictionary:
