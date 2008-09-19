@@ -15,7 +15,7 @@ USAGE:
 '''
 
 from xml import sax
-from trustlet.Dataset.Network import Network
+from trustlet.Dataset.Network import Network,WeightedNetwork
 from trustlet.helpers import *
 from networkx import write_dot
 from string import index, split
@@ -425,18 +425,25 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         return (self.nodes,self.edges)
 
 
-def getRevertGraph( rList ):
+def getRevertGraph( PageList ):
     """
+    the list must be ordered in cronological order
     to test
+
+    list = [ [('a1122dd','user1'),('a1111dd','user2'),('a1122dd','user1')], [('ee1133','user3'),('dafxed','user4'),('ee1133','user4')] ]
     """
     G = WeightedNetwork( )
     
     def getBeforeVersion( toCmp ):
-        min = []
+        #usare weight!! don't work
+        min = None
+        l = len(sHistory)
+        print sHistory
+        print toCmp[ts],l
 
-        for y in SHistory:
-            if y[page] == toCmp[page]:
-                min = y[ts]
+        for i in range( 0,toCmp[ts] ):
+            if sHistory[i][page] == toCmp[page]:
+                min = sHistory[i][ts]
             else:
                 break
 
@@ -447,26 +454,31 @@ def getRevertGraph( rList ):
     user = 1
     ts = 2 #time stamp
 
-    history = [(a,b,x) for (x,(a,b)) in enumerate(rList)]
-    sHistory = history
-    sHistory.sort(reverse=True)
+    for rList in PageList:
+
+        history = [(a,b,x) for (x,(a,b)) in enumerate(rList)]
+        sHistory = sorted( history, reverse=True )
     
-    for x in sHistory:
-        max = x[ts]
-        min = getBeforeVersion( x )
-
-        for i in xrange( min, max ):
-
-            if x[page] == history[i][page]:
-                continue 
-
-            try:
-                val = G.get_edge( max[user], history[i][user] )
-            except NetworkXError:
-                G.add_edge( max[user], history[i][user], 1 )
-                continue
+        for x in sHistory:
+            max = x[ts]
+            min = getBeforeVersion( x )
             
-            G.add_edge( max[user], history[i][user], val+1 )
+            if min == None:
+                print "OOps min == None! not good"
+                continue
+
+            for i in xrange( min, max ):
+
+                if x[page] == history[i][page] or x[name] == history[i][name]:
+                    continue 
+
+                try:
+                    val = G.get_edge( max[user], history[i][user] )
+                except NetworkXError:
+                    G.add_edge( max[user], history[i][user], 1 )
+                    continue
+            
+                G.add_edge( max[user], history[i][user], val+1 )
         
 
     return G
@@ -524,7 +536,7 @@ def getCollaborators( rawWikiText, lang ):
     return weight( resname )
 
 
-def weight( list ):
+def weight( list, diz=False ):
     """
     takes a list of object and search for each object
     other occurrences of object equal to him.
@@ -536,28 +548,41 @@ def weight( list ):
       weight( ["mario","pluto","mario"] )
       ---> [("mario",2),("pluto",1)]
     """
-    listweight = []
+    if diz:
+        listweight = {}
+    else:
+        listweight = []
     tmp = list
 
-    def update( list, val ):
-        find = False
+    def update( list, val, diz=False ):
 
-        for x in xrange(len(list)):
-            if list[x][0] == val:
-                find = True
-                break
+        if diz:
+            if list.has_key(val):
+                new = list.get(val)
+                new += 1
+                list[val] = new
+            else:
+                list[val] = 1
 
-        if find:
-            new = list[x][1] + 1
-            del list[x]
-            list.append( (val,new) )
         else:
-            list.append( (val,1) )
+            find = False
+            
+            for x in xrange(len(list)):
+                if list[x][0] == val:
+                    find = True
+                    break
+
+            if find:
+                new = list[x][1] + 1
+                del list[x]
+                list.append( (val,new) )
+            else:
+                list.append( (val,1) )
 
         return
 
     for x in tmp:
-        update( listweight, x )
+        update( listweight, x, diz=diz )
 
     return listweight
 
