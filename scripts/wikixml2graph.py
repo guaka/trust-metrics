@@ -427,22 +427,29 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
 def getRevertGraph( PageList ):
     """
-    the list must be ordered in cronological order
-    to test
-
-    list = [ [('a1122dd','user1'),('a1111dd','user2'),('a1122dd','user1')], [('ee1133','user3'),('dafxed','user4'),('ee1133','user4')] ]
+    This function create a Revert Graph starting from a list
+    of tuple with (md5_of_revision,author_of_revision)
+    the list must be ordered in cronological order.
+    If you want to know more about revert graph go to
+    http://www.trustlet.org/wiki/Understanding_Social_Dynamics_in_Wikipedia_with_Revert_Graph
+    Parameters:
+       PageList: list of tuple cronological ordered, so formed (md5_of_revision,author_of_revision)
+    
+    return: a WeightedNetwork with the Revert Graph
     """
+    #list = [ [('a1122dd','user1'),('a1111dd','user2'),('a1122dd','user1')], [('ee1133','user3'),('dafxed','user1'),('xx','user3'),('xfsdjfa','user3'),('ee1133','user4')] ]
+    
     G = WeightedNetwork( )
     
-    def getBeforeVersion( toCmp ):
-        #usare weight!! don't work
+    def getBeforeVersion( index ):
+        """
+        Get the previously (cronologically) version of page that is equal to this version.
+        Is used the sHistory, to improve performance (the algorithm doesn't scan all the list)
+        """
         min = None
-        l = len(sHistory)
-        print sHistory
-        print toCmp[ts],l
 
-        for i in range( 0,toCmp[ts] ):
-            if sHistory[i][page] == toCmp[page]:
+        for i in range( index , -1 , -1 ): #from ts of toCmp to 0.. es. toCmp, toCmp-1, toCmp-2 ... 0
+            if sHistory[i][page] == sHistory[index][page]:
                 min = sHistory[i][ts]
             else:
                 break
@@ -451,34 +458,45 @@ def getRevertGraph( PageList ):
 
     #label. it's only use is to make more user friendly the code
     page = 0
-    user = 1
-    ts = 2 #time stamp
+    user = 2
+    ts = 1 #time stamp
 
-    for rList in PageList:
+    for rList in PageList: #for all pages
 
-        history = [(a,b,x) for (x,(a,b)) in enumerate(rList)]
-        sHistory = sorted( history, reverse=True )
-    
-        for x in sHistory:
+        history = [(a,x,b) for (x,(a,b)) in enumerate(rList)]
+        sHistory = sorted( history ) #sorted history, (useful to reduce the time of computation)
+        lsHistory = len( sHistory )
+        
+        for i in xrange(lsHistory):
+            x = sHistory[i]
+
+            #min and max is the lowerbound and upperbound revision in history, 
+            #min and max has the same md5, between this value there are the reverts.
             max = x[ts]
-            min = getBeforeVersion( x )
+            min = getBeforeVersion( i )
+            
+            if min > max: #then there aren't before version
+                min = max #fix this particular case
+
             
             if min == None:
                 print "OOps min == None! not good"
                 continue
 
-            for i in xrange( min, max ):
+            for i in xrange( min, max ): #add all edges if not contraddictory
 
-                if x[page] == history[i][page] or x[name] == history[i][name]:
+                if x[page] == history[i][page] or x[user] == history[i][user]:
                     continue 
 
-                try:
-                    val = G.get_edge( max[user], history[i][user] )
+                #if there isn't the edge, create it with weight 1
+                #else update edge, and sum 1 to the current weight
+                try: 
+                    val = G.get_edge( x[user], history[i][user] )
                 except NetworkXError:
-                    G.add_edge( max[user], history[i][user], 1 )
+                    G.add_edge( x[user], history[i][user], 1 )
                     continue
             
-                G.add_edge( max[user], history[i][user], val+1 )
+                G.add_edge( x[user], history[i][user], val+1 )
         
 
     return G
@@ -510,9 +528,8 @@ def getCollaborators( rawWikiText, lang ):
         #begin of the username
         start = iu + io
         #find end of username with regex
-        #username = re.findall( "[àòèéùìa-zA-Z0-9.-]+",rawWikiText[start:] )[0] # ¡bug!
         username = re.findall( "[^]|&/]+",rawWikiText[start:] )[0]
-        #print 'debug',username
+        
         if username == '' or username == None:
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
