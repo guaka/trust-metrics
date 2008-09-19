@@ -39,10 +39,13 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, base_path = None):
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None, savememory = False):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
+        savememory:
+           increase of 12% time to load graph, but maybe it saves some memory
+           (it's difficult to verify that because Python calls GC when it wants)
         '''
 
         XDiGraph.__init__(self, multiedges = False)
@@ -50,6 +53,8 @@ class Network(XDiGraph):
             self.path = os.path.join(dataset_dir(base_path), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
+                
+        self.savememory = savememory
 
         if from_graph:
             self.paste_graph(from_graph)
@@ -205,22 +210,25 @@ class Network(XDiGraph):
            graph: the graph
            avoidset: the set object that contains all the nodes leaved out from the copying
         """
-        
+    
+        if self.savememory:
+            add_edge = lambda e: self.add_edge((e[0],e[1],pool(e[2])))
+        else:
+            add_edge = lambda e: self.add_edge(e)
+
         if avoidset:
             for node in [x for x in graph.nodes_iter() if x not in avoidset]:
                 self.add_node(node)
 
-            for edge in [x for x in graph.edges_iter() if (x[0] not in avoidset) and (x[1] not in avoidset)]:
-                self.add_edge(edge)
+            for edge in [x for x in graph.edges_iter() if x[0] not in avoidset and x[1] not in avoidset]:
+                add_edge(edge)
         else:
             for node in graph.nodes_iter():
                 self.add_node(node)
 
             for edge in graph.edges_iter():
-                self.add_edge(edge)
+                add_edge(edge)
     
-
-
     def _paste_graph(self, graph, avoidset=None):
         """Deprecated."""
         self.paste_graph(graph, avoidset)
@@ -279,8 +287,8 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, has_discrete_weights = True, base_path = None):
-        Network.__init__(self, base_path=base_path)
+    def __init__(self, has_discrete_weights = True, base_path = None,savememory = False):
+        Network.__init__(self, base_path=base_path,savememory=savememory)
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
 
@@ -433,8 +441,10 @@ class WikiNetwork(WeightedNetwork):
     NB: if you would know what kind of network are hosted on www.trustlet.org invoke getNetworkList() from trustlet.helpers
     """
         
-    def __init__(self, lang, date, current=False, bots=True, base_path = None, dataset = None, upthreshold = 20, force = False, download=True):
-        WeightedNetwork.__init__(self,base_path=base_path )
+    def __init__(self, lang, date, current=False, bots=True, base_path = None,
+                 dataset = None, upthreshold = 20, force = False, download=True,
+                 savememory = False):
+        WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory)
         
         assert trustlet.helpers.isdate(date)
 
@@ -628,4 +638,6 @@ class WikiNetwork(WeightedNetwork):
         print 'Graph saved in',self.path
         
 if __name__ == "__main__":
-    pass
+    from trustlet import *
+    W = WikiNetwork('it','2008-06-26')
+    #raw_input('Press enter key.')

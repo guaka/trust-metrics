@@ -11,7 +11,7 @@ import time
 import marshal
 #cache
 import md5
-import pickle
+import cPickle as pickle
 from gzip import GzipFile
 from socket import gethostname
 
@@ -1191,9 +1191,41 @@ def getNetworkList( datasetPath ):
                 sline = os.path.split( sline )[0]
 
     return paths
+
+def pool(o,poolname='generic'):
+    '''
+    This function is useful to save memory if `o' is a
+    read-only and mutability object.
+    If `o' is in pool, this function return it without
+    waste memory.
+    '''
+    poolname = 'pool_'+poolname
+    if not globals().has_key(poolname):
+        globals()[poolname] = {}
+    pool = globals()[poolname]
+    key = hashable(o)
+    
+    if key in pool:
+        return pool[key]
+    pool[key] = o
+    return o
     
 if __name__=="__main__":
     from trustlet import *
-    from pprint import pprint
-    k = AdvogatoNetwork(date="2008-05-12",download=True)
-    testTM( k )
+    #test pool
+    q = {1:2,2:2,3:2}
+    w = {1:2,2:2,3:2}
+    e = {1:2,2:2,3:2}
+    r = {1:1,2:1,3:1}
+    t = {1:3,2:3,3:3}
+
+    l = []
+    l.append(pool(q))
+    l.append(pool(w))
+    l.append(pool(e))
+    l.append(pool(r))
+    l.append(pool(t))
+
+    t['qweqwe'] = 1
+
+    print l
