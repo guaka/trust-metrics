@@ -330,7 +330,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 # add node
                 W.add_node(node(a))
                 #add edges
-                W.add_edge(node(user),node(a),{'value':str(num_edit)})
+                W.add_edge(node(user),node(a),pool({'value':str(num_edit)}))
                 
         return W
 
@@ -387,7 +387,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
                 self.nodes.append(self.lusername)
             for u,n in collaborators:
                 self.network.add_node(node(u))
-                self.network.add_edge(node(u),node(self.lusername),{'value':str(n)})
+                self.network.add_edge(node(u),node(self.lusername),pool({'value':str(n)}))
                 self.edges.append( (u,self.lusername,n) )
         elif name == u'title':
 
