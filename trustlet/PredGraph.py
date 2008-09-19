@@ -498,10 +498,7 @@ class PredGraph(CalcGraph):
 
             abs = None
             diz = {'controversiality_level':max} #cache
-                #default cannot be considered
-            if indegree != 5:
-                    #into keys for the cache
-                diz['indegree'] = indegree
+            diz['indegree'] = indegree
 
             if cond != None:
                 diz['condition'] = cond.__name__
@@ -527,7 +524,8 @@ class PredGraph(CalcGraph):
 
                     else:
                         abs = load( diz,
-                                    os.path.join(self.path, cachename )
+                                    os.path.join(self.path, cachename ),
+                                    fault=False
                                     )
 
             #if the result is cached
