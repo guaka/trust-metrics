@@ -44,8 +44,9 @@ class Network(XDiGraph):
         Create directory for class name if needed
         base_path: the path to put dataset directory
         savememory:
-           increase of 12% time to load graph, but maybe it saves some memory
-           (it's difficult to verify that because Python calls GC when it wants)
+           decrease of ~9% time to load graph, and it saves some memory
+           (50MB (on 300MB) in Italian Wiki graph)
+           *but* we can't modify edges after graph creation.
         '''
 
         XDiGraph.__init__(self, multiedges = False)
@@ -451,6 +452,11 @@ class WikiNetwork(WeightedNetwork):
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang; self.date = date; self.current = current; self.upthreshold = upthreshold; self.bots = bots; self.botset = None
 
+        if savememory:
+            add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
+        else:
+            add_edge = lambda e: self.add_edge(e)
+
         if current:
             filename = "graphCurrent"
         else:
@@ -501,7 +507,7 @@ class WikiNetwork(WeightedNetwork):
                     for u,v,e in [x for x in edges if (x[0] not in botset) or (x[1] not in botset)]:
                         self.add_node(u)
                         self.add_node(v)
-                        self.add_edge(u,v,{'value':e})
+                        add_edge((u,v,{'value':e}))
                         
                 else:
                     #if botset is None
@@ -513,7 +519,7 @@ class WikiNetwork(WeightedNetwork):
                 for u,v,e in edges:
                     self.add_node(u)
                     self.add_node(v)
-                    self.add_edge(u,v,{'value':e})
+                    add_edge((u,v,{'value':e}))
                     
         else:
             if os.path.exists( self.filepath+'.c2' ):
@@ -639,5 +645,5 @@ class WikiNetwork(WeightedNetwork):
         
 if __name__ == "__main__":
     from trustlet import *
-    W = WikiNetwork('it','2008-06-26')
-    #raw_input('Press enter key.')
+    W = WikiNetwork('it','2008-06-26',savememory=0)
+    raw_input('Press enter key.')
