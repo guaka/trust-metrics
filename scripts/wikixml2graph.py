@@ -434,7 +434,7 @@ def getRevertGraph( PageList ):
     http://www.trustlet.org/wiki/Understanding_Social_Dynamics_in_Wikipedia_with_Revert_Graph
     Parameters:
        PageList: list of tuple cronological ordered, so formed (md5_of_revision,author_of_revision)
-    
+       
     return: a WeightedNetwork with the Revert Graph
     """
     #list = [ [('a1122dd','user1'),('a1111dd','user2'),('a1122dd','user1')], [('ee1133','user3'),('dafxed','user1'),('xx','user3'),('xfsdjfa','user3'),('ee1133','user4')] ]
