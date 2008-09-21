@@ -772,7 +772,7 @@ class CalcWikiGraph(CalcGraph):
                 
             self.basePath,self.relpath = relative_path( self.filepath, 'datasets' )
 
-            self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', self.relpath ) 
+            self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( self.relpath )[0] )
             self.filename = os.path.split(self.filepath)[1]
             
             if download:

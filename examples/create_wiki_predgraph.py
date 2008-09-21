@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 from trustlet import *
+import os
 
-w = WikiNetwork( 'la', '2008-07-12', current=True)
+w = WikiNetwork( 'la', '2008-08-01', current=False)
 tm = TrustMetric( w , ebay_tm )
 p = WikiPredGraph( tm )
 
@@ -18,7 +19,9 @@ print ""
 print "Creating graph with controversial users..."
 gc = p.graphcontroversiality(indegree=1,toe="mae")
 
-prettyplot( data=gc, path="./WikiPredGraphExamples.gnuplot", title="Level of abs error for each level of controversiality", 
-            x_label="controversiality",y_label="abs error", plotnow=True, showlines=True)
+
+print "The gnuplot and png file were created in", os.path.abspath( "." ), "folder"
+prettyplot( gc, "./WikiPredGraphExamples.gnuplot", title="Level of abs error for each level of controversiality", 
+            showlines=True, xlabel='controversiality',ylabel='abs error', plotnow=True )
 
 print "WikiPredGraphExamples.gnuplot file created"
