@@ -5,6 +5,7 @@
 USAGE:
    ./wikixml2graph.py xml_file [--history|--current] lang date
       [base_path|real<real_path>] [--hash] [--input-size bytes]
+      [--distrust]
           Default base_path = home dir
           If base_path starts with 'real' graph will save in real_path
           If lang and date are both '-' wikixml2dot will
@@ -12,6 +13,7 @@ USAGE:
           If xml_file is - it will use stdin
           If xml_file is no-graph will insert only lists of users in .c2
           input-size: useful if xml_file is stdin
+          distrust: force distrust graph creation (input file must be pages-meta-history)
 '''
 
 from xml import sax
@@ -87,9 +89,16 @@ def main():
     else:
         inputsize = None
 
+    if '--distrust' in argv:
+        argv.remove('--distrust')
+        distrust = True
+    else:
+        distrust = False
+
     if len(argv[1:]) >= 3:
 
         xml,lang,date = argv[1:4]
+        filename = None
         if xml == '-':
             xml = stdin
             size = None
@@ -97,6 +106,7 @@ def main():
         elif xml == 'no-graph':
             nograph = True
         else:
+            filename = os.path.split(xml)[1] #rm dir
             nograph = False
             size = os.stat(xml).st_size
             if (lang,date) == ('-','-'):
@@ -127,7 +137,7 @@ def main():
         output = os.path.join(path,outputname+'.c2')
 
         if not nograph:
-            ch = WikiContentHandler(lang,xmlsize=size)
+            ch = WikiContentHandler(lang,xmlsize=size,inputfilename=filename,forcedistrust=distrust)
 
             sax.parse(xml,ch)
 
@@ -135,6 +145,21 @@ def main():
 
             assert save({'network':'Wiki','lang':lang,'date':date},pynet,output)
             #write_dot(pynet,os.path.join(path,outputname+'.dot'))
+
+            if hasattr(ch,'distrust') and ch.distrust:
+                net = ch.getDistrustGraph()
+
+                nodes = set(net.nodes())
+                edges = net.edges()
+
+                #if a node is in edges, isn't useful keep it in nodes
+                for e in edges:
+                    nodes.discard(e[0])
+                    nodes.discard(e[1])
+
+                assert save({'network':'DistrustWiki','lang':lang,'date':date},
+                            (list(nodes),edges),
+                            os.path.join(path,'graphDistrust.c2'))
 
         users,bots,blockedusers = get_list_users(lang,
                                                  os.path.join(base_path,'datasets','WikiNetwork'))
@@ -254,13 +279,14 @@ def get_list_users(lang,cachepath=None,force=False):
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang,xmlsize=None):
+    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
         
         #print info
         self.xmlsize = xmlsize
+        self.inputfilename = inputfilename
         self.count = 0
         self.last_perc_print=''
 
@@ -269,6 +295,17 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
         self.pages = []
         self.allusers = set()
+        self.distrust = False
+
+        if inputfilename:
+            assert 'history' in inputfilename
+
+        if inputfilename and 'pages-meta-history' in inputfilename or forcedistrust:
+            print "I'll create distrust graph"
+            self.distrust = True
+
+            self.dpages = [] #distrust pages list
+
 
     def startElement(self,name,attrs):
         
@@ -279,20 +316,34 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         elif name == u'title':
             self.read = u'title'
             self.ltitle = u''
+
+        elif self.distrust:
+            #distrust network
+            if name == 'page':
+                self.dpages.append([])
+            elif name == u'contributor':
+                self.lusername = ''
+                #clear username (obsolete)
+            elif name == u'text':
+                self.read = 'text'
+                self.ltext = ''
+            else:
+                self.read = False
         else:
             self.read = False
 
     def endElement(self,name):
 
-        if name == u'username' and self.validdisc:
+        if name == u'username':
+            if self.validdisc:
 
-            d = self.pages[-1][1]
-            if self.lusername != self.pages[-1][0]:
-                #remove edges: userX -> userX
-                if d.has_key(self.lusername):
-                    d[self.lusername] += 1
-                else:
-                    d[self.lusername] = 1
+                d = self.pages[-1][1]
+                if self.lusername != self.pages[-1][0]:
+                    #remove edges: userX -> userX
+                    if d.has_key(self.lusername):
+                        d[self.lusername] += 1
+                    else:
+                        d[self.lusername] = 1
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
@@ -308,17 +359,24 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             if title[0] in (i18n[self.lang][1],i18n[self.lang][0]) and title[1]==':' and title[2]:
                 self.allusers.add(title[2])
 
+        elif name == u'text':
+            if self.lusername:
+                #print 'DEBUG',self.lusername #,md5.new(self.ltext).hexdigest()
+                self.dpages[-1].append((md5.new(self.ltext).digest(),self.lusername))
+
     def characters(self,contents):
         if self.read == u'username':
             self.lusername += contents.strip()
         elif self.read == u'title':
             self.ltitle += contents.strip()
+        elif self.distrust and self.read == u'text':
+            self.ltext += contents
 
         if self.xmlsize:
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
-                print '>%d%% ~%d%%'%(perc,perc*100/48)
+                print '>%d%%'%perc
                 self.last_perc_print = perc
 
     def getNetwork(self):
@@ -347,15 +405,21 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 
         return (nodes,edges)
 
+    def getDistrustGraph(self):
+        assert self.distrust
+        
+        return getRevertGraph(self.dpages)
+
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang,xmlsize=None):
+    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
         self.read = False
         self.validdisc = False # valid discussion
         self.xmlsize = xmlsize
+        self.inputfilename = inputfilename
         self.count = 0
         self.last_perc_print = ''
 
@@ -364,6 +428,10 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.network = Network()
         self.edges = []
         self.nodes = []
+
+        
+        if inputfilename:
+            assert 'current' in inputfilename
 
     def startElement(self,name,attrs):
         
@@ -435,7 +503,7 @@ def getRevertGraph( PageList ):
     Parameters:
        PageList: list of tuple cronological ordered, so formed (md5_of_revision,author_of_revision)
        
-    return: a WeightedNetwork with the Revert Graph
+    return: a WeightedNetwork with the Revert Graph (weight on edge is an int)
     """
     #list = [ [('a1122dd','user1'),('a1111dd','user2'),('a1122dd','user1')], [('ee1133','user3'),('dafxed','user1'),('xx','user3'),('xfsdjfa','user3'),('ee1133','user4')] ]
     

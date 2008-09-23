@@ -1198,6 +1198,7 @@ def pool(o,poolname='generic'):
     read-only and mutability object.
     If `o' is in pool, this function return it without
     waste memory.
+    poolname is the pool to use.
     '''
     poolname = 'pool_'+poolname
     if not globals().has_key(poolname):
