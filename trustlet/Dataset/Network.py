@@ -10,6 +10,7 @@ Each network supported has it's own class to wrap it.
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
 import trustlet
+import networkx
 
 import os,re
 from networkx.xdigraph import XDiGraph
@@ -475,7 +476,7 @@ class WikiNetwork(WeightedNetwork):
 
         path,relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
         #                                  the first value is the name of the file
-        self.url = os.path.join( self.url, os.path.split(relpath)[0] )
+        self.url = os.path.join( self.url, os.path.split(relpath)[0])
 
         if download:
             self.download_dataset( self.url , self.filepath+'.c2')
@@ -504,7 +505,7 @@ class WikiNetwork(WeightedNetwork):
                 if botset:
                     for u in [x for x in nodes if x not in botset]:
                         self.add_node(u)
-                    for u,v,e in [x for x in edges if (x[0] not in botset) or (x[1] not in botset)]:
+                    for u,v,e in [x for x in edges if x[0] not in botset or x[1] not in botset]:
                         self.add_node(u)
                         self.add_node(v)
                         add_edge((u,v,{'value':e}))
@@ -642,8 +643,34 @@ class WikiNetwork(WeightedNetwork):
                                     title='Frequency weights histogram',
                                     histogram=True)
         print 'Graph saved in',self.path
-        
+
+    def load_distrust(self):
+        filepath = os.path.join(self.path,'graphDistrust.c2')
+
+        pynet = trustlet.helpers.load({'network':'DistrustWiki','lang':self.lang,'date':self.date}, filepath)
+        if not pynet:
+            print "Distrust graph doesn't exist"
+            return
+
+        nodes,edges = pynet
+
+        for n in nodes:
+            self.add_node(n)
+
+        for e in edges:
+            self.add_node(e[0])
+            self.add_node(e[1])
+            
+            try:
+                weight = self.get_edge(e[0],e[1])
+            except networkx.NetworkXError:
+                weight = {}
+
+            weight['distrust'] = e[2]
+
+            self.add_edge(e[0],e[1],weight)
+
 if __name__ == "__main__":
     from trustlet import *
-    W = WikiNetwork('it','2008-06-26',savememory=0)
-    raw_input('Press enter key.')
+    W = WikiNetwork('fur','2008-06-14',savememory=1)
+    W.load_distrust()
