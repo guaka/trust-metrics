@@ -660,10 +660,11 @@ class WikiNetwork(WeightedNetwork):
             else:
                 data[w] = 1
             
-        trustlet.helpers.prettyplot(data.items(),os.path.join(self.path,'weights histogram'),
+        trustlet.helpers.prettyplot(data.items(),os.path.join(self.path,'weights histogram nolog'),
                                     xlabel='weights',
                                     ylabel='frequency',
                                     title='Frequency weights histogram',
+                                    #log='xy',
                                     histogram=True)
         print 'Graph saved in',self.path
 

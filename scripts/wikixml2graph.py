@@ -3,10 +3,11 @@
 
 '''
 USAGE:
-   ./wikixml2graph.py xml_file [--history|--current] lang date
+   ./wikixml2graph.py xml_file [--current] lang date
       [base_path|real<real_path>] [--hash] [--input-size bytes]
-      [--distrust]
+      [--distrust] [--threshold value|-t value]
           Default base_path = home dir
+          If --current isn't set, it'll use history xml
           If base_path starts with 'real' graph will save in real_path
           If lang and date are both '-' wikixml2dot will
               read them from file name
@@ -14,6 +15,7 @@ USAGE:
           If xml_file is no-graph will insert only lists of users in .c2
           input-size: useful if xml_file is stdin
           distrust: force distrust graph creation (input file must be pages-meta-history)
+          threshold: remove edge if weight is less then value
 '''
 
 from xml import sax
@@ -95,6 +97,18 @@ def main():
     else:
         distrust = False
 
+    threshold = 0
+    if '--threshold' in argv[:-1]:
+        i = argv.index('--threshold')
+        threshold = int(argv[i+1])
+        del argv[i+1]
+        del argv[i]
+    elif '-t' in argv[:-1]:
+        i = argv.index('-t')
+        threshold = int(argv[i+1])
+        del argv[i+1]
+        del argv[i]
+
     if len(argv[1:]) >= 3:
 
         xml,lang,date = argv[1:4]
@@ -137,14 +151,20 @@ def main():
         output = os.path.join(path,outputname+'.c2')
 
         if not nograph:
-            ch = WikiContentHandler(lang,xmlsize=size,inputfilename=filename,forcedistrust=distrust)
+            ch = WikiContentHandler(lang,xmlsize=size,
+                                    inputfilename=filename,
+                                    forcedistrust=distrust,
+                                    threshold=threshold)
 
             sax.parse(xml,ch)
 
             pynet = del_ips(ch.getPyNetwork())
 
-            assert save({'network':'Wiki','lang':lang,'date':date},pynet,output)
-            #write_dot(pynet,os.path.join(path,outputname+'.dot'))
+            cachedict = {'network':'Wiki','lang':lang,'date':date}
+            if threshold:
+                cachedict['threshold'] = threshold
+
+            assert save(cachedict,pynet,output)
 
             if hasattr(ch,'distrust') and ch.distrust:
                 net = ch.getDistrustGraph()
@@ -279,7 +299,8 @@ def get_list_users(lang,cachepath=None,force=False):
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False):
+
+    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
@@ -296,6 +317,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         self.pages = []
         self.allusers = set()
         self.distrust = False
+        self.threshold = threshold
 
         if inputfilename:
             assert 'history' in inputfilename
@@ -356,10 +378,19 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             else:
                 self.validdisc = False
             
+            # True if is a talk page or user page
             if title[0] in (i18n[self.lang][1],i18n[self.lang][0]) and title[1]==':' and title[2]:
                 self.allusers.add(title[2])
 
-        elif name == u'text':
+        elif name == u'page' and self.validdisc:
+            # erase edges if weight < self.threshold
+            d = self.pages[-1][1] # dict edges of page named pages[-1][0]
+            for k,v in d.items():
+                if v<self.threshold:
+                    del d[k]
+
+        elif self.distrust and name == u'text':
+            #distrust only
             if self.lusername:
                 #print 'DEBUG',self.lusername #,md5.new(self.ltext).hexdigest()
                 self.dpages[-1].append((md5.new(self.ltext).digest(),self.lusername))
@@ -412,7 +443,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False):
+    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
@@ -422,6 +453,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.inputfilename = inputfilename
         self.count = 0
         self.last_perc_print = ''
+        self.threshold = threshold
 
         self.allusers = set()
 
@@ -451,12 +483,13 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
             collaborators = getCollaborators(self.ltext,self.lang)
-            if not collaborators:
+            if collaborators:
                 self.nodes.append(self.lusername)
-            for u,n in collaborators:
-                self.network.add_node(node(u))
-                self.network.add_edge(node(u),node(self.lusername),pool({'value':str(n)}))
-                self.edges.append( (u,self.lusername,n) )
+                for u,n in collaborators:
+                    if n>=self.threshold:
+                        self.network.add_node(node(u))
+                        self.network.add_edge(node(u),node(self.lusername),pool({'value':str(n)}))
+                        self.edges.append( (u,self.lusername,n) )
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'

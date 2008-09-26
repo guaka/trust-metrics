@@ -278,7 +278,9 @@ def prettyplot( data, path, **args):
         title=''
         xlabel=''
         ylabel=''
-        log=False
+        log='' (logaritmic axis in a string, e.g. 'x' | 'y' | 'xy')
+            xlogscale (float)
+            ylogscale (float)
         showlines=True (old onlypoint)
         histogram=False
         x_range (from,to)
@@ -319,11 +321,20 @@ def prettyplot( data, path, **args):
     if args.has_key('histogram') and args['histogram']:
         a('set style data boxes')
     if args.has_key('log') and args['log']:
-        if type(args['log']) is float:
-            scale = args['log']
+        #set axis scales
+        if args.has_key('xlogscale'):
+            xscale = float(args['xlogscale'])
         else:
-            scale = 1.5
-        a('set logscale y %f'%scale )
+            xscale = 1.5
+        if args.has_key('ylogscale'):
+            yscale = float(args['ylogscale'])
+        else:
+            yscale = 1.5
+
+        if 'x' in args['log']:
+            a('set logscale x %f'%xscale )
+        if 'y' in args['log']:
+            a('set logscale y %f'%yscale )
     if args.has_key('xlabel'):
         a('set xlabel "%s"'%args['xlabel'])
     if args.has_key('ylabel'):
