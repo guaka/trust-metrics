@@ -305,7 +305,7 @@ class Network(XDiGraph):
         realpath = datasetpath
 
         #find the base point to add
-        while( os.system( 'svn add '+realpath+' &> /dev/null' ) != 0 ):
+        while( os.system( 'svn add "'+realpath+'" > /dev/null' ) != 0 ):
             realpath,toadd = os.path.split( realpath )
             toAddList.append( toadd )
 
@@ -313,11 +313,11 @@ class Network(XDiGraph):
 
         for i in toAddList:
             realpath = os.path.join( realpath, i )
-            if os.system( 'svn add '+realpath+' &> /dev/null' ) != 0:
+            if os.system( 'svn add "'+realpath+'" > /dev/null' ) != 0:
                 print "Warning! Cannot add",realpath, "to svn"
                 
         
-        if os.system( "svn --username anybody --password a commit -m 'automatic upload' &> /dev/null" ) == 0:
+        if os.system( "svn --username anybody --password a commit -m 'automatic upload' > /dev/null" ) == 0:
             print "upload successfully executed"
         else:
             print "upload failed!"
