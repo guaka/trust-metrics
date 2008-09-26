@@ -3,7 +3,8 @@
 This script take a list of dot files (or c2 files) that contains a graph
 and create a default path with the information stored in the name of the file.
 ex:
-robots_net-graph-2008-07-24.dot --> robots_net/2008-07-24/graph.dot
+robots_net-graph-2008-07-24.dot --> 
+Robots_netNetwork/2008-07-24/graph.dot
 
 You can use this script to automatically create a default structure for the datasets folder
 """
