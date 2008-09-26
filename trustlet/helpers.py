@@ -1146,11 +1146,11 @@ def relative_path( path, folder ):
     es.
     
     In: relative_path( '/home/ciropom/Scrivania' , 'ciropom' )
-    Out: ('/home','Scrivania/')
+    Out: ('/home/ciropom','Scrivania/')
     """
     toadd = ''; relpathlist = [] ; relpath = ''
 
-    while( os.path.split( path )[1] != folder ):
+    while( path and os.path.split( path )[1] != folder ):
         path,toadd = os.path.split( path )
         relpathlist.append( toadd )
 
@@ -1159,6 +1159,7 @@ def relative_path( path, folder ):
     for i in relpathlist:
         relpath = os.path.join( relpath, i )
         
+    assert path,'folder not in path'
     return (path,relpath)
 
 
@@ -1221,6 +1222,29 @@ def pool(o,poolname='generic'):
         return pool[key]
     pool[key] = o
     return o
+
+def svn_update(path):
+    """
+    update svn of path
+    """
+
+    curdir = os.path.abspath('.')
+    if os.path.isfile(path):
+        path,name = os.path.split(path)
+    else:
+        name = ''
+
+    try:
+        os.chdir( path )
+    except OSError:
+        return False
+
+    res =  not os.system( "svn --username anybody --password a up %s > /dev/null" % name )
+
+    # reset directory
+    os.chdir(curdir)
+    return res
+
     
 if __name__=="__main__":
     from trustlet import *

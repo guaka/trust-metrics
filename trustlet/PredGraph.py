@@ -83,51 +83,6 @@ class CalcGraph(Network):
                 self._rescale()
         
         print "Init took", hms(time.time() - self.start_time)
-    
-
-    def _upload(self, basepath, datasetpath):
-        """
-        upload to svn the dataset passed.
-        Parameters:
-           basepath: path to 'datasets' folder, the root svn directory
-           datasetpath: path to dataset c2 file, relative to basepath
-           
-           NB: to create this two path from the abs path of the dataset
-               you can use the relative_path function in trustlet.helpers
-        """
-        print "Try to upload the dataset.. this operation may take a while."
-
-        #go in the dataset path.. important because else the svn command don't work
-        try:
-            os.chdir( os.path.realpath(basepath) )
-        except OSError:
-            print "This path",os.path.realpath(basepath), "does not exists"
-            print "Upload Aborted"
-            return
-
-        toAddList = []
-        realpath = datasetpath
-
-        #find the base point to add
-        while( os.system( 'svn add '+realpath+' &> /dev/null' ) != 0 ):
-            realpath,toadd = os.path.split( realpath )
-            toAddList.append( toadd )
-
-        toAddList.reverse()
-
-        for i in toAddList:
-            realpath = os.path.join( realpath, i )
-            if os.system( 'svn add '+realpath+' &> /dev/null' ) != 0:
-                print "Warning! Cannot add",realpath, "to svn"
-                
-        
-        if os.system( "svn --username anybody --password a commit -m 'automatic upload' &> /dev/null" ) == 0:
-            print "upload successfully executed"
-        else:
-            print "upload failed!"
-        return
-        
-
         
     def get_name(self):
         """Override get_name."""

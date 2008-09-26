@@ -20,8 +20,8 @@ if not 'install' in sys.argv[1:]:
     print "To install, run 'python setup.py install'"
     print
 
-if sys.version_info[:2] < (2, 3):
-    print "trustlet requires Python version 2.3 or later (%d.%d detected)." % \
+if sys.version_info[:2] < (2, 5):
+    print "trustlet requires Python version 2.5 or later (%d.%d detected)." % \
           sys.version_info[:2]
     sys.exit(-1)
 
@@ -34,7 +34,7 @@ data = [# (docdirbase, glob("doc/*.txt")),
         # (os.path.join(docdirbase, 'data'),glob("doc/data/*ls")),
         ]
 
-package_data     = {'': ['*.txt'],} 
+package_data     = {'': ['*.txt'],}
 
 
 dependencies = ['igraph',
@@ -44,7 +44,7 @@ dependencies = ['igraph',
                 'numpy',
                 'scipy',
                 'python-gnuplot'
-                ]  
+                ]
 
 pkg = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset']
 
@@ -58,11 +58,11 @@ setup(	name = 'trustlet',
 	platforms = ["any"],
         # see http://www.python.org/pypi?%3Aaction=list_classifiers
 	classifiers = ['Development Status :: 2 - Pre-Alpha',
-                       'Intended Audience :: Science/Research', 
-                       'License :: OSI Approved :: GNU General Public License (GPL)', 
-                       'Natural Language :: English',			
-                       'Operating System :: Linux/OSX',		
-                       'Programming Language :: Python',		
+                       'Intended Audience :: Science/Research',
+                       'License :: OSI Approved :: GNU General Public License (GPL)',
+                       'Natural Language :: English',
+                       'Operating System :: Linux/OSX',
+                       'Programming Language :: Python',
                        'Topic :: Scientific/Engineering :: Visualization',
                        'Topic :: Software Development :: Libraries :: Python Modules'
                        ],
@@ -83,6 +83,14 @@ if False:
 print "Now we try to checkout all the datasets from www.trustlet.org This operation maybe longer."
 
 #THE UPLOAD DOESN'T WORK IF CHECKED OUT A EMPTY REVISION... :(
+
+print """ \
+An internet connection is required to install Trustlet. If there isn't connection
+datasets will not be downloaded. You can create yourself with wikixml2graph script
+(in scripts directory).
+
+"""
+
 print "If you have always the internet connection enabled, when the datasets were used"
 print "they can be automatically downloaded from www.trustlet.org, and then you don't need"
 print "to check out all of them now. But if you think to work on a isolate pc"
@@ -91,16 +99,11 @@ print "Moreover if you don't download all datasets now, the upload of your calcu
 print ""
 print "RECCOMENDED: download now (if you don't download an this is the 0.1.1 version, you cannot upload)"
 print "QUESTION: Do you want to download all the datasets now? [N,y]"
-c = raw_input()
-#c = 'y'
 
-print "Important: Do not stop this operation"
-if 'y' in c:
-    print "Wait this operation maybe longer... Try to download datasets"
-    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
-else:
-    print "Wait a moment please.. Try to download datasets.."
-    os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets -r 24' ) #19 and 24 are empty revision
+print "Important: Do not stop this operation!"
+
+print "Wait this operation maybe longer... Try to download datasets"
+os.system( 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn trustlet/datasets' )
 
 os.chdir( './trustlet' )
 os.system( 'chmod -Rf 777 ./datasets' )
