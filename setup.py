@@ -98,7 +98,6 @@ print "without an internet connection, is better to download all now."
 print "Moreover if you don't download all datasets now, the upload of your calculated datasets don't work."
 print ""
 print "RECCOMENDED: download now (if you don't download an this is the 0.1.1 version, you cannot upload)"
-print "QUESTION: Do you want to download all the datasets now? [N,y]"
 
 print "Important: Do not stop this operation!"
 

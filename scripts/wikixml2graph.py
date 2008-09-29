@@ -5,7 +5,7 @@
 USAGE:
    ./wikixml2graph.py xml_file [--current] lang date
       [base_path|real<real_path>] [--hash] [--input-size bytes]
-      [--distrust] [--threshold value|-t value]
+      [--distrust] [--threshold value|-t value] [--no-lists]
           Default base_path = home dir
           If --current isn't set, it'll use history xml
           If base_path starts with 'real' graph will save in real_path
@@ -16,6 +16,7 @@ USAGE:
           input-size: useful if xml_file is stdin
           distrust: force distrust graph creation (input file must be pages-meta-history)
           threshold: remove edge if weight is less then value
+          no-lists: don't download list of users from wikipedia.org
 '''
 
 from xml import sax
@@ -109,6 +110,12 @@ def main():
         del argv[i+1]
         del argv[i]
 
+    if '--no-lists' in argv:
+        argv.remove('--no-lists')
+        downloadlists = False
+    else:
+        downloadlists = True
+
     if len(argv[1:]) >= 3:
 
         xml,lang,date = argv[1:4]
@@ -161,10 +168,23 @@ def main():
             pynet = del_ips(ch.getPyNetwork())
 
             cachedict = {'network':'Wiki','lang':lang,'date':date}
-            if threshold:
+            if threshold>1:
                 cachedict['threshold'] = threshold
 
+            # x^th percentile
+            edges = pynet[1]
+            edges.sort(lambda x,y: cmp(x[2],y[2]))
+            perc90 = edges[len(edges)*9/10][2]
+            perc95 = edges[len(edges)*95/100][2]
+            #print [x[2] for x in edges[len(edges)*95/100:]]
+
             assert save(cachedict,pynet,output)
+            
+            cachedict['%'] = 90
+            assert save(cachedict,perc90,output)
+            cachedict['%'] = 95
+            assert save(cachedict,perc95,output)
+            del cachedict['%']
 
             if hasattr(ch,'distrust') and ch.distrust:
                 net = ch.getDistrustGraph()
@@ -180,6 +200,9 @@ def main():
                 assert save({'network':'DistrustWiki','lang':lang,'date':date},
                             (list(nodes),edges),
                             os.path.join(path,'graphDistrust.c2'))
+
+        if not downloadlists:
+            return
 
         users,bots,blockedusers = get_list_users(lang,
                                                  os.path.join(base_path,'datasets','WikiNetwork'))

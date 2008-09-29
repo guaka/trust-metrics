@@ -521,7 +521,7 @@ class WikiNetwork(WeightedNetwork):
         #load from cache
         print "Reading ", self.filepath+'.c2'
         cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
-        if threshold:
+        if threshold<=1:
             cachedict['threshold'] = threshold
         #if not bots:
         #    cachedict['users'] = 'nobots'
