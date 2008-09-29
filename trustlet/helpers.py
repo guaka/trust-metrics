@@ -1223,7 +1223,7 @@ def pool(o,poolname='generic'):
     pool[key] = o
     return o
 
-def svn_update(path):
+def svn_update(path,user='anybody',passwd='a'):
     """
     update svn of path
     """
@@ -1239,7 +1239,12 @@ def svn_update(path):
     except OSError:
         return False
 
-    res =  not os.system( "svn --username anybody --password a up %s > /dev/null" % name )
+    if user:
+        user = ' --username '+user
+    if passwd:
+        passwd = ' --password '+passwd
+
+    res =  not os.system( "svn%s%s up %s > /dev/null" % (user,passwd,name) )
 
     # reset directory
     os.chdir(curdir)
