@@ -430,12 +430,17 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
     """
 
     def plot(data):
-        prettyplot( map(lambda x:(x[1],x[0]), data) , path+'BestMoletrustGraphic' )
-        prettyplot( map(lambda x:(x[1],x[-1]), data) , path+'BestMoletrusTimeGraphic', log=False, ylabel='time [s]', title='Time of computation' )
+        prettyplot( map(lambda x:(x[1],x[0]), data) , path+'BestMoletrustGraphic', showlines=True )
+        prettyplot( map(lambda x:(x[1],x[-1]), data) , path+'BestMoletrusTimeGraphic', log=False, showlines=True, ylabel='time [s]', title='Time of computation' )
                 
     path = os.path.join(K.path, "bestMoletrustParameters/" )
     cache_path = os.path.join( path,"cache.c2" )
     
+    if "Wiki" in get_name( K ):
+        advogato = False
+    else:
+        advogato = True
+
     if not os.path.exists( path ):
         os.mkdir( path )
 
@@ -474,7 +479,10 @@ def bestMoletrustParameters( K, verbose = False, bestris=True, maxhorizon = 5, f
                                                        )
                 
                             #cnt = s = 0
-                            avg = trustlet.PredGraph( tm ).abs_error()
+                            if advogato:
+                                avg = trustlet.PredGraph( tm ).abs_error()
+                            else:
+                                avg = trustlet.WikiPredGraph( tm ).abs_error()
                             #for edge in tm.dataset.edges_iter():
                             #    orig_trust = tm.dataset.trust_on_edge(edge)
                             #    pred_trust = tm.leave_one_out(edge)
@@ -659,7 +667,9 @@ def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
     
     if 'Advogato' in nname or 'Kaitiaki' in nname or 'Squeakfoundation' in nname or 'Robots_net' in nname:
         trustmetrics = getTrustMetrics( net, allAdvogato=net.level_map.keys() )
+        advogato = True
     else:
+        advogato = False
         trustmetrics = getTrustMetrics( net, advogato=False )
 	#parameters:
 	#path is the path on which to save the computation
@@ -676,8 +686,11 @@ def testTM( net, bpath=None, np=None, onlybest=False, plot = False ):
         if abs != None:
             error = abs
         else:
-            error = trustlet.PredGraph( trustmetrics[tm] ).abs_error()
-        
+            if advogato:
+                error = trustlet.PredGraph( trustmetrics[tm] ).abs_error()
+            else:
+                error = trustlet.WikiPredGraph( trustmetrics[tm] ).abs_error()
+
             save({'tm':tm},error,os.path.join( path,'cache.c2' ) )
                     
         return ( error, tm )

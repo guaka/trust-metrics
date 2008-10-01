@@ -31,7 +31,7 @@ except:
 class CalcGraph(Network):
     """Generic calculation graph class"""
     
-    def __init__(self, TM, recreate = False, predict_ratio = 1.0, download=True,upload=True):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
@@ -64,18 +64,13 @@ class CalcGraph(Network):
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( relpath )[0] ) 
             self.filename = os.path.split(self.filepath)[1]
 
-            if download:
-                self.download_dataset( self.url , self.filepath )
-
+            
             if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
                 self._read_dot(self.filepath)
                 
             else:
                 graph = self._generate()
-                self._write_pred_graph_dot(graph)
-                if upload:
-                    self._upload( self.basePath, self.relpath )
-                        
+                self._write_pred_graph_dot(graph)        
                 
             self._set_arrays()
             self._prepare()
@@ -405,8 +400,7 @@ class PredGraph(CalcGraph):
                                #maxc == 0.3 because for higher value the there aren't edges
                                maxc = 0.3, step = 0.01, 
                                force=False, cond=None, toe=None, 
-                               indegree=10, round_weight=True,
-                               download = True, upload = True
+                               indegree=10, round_weight=True
                                ):
         """
         This function save a graph with
@@ -429,11 +423,7 @@ class PredGraph(CalcGraph):
            'rmse': return a list with (controversiality,rmse) error
            'coverage':return a list with (controversiality,coverage) error
            'percentage_wrong': return a list with foreach step the (controversiality,percentage of wrong predict)
-           download: let me download the cache file used to avoid the longer calculation of the result if possible
-           the length of the list depends by the step
-           upload: let me upload the cache file to the svn server, so the other users can take this and 
-                   don't need to re-calculate it.
-        """
+           """
         
         start = 0
         end = 1
@@ -545,48 +535,11 @@ class PredGraph(CalcGraph):
 
             
             return (max, float(sum)/cnt, rmse, pw, cov, cnt)
-        
-        predgraphcontrov_path = os.path.join( self.path, 'predgraphcontrov.c2' )
-        cache_path = os.path.join( self.path, 'cache.c2' )
-        cachename = 'predgraphcontrov.c2'
 
-        if download and not ( os.path.exists( predgraphcontrov_path ) or os.path.exists( cache_path ) ):
-            if not os.path.exists( predgraphcontrov_path ):
-                print "Trying to download predgraphcontrov.c2 from www.trustlet.org..."
-                print "" #carriage return ;-)
-                
-                self.download_dataset( self.url,  predgraphcontrov_path )
 
-                if os.path.exists( predgraphcontrov_path ):
-                    downloaded = True
-                else:
-                    downloaded = False
-
-                cachename = 'predgraphcontrov.c2'
-            else:
-                print "Trying to download cache.c2 from www.trustlet.org..."
-                print "" #carriage return ;-)
-                
-                self.download_dataset( self.url, cache_path )
-                if os.path.exists( cache_path ):
-                    downloaded = True
-                else:
-                    downloaded = False
-
-                cachename = 'cache.c2'
-                
-        else:
-            downloaded = False
-        
-    
-        if os.path.exists( predgraphcontrov_path ) or os.path.exists( cache_path ):
-            cachename = ['cache.c2','predgraphcontrov.c2']
+        cachename = ['cache.c2','predgraphcontrov.c2']
 
         ls = splittask( eval, [max for max in r] )
-
-        if upload and os.path.exists( predgraphcontrov_path ) and not downloaded:
-            base,cache = relative_path( predgraphcontrov_path , "datasets" )
-            self._upload( base,cache  ) 
 
         if toe == None:
             return ls
@@ -700,7 +653,7 @@ class PredGraph(CalcGraph):
 #Wiki Prediction Graph
 
 class CalcWikiGraph(CalcGraph):
-    def __init__(self, TM, recreate = False, predict_ratio = 1.0,download=True,upload=True):
+    def __init__(self, TM, recreate = False, predict_ratio = 1.0):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction.
@@ -729,19 +682,12 @@ class CalcWikiGraph(CalcGraph):
 
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( self.relpath )[0] )
             self.filename = os.path.split(self.filepath)[1]
-            
-            if download:
-                self.download_dataset(self.url,self.filepath)
-                if os.path.exists( self.filepath+'.bz2' ):
-                    os.system( 'bzip2 -d '+self.filepath+'.bz2' )
                         
             if not recreate and os.path.exists(self.filepath):
                 graph = self._readCache(self.filepath)
             else:
                 graph = self._generate()
                 self._writeCache(graph)
-                if upload:
-                    self._upload(self.basePath,self.relpath)
                 
             self._set_arrays()
             self._prepare()
@@ -770,6 +716,7 @@ class CalcWikiGraph(CalcGraph):
         """
         read cache file
         """
+
         print "Reading ", filepath
         path,file = os.path.split( filepath )
         path,tm = os.path.split( path )
@@ -808,7 +755,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
     Create a prediction graph for the Wikipedia Network.
     The methods are the same of the PredGraph class.
     """
-    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0, download = True, upload = True):
+    def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
         
         try:
             TM.dataset
@@ -831,7 +778,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
         
 
         
-        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio, download=download, upload=upload)
+        CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
 
         self.leave_one_out = leave_one_out
         
