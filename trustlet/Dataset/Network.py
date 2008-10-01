@@ -214,7 +214,7 @@ class Network(XDiGraph):
         """
     
         if self.savememory:
-            add_edge = lambda e: self.add_edge((e[0],e[1],pool(e[2])))
+            add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
         else:
             add_edge = lambda e: self.add_edge(e)
 
@@ -494,7 +494,7 @@ class WikiNetwork(WeightedNetwork):
 
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang; self.date = date; self.current = current; self.bots = bots; self.botset = None; self._weights_dictionary = None
-        self.threshold = threshold
+        self.__upbound = None
 
         if savememory:
             add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
@@ -521,8 +521,9 @@ class WikiNetwork(WeightedNetwork):
         #load from cache
         print "Reading ", self.filepath+'.c2'
         cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
-        if threshold<=1:
+        if threshold > 1:
             cachedict['threshold'] = threshold
+
         #if not bots:
         #    cachedict['users'] = 'nobots'
 
@@ -538,8 +539,11 @@ class WikiNetwork(WeightedNetwork):
         
         if pydataset == None:
             cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
-        
-        pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
+            pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
+            if threshold > 1:
+                edges = pydataset[1]
+                edges = filter( lambda x: x[2] >= threshold, edges )
+                pydataset = (pydataset[0],edges)
 
         if pydataset:
             #now I'm sure that this network is in a c2 file
@@ -558,7 +562,7 @@ class WikiNetwork(WeightedNetwork):
                     for u,v,e in [x for x in edges if x[0] not in botset or x[1] not in botset]:
                         self.add_node(u)
                         self.add_node(v)
-                        add_edge((u,v,{'value':e}))
+                        add_edge( ( u,v,{'value':e} ) )
                         
                 else:
                     #if botset is None
@@ -570,7 +574,7 @@ class WikiNetwork(WeightedNetwork):
                 for u,v,e in edges:
                     self.add_node(u)
                     self.add_node(v)
-                    add_edge((u,v,{'value':e}))
+                    add_edge( (u,v,{'value':e}) )
                     
         else:
             if os.path.exists( self.filepath+'.c2' ):
@@ -658,19 +662,30 @@ class WikiNetwork(WeightedNetwork):
             value = int(value)
 
         #logarithm in base 3 of the value
-        l = log( value, 3 )
-        
-        if l > 1.:
+
+        if value > self.__upbound:
             return 1.
         else:
-            return l
+            return log( value , 3 ) / log( self.__upbound , 3 )
 
     def __rescale(self):
         """
         take the _weights field and rescale the value
         """
 
+        upbound = trustlet.helpers.load({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':95})
+        
+        if upbound:
+            self.__upbound = upbound
+        else:
+            s = sorted( map( lambda x: x[2]['value'] , self.edges() ) )
+            wslen = self.number_of_edges()
+            max = float(wslen) * 5 / 100
+            self.__upbound = s[wslen - int(max)]
+            
         return self.weights()
+
+
 
     def trust_on_edge(self,edge):
         """
