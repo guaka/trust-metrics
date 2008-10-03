@@ -12,7 +12,7 @@ from trustlet.powerlaw import power_exp_cum_deg_hist
 import trustlet
 import networkx
 
-import os,re
+import os
 from networkx.xdigraph import XDiGraph
 from networkx import cluster, path, component
 
@@ -410,7 +410,7 @@ class WeightedNetwork(Network):
                 table[v] = line
             return table
         else:
-            raise NotImplemented
+            raise Exception( "Not implemented" )
 
 
 
@@ -452,7 +452,7 @@ class WikiNetwork(WeightedNetwork):
 
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang; self.date = date; self.current = current; self.bots = bots; self.botset = None; self._weights_dictionary = None
-        self.threshold = threshold; self.__upbound = None
+        self.threshold = threshold; self.__upbound = None; self.blockedusers=blockedusers
 
         if savememory:
             add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
@@ -636,8 +636,8 @@ class WikiNetwork(WeightedNetwork):
         else:
             s = sorted( map( lambda x: x[2]['value'] , self.edges() ) )
             wslen = self.number_of_edges()
-            max = float(wslen) * 5 / 100
-            self.__upbound = s[wslen - int(max)]
+            maximum = float(wslen) * 5 / 100
+            self.__upbound = s[wslen - int(maximum)]
             
         return self.weights()
 

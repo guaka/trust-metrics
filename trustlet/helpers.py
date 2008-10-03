@@ -599,7 +599,7 @@ def errorTable( Network , verbose=True, sorted=False, cond=False ):
             
             
         #wrong predict,MAE,coverage,RMSE, trustmetric name
-        if cond == False:
+        if not cond:
             t.insert(cnt,
 
                     (
@@ -791,7 +791,7 @@ def splittask(function,input,np=None):
 
 """data: output of pred_graph.cont_num_of_edges()"""
 plot_cont_num_of_edges = lambda data,indegree,dirpath='.': \
-    prettylot(data,os.path.join(dirpath,'controv num of edges (indegree=%d).png'%indegree),
+    prettyplot(data,os.path.join(dirpath,'controv num of edges (indegree=%d).png'%indegree),
                title='Number of edges by controversiality (indegree=%d)'%indegree,
                xlabel='controversiality',
                ylabel='# edges',
@@ -839,10 +839,6 @@ def plot_cont_graphs(pg, dirpath='.', numbers=None):
         plot_cont_type_of_edges( fix_conttypeofedges_data(pg.cont_type_of_edges(number=i),no_observer=True),
                                  i, dirpath, no_observer=True )
 
-if False:
-    pg = PredGraph(TrustMetric(AdvogatoNetwork(date='2008-05-12'),ebay_tm))
-    values = []
-    plot_cont_num_of_edges( plot_cont_num_of_edges( pg.cont_num_of_edges(values=values) ))
 
 def xfloatrange(*args):
     """xfloatrange([start,] stop[, step]) -> list of floatss (like xrange)"""

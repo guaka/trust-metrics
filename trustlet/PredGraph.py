@@ -8,6 +8,7 @@ Analysis of trust metrics through predicting edges.
 """
 
 from Dataset.Network import Network,WikiNetwork
+from Dataset.Advogato import AdvogatoNetwork
 from helpers import *
 from TrustMetric import *
 
@@ -189,10 +190,12 @@ class PredGraph(CalcGraph):
     predicted trust is None."""
 
     def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
-        try:
-            TM.dataset
-        except AttributeError:
+        
+        
+        if not hasattr( TM , "dataset" ):
             print 'Are you sure that TM is a TM?'
+            raise AttributeError
+
         self.leave_one_out = leave_one_out
 
         #attribute tipically of WikiNetwork... I can do it better
@@ -740,6 +743,9 @@ class CalcWikiGraph(CalcGraph):
         if not self.dataset.bots:
             cachedict['bots'] = False
 
+        if not self.dataset.blockedusers:
+            cachedict['blockedusers'] = False
+
         if self.dataset.threshold > 1:
             cachedict['threshold'] = self.dataset.threshold
 
@@ -779,6 +785,9 @@ class CalcWikiGraph(CalcGraph):
         if not self.dataset.bots:
             cachedict['bots'] = False
 
+        if not self.dataset.blockedusers:
+            cachedict['blockedusers'] = False
+
         if self.dataset.threshold > 1:
             cachedict['threshold'] = self.dataset.threshold
 
@@ -792,11 +801,9 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
     """
     def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
         
-        try:
-            TM.dataset
-        except AttributeError:
+        if not hasattr( TM, "dataset" ):
             print 'Are you sure that TM is a TM?'
-
+            raise AttributeError
         
         if hasattr( TM.dataset, "url" ):
             if TM.dataset.url.find( 'advogato' ) != -1:
