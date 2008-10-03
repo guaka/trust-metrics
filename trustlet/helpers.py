@@ -1115,8 +1115,16 @@ def convert_cache(path1,path2):
     pickle.dump(newcache,GzipFile(path2,'w'))
 
 def merge_cache(path1 , path2 , mpath=None):
-    c1 = pickle.load(GzipFile(path1))
-    c2 = pickle.load(GzipFile(path2))
+
+    f1 = GzipFile(path1)
+    f2 = GzipFile(path2)
+
+    c1 = pickle.load(f1)
+    c2 = pickle.load(f2)
+
+    f1.close()
+    f2.close()
+
     c1.update(c2)
 
     if mpath:

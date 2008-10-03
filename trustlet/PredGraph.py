@@ -262,7 +262,13 @@ class PredGraph(CalcGraph):
                 # for some reason the upper line (which is neater) 
                 # doesn't work here
                 orig_value = self.dataset.get_edge(e[0], e[1]).values()[0]
-                x['orig'] = self.dataset.level_map[orig_value]
+                if hasattr( self.dataset, "level_map" ):
+                    x['orig'] = self.dataset.level_map[orig_value]
+                else:
+                    if hasattr( self.dataset, "map" ):
+                        x['orig'] = self.dataset.map( orig_value )
+                    else:
+                        raise AttributeError( "Prepare error, Cannot be able to rescale value" )
                 x['pred'] = (( (x['pred'] == 'None') or (x['pred'] == 0.0) ) and
                              UNDEFINED or float(x['pred']))
                 self.add_edge(e[0], e[1], x)
@@ -684,7 +690,13 @@ class CalcWikiGraph(CalcGraph):
             self.filename = os.path.split(self.filepath)[1]
                         
             if not recreate and os.path.exists(self.filepath):
-                graph = self._readCache(self.filepath)
+                #if in cache file doesn't exist the dataset with the right keys
+                #create it and save it
+                if not self._readCache(self.filepath):
+                    print "I can't find dataset with threshold %d and bots set to" % self.dataset.threshold, self.dataset.bots
+                    graph = self._generate()
+                    self._writeCache(graph)
+                
             else:
                 graph = self._generate()
                 self._writeCache(graph)
@@ -696,7 +708,7 @@ class CalcWikiGraph(CalcGraph):
 
         print "Init took", hms(time.time() - self.start_time)
 
-            
+
     #override filepath
     def __set_filepath(self):
         
@@ -722,21 +734,35 @@ class CalcWikiGraph(CalcGraph):
         path,tm = os.path.split( path )
         path,date = os.path.split( path )
         path,lang = os.path.split( path )
+        
+        cachedict = {'lang':lang,'date':date}
+
+        if not self.dataset.bots:
+            cachedict['bots'] = False
+
+        if self.dataset.threshold > 1:
+            cachedict['threshold'] = self.dataset.threshold
+
+
+        c2 = load(cachedict, filepath, fault=False )
+        #if key doesn't exist fail
+        if not c2:
+            return False
 
         try:
 
             self._paste_graph( 
-                load({'lang':lang,'date':date}, filepath ),
+                c2,
                 self.dataset.botset
                 )
 
         except AttributeError:
             print "I cannot be able to read filepath!"
-            print "function load, takes this two keys:"
-            print "lang:",lang,"date:",date
+            print "function load, takes this keys:"
+            print cachedict
                 
                 
-        return None
+        return True
 
     def _writeCache(self,pred_graph):
         """Write PredGraph.c2"""
@@ -748,7 +774,16 @@ class CalcWikiGraph(CalcGraph):
             print "Error!, the filepath is not a c2 file! exiting"
             exit()
         
-        return save({'lang':self.dataset.lang,'date':self.dataset.date},pred_graph, self.filepath)
+        cachedict = {'lang':self.dataset.lang,'date':self.dataset.date}
+
+        if not self.dataset.bots:
+            cachedict['bots'] = False
+
+        if self.dataset.threshold > 1:
+            cachedict['threshold'] = self.dataset.threshold
+
+
+        return save(cachedict,pred_graph, self.filepath)
 
 class WikiPredGraph(PredGraph,CalcWikiGraph):
     """

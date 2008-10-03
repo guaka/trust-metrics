@@ -443,7 +443,7 @@ class WikiNetwork(WeightedNetwork):
     NB: if you would know what kind of network are hosted on www.trustlet.org invoke getNetworkList() from trustlet.helpers
     """
         
-    def __init__(self, lang, date, current=False, bots=True, base_path = None,
+    def __init__(self, lang, date, current=False, bots=True, blockedusers=True, base_path = None,
                  dataset = None, force = False,
                  savememory = False, threshold=1 ):
         WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory)
@@ -452,7 +452,7 @@ class WikiNetwork(WeightedNetwork):
 
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang; self.date = date; self.current = current; self.bots = bots; self.botset = None; self._weights_dictionary = None
-        self.__upbound = None
+        self.threshold = threshold; self.__upbound = None
 
         if savememory:
             add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
@@ -505,33 +505,38 @@ class WikiNetwork(WeightedNetwork):
             self.filepath += '.c2' ; self.filename = filename + '.c2'
         
             nodes,edges = pydataset
+            toU = lambda x: unicode(x) #to unicode
             
+            #implement here the nobots control
+            cachedict = {'lang':lang}
             if not bots:
-                #implement here the nobots control
-                botset = trustlet.helpers.load({'lang':lang,'list':'bots'}, self.filepath )
-                
+                cachedict['list'] = 'bots'
+                botset = trustlet.helpers.load(cachedict, self.filepath )
                 self.botset = botset #save botset for future use
-                
-                if botset:
-                    for u in [x for x in nodes if x not in botset]:
-                        self.add_node(u)
-                    for u,v,e in [x for x in edges if x[0] not in botset or x[1] not in botset]:
-                        self.add_node(u)
-                        self.add_node(v)
-                        add_edge( ( u,v,{'value':e} ) )
-                        
-                else:
-                    #if botset is None
-                    raise IOError("Warning!!!! The list of bots is not present in this c2 file,\n and you have required the no-bots network! (default value for bots parameter is False, try to set it to True)" )
             else:
-                #if bots is True
-                for u in nodes:
-                        self.add_node(u)
-                for u,v,e in edges:
-                    self.add_node(u)
-                    self.add_node(v)
-                    add_edge( (u,v,{'value':e}) )
-                    
+                self.botset = None
+
+            if not blockedusers:
+                cachedict['list'] = 'blockedusers'
+                blockedset = trustlet.helpers.load(cachedict, self.filepath )
+                self.blockedset = blockedset #save blockset for future use
+            else:
+                self.blockedset = None
+                
+            if not self.botset:
+                botset = []
+
+            if not self.blockedset:
+                blockedset = []
+                    #if bots false x not in botset is always true!
+            for u in [x for x in nodes if (toU(x) not in botset) and (toU(x) not in blockedset)]:
+                self.add_node(u)
+            for u,v,e in [x for x in edges if toU(x[0]) not in botset and toU(x[1]) not in botset and toU(x[0]) not in blockedset and toU(x[1]) not in blockedset]:
+                self.add_node(u)
+                self.add_node(v)
+                add_edge( ( u,v,{'value':e} ) )
+             
+       
         else:
             if os.path.exists( self.filepath+'.c2' ):
                 print "Warning! the c2 file does not contain the dataset.."
