@@ -79,17 +79,10 @@ if False:
     print "Installing scripts\n"
     os.system( 'cd trustlet && make install && cd ..' )
     os.system( 'cd scripts && make install && cd ..' )
-
+"""
 print "Now we try to checkout all the datasets from www.trustlet.org This operation maybe longer."
 
 #THE UPLOAD DOESN'T WORK IF CHECKED OUT A EMPTY REVISION... :(
-
-print """ \
-An internet connection is required to install Trustlet. If there isn't connection
-datasets will not be downloaded. You can create yourself with wikixml2graph script
-(in scripts directory).
-
-"""
 
 print "If you have always the internet connection enabled, when the datasets were used"
 print "they can be automatically downloaded from www.trustlet.org, and then you don't need"
@@ -114,6 +107,11 @@ os.system( 'ln -s '+os.path.realpath( 'trustlet/datasets' )+' ~/datasets' )
 #print "IMPORTANT: remember to create a simbolic link to trustlet/datasets folder in your home directory!"
 print "If you would partecipate in development of trustlet, and you"
 print "wouldn't edit file in your installation dir, you can use links.py in scripts/ folder"
+"""
+
+print "REMEMBER! In order to use trustlet on dataset (at page www.trustlet.org/trustlet_dataset_svn/"
+print "You must use sync.py in scripts folder"
+
 # It's not very clear how to deal with package dependencies in setup.py
 
 #import pkg_resources

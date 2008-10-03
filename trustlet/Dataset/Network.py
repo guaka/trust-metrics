@@ -535,7 +535,6 @@ class WikiNetwork(WeightedNetwork):
                 self.add_node(u)
                 self.add_node(v)
                 add_edge( ( u,v,{'value':e} ) )
-             
        
         else:
             if os.path.exists( self.filepath+'.c2' ):
