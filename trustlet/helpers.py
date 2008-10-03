@@ -1114,11 +1114,15 @@ def convert_cache(path1,path2):
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
 
-def merge_cache(path1,path2):
+def merge_cache(path1 , path2 , mpath=None):
     c1 = pickle.load(GzipFile(path1))
     c2 = pickle.load(GzipFile(path2))
     c1.update(c2)
-    pickle.dump(c1,GzipFile(path1+'+'+os.path.split(path2)[1],'w'))
+
+    if mpath:
+        pickle.dump(c1,GzipFile(mpath ,'w'))
+    else:
+        pickle.dump(c1,GzipFile(path2, 'w') )
 
 def read_c2(path):
     '''return all cache dictionary'''

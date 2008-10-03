@@ -457,7 +457,7 @@ if __name__ == "__main__":
             )
 
         eval = lambda G: avg(
-            networkx.betweenness_centrality(G,normalized=True, weighted_edges=False).values()
+            networkx.betweenness_centrality(G).values()
             )
         eval.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
         plot_genericevaluation(
@@ -468,7 +468,7 @@ if __name__ == "__main__":
             )
 
         eval = lambda G: avg(
-            networkx.betweenness_centrality(G,normalized=True, weighted_edges=True).values()
+            networkx.betweenness_centrality(G).values()
             )
         eval.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
         #plot_genericevaluation(
@@ -481,7 +481,7 @@ if __name__ == "__main__":
     #elif gethostname()=='sracls03':
 
         eval = lambda G: avg(
-            networkx.betweenness_centrality(G,normalized=False, weighted_edges=False).values()
+            networkx.betweenness_centrality(G,normalized=False).values()
             )
         eval.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
         plot_genericevaluation(
@@ -492,7 +492,7 @@ if __name__ == "__main__":
             )
 
         eval = lambda G: avg(
-            networkx.closeness_centrality(G,weighted_edges=False).values()
+            networkx.closeness_centrality(G).values()
             )
         eval.__name__ = 'closeness_centrality-no-weighted_edges'
         plot_genericevaluation(
