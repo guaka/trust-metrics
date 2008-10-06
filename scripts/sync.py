@@ -1,5 +1,5 @@
-#!/usr/bin/env python    
-# -*- indent-tabs-mode:nil; tab-width:4 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 '''
 this script syncronize local datasets database with the remote database (on trustlet.org).
@@ -13,26 +13,31 @@ main directory dataset: ~/datasets
 svn hidden directory: ~/.datasets
 
 Parameters:
-   --no-update
-   --no-upload
+   --no-update: no svn update. ¡¡¡ Dangerous option !!!
+   --no-upload: no upload generated files
 '''
 
 import os
 import sys
 import shutil
 
-from trustlet.helpers import merge_cache
+from trustlet.helpers import merge_cache,mkpath
 
 HOME = os.environ['HOME']
 HIDDENPATH = os.path.join(HOME,'.datasets')
-DATASETSPATH = os.path.join(HOME,'datasets_temp')
+DATASETSPATH = os.path.join(HOME,'datasets')
 CURDIR = os.getcwd()
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn %s' % HIDDENPATH
 SVNUP = 'svn up --username anybody --password a'
-SVNCI = 'svn ci --username anybody --password a -m="auomatic commit"'
+SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (sync.py)"'
 SVNADD = 'svn add %s'
 
 def main():
+
+    if 'help' in sys.argv:
+        print __doc__
+        return
+
     if not os.path.isdir(HIDDENPATH) or not os.path.isdir(os.path.join(HIDDENPATH,'.svn')):
         os.chdir(HOME)
         os.system(SVNCO)
@@ -43,8 +48,6 @@ def main():
     merge(HIDDENPATH,DATASETSPATH,not '--no-upload' in sys.argv)
 
     os.chdir(CURDIR)
-
-read = 0 # KB readed
 
 def diff(f,g):
     '''
@@ -59,9 +62,6 @@ def diff(f,g):
         bf = f.read(512)
         bg = g.read(512)
         
-        # KB readed from diff
-        globals()['read'] += 1
-        
         if bf != bg:
             f.close()
             g.close()
@@ -73,12 +73,24 @@ def diff(f,g):
 
 def merge(svn,datasets,upload=True):
     added = updated = merged = 0
+    updatedc2 = set()
     # from svn to datasets
     for dirpath,dirnames,filenames in os.walk(svn):
         if '.svn' in dirpath:
             continue
         destbasepath = dirpath.replace(svn,datasets)
         
+        print destbasepath
+        print dirpath
+        print dirnames
+        print filenames
+        print
+
+        for f in filenames:
+            assert os.path.isfile(f)
+        for d in dirnames:
+            assert os.path.isdir(d)
+
         if not os.path.isdir(destbasepath):
             os.mkdir(destbasepath)
 
@@ -91,7 +103,9 @@ def merge(svn,datasets,upload=True):
                     # file modified
                     if filename.endswith('.c2'):
                         print 'merging file %s with new version' % filename
+                        updatedc2.add(dstpath)
                         merged += 1
+                        # priority: dstpath
                         merge_cache(srcpath,dstpath)
                     else:
                         #update
@@ -104,14 +118,23 @@ def merge(svn,datasets,upload=True):
                 added += 1
                 shutil.copy(srcpath,dstpath)
 
-    print added, updated, merged
 
+    if added:
+        print '# of added files:',added
+    if updated:
+        print '# of updated files:',updated
+    if merged:
+        print '# of merged files:',merged
+    
     # from datasets to svn
     if upload:
         print 'Upload on server'
-        added = updated = 0
+        added = 0
 
-        #copy modified file to upload dir (svn)
+        # to adding files
+        os.chdir(svn)
+
+        #copy *new* files and updated c2 to upload dir (svn)
         for dirpath,dirnames,filenames in os.walk(datasets):
             destbasepath = dirpath.replace(datasets,svn)
 
@@ -121,19 +144,18 @@ def merge(svn,datasets,upload=True):
             
                 if not os.path.isfile(dstpath):
                     print 'adding file',filename
-                elif not diff(srcpath,dstpath):
-                    print 'updated file',filename
-                    updated += 1
+                    added += 1
+                    mkpath(dstpath, lambda x: __import__('pprint').pprint(x))
+                    shutil.copy(srcpath,dstpath)
+                    os.system(SVNADD % dstpath)
+                elif srcpath in updatedc2:
+                    print 'merging file',filename
                     shutil.copy(srcpath,dstpath)
 
-        # adding new files to svn
-        os.chdir(svn)
-        for dirpath,dirnames,filenames in os.walk(svn):
-            if not '.svn' in dirnames:
-                print dirpath
-                os.system(SVNADD % dirpath)
+        os.system(SVNCI)
 
-        print added, updated
+        if added:
+            print '# of added files to server repository:',added
         
 
 if __name__=="__main__":
