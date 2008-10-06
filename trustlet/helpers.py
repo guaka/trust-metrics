@@ -926,6 +926,9 @@ def get_sign(key,mdfive=True):
     If mdfive is True it will return an alphanumeric
     key of 32 chars
     """
+
+    if not type(key) is dict:
+        raise ValueError,'key have to be a dict'
     s = ''
     listkeys = key.keys()
     listkeys.sort()
@@ -1060,10 +1063,13 @@ def load(key,path='.',fault=None):
 
         if cache.has_key(path):
             #print 'found',path
-            if cache[path].has_key(get_sign(key)):
-                #version 2
-                return cache[path][get_sign(key)]
-            elif cache[path].has_key(hashable(key)):
+            try:
+                if cache[path].has_key(get_sign(key)):
+                    #version 2
+                    return cache[path][get_sign(key)]
+            except ValueError:
+                pass
+            if cache[path].has_key(hashable(key)):
                 #version 3
                 return cache[path][hashable(key)]
             else:
@@ -1074,14 +1080,18 @@ def load(key,path='.',fault=None):
         except:
             return fault
         
-        if d.has_key(get_sign(key)):
-            #version 2
-            data = d[get_sign(key)]
-        elif d.has_key(hashable(key)):
-            #version 3
-            data = d[hashable(key)]
-        else:
-            return fault
+        try:
+            if d.has_key(get_sign(key)):
+                #version 2
+                data = d[get_sign(key)]
+            else:
+                return fault
+        except ValueError:
+            if d.has_key(hashable(key)):
+                #version 3
+                data = d[hashable(key)]
+            else:
+                return fault
 
         #save in memory cache
         cache[path] = d
@@ -1111,6 +1121,10 @@ def convert_cache(path1,path2):
     pickle.dump(newcache,GzipFile(path2,'w'))
 
 def merge_cache(path1 , path2 , mpath=None):
+    '''
+    mpath: new destination file (merged path).
+    if mpath is None, path2 will be used
+    '''
 
     f1 = GzipFile(path1)
     f2 = GzipFile(path2)
