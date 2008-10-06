@@ -289,10 +289,11 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, has_discrete_weights = True, base_path = None,savememory = False):
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,savememory = False):
         Network.__init__(self, base_path=base_path,savememory=savememory)
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
+        self._weights = weights
 
     def trust_on_edge(self, edge):
         """
