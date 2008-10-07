@@ -25,12 +25,12 @@ from trustlet.helpers import merge_cache,mkpath
 
 HOME = os.environ['HOME']
 HIDDENPATH = os.path.join(HOME,'.datasets')
-DATASETSPATH = os.path.join(HOME,'datasets')
+DATASETSPATH = os.path.join(HOME,'datasets_temp')
 CURDIR = os.getcwd()
-SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn %s' % HIDDENPATH
+SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"' % HIDDENPATH
 SVNUP = 'svn up --username anybody --password a'
 SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (sync.py)"'
-SVNADD = 'svn add %s'
+SVNADD = 'svn add "%s"'
 
 def main():
 
@@ -40,10 +40,10 @@ def main():
 
     if not os.path.isdir(HIDDENPATH) or not os.path.isdir(os.path.join(HIDDENPATH,'.svn')):
         os.chdir(HOME)
-        os.system(SVNCO)
+        assert not os.system(SVNCO)
     elif not '--no-update' in sys.argv:
         os.chdir(HIDDENPATH)
-        os.system(SVNUP)
+        assert not os.system(SVNUP)
 
     merge(HIDDENPATH,DATASETSPATH,not '--no-upload' in sys.argv)
 
@@ -78,23 +78,22 @@ def merge(svn,datasets,upload=True):
     for dirpath,dirnames,filenames in os.walk(svn):
         if '.svn' in dirpath:
             continue
+
+        # workaround
+        # Seems that in dirnames there are some filenames and viceversa.
+        names = dirnames + filenames
+        dirnames = [x for x in names if os.path.isdir(os.path.join(dirpath,x))]
+        filenames = [x for x in names if os.path.isfile(os.path.join(dirpath,x))]
+
         destbasepath = dirpath.replace(svn,datasets)
         
         print destbasepath
-        print dirpath
-        print dirnames
-        print filenames
-        print
-
-        for f in filenames:
-            assert os.path.isfile(f)
-        for d in dirnames:
-            assert os.path.isdir(d)
-
+        assert os.path.isdir(destbasepath)
         if not os.path.isdir(destbasepath):
             os.mkdir(destbasepath)
 
         for filename in filenames:
+            #print filename
             srcpath = os.path.join(dirpath,filename)
             dstpath = os.path.join(destbasepath,filename)
             
@@ -116,6 +115,7 @@ def merge(svn,datasets,upload=True):
                 #adding
                 print 'adding file',filename
                 added += 1
+                print srcpath,dstpath
                 shutil.copy(srcpath,dstpath)
 
 
@@ -145,14 +145,14 @@ def merge(svn,datasets,upload=True):
                 if not os.path.isfile(dstpath):
                     print 'adding file',filename
                     added += 1
-                    mkpath(dstpath, lambda x: __import__('pprint').pprint(x))
-                    shutil.copy(srcpath,dstpath)
-                    os.system(SVNADD % dstpath)
+                    mkpath(destbasepath, lambda x: os.system(SVNADD % x))
+                    shutil.copy(srcpath,destbasepath)
+                    assert not os.system(SVNADD % dstpath)
                 elif srcpath in updatedc2:
                     print 'merging file',filename
                     shutil.copy(srcpath,dstpath)
 
-        os.system(SVNCI)
+        assert not os.system(SVNCI)
 
         if added:
             print '# of added files to server repository:',added
