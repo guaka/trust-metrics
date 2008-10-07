@@ -860,9 +860,13 @@ def xfloatrange(*args):
 
 floatrange = lambda *args: [x for x in xfloatrange(*args)]
 
-def mkpath(fullpath):
+def mkpath(fullpath,function=None):
     """
     makes all missed directory of a path
+
+    def function(path)
+    function will called for each created dir.
+    path is the path of it.
     """
     if not fullpath: return
     if fullpath[-1] == os.path.sep:
@@ -871,6 +875,8 @@ def mkpath(fullpath):
         path = os.path.split(fullpath)[0]
         mkpath(path)
         os.mkdir(fullpath)
+        if function:
+            function(fullpath)
 
 redate = re.compile('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
 isdate = lambda x: bool(re.match(redate,str(x)))
@@ -1124,6 +1130,8 @@ def merge_cache(path1 , path2 , mpath=None):
     '''
     mpath: new destination file (merged path).
     if mpath is None, path2 will be used
+    if `path1` and `path2` file cache has the same
+    key will keep the `path2` value for that key.
     '''
 
     f1 = GzipFile(path1)
@@ -1135,12 +1143,18 @@ def merge_cache(path1 , path2 , mpath=None):
     f1.close()
     f2.close()
 
+    # Priority: c2
+    # if c1 and c2 has the same key will keep the c2
+    # value for that key
     c1.update(c2)
 
-    if mpath:
-        pickle.dump(c1,GzipFile(mpath ,'w'))
-    else:
-        pickle.dump(c1,GzipFile(path2, 'w') )
+    if not mpath:
+        mpath = path2
+    
+    f = GzipFile(mpath ,'w')
+    pickle.dump(c1,f)
+    f.close()
+
 
 def read_c2(path):
     '''return all cache dictionary'''
