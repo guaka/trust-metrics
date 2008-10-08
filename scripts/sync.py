@@ -31,7 +31,7 @@ from trustlet.helpers import merge_cache,mkpath
 
 HOME = os.environ['HOME']
 HIDDENPATH = os.path.join(HOME,'.datasets')
-DATASETSPATH = os.path.join(HOME,'datasets_temp')
+DATASETSPATH = os.path.join(HOME,'datasets')
 CURDIR = os.getcwd()
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"' % HIDDENPATH
 SVNUP = 'svn up --username anybody --password a'
