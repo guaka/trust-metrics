@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Policy:
+#
+
 '''
-this script syncronize local datasets database with the remote database (on trustlet.org).
+this script syncronizes local datasets database with the remote database (on trustlet.org).
 It uses svn.
 
 First of all it'll download missed datasets.
 Then merge them with the local version of them.
+ - Only c2 file are mergerd. If a regular file yet exists on client it won't updated.
 Finally changes will be committed.
+ - Backup files (ends with ~) will not uploaded.
 
 main directory dataset: ~/datasets
 svn hidden directory: ~/.datasets
@@ -15,6 +20,7 @@ svn hidden directory: ~/.datasets
 Parameters:
    --no-update: no svn update. ¡¡¡ Dangerous option !!!
    --no-upload: no upload generated files
+   --verbose | -v
 '''
 
 import os
@@ -34,9 +40,14 @@ SVNADD = 'svn add "%s"'
 
 def main():
 
+    sys.argv = set(sys.argv)
+
     if 'help' in sys.argv:
         print __doc__
         return
+
+    if '--verbose' in sys.argv:
+        sys.argv.append('-v')
 
     if not os.path.isdir(HIDDENPATH) or not os.path.isdir(os.path.join(HIDDENPATH,'.svn')):
         os.chdir(HOME)
@@ -74,6 +85,7 @@ def diff(f,g):
 def merge(svn,datasets,upload=True):
     added = updated = merged = 0
     updatedc2 = set()
+    updatedfiles = set()
     # from svn to datasets
     for dirpath,dirnames,filenames in os.walk(svn):
         if '.svn' in dirpath:
@@ -84,12 +96,14 @@ def merge(svn,datasets,upload=True):
         names = dirnames + filenames
         dirnames = [x for x in names if os.path.isdir(os.path.join(dirpath,x))]
         filenames = [x for x in names if os.path.isfile(os.path.join(dirpath,x))]
+        #
 
         destbasepath = dirpath.replace(svn,datasets)
         
-        print destbasepath
-        assert os.path.isdir(destbasepath)
+        if '-v' in sys.argv:
+            print destbasepath
         if not os.path.isdir(destbasepath):
+            assert not os.path.exists(destbasepath)
             os.mkdir(destbasepath)
 
         for filename in filenames:
@@ -107,10 +121,8 @@ def merge(svn,datasets,upload=True):
                         # priority: dstpath
                         merge_cache(srcpath,dstpath)
                     else:
-                        #update
-                        print 'updating file',filename
-                        updated += 1
-                        shutil.copy(srcpath,dstpath)
+                        print 'file %s differs from client to server. The client version will be kept.' % filename
+                        updatedfiles.add(dstpath)
             else:
                 #adding
                 print 'adding file',filename
@@ -139,6 +151,10 @@ def merge(svn,datasets,upload=True):
             destbasepath = dirpath.replace(datasets,svn)
 
             for filename in filenames:
+                if filename.endswith('~'):
+                    # skip backup files
+                    continue
+
                 srcpath = os.path.join(dirpath,filename)
                 dstpath = os.path.join(destbasepath,filename)
             
@@ -150,6 +166,9 @@ def merge(svn,datasets,upload=True):
                     assert not os.system(SVNADD % dstpath)
                 elif srcpath in updatedc2:
                     print 'merging file',filename
+                    shutil.copy(srcpath,dstpath)
+                elif srcpath in updatedfiles:
+                    print 'updating file',filename
                     shutil.copy(srcpath,dstpath)
 
         assert not os.system(SVNCI)
