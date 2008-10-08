@@ -564,7 +564,8 @@ class WikiNetwork(WeightedNetwork):
             except IOError:
                                         
                 raise IOError("There isn't a dot file on this path:\n "+
-                              self.path+"\nplease specify another path or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
+                              self.path+"\nplease specify another path with dataset parameter "+
+                              "or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
 
         self.__rescale()
 

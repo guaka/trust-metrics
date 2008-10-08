@@ -37,7 +37,7 @@ More to add:
 
 """
 
-__author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)"""
+__author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)\nDanilo Tomasoni (ciropom@gmail.com)\nMartino Salvetti (martino@silix.org)"""
 __license__ = "GPL"
 
 from Network import WeightedNetwork

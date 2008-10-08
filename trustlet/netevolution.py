@@ -103,6 +103,7 @@ def evolutionmap(path,function,range=None):
     print 'There are %d networks' % len(dates)
     
     def task(date):
+        print date
         #cache
         if function.__name__=='<lambda>':
             print "i can't save cache with lambda funtions"
@@ -111,8 +112,9 @@ def evolutionmap(path,function,range=None):
             cache = load(cachekey,path=os.path.join(path,cachepath))
             if cache:
                 return cache
-        #print date only if the function will computed
+
         print date
+        #print date only if the function will computed
         G = read_dot(os.path.join(path,date,'graph.dot'))
         K = Network.WeightedNetwork()
         K.paste_graph(G)
