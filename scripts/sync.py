@@ -24,14 +24,15 @@ Parameters:
 '''
 
 import os
+from os import path
 import sys
 import shutil
 
 from trustlet.helpers import merge_cache,mkpath
 
 HOME = os.environ['HOME']
-HIDDENPATH = os.path.join(HOME,'.datasets')
-DATASETSPATH = os.path.join(HOME,'datasets')
+HIDDENPATH = path.join(HOME,'.datasets')
+DATASETSPATH = path.join(HOME,'datasets')
 CURDIR = os.getcwd()
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"' % HIDDENPATH
 SVNUP = 'svn up --username anybody --password a'
@@ -49,7 +50,7 @@ def main():
     if '--verbose' in sys.argv:
         sys.argv.append('-v')
 
-    if not os.path.isdir(HIDDENPATH) or not os.path.isdir(os.path.join(HIDDENPATH,'.svn')):
+    if not path.isdir(HIDDENPATH) or not path.isdir(path.join(HIDDENPATH,'.svn')):
         os.chdir(HOME)
         assert not os.system(SVNCO)
     elif not '--no-update' in sys.argv:
@@ -91,27 +92,28 @@ def merge(svn,datasets,upload=True):
         if '.svn' in dirpath:
             continue
 
-        # workaround
         # Seems that in dirnames there are some filenames and viceversa.
+        test = (dirnames,filenames)
         names = dirnames + filenames
-        dirnames = [x for x in names if os.path.isdir(os.path.join(dirpath,x))]
-        filenames = [x for x in names if os.path.isfile(os.path.join(dirpath,x))]
+        dirnames = [x for x in names if path.isdir(path.join(dirpath,x))]
+        filenames = [x for x in names if path.isfile(path.join(dirpath,x))]
+        assert (dirnames,filenames)==test,'Seems that in dirnames there are some filenames and viceversa.'
         #
 
         destbasepath = dirpath.replace(svn,datasets)
         
         if '-v' in sys.argv:
             print destbasepath
-        if not os.path.isdir(destbasepath):
-            assert not os.path.exists(destbasepath)
+        if not path.isdir(destbasepath):
+            assert not path.exists(destbasepath),destbasepath
             os.mkdir(destbasepath)
 
         for filename in filenames:
             #print filename
-            srcpath = os.path.join(dirpath,filename)
-            dstpath = os.path.join(destbasepath,filename)
+            srcpath = path.join(dirpath,filename)
+            dstpath = path.join(destbasepath,filename)
             
-            if os.path.isfile(dstpath):
+            if path.isfile(dstpath):
                 if not diff(srcpath,dstpath):
                     # file modified
                     if filename.endswith('.c2'):
@@ -155,10 +157,10 @@ def merge(svn,datasets,upload=True):
                     # skip backup files
                     continue
 
-                srcpath = os.path.join(dirpath,filename)
-                dstpath = os.path.join(destbasepath,filename)
+                srcpath = path.join(dirpath,filename)
+                dstpath = path.join(destbasepath,filename)
             
-                if not os.path.isfile(dstpath):
+                if not path.isfile(dstpath):
                     print 'adding file',filename
                     added += 1
                     mkpath(destbasepath, lambda x: os.system(SVNADD % x))
