@@ -39,7 +39,6 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
         #if at != None:
         #    return (d,at)
 
-        print "Evaluating dataset of ", d
         #temporary path
         #can be advogato/kaitiaki style, or directly with a integer weights
         weight = K.weights()
@@ -112,7 +111,7 @@ def evolutionmap(path,function,range=None):
             if cache:
                 return cache
 
-        #print date
+        print date
         #print date only if the function will computed
         G = read_dot(os.path.join(path,date,'graph.dot'))
         K = Network.WeightedNetwork()
