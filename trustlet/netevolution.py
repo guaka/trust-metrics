@@ -56,7 +56,6 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
 
         #save( {'function':'trustAverage', 'date':d}, averagetrust ,os.path.join(path,d) )
         
-        print "dataset of ",d ," Evaluated"
         return (d,averagetrust)
     
     assert not noObserver,"evolutionmap doesn't implement "+\
@@ -103,7 +102,7 @@ def evolutionmap(path,function,range=None):
     print 'There are %d networks' % len(dates)
     
     def task(date):
-        print date
+        #print date
         #cache
         if function.__name__=='<lambda>':
             print "i can't save cache with lambda funtions"
