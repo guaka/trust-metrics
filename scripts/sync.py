@@ -14,32 +14,45 @@ Then merge them with the local version of them.
 Finally changes will be committed.
  - Backup files (ends with ~) will not uploaded.
 
-main directory dataset: ~/datasets
-svn hidden directory: ~/.datasets
+main directory dataset: <basepath>/datasets
+svn hidden directory: <basepath>/.datasets
 
-Parameters:
+sync creates ~/datasets and ~/.datasets links
+
+sync.py [basepath] [other options]
+
+Options:
    --no-update: no svn update. ¡¡¡ Dangerous option !!!
    --no-upload: no upload generated files
    --verbose | -v
 '''
 
 import os
-from os import path
+import os.path as path
 import sys
 import shutil
 
 from trustlet.helpers import merge_cache,mkpath
 
 HOME = os.environ['HOME']
-HIDDENPATH = path.join(HOME,'.datasets')
-DATASETSPATH = path.join(HOME,'datasets')
 CURDIR = os.getcwd()
-SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"' % HIDDENPATH
+SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"'
 SVNUP = 'svn up --username anybody --password a'
 SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (sync.py)"'
 SVNADD = 'svn add "%s"'
 
 def main():
+
+    if sys.argv[1:]:
+        basepath = path.realpath(sys.argv[1])
+    else:
+        basepath = HOME
+
+    hiddenpath = path.join(basepath,'.datasets')
+    datasetspath = path.join(basepath,'datasets')
+
+    assert not os.system('ln -s "%s" "%s/.datasets"' % (hiddenpath,HOME))
+    assert not os.system('ln -s "%s" "%s/datasets"' % (datasetspath,HOME))
 
     sys.argv = set(sys.argv)
 
@@ -50,14 +63,14 @@ def main():
     if '--verbose' in sys.argv:
         sys.argv.append('-v')
 
-    if not path.isdir(HIDDENPATH) or not path.isdir(path.join(HIDDENPATH,'.svn')):
+    if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
-        assert not os.system(SVNCO)
+        assert not os.system(SVNCO % hiddenpath)
     elif not '--no-update' in sys.argv:
-        os.chdir(HIDDENPATH)
+        os.chdir(hiddenpath)
         assert not os.system(SVNUP)
 
-    merge(HIDDENPATH,DATASETSPATH,not '--no-upload' in sys.argv)
+    merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv)
 
     os.chdir(CURDIR)
 
@@ -105,7 +118,7 @@ def merge(svn,datasets,upload=True):
         if '-v' in sys.argv:
             print destbasepath
         if not path.isdir(destbasepath):
-            assert not path.exists(destbasepath),destbasepath
+            assert not path.isfile(destbasepath),destbasepath
             os.mkdir(destbasepath)
 
         for filename in filenames:

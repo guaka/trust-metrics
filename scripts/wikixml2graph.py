@@ -415,7 +415,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         elif self.distrust and name == u'text':
             #distrust only
             if self.lusername:
-                #print 'DEBUG',self.lusername #,md5.new(self.ltext).hexdigest()
+                #print 'DEBUG',self.lusername #,md5.new(self.ltext.encode('utf-8')).hexdigest()
                 self.dpages[-1].append((md5.new(self.ltext.encode('utf-8')).digest(),self.lusername))
 
     def characters(self,contents):
