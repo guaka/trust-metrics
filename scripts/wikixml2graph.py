@@ -416,7 +416,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             #distrust only
             if self.lusername:
                 #print 'DEBUG',self.lusername #,md5.new(self.ltext).hexdigest()
-                self.dpages[-1].append((md5.new(self.ltext).digest(),self.lusername))
+                self.dpages[-1].append((md5.new(self.ltext.encode('utf-8')).digest(),self.lusername))
 
     def characters(self,contents):
         if self.read == u'username':
