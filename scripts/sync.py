@@ -51,6 +51,12 @@ def main():
     hiddenpath = path.join(basepath,'.datasets')
     datasetspath = path.join(basepath,'datasets')
 
+    #remove old links
+    if path.islink(path.join(HOME,'.datasets')):
+        os.remove(path.join(HOME,'.datasets'))
+    if path.islink(path.join(HOME,'datasets')):
+        os.remove(path.join(HOME,'datasets'))
+
     assert not os.system('ln -s "%s" "%s/.datasets"' % (hiddenpath,HOME))
     assert not os.system('ln -s "%s" "%s/datasets"' % (datasetspath,HOME))
 
