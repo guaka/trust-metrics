@@ -43,7 +43,11 @@ SVNADD = 'svn add "%s"'
 
 def main():
 
-    if sys.argv[1:]:
+    if 'help' in sys.argv:
+        print __doc__
+        return
+
+    if sys.argv[1:] and sys.argv[1][0]!='-':
         basepath = path.realpath(sys.argv[1])
     else:
         basepath = HOME
@@ -63,20 +67,35 @@ def main():
 
     sys.argv = set(sys.argv)
 
-    if 'help' in sys.argv:
-        print __doc__
-        return
-
     if '--verbose' in sys.argv:
         sys.argv.append('-v')
+
+    #file in svn before upload
+    to_remove = []
 
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
         assert not os.system(SVNCO % hiddenpath)
     elif not '--no-update' in sys.argv:
         os.chdir(hiddenpath)
+        
+        for dir,dirs,files in os.walk(hiddenpath):
+            if not '.svn' in dir:
+                to_remove += [path.join(dir,x) for x in files]
+
         assert not os.system(SVNUP)
 
+        to_remove = set(to_remove)
+        for dir,dirs,files in os.walk(hiddenpath):
+            if not '.svn' in dir:
+                to_remove.difference_update(set([path.join(dir,x) for x in files]))
+
+    #print to_remove
+    for f in to_remove:
+        f = f.replace(hiddenpath,datasetspath)
+        print "I'm removing",f
+        os.remove(f)
+    
     merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv)
 
     os.chdir(CURDIR)
@@ -104,6 +123,9 @@ def diff(f,g):
             return True
 
 def merge(svn,datasets,upload=True):
+    '''
+    to_remove: files removed from svn (svn directory paths)
+    '''
     added = updated = merged = 0
     updatedc2 = set()
     updatedfiles = set()
@@ -149,7 +171,7 @@ def merge(svn,datasets,upload=True):
                 #adding
                 print 'adding file',filename
                 added += 1
-                print srcpath,dstpath
+                #print srcpath,dstpath
                 shutil.copy(srcpath,dstpath)
 
 
