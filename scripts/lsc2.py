@@ -1,12 +1,24 @@
 #!/usr/bin/env python
 
+'''\
+shows one or more c2 files on shell.
+
+lsc2 [-r] [file1 [file2] [...]]
+
+-r: recursive
+'''
+
 import sys,os,pickle
-from os import path
+import os.path as path
 from trustlet.helpers import getfiles,read_c2
 from gzip import GzipFile
 
 def main():
     
+    if '-h' in sys.argv or '--help' in sys.argv:
+        print __doc__
+        return
+
     files = filter(lambda x:x[0]!='-',sys.argv[1:])
     recursive = '-r' in sys.argv[1:] or '-R' in sys.argv[1:]
 
@@ -14,12 +26,10 @@ def main():
         allfiles = []
         for file in files:
             if path.isdir(file):
-                allfiles += getfiles(file)
-            else:
-                allfiles.append(file)
+                for dir,ds,fs in os.walk(file):
+                    allfiles += [path.join(dir,x) for x in fs]
         files = allfiles
-
-    print files
+    #print files
     for file in files:
         if not file.endswith('.c2'):
             continue

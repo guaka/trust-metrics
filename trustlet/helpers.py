@@ -914,6 +914,7 @@ def getfiles(basedir,dir=''):
     '''
     return a list of files (relative path)
     in basedir
+    (why not use os.walk?)
     '''
     join = os.path.join
     curpath = join(basedir,dir)

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Policy:
-#
-
 '''
 this script syncronizes local datasets database with the remote database (on trustlet.org).
 It uses svn.
@@ -62,8 +59,12 @@ def main():
         os.remove(path.join(HOME,'datasets'))
 
     if basepath != HOME:
-        assert not os.system('ln -s "%s" "%s/.datasets"' % (hiddenpath,HOME))
-        assert not os.system('ln -s "%s" "%s/datasets"' % (datasetspath,HOME))
+        path1 = path.join(HOME,'.datasets')
+        path2 = path.join(HOME,'datasets')
+        assert not path.islink(path1) and not path.exists(path1),'remove '+path1
+        assert not path.islink(path2) and not path.exists(path2),'remove '+path2
+        assert not os.system('ln -s "%s" "%s"' % (hiddenpath,path1))
+        assert not os.system('ln -s "%s" "%s"' % (datasetspath,path2))
 
     sys.argv = set(sys.argv)
 
