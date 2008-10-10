@@ -33,7 +33,7 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
     def trustaverage( K, d ):
     #for d in fdate:
 
-        # evolutionmap managa cache (use thae name of function 'trustaverage')
+        # evolutionmap manage cache (use thae name of function 'trustaverage')
 
         #at = load( {'function':'trustAverage', 'date':d}, os.path.join(path,d) )
         #if at != None:
