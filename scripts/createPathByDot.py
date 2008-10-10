@@ -14,7 +14,7 @@ from os import remove,listdir
 from os.path import join,split,sep,isdir
 import re
 
-def main( graphList ):
+def createTreeFolder( graphList ):
     
     redate = re.compile( "[0-9]{4}-[0-9]{2}-[0-9]{2}" )
     rename = re.compile( "[a-z_]+" )

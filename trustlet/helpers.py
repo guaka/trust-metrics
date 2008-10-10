@@ -875,6 +875,7 @@ def mkpath(fullpath,function=None):
         assert not os.path.islink(fullpath),'link %s might be broken' % fullpath
         path = os.path.split(fullpath)[0]
         mkpath(path)
+
         os.mkdir(fullpath)
         if function:
             function(fullpath)
