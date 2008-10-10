@@ -872,6 +872,7 @@ def mkpath(fullpath,function=None):
     if fullpath[-1] == os.path.sep:
         fullpath = fullpath[:-1]
     if fullpath and not os.path.exists(fullpath):
+        assert not os.path.islink(fullpath),'link %s might be broken' % fullpath
         path = os.path.split(fullpath)[0]
         mkpath(path)
         os.mkdir(fullpath)
@@ -910,6 +911,10 @@ class Progress:
             print self.print_format % val
 
 def getfiles(basedir,dir=''):
+    '''
+    return a list of files (relative path)
+    in basedir
+    '''
     join = os.path.join
     curpath = join(basedir,dir)
     ret = []

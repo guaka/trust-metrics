@@ -1,11 +1,10 @@
-# istall script
+# install script
 INSTALLDIR='/usr/bin'
 
 install:
-	install xml2dot.py $(INSTALLDIR)/xml2dot
+	install wikixml2graph.py $(INSTALLDIR)
+	install sync.py $(INSTALLDIR)
+	install lsc2.py $(INSTALLDIR)/lsc2
 love:
-	@echo Sorry but I hadn't hardware for this, okay?
+	@echo Sorry but I hadn\'t hardware for this, okay?
 	@echo Contact your hardware vendor for the appropriate module.
-
-
-
