@@ -10,7 +10,7 @@ Each network supported has it's own class to wrap it.
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
 import trustlet
-import trustlet.helpers.mkpath as mkpath
+
 import networkx
 
 import os
@@ -31,7 +31,7 @@ def dataset_dir(path=None):
             path = os.environ['HOME']
     dataset_path = os.path.join(path, 'datasets')
     
-    mkpath(dataset_path)
+    trustlet.helpers.mkpath(dataset_path)
     
     return dataset_path
         

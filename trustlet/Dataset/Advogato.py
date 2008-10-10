@@ -40,7 +40,7 @@ More to add:
 __author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)\nDanilo Tomasoni (ciropom@gmail.com)\nMartino Salvetti (martino@silix.org)"""
 __license__ = "GPL"
 
-from Network import WeightedNetwork
+from trustlet.Dataset.Network import WeightedNetwork
 import os
 import re
 import datetime
