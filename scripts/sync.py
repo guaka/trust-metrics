@@ -70,8 +70,8 @@ def main():
 
     if '--verbose' in sys.argv:
         sys.argv.append('-v')
-
-    #file in svn before upload
+    
+    #files removed from svn
     to_remove = []
 
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
