@@ -159,10 +159,10 @@ if __name__ == "__main__":
     toe = sys.argv[4]
     list = sys.argv[5:]
 
-    if leaveOut:
+    date = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", npath)[0]
+    N = None
 
-        date = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", npath)[0]
-
+    try:
         if "Wiki" in npath:
             lang = re.findall("/([a-z]{2})/", npath)[0]
             current = "Current" in npath
@@ -175,12 +175,20 @@ if __name__ == "__main__":
             N = SqueakfoundationNetwork( date=date )
         else:
             N = WeightedNetwork( dataset = npath )
+    except:
+        print "Cannot be able to load network"
+        sys.exit(1)
+
+    if not N:
+        print "Network can't find, using advogatonetwork, date 2008-05-12"
+        
+
+    if leaveOut:
             
         compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe, current=current, network=N )
     else:
-        A = AdvogatoNetwork( date="2008-05-12" )
         
-        tmlist = getAllTrustMetrics( A )
+        tmlist = getAllTrustMetrics( N )
         plist = []
 
         for tm in list:
