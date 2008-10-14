@@ -24,7 +24,7 @@ UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
 avg = lambda l: 1.0*sum(l)/len(l)
 
-def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer','Journeyer','Apprentice','Master']):
+def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=None):
     """
     return all trust metric on network passed
     Parameters:
@@ -32,6 +32,10 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
        allAdvogatoLocalDefault = if True, and advogato is True, include AdvogatoLocalDefaultObserver/Journeyer/Master/Apprentice
        advogato = include advogato trust metrics
     """
+
+    if allAdvogato:
+        print "Warning! obsolete parameter alladvogato"
+
     trustmetrics = {
         "ebay_tm":trustlet.TrustMetric( net , trustlet.ebay_tm ),
         "edges_a_tm":trustlet.TrustMetric( net , trustlet.edges_a_tm ),
@@ -49,7 +53,7 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=['Observer',
         trustmetrics["AdvogatoGlobalTM"]=trustlet.AdvogatoGlobalTM(net)
         trustmetrics["random_tm"] = trustlet.TrustMetric( net , trustlet.random_tm )
 
-        if allAdvogato:
+        if hasattr( net, "level_map" ):
             levels = type(allAdvogato) is list and allAdvogato or net.level_map.keys()
             for level in levels:
                 if level:
@@ -353,6 +357,9 @@ def prettyplot( data, path, **args):
         data = [map(lambda x:(x[0],x[1]), [t for t in set if t]) for set in data]
     else:
         data = [map(lambda x:(x[0],x[1]), [t for t in data if t])]
+        if not data or not data[0]:
+            print "prettyplot: no input data"
+            return
         if legend:
             legend = [legend]
 

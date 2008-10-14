@@ -49,7 +49,12 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
     rename = {}
 
     if plist == None:
-        tmlist = getTrustMetrics( A )
+        if get_name( N ) == "WikiNetwork":
+            pg = WikiPredGraph
+            tmlist = getTrustMetrics( N, advogato=False, trivial=True )
+        else:
+            pg = PredGraph
+            tmlist = getTrustMetrics( N, trivial=True )
     
         for l in leaveOut:
             try:
@@ -67,7 +72,7 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
                 #add to rename the real dict
                 rename[tm]=new_name[tm]
 
-            plist.append( (tm,PredGraph( tmlist[tm] )) )
+            plist.append( (tm, pg( tmlist[tm] )) )
             
     else:
         for x in plist:
@@ -95,17 +100,17 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
         for x in plist:
             name,p = x
             if toe == 'all':
-                pointlist.append( ( rename[name] , p.graphcontroversiality( 0.3 , 0.01, toe=None, np=np, cond=cond,
+                pointlist.append( ( rename[name] , p.graphcontroversiality( 0.3 , 0.01, toe=None, cond=cond,
                                                                               indegree = indegree )) )
             else:
-                pointlist.append( ( rename[name] , p.graphcontroversiality( 0.3 , 0.01, toe=toe, np=np, cond=cond,
+                pointlist.append( ( rename[name] , p.graphcontroversiality( 0.3 , 0.01, toe=toe, cond=cond,
                                                                               indegree = indegree)) )
         for i in num:
 
             if allInOne:
             #all trust metrics in one graph
                 prettyplot( [[select( x,i[0]+1 ) for x in ls if x] for (name,ls) in pointlist], 
-                            os.path.join( path, i[1]+"All (indegree=%d).png"%indegree ),
+                            os.path.join( path, i[1]+"All (indegree=%d)"%indegree ),
                             legend=tuple([y for (y,x) in pointlist]),
                             showlines=True,
                             x_range=x_range,
@@ -123,10 +128,10 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
                         else:
                             print q[0]+"_vs_"+p[0]
                             prettyplot( [q[1],p[1]], 
-                                        os.path.join( path, q[0]+"_vs_"+p[0]+" (indegree=%d).png"%indegree ), 
+                                        os.path.join( path, q[0]+"_vs_"+p[0]+" (indegree=%d)"%indegree ), 
                                         legend=(q[0],p[0]), 
                                         showlines=True,
-                                        title=q[0]+"_vs_"+p[0]+" (indegree=%d).png"%indegree,
+                                        title=q[0]+"_vs_"+p[0]+" (indegree=%d)"%indegree,
                                         x_range=x_range,
                                         y_range=y_range,
                                         xlabel='controversiality',
@@ -140,7 +145,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print "USAGE: ./printAllTMPerformance.py npath False|True True|False mae|rmse|percentage_wrong|coverage|all list_of_TrustMetric_to_leave_out"
         print "Legend:"
-        print "npath: path to network to load"
+        print "npath: path to network to load, or - for default"
         print "False|True: if False the list of trustMetric represent the tm that you want, else represent the trustmetric that you would to leave out."
         print "True|False: if true the trust metric were plotted in one graphics, else it were plotted pair to pair in different graphics."
         print "all|...: what kind of error you would calculate? choose one, or 'all' that plot in different graphics all the other error"
@@ -154,19 +159,22 @@ if __name__ == "__main__":
     import re
 
     npath = sys.argv[1]
-    leaveOut = bool(sys.argv[2])
-    allInOne = bool(sys.argv[3])
+    leaveOut = sys.argv[2] == "True"
+    allInOne = sys.argv[3] == "True"
     toe = sys.argv[4]
     list = sys.argv[5:]
+
 
     date = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", npath)[0]
     N = None
 
     try:
-        if "Wiki" in npath:
+        if npath == "-":
+            pass
+        elif "Wiki" in npath:
             lang = re.findall("/([a-z]{2})/", npath)[0]
             current = "Current" in npath
-            N = WikiNetwork( date=date, lang=lang )
+            N = WikiNetwork( date=date, lang=lang, current=current )
         elif "Advogato" in npath:
             N = AdvogatoNetwork( date=date )
         elif "Kaitiaki" in npath:
@@ -185,14 +193,22 @@ if __name__ == "__main__":
 
     if leaveOut:
             
-        compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe, current=current, network=N )
+        compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe, network=N )
     else:
-        
-        tmlist = getAllTrustMetrics( N )
+        if not N:
+            N = AdvogatoNetwork( date="2008-05-12" )
+
+        if get_name( N ) == "WikiNetwork":
+            pg = WikiPredGraph
+            tmlist = getTrustMetrics( N, advogato=False, trivial=True )
+        else:
+            pg = PredGraph
+            tmlist = getTrustMetrics( N, trivial=True )
+
         plist = []
 
         for tm in list:
-            plist.append( (tm, PredGraph( tmlist[tm] )) )
+            plist.append( (tm, pg( tmlist[tm] )) )
 
-        compareAllTrustMetrics( plist = plist, allInOne=allInOne, toe=toe )
+        compareAllTrustMetrics( plist = plist, allInOne=allInOne, toe=toe, network=N )
                           
