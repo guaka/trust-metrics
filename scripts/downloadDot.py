@@ -20,9 +20,9 @@ def downloadDot( savepath, nettype, wget, createTree ):
 
     print "Downloading...."
     if not wget:
-        command = "wget -rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
+        command = "wget -r -nd -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
     else:
-        command = wget+" -rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
+        command = wget+" -r -nd -R *.html,*.php "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
 
     print command
 
