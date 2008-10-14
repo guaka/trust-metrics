@@ -22,7 +22,7 @@ def downloadDot( savepath, nettype, wget, createTree ):
     if not wget:
         command = "wget -rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
     else:
-        command = wget+"-rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
+        command = wget+" -rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
 
     print command
 
