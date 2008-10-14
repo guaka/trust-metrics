@@ -8,7 +8,7 @@ import sys,os
 from createPathByDot import createTreeFolder
 from trustlet.helpers import mkpath
 
-def downloadDot( savepath, nettype, createTree ):
+def downloadDot( savepath, nettype, wget, createTree ):
     
     mkpath( savepath )
 
@@ -19,10 +19,15 @@ def downloadDot( savepath, nettype, createTree ):
         sys.exit(1)
 
     print "Downloading...."
-    print "wget -rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
-    
+    if not wget:
+        command = "wget -rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
+    else:
+        command = wget+"-rND -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep
+
+    print command
+
     try:
-        os.system( "wget -r -nd -R index* "+os.path.join( "http://www.trustlet.org/datasets/", nettype )+os.path.sep ) 
+        os.system( command ) 
     except:
         print "To use this script you must have wget installed"
         sys.exit(1)
@@ -39,12 +44,25 @@ if __name__ == "__main__":
     path = '.'
     name = 'advogato'
     tree = False
-    nameposition = pathposition = -1
+    wget = None
+
+    nameposition = pathposition = wgetposition = -1
+
+    argc = len(sys.argv)
+
+    if argc == 0 or "--help" in sys.argv or "-h" in sys.argv:
+        print "USAGE: python downloadDot.py [-n|--name] network_name [-p|--save-path] path [-t|--create-directory-tree]"
+        print "NB: if you haven't wget installed you can pass another parameter [--wget-bin|-w] path_to_wget_bin"
+        sys.exit(0)
+
 
     for i in xrange( len(sys.argv) ):
         if '-n' == sys.argv[i] or '--name' == sys.argv[i]:
             nameposition = i
-            
+        
+        if '-w' == sys.argv[i] or '--wget-bin' == sys.argv[i]:
+            wget = sys.argv[i+1]
+    
         if '-p' == sys.argv[i] or '--save-path' == sys.argv[i]:
             pathposition = i
 
@@ -70,6 +88,6 @@ if __name__ == "__main__":
             print "I cannot be able to find the path"
             sys.exit(1)
 
-    downloadDot( path, name, tree )
+    downloadDot( path, name, wget, tree )
 
     sys.exit(0)
