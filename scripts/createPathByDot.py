@@ -57,8 +57,9 @@ robots_net-graph-2008-07-24.dot --> robots_net/2008-07-24/graph.dot
 
 You can use this script to automatically create a default structure for the datasets folder
 """
+            sys.exit(0)
 
-        main( sys.argv[1:] )
+        createTreeFolder( sys.argv[1:] )
     else:
         print """
 This script take a list of dot files (or c2 files) that contains a graph
