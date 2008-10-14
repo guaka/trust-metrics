@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     argc = len(sys.argv)
 
-    if argc == 0 or "--help" in sys.argv or "-h" in sys.argv:
+    if argc == 1 or "--help" in sys.argv or "-h" in sys.argv:
         print "USAGE: python downloadDot.py [-n|--name] network_name [-p|--save-path] path [-t|--create-directory-tree]"
         print "NB: if you haven't wget installed you can pass another parameter [--wget-bin|-w] path_to_wget_bin"
         sys.exit(0)
