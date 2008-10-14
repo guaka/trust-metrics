@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-#script per legare i file di sviluppo di trustlet con i file
-#installati tramite link simbolici
-#(in modo da non dover reinstallare trustlet ad ogni modifica)
 
 """
 Makes symbolic links from development path (local svn

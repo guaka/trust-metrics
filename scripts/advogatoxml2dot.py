@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+'''\
+translation of old datasets in from xml to dot.
+new datasets *don't* use this format.
+'''
+
 import os,re,sys
 from os.path import join,isdir,isfile,exists
 from trustlet import Network,helpers
