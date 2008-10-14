@@ -41,7 +41,7 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
     """
     
 
-    if not network or network == None:
+    if not network:
         A = AdvogatoNetwork( date="2008-05-12" )
     else:
         A = network
@@ -138,8 +138,9 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) < 2:
-        print "USAGE: ./printAllTMPerformance.py False|True True|False mae|rmse|percentage_wrong|coverage|all list_of_TrustMetric_to_include"
+        print "USAGE: ./printAllTMPerformance.py npath False|True True|False mae|rmse|percentage_wrong|coverage|all list_of_TrustMetric_to_leave_out"
         print "Legend:"
+        print "npath: path to network to load"
         print "False|True: if False the list of trustMetric represent the tm that you want, else represent the trustmetric that you would to leave out."
         print "True|False: if true the trust metric were plotted in one graphics, else it were plotted pair to pair in different graphics."
         print "all|...: what kind of error you would calculate? choose one, or 'all' that plot in different graphics all the other error"
@@ -150,13 +151,32 @@ if __name__ == "__main__":
         print "    see the documentation of the function"
         exit(0)
 
-    leaveOut = bool(sys.argv[1])
-    allInOne = bool(sys.argv[2])
-    toe = sys.argv[3]
-    list = sys.argv[3:]
+    import re
+
+    npath = sys.argv[1]
+    leaveOut = bool(sys.argv[2])
+    allInOne = bool(sys.argv[3])
+    toe = sys.argv[4]
+    list = sys.argv[5:]
 
     if leaveOut:
-        compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe )
+
+        date = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", npath)[0]
+
+        if "Wiki" in npath:
+            lang = re.findall("/([a-z]{2})/", npath)[0]
+            current = "Current" in npath
+            N = WikiNetwork( date=date, lang=lang )
+        elif "Advogato" in npath:
+            N = AdvogatoNetwork( date=date )
+        elif "Kaitiaki" in npath:
+            N = KaitiakiNetwork( date=date )
+        elif "Squeakfoundation" in npath:
+            N = SqueakfoundationNetwork( date=date )
+        else:
+            N = WeightedNetwork( dataset = npath )
+            
+        compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe, current=current, network=N )
     else:
         A = AdvogatoNetwork( date="2008-05-12" )
         
