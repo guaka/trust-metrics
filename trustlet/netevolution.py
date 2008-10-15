@@ -120,19 +120,24 @@ def evolutionmap(load_path,function,range=None):
             K = Network.WeightedNetwork()
             K.paste_graph(G)
         elif os.path.exists( os.path.join(load_path,date,'graphHistory.c2') ):
-            path = os.path.join(load_path,date,'graphHistory.c2')
-            import re
+            
             try:
-                lang = re.findall( "/([a-z]{2})/", load_path )[0] #two character a-z slash-delimited
+                if load_path[-1] == os.path.sep:
+                    p = load_path[:-1]
+                else:
+                    p = load_path
+
+                lang = os.path.split( p )[1]
+
             except IndexError:
                 print "Cannot find lang of this wikinetwork (",date,")"
                 return None
                 
             if not lang:
-                print "Lang value is not usable, exiting"
+                print "Lang value is not usable, this is the path "+load_path+" exiting"
                 return None
 
-            K = WikiNetwork( lang = lang, date = date, current = False ) #netevolution only with history
+            K = Network.WikiNetwork( lang = lang, date = date, current = False ) #netevolution only with history
         else:
             print "Cannot be able to load network! (date="+date+")"
             return None
@@ -249,8 +254,10 @@ def level_distribution(path,range=None):
         see AdvogatoNetwork class
         this code (d = dict(...)) is copyed from there
         """
-        
-        #level map = color map + obs_app_jour_mas map
+        if get_name( K ) != "WeightedNetwork":
+            return None
+
+        #level map = color map + obs_app_jour_mas map 
         level_map = _obs_app_jour_mas_map.copy()
         level_map.update(_color_map)
         
@@ -276,6 +283,10 @@ def plot_level_distribution(data,path='.'):
     # from: [(a,(b,c,d,e)), (a1,(b1,c1,d1,e1)), ...]
     # to:   [ [(a,b), (a1,b1), ...],[(a,c), (a1,c1), ...], [(a,d), ...], ... ]
     # lists of ['Master','Journeyer','Apprentice','Observer']
+
+    if not data or not data[0] or not data[0][1]:
+        return None
+
     f_data = [[],[],[],[]]
     for t in data:
         for i,l in enumerate(f_data):
@@ -313,6 +324,8 @@ def plot_genericevaluation(data,path='.',title='',comment=''):
             '.', title='Average clustering'
             )
     '''
+    if not data or None in data:
+        return None
 
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
