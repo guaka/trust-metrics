@@ -106,10 +106,14 @@ def evolutionmap(path,function,range=None):
         if function.__name__=='<lambda>':
             print "i can't save cache with lambda funtions"
         else:
-            cachekey = {'function':function.__name__,'date':date}
-            cache = load(cachekey,path=os.path.join(path,cachepath))
-            if cache:
-                return cache
+            try:
+                cachekey = {'function':function.__name__,'date':date}
+                cache = load(cachekey,path=os.path.join(path,cachepath))
+                if cache:
+                    return cache
+            except:
+                print "Error loading cache from ",os.path.join(path,cachepath)
+                
 
         print date
         #print date only if the function will computed
@@ -119,13 +123,13 @@ def evolutionmap(path,function,range=None):
             K.paste_graph(G)
         except:
             print "Error reading network ",date
-            sys.exit(1)
+            return None
 
         try:
             res = function(K,date)
         except:
             print "Error applying "+function.__name__+" to the network! Exiting"
-            sys.exit(1)
+            return None
 
         if function.__name__!='<lambda>':
             assert save(cachekey,res,os.path.join(path,cachepath))
