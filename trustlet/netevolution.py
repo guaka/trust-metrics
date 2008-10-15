@@ -136,7 +136,7 @@ def evolutionmap(path,function,range=None):
                     print "Lang value is not usable, exiting"
                     return None
 
-                K = WikiNetwork( lang = , date = date, current = False ) #netevolution only with history
+                K = WikiNetwork( lang = lang, date = date, current = False ) #netevolution only with history
 
         except:
             print "Error reading network ",date
