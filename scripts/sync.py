@@ -10,6 +10,7 @@ Then merge them with the local version of them.
  - Only c2 file are mergerd. If a regular file yet exists on client it won't updated.
 Finally changes will be committed.
  - Backup files (ends with ~) will not uploaded.
+ - Files and directory that begin with _ will not uploaded too.
 
 main directory dataset: <basepath>/datasets
 svn hidden directory: <basepath>/.datasets

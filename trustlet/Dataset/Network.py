@@ -451,7 +451,7 @@ class WikiNetwork(WeightedNetwork):
                  savememory = False, threshold=1 ):
         WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory)
         
-        assert trustlet.helpers.isdate(date)
+        assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
 
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang; self.date = date; self.current = current; self.bots = bots; self.botset = None; self._weights_dictionary = None
@@ -492,9 +492,11 @@ class WikiNetwork(WeightedNetwork):
         pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
         
         if pydataset == None:
+            # retry without thresold
             cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
             pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
             
+            #generate dataset with the requested threshold
             if pydataset and threshold > 1:
                 edges = pydataset[1]
                 edges = filter( lambda x: x[2] >= threshold, edges )
@@ -513,19 +515,27 @@ class WikiNetwork(WeightedNetwork):
             if not bots:
                 cachedict['list'] = 'bots'
                 botset = trustlet.helpers.load(cachedict, self.filepath )
+                if type(botset) is list:
+                    botset = set(botset)
+                else:
+                    botset = set()
                 self.botset = botset #save botset for future use
             else:
-                self.botset = None
+                self.botset = set()
 
             if not blockedusers:
                 cachedict['list'] = 'blockedusers'
                 blockedset = trustlet.helpers.load(cachedict, self.filepath )
+                if type(blockedset) is list:
+                    blockedset = set(blockedset)
+                else:
+                    blockedset = set()
                 self.blockedset = blockedset #save blockset for future use
             else:
-                self.blockedset = None
+                self.blockedset = set()
                 
             if not self.botset:
-                botset = []
+                botset = set()
 
             if not self.blockedset:
                 blockedset = []
@@ -540,7 +550,7 @@ class WikiNetwork(WeightedNetwork):
         else:
             if os.path.exists( self.filepath+'.c2' ):
                 print "Warning! the c2 file does not contain the dataset.."
-                print "the key used were: ", cachedict
+                print "the key used was: ", cachedict
 
             self.filepath += '.dot'; self.filename = filename + '.dot'
 

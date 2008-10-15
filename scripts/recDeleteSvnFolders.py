@@ -6,6 +6,9 @@ recursive delete of .svn dirs.
 USAGE: recDeleteSvnFolders.py [path]
 
 If path isn't specified will be used current directory
+
+This script is equivalent to:
+ls -aR | grep .svn: | xargs -I line python -c "print 'line'[:-1]" | xargs -I line rm -Rf line
 '''
 
 import os
