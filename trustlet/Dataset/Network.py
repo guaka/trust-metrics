@@ -448,7 +448,7 @@ class WikiNetwork(WeightedNetwork):
         
     def __init__(self, lang, date, current=False, bots=True, blockedusers=True, base_path = None,
                  dataset = None, force = False,
-                 savememory = False, threshold=1 ):
+                 savememory = False, threshold=1, output=False ):
         WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory)
         
         assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
@@ -480,7 +480,9 @@ class WikiNetwork(WeightedNetwork):
         self.url = os.path.join( self.url, os.path.split(relpath)[0])
 
         #load from cache
-        print "Reading ", self.filepath+'.c2'
+        if output:
+            print "Reading ", self.filepath+'.c2'
+        
         cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
         if threshold > 1:
             cachedict['threshold'] = threshold

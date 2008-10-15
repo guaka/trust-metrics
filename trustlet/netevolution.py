@@ -137,7 +137,7 @@ def evolutionmap(load_path,function,range=None):
                 print "Lang value is not usable, this is the path "+load_path+" exiting"
                 return None
 
-            K = Network.WikiNetwork( lang = lang, date = date, current = False ) #netevolution only with history
+            K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
         else:
             print "Cannot be able to load network! (date="+date+")"
             return None
