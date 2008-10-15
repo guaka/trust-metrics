@@ -113,10 +113,20 @@ def evolutionmap(path,function,range=None):
 
         print date
         #print date only if the function will computed
-        G = read_dot(os.path.join(path,date,'graph.dot'))
-        K = Network.WeightedNetwork()
-        K.paste_graph(G)
-        res = function(K,date)
+        try:
+            G = read_dot(os.path.join(path,date,'graph.dot'))
+            K = Network.WeightedNetwork()
+            K.paste_graph(G)
+        except:
+            print "Error reading network ",date
+            sys.exit(1)
+
+        try:
+            res = function(K,date)
+        except:
+            print "Error applying "+function.__name__+" to the network! Exiting"
+            sys.exit(1)
+
         if function.__name__!='<lambda>':
             assert save(cachekey,res,os.path.join(path,cachepath))
         return res
