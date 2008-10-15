@@ -83,11 +83,8 @@ def evolutionmap(path,function,range=None):
     '''
     cachepath = 'netevolution.c2'
 
-    c2 = os.path.exists(os.path.join(path,x,'graphHistory.c2'))
-    dot = os.path.exists(os.path.join(path,x,'graph.dot'))
-
     dates = [x for x in os.listdir(path)
-             if isdate(x) and ( dot or c2 ) ]
+             if isdate(x) and ( os.path.exists(os.path.join(path,x,'graph.dot')) or os.path.exists(os.path.join(path,x,'graphHistory.c2')) ) ]
     
     #if not dates:
     #    dates = [x for x in os.listdir(path)
@@ -118,30 +115,28 @@ def evolutionmap(path,function,range=None):
             
         print date
         #print date only if the function will computed
-        try:
-            if dot:
-                G = read_dot(os.path.join(path,date,'graph.dot'))
-                K = Network.WeightedNetwork()
-                K.paste_graph(G)
-            elif c2:
-                path = os.path.join(path,date,'graphHistory.c2')
-                import re
-                try:
-                    lang = re.findall( "/([a-z]{2})/", path )[0] #two character a-z slash-delimited
-                except IndexError:
-                    print "Cannot find lang of this wikinetwork (",date,")"
-                    return None
+        if os.path.exists( os.path.join(path,date,'graph.dot') ):
+            G = read_dot(os.path.join(path,date,'graph.dot'))
+            K = Network.WeightedNetwork()
+            K.paste_graph(G)
+        elif os.path.exists( os.path.join(path,date,'graphHistory.c2') ):
+            path = os.path.join(path,date,'graphHistory.c2')
+            import re
+            try:
+                lang = re.findall( "/([a-z]{2})/", path )[0] #two character a-z slash-delimited
+            except IndexError:
+                print "Cannot find lang of this wikinetwork (",date,")"
+                return None
                 
-                if not lang:
-                    print "Lang value is not usable, exiting"
-                    return None
+            if not lang:
+                print "Lang value is not usable, exiting"
+                return None
 
-                K = WikiNetwork( lang = lang, date = date, current = False ) #netevolution only with history
-
-        except:
-            print "Error reading network ",date
+            K = WikiNetwork( lang = lang, date = date, current = False ) #netevolution only with history
+        else:
+            print "Cannot be able to load network! (date="+date+")"
             return None
-
+            
         try:
             res = function(K,date)
         except:
