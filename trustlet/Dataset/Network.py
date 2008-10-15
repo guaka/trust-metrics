@@ -539,8 +539,6 @@ class WikiNetwork(WeightedNetwork):
             if not self.botset:
                 botset = set()
 
-            if not self.blockedset:
-                blockedset = []
                     #if bots false x not in botset is always true!
             for u in [x for x in nodes if (toU(x) not in botset) and (toU(x) not in blockedset)]:
                 self.add_node(u)

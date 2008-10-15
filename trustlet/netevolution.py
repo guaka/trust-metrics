@@ -152,8 +152,8 @@ def evolutionmap(load_path,function,range=None):
             assert save(cachekey,res,os.path.join(load_path,cachepath))
         return res
 
-    return [task(val) for val in dates]
-    #return splittask(task,dates)
+    #return [task(val) for val in dates]
+    return splittask(task,dates)
 
 
 def usersgrown(path,range=None):
