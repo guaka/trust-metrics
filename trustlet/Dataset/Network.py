@@ -501,8 +501,6 @@ class WikiNetwork(WeightedNetwork):
                 pydataset = (pydataset[0],edges)
                 
             
-
-
         if pydataset:
             #now I'm sure that this network is in a c2 file
             self.filepath += '.c2' ; self.filename = filename + '.c2'
