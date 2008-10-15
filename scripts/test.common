@@ -1,5 +1,0 @@
-import socket
-from trustlet import *
-
-if socket.gethostname()=='sracls01':
-    K = AdvogatoNetwork(date="2008-05-12",base_path='/hardmnt/sra01/sra/salvetti')

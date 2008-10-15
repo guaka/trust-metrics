@@ -195,9 +195,18 @@ def merge(svn,datasets,upload=True):
         for dirpath,dirnames,filenames in os.walk(datasets):
             destbasepath = dirpath.replace(datasets,svn)
 
+            if path.sep+'_' in dirpath:
+                # not upload dirs _*
+                print 'Directory %s will not uploaded' % path.split(dirpath)[1]
+                continue
+
             for filename in filenames:
                 if filename.endswith('~'):
                     # skip backup files
+                    continue
+                if filename.startswith('_'):
+                    # not upload files _*
+                    print 'File %s will not uploaded' % filename
                     continue
 
                 srcpath = path.join(dirpath,filename)
