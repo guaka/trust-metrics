@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+1#!/usr/bin/env python
 """
 This package contains all the function 
 on the evolution of a network
@@ -76,15 +76,15 @@ def ta_plot(ta, path, filename="trustAverage"):
             ]
                 )
 
-def evolutionmap(path,function,range=None):
+def evolutionmap(load_path,function,range=None):
     '''
     apply function function to each network in range range.
     If you want use cache `function` cannot be lambda functions.
     '''
     cachepath = 'netevolution.c2'
 
-    dates = [x for x in os.listdir(path)
-             if isdate(x) and ( os.path.exists(os.path.join(path,x,'graph.dot')) or os.path.exists(os.path.join(path,x,'graphHistory.c2')) ) ]
+    dates = [x for x in os.listdir(load_path)
+             if isdate(x) and ( os.path.exists(os.path.join(load_path,x,'graph.dot')) or os.path.exists(os.path.join(load_path,x,'graphHistory.c2')) ) ]
     
     #if not dates:
     #    dates = [x for x in os.listdir(path)
@@ -109,21 +109,21 @@ def evolutionmap(path,function,range=None):
             print "i can't save cache with lambda funtions"
         else:
             cachekey = {'function':function.__name__,'date':date}
-            cache = load(cachekey,path=os.path.join(path,cachepath))
+            cache = load(cachekey,os.path.join(load_path,cachepath))
             if cache:
                 return cache
             
         print date
         #print date only if the function will computed
-        if os.path.exists( os.path.join(path,date,'graph.dot') ):
-            G = read_dot(os.path.join(path,date,'graph.dot'))
+        if os.path.exists( os.path.join(load_path,date,'graph.dot') ):
+            G = read_dot(os.path.join(load_path,date,'graph.dot'))
             K = Network.WeightedNetwork()
             K.paste_graph(G)
-        elif os.path.exists( os.path.join(path,date,'graphHistory.c2') ):
-            path = os.path.join(path,date,'graphHistory.c2')
+        elif os.path.exists( os.path.join(load_path,date,'graphHistory.c2') ):
+            path = os.path.join(load_path,date,'graphHistory.c2')
             import re
             try:
-                lang = re.findall( "/([a-z]{2})/", path )[0] #two character a-z slash-delimited
+                lang = re.findall( "/([a-z]{2})/", load_path )[0] #two character a-z slash-delimited
             except IndexError:
                 print "Cannot find lang of this wikinetwork (",date,")"
                 return None
@@ -144,7 +144,7 @@ def evolutionmap(path,function,range=None):
             return None
 
         if function.__name__!='<lambda>':
-            assert save(cachekey,res,os.path.join(path,cachepath))
+            assert save(cachekey,res,os.path.join(load_path,cachepath))
         return res
 
     return [task(val) for val in dates]
