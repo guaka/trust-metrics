@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: graph number of cliques
-# Date: Fri Oct  3 10:59:50 2008
+# Date: Thu Oct 16 17:28:20 2008
 # eval = nx.graph_number_of_cliques(K)
 
 set title "graph number of cliques"

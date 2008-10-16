@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: Level distribution
-# Date: Fri Oct  3 10:38:38 2008
+# Date: Thu Oct 16 17:07:47 2008
 # Network: Advogato
 # >>> plot_level_distribution(level_distribution(...))
 

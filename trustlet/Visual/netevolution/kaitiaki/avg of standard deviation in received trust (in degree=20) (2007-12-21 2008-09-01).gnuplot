@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: avg of standard deviation in received trust (in degree=20)
-# Date: Fri Oct  3 10:57:13 2008
+# Date: Thu Oct 16 17:26:12 2008
 #     cont = [] # controversiality array
 # 
 #     for n in K.nodes_iter():

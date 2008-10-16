@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: newman betweenness centrality
-# Date: Fri Oct  3 10:54:03 2008
+# Date: Thu Oct 16 17:24:36 2008
 # eval = avg(networkx.newman_betweenness_centrality(G).values())
 
 set title "newman betweenness centrality"

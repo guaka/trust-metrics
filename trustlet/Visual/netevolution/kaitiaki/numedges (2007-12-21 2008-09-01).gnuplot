@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: Number of edges
-# Date: Fri Oct  3 10:26:52 2008
+# Date: Thu Oct 16 16:54:51 2008
 # Network: Advogato
 # >>> plot_numedges(numedges(...))
 

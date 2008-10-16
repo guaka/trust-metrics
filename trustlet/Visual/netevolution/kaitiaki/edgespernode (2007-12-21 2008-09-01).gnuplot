@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: Average Edges per Node
-# Date: Fri Oct  3 10:34:38 2008
+# Date: Thu Oct 16 17:03:04 2008
 # Network: Advogato
 # >>> plot_edgespernode(edgespernode(...))
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: number_connected_components
-# Date: Fri Oct  3 10:55:23 2008
+# Date: Thu Oct 16 17:25:06 2008
 # eval = nx.number_connected_components(G.to_undirected())
 
 set title "number_connected_components"

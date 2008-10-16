@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: average_clustering
-# Date: Fri Oct  3 10:43:16 2008
+# Date: Thu Oct 16 17:13:20 2008
 # Function: nx.average_clustering
 
 set title "average_clustering"

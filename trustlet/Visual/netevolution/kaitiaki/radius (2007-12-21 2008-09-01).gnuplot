@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: radius
-# Date: Fri Oct  3 10:45:15 2008
+# Date: Thu Oct 16 17:15:42 2008
 # eval = nx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
 
 set title "radius"

@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: Trust Average on time
-# Date: Fri Oct  3 10:25:25 2008
+# Date: Thu Oct 16 16:53:45 2008
 # Network: Advogato
 # >>> trustAverage( fromdate, todate, path, noObserver=False )
 

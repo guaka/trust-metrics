@@ -1,6 +1,6 @@
 #!/usr/bin/env gnuplot
 # Title: closeness_centrality no-weighted_edges
-# Date: Fri Oct  3 10:53:16 2008
+# Date: Thu Oct 16 17:23:11 2008
 # eval = avg(nx.closeness_centrality(G,weighted_edges=False).values())
 
 set title "closeness_centrality no-weighted_edges"
