@@ -443,6 +443,8 @@ if __name__ == "__main__":
     import sys,os
     if len(sys.argv) < 5:
         #prog startdate enddate path
+        print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
+        print "useful to see the grown of the network in an interval of time"
         print "USAGE: netevolution startdate enddate dataset_path save_path [html file]"
         print "You can use '-' to skip {start,end}date"
         sys.exit(1)

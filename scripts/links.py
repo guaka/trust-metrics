@@ -7,9 +7,14 @@ avoid reinstallation of trustlet every change.
 """
 
 USAGE = """\
+Makes symbolic links from development path (local svn
+repository directory) to installation path in order to
+avoid reinstallation of trustlet every change.
+
 USAGE:
 # link.py [development path [installation path]]\
-"""
+
+DEFAULT PARAMETER:"""
 
 from os.path import join,exists
 import sys,os,os.path
@@ -28,9 +33,11 @@ def main():
         print "DEBUG MODE"
     if 'help' in sys.argv[1:] or '--help' in sys.argv[1:]:
         print USAGE
+        print "development path: "+DEFDEVPATH
+        print "installation path : "+DEFINSPATH
         sys.exit()
     
-    print "links.py is dangerous!"
+    print "links.py is dangerous! for more information use --help|help"
     print "backup your installation dir!"
     raw_input("Press enter key to continue.")
 

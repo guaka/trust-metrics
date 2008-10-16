@@ -42,7 +42,16 @@ if __name__ == "__main__":
         type_path = date_path = dataset_path
         type = date = split( dataset_path )[1]
     else:
-        print "USAGE: python genpredgraph.py dataset_path [lang]"
+        print "This script will create all the PredGraph (or WikiPredGraph)"
+        print "for the network passed. If the network is a WikiNetwork"
+        print "you must give me the lang as a parameter"
+        print "PARAMETER DESCRIPTION:"
+        print "dataset_path: the path to the [dot|c2] file"
+        print "lang: pass this parameter only if you would create WikiPredGraph"
+        print "      it must be the lang of the network (es. it|la|vec|nap...)"
+        print "-c: eval graphCurrent.c2"
+        print "-h: eval graphHistory.c2"
+        print "USAGE: python genpredgraph.py dataset_path [lang] [-c|-h]"
         exit(0)
 
     #try to find type of network
@@ -64,7 +73,10 @@ if __name__ == "__main__":
     if type == "WikiNetwork":
         if l > 2:
             lang = sys.argv[2]
-            A = WikiNetwork( lang,date,bots=True )
+            if '-c' in sys.argv:
+                A = WikiNetwork( lang,date,bots=True, current=True )
+            else:
+                A = WikiNetwork( lang,date,bots=True, current=False )
         else:
             print "WikiNetwork must have lang!"
             exit(0)

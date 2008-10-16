@@ -15,7 +15,7 @@ from gzip import GzipFile
 
 def main():
     
-    if '-h' in sys.argv or '--help' in sys.argv:
+    if '-h' in sys.argv or '--help' in sys.argv or len(sys.argv) == 1:
         print __doc__
         return
 
