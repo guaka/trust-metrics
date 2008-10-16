@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from trustlet import *
 #from trustlet import PredGraph, AdvogatoNetwork
 #from trustlet.helpers import get_name, getTrustMetrics, splittask

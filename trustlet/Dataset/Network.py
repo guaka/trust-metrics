@@ -512,33 +512,35 @@ class WikiNetwork(WeightedNetwork):
             nodes,edges = pydataset
             
             #implement here the nobots control
-            removedusers = set()
             cachedict = {'lang':lang}
+            #load bots
+            cachedict['list'] = 'bots'
+            botset = trustlet.helpers.load(cachedict, self.filepath )
+            if type(botset) is list:
+                self.botset = set(botset)
+                if not botset:
+                    print 'The list of bots is empty'
+            else:
+                print 'There aren\'t bots in c2 file'
+                self.botset = set()
+
+            #load blockedusers
+            cachedict['list'] = 'blockedusers'
+            self.blockedset = trustlet.helpers.load(cachedict, self.filepath )
+            if type(self.blockedset) is list:
+                self.blockedset = set(self.blockedset)
+                if not botset:
+                    print 'The list of blockedusers is empty'
+            else:
+                print 'There aren\'t blockedusers in c2 file'
+                self.blockedset = set()
+
+            removedusers = set()
             if not bots:
                 # I'll remove bots from graph
-                cachedict['list'] = 'bots'
-                botset = trustlet.helpers.load(cachedict, self.filepath )
-                if type(botset) is list:
-                    self.botset = set(botset)
-                    if not botset:
-                        print 'The list of bots is empty'
-                else:
-                    print 'There aren\'t bots in c2 file'
-                    self.botset = set()
-                
                 removedusers |= self.botset
-
             if not blockedusers:
-                cachedict['list'] = 'blockedusers'
-                self.blockedset = trustlet.helpers.load(cachedict, self.filepath )
-                if type(self.blockedset) is list:
-                    self.blockedset = set(self.blockedset)
-                    if not botset:
-                        print 'The list of blockedusers is empty'
-                else:
-                    print 'There aren\'t blockedusers in c2 file'
-                    self.blockedset = set()
-
+                # and/or blockedusers
                 removedusers |= self.blockedset
 
             for n in nodes:
@@ -567,7 +569,7 @@ class WikiNetwork(WeightedNetwork):
                         data = os.path.join( dataset, filename+'.dot' )
                         self._read_dot( data, force )
                                     
-                    #save graph.dot in right folder
+                    #save graph.dot in the right folder
                     os.rename( data, os.path.join(self.path,filename+'.dot') )
                 
                 #end else

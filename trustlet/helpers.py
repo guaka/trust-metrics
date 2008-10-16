@@ -28,8 +28,10 @@ def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=None):
     """
     return all trust metric on network passed
     Parameters:
-       trivial = if True, add the trivial function as always_master, always_observer...
-       allAdvogatoLocalDefault = if True, and advogato is True, include AdvogatoLocalDefaultObserver/Journeyer/Master/Apprentice
+       trivial = if True, add the trivial function as always_master,
+       always_observer...
+       allAdvogatoLocalDefault = if True, and advogato is True, include
+       AdvogatoLocalDefaultObserver/Journeyer/Master/Apprentice
        advogato = include advogato trust metrics
     """
 
