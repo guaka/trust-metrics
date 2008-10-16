@@ -106,47 +106,52 @@ def prepare():
                 
     return plist
 
-from socket import gethostname
+#from socket import gethostname
 
 def calc(plist):
 
-    if gethostname() == 'sracls02':
-        compareAllTrustMetrics(
-            cond=no_observer,
-            path='./graphs',
-            toe='all',
-            plist=plist,
-            ind=[3]
-            )
+    compareAllTrustMetrics(
+        cond=no_observer,
+        path='./graphs',
+        toe='all',
+        plist=plist,
+        ind=[3]
+        )
 
-        compareAllTrustMetrics(
-            cond=no_observer,
-            path='./graphs',
-            toe='all',
-            plist=plist,
-            ind=[15]
-            )
-    elif gethostname() == 'silix1600':
-        compareAllTrustMetrics(cond=no_observer,path='./graphs',toe='all',plist=plist,ind=[20],x_range=(0.0,0.45),y_range=(0.0,1.1) )
-        compareAllTrustMetrics(
-            cond=no_observer,
-            path='./graphs',
-            toe='all',
-            plist=plist,
-            ind=[10],
-            x_range=(0.0,0.45),
-            y_range=(0.0,1.1)
-            )
-        compareAllTrustMetrics(
-            cond=no_observer,
-            path='./graphs',
-            toe='all',
-            plist=plist,
-            ind=[1],
-            x_range=(0.0,0.45),
-            y_range=(0.0,1.1)
-            )
+    compareAllTrustMetrics(
+        cond=no_observer,
+        path='./graphs',
+        toe='all',
+        plist=plist,
+        ind=[15]
+        )
+
+    compareAllTrustMetrics(cond=no_observer,path='./graphs',toe='all',plist=plist,ind=[20],x_range=(0.0,0.45),y_range=(0.0,1.1) )
+
+    compareAllTrustMetrics(
+        cond=no_observer,
+        path='./graphs',
+        toe='all',
+        plist=plist,
+        ind=[10],
+        x_range=(0.0,0.45),
+        y_range=(0.0,1.1)
+        )
+    compareAllTrustMetrics(
+        cond=no_observer,
+        path='./graphs',
+        toe='all',
+        plist=plist,
+        ind=[1],
+        x_range=(0.0,0.45),
+        y_range=(0.0,1.1)
+        )
 
 
 if __name__ == "__main__":    
+    print "+--------------------------------------------+"
+    print "+Warning! this can take more and more time...+"
+    print "+--------------------------------------------+"
+    print ""
+    
     calc(prepare())
