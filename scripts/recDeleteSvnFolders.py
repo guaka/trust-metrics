@@ -37,6 +37,9 @@ if __name__ == '__main__':
     import sys
     from shutil import rmtree
 
+    if sys.argv[1] == '--help':
+	    print __doc__
+    
     if len(sys.argv) > 1:
         path = sys.argv[1]
     else:
