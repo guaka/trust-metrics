@@ -548,7 +548,7 @@ class PredGraph(CalcGraph):
 
         cachename = ['cache.c2','predgraphcontrov.c2']
 
-        ls = splittask( eval, [max for max in r] )
+        ls = splittask( eval, r )
 
         if toe == None:
             return ls

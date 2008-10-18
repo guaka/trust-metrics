@@ -14,7 +14,7 @@ def compareAllTrustMetrics( leaveOut = [], new_name=None,
                             cond=None,
                             network = None, #AdvogatoNetwork("2008-05-12") 
                             allInOne=True, 
-                            path = ".", toe = "mae", np=None,
+                            path = ".", toe = "mae",
                             x_range=None,
                             y_range=None, ind=[3,5,10,15,20], plist = None ):
     """
@@ -164,15 +164,16 @@ if __name__ == "__main__":
     toe = sys.argv[4]
     list = sys.argv[5:]
 
-
-    date = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", npath)[0]
+    if npath!='-':
+        date = re.search("[0-9]{4}-[0-9]{2}-[0-9]{2}", npath).group()
     N = None
 
     try:
         if npath == "-":
             pass
         elif "Wiki" in npath:
-            lang = re.findall("/([a-z]{2})/", npath)[0]
+            # i'm looking for lang before a date /nap/2008-07-31
+            lang = re.search("/([a-z]+)/[0-9]{4}-[0-9]{2}-[0-9]{2}", npath).group(1)
             current = "Current" in npath
             N = WikiNetwork( date=date, lang=lang, current=current )
         elif "Advogato" in npath:
@@ -195,6 +196,7 @@ if __name__ == "__main__":
             
         compareAllTrustMetrics( leaveOut=list, allInOne=allInOne, toe=toe, network=N )
     else:
+
         if not N:
             N = AdvogatoNetwork( date="2008-05-12" )
 
@@ -211,4 +213,5 @@ if __name__ == "__main__":
             plist.append( (tm, pg( tmlist[tm] )) )
 
         compareAllTrustMetrics( plist = plist, allInOne=allInOne, toe=toe, network=N )
+
                           
