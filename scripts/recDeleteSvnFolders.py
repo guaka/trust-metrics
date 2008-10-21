@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''\
+'''
 recursive delete of .svn dirs.
 
 USAGE: recDeleteSvnFolders.py [path]
@@ -37,20 +37,20 @@ if __name__ == '__main__':
     import sys
     from shutil import rmtree
 
-    if sys.argv[1] == '--help':
-	    print __doc__
-    
+    if '--help' in sys.argv:
+        print __doc__
+	sys.exit(1)
+
     if len(sys.argv) > 1:
         path = sys.argv[1]
     else:
-        path = '.'
-
-    if path=='--help':
         print __doc__
-    else:
-        l = rec_delete(path)
-    
-        for x in l:
-            rmtree( x )
+	sys.exit(1)
 
-        print ".svn folder removed!"    
+
+    l = rec_delete(path)
+    
+    for x in l:
+        rmtree( x )    
+    
+print ".svn folder removed!"    

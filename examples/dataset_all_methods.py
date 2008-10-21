@@ -82,7 +82,7 @@ dummy_weighted = DummyWeightedNetwork()
 # unconnected_undirected_unweighted = DummyUnconnectedUndirectedUnweighted() # should read from "data/unconnected_undirected_unweighted.dot"
 # unconnected_directed_weighted = DummyUnconnectedUndirectedUnweighted() # should read from "data/unconnected_directed_weighted.net"
 
-squeak_network = SqueakFoundationNetwork(download=True)
+squeak_network = SqueakfoundationNetwork(download=True)
 # advogato_network = AdvogatoNetwork()
 
 # datasets = [dummy, unweighted, undirected, unconnected_undirected_unweighted, unconnected_directed_weighted, advogato]
