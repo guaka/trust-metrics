@@ -825,6 +825,16 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
         self.leave_one_out = leave_one_out
         
 
+    def abs_error(self):
+        ''' Absolute error '''
+        err = 0
+
+        for e in self.edges_iter():
+            pred = e[2]['pred']
+            orig = e[2]['orig']
+            err += abs( pred-orig )
+
+        return err / self.number_of_edges();
 
 
 

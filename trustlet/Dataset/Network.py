@@ -221,11 +221,13 @@ class Network(XDiGraph):
             add_edge = lambda e: self.add_edge(e)
 
         if avoidset:
+
             for node in [x for x in graph.nodes_iter() if x not in avoidset]:
                 self.add_node(node)
 
             for edge in [x for x in graph.edges_iter() if x[0] not in avoidset and x[1] not in avoidset]:
                 add_edge(edge)
+
         else:
             for node in graph.nodes_iter():
                 self.add_node(node)
