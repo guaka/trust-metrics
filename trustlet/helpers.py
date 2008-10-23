@@ -1311,6 +1311,12 @@ def svn_update(path,user='anybody',passwd='a'):
     os.chdir(curdir)
     return res
 
+def md5file(filename):
+    f = file(filename)
+    a = md5.new()
+    a.update(f)
+    f.close()
+    return a.digest()
     
 if __name__=="__main__":
     from trustlet import *

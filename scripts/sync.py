@@ -30,7 +30,7 @@ import os.path as path
 import sys
 import shutil
 
-from trustlet.helpers import merge_cache,mkpath
+from trustlet.helpers import merge_cache,mkpath,md5file
 
 HOME = os.environ['HOME']
 CURDIR = os.getcwd()
@@ -74,6 +74,7 @@ def main():
     
     #files removed from svn
     to_remove = []
+    to_update = [] # from server to client
 
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
@@ -83,7 +84,10 @@ def main():
         
         for dir,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dir:
-                to_remove += [path.join(dir,x) for x in files]
+                # foreach file save relative path
+                to_remove += [path.join(dir,x)  for x in files]
+                # foreach file save md5 digest
+                to_update += [md5file(path.join(dir,x)) for x in files]
 
         assert not os.system(SVNUP)
 
