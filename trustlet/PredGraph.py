@@ -740,6 +740,7 @@ class CalcWikiGraph(CalcGraph):
         
         cachedict = {'lang':lang,'date':date}
 
+        #select if predgraph to read has or not bots and blockedusers
         if not self.dataset.bots:
             cachedict['bots'] = False
 
@@ -756,12 +757,12 @@ class CalcWikiGraph(CalcGraph):
             return False
 
         try:
-
-            self._paste_graph( 
-                c2,
-                self.dataset.botset
-                )
-
+            #for predgraph we save the xdigraph class in c2 file
+            #because from version 0.37 xdigraph support pickling
+            self._paste_graph( c2 )
+            
+            assert c2.number_of_edges() == self.number_of_edges()
+            
         except AttributeError:
             print "I cannot be able to read filepath!"
             print "function load, takes this keys:"
