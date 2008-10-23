@@ -21,6 +21,7 @@ import numpy
 
 average = lambda x: x and float(sum(x)) / len(x)
 toU = lambda x: unicode(x) #to unicode
+UPBOUNDPERCENTAGE = 95
 
 def dataset_dir(path=None):
     """Create datasets/ directory if needed."""
@@ -602,15 +603,15 @@ class WikiNetwork(WeightedNetwork):
             ws = []
             for n in self.edges_iter():
                         
-                try:
-                    x = self.map( float(n[2]['value']) )
+                #try:
+                x = self.map( float(n[2]['value']) )
+                #except:
+                #    raise "Cannot read dataset. The edges was malformed.\nThis is a malformed edge:", n
                     
-                    if lendict == 0:
-                        ws_dict[int(n[2]['value'])] = x
+                if lendict == 0:
+                    ws_dict[int(n[2]['value'])] = x
                     
-                    ws.append( x )
-                except:
-                    raise "Cannot read dataset. The edges was malformed.\nThis is a malformed edge:", n
+                ws.append( x )
                                 
             self._weights_dictionary = ws_dict
             self._weights = ws
@@ -638,6 +639,8 @@ class WikiNetwork(WeightedNetwork):
         if value > self.__upbound:
             return 1.
         else:
+            if self.__upbound == 1:
+                raise Exception,  "In this network the "+str(UPBOUNDPERCENTAGE)+"% of the users has less than 1 as weight on edges, this network has no meaning" 
             return log( value , 3 ) / log( self.__upbound , 3 )
 
     def __rescale(self):
@@ -645,7 +648,7 @@ class WikiNetwork(WeightedNetwork):
         take the _weights field and rescale the value
         """
 
-        upbound = trustlet.helpers.load({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':95})
+        upbound = trustlet.helpers.load({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE})
         
         if upbound:
             self.__upbound = upbound

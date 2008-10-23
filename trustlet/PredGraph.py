@@ -362,7 +362,10 @@ class PredGraph(CalcGraph):
         return num_edges and (num_edges, numpy.sqrt(abs_error / num_edges))
 
     def yes_no_error_cond(self, condition):
-        """1 if the predicted edge is the same as the real edge, 0 if not"""
+        """
+        1 if the predicted edge is the same as the real edge, 0 if not
+        Return a tuple as this (num_edges, yes_no_error / num_edges )
+        """
         yes_no_error = num_edges = 0.0
         for e in self.edges_cond_iter(condition):
             if e[2]['pred'] != UNDEFINED:

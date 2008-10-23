@@ -92,6 +92,7 @@ def main():
         assert not os.system(SVNUP)
 
         to_remove = set(to_remove)
+        to_update = set(to_update)
         for dir,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dir:
                 to_remove.difference_update(set([path.join(dir,x) for x in files]))

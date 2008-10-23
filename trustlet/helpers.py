@@ -1314,7 +1314,7 @@ def svn_update(path,user='anybody',passwd='a'):
 def md5file(filename):
     f = file(filename)
     a = md5.new()
-    a.update(f)
+    a.update(f.read())
     f.close()
     return a.digest()
     
