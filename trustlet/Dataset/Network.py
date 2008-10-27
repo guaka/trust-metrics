@@ -598,7 +598,7 @@ class WikiNetwork(WeightedNetwork):
                     
         lendict = len(ws_dict)
 
-        if hasattr(self, "_weights") and self._weights and:
+        if hasattr(self, "_weights") and self._weights:
             ws = self._weights
         else:
             ws = []
