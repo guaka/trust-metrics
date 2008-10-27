@@ -74,7 +74,7 @@ def main():
     
     #files removed from svn
     to_remove = []
-    to_update = [] # from server to client
+    to_update = {} # key: md5file, value: path (from server to client)
 
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
@@ -87,15 +87,18 @@ def main():
                 # foreach file save relative path
                 to_remove += [path.join(dir,x)  for x in files]
                 # foreach file save md5 digest
-                to_update += [md5file(path.join(dir,x)) for x in files]
+                to_update += [(md5file(path.join(dir,x)),path.join(dir,x)) for x in files]
 
-        assert not os.system(SVNUP)
+        assert not os.system(SVNUP),'update failied'
 
         to_remove = set(to_remove)
-        to_update = set(to_update)
         for dir,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dir:
                 to_remove.difference_update(set([path.join(dir,x) for x in files]))
+
+                # remove files that aren't modified from update
+                for x in files:
+                    del to_update[md5file(path.join(dir,x))]
 
     #print to_remove
     for f in to_remove:

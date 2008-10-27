@@ -22,10 +22,6 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
           ex. /home/ciropom/datasets/AdvogatoNetwork
     returns: a list of tuple (x,y) that can be represented in a graph
     """
-    try:
-        lsdate = os.listdir( path )
-    except OSError:
-        return None
     
     avg = lambda ls:float(sum(ls))/len(ls)
     #filtered date
@@ -83,8 +79,8 @@ def evolutionmap(load_path,function,range=None):
     '''
     cachepath = 'netevolution.c2'
 
-    dates = [x for x in os.listdir(load_path)
-             if isdate(x) and ( os.path.exists(os.path.join(load_path,x,'graph.dot')) or os.path.exists(os.path.join(load_path,x,'graphHistory.c2')) ) ]
+    dates = sorted( [x for x in os.listdir(load_path)
+                     if isdate(x) and ( os.path.exists(os.path.join(load_path,x,'graph.dot')) or os.path.exists(os.path.join(load_path,x,'graphHistory.c2')) ) ] )
     
     #if not dates:
     #    dates = [x for x in os.listdir(path)
@@ -103,7 +99,7 @@ def evolutionmap(load_path,function,range=None):
     print 'There are %d networks' % len(dates)
     
     def task(date):
-        #print date
+        print date
         #cache
         if function.__name__=='<lambda>':
             print "i can't save cache with lambda funtions"
@@ -113,7 +109,7 @@ def evolutionmap(load_path,function,range=None):
             if cache:
                 return cache
             
-        print date
+        #print date
         #print date only if the function will computed
         if os.path.exists( os.path.join(load_path,date,'graph.dot') ):
             G = read_dot(os.path.join(load_path,date,'graph.dot'))

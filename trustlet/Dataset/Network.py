@@ -462,6 +462,7 @@ class WikiNetwork(WeightedNetwork):
         self.threshold = threshold
         self._weights_dictionary = None
         self.__upbound = None
+        self.__user_map = None
 
         # booleans for list of special users
         self.blockedusers = blockedusers
@@ -597,7 +598,7 @@ class WikiNetwork(WeightedNetwork):
                     
         lendict = len(ws_dict)
 
-        if hasattr(self, "_weights") and self._weights:
+        if hasattr(self, "_weights") and self._weights and:
             ws = self._weights
         else:
             ws = []
@@ -625,6 +626,36 @@ class WikiNetwork(WeightedNetwork):
         """
         return self._weights_dictionary
 
+    def upbound(self):
+        """
+        return the value greater or equal to the 95% of the edges in the network 
+        This value is used to rescale the edges in range 0..1
+        """
+        return self.__upbound
+
+    def set_map(self, map ):
+        """
+        set the rescale method
+        Parameter:
+        map: a function (NOT lambda) that take an integer 
+             and rescale it in range 0..1
+             this result is used as weight on edge, in order to 
+             calculate the predgraph
+        """
+        if not hasattr( map, '__name__' ):
+            print "are you sure this is a function?"
+            return None
+
+        if map.__name__ == '<lambda>':
+            print "Cannot save a lambda functions!! use a unique name for this function"
+            print "(because this name is saved as key for the predgraph calculated on this istance of network)"
+            return None
+
+        self.__user_map = map;
+
+        return None
+
+
     def map(self, value):
         """
         take a value to rescale in range 0..1
@@ -647,12 +678,13 @@ class WikiNetwork(WeightedNetwork):
         """
         take the _weights field and rescale the value
         """
-
+        #read upbound
         upbound = trustlet.helpers.load({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE})
         
         if upbound:
             self.__upbound = upbound
         else:
+            #create upbound value
             s = sorted( map( lambda x: x[2]['value'] , self.edges() ) )
             wslen = self.number_of_edges()
             maximum = float(wslen) * 5 / 100
