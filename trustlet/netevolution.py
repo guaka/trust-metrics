@@ -112,9 +112,13 @@ def evolutionmap(load_path,function,range=None):
         #print date
         #print date only if the function will computed
         if os.path.exists( os.path.join(load_path,date,'graph.dot') ):
-            G = read_dot(os.path.join(load_path,date,'graph.dot'))
-            K = Network.WeightedNetwork()
-            K.paste_graph(G)
+            try:
+                G = read_dot(os.path.join(load_path,date,'graph.dot'))
+                K = Network.WeightedNetwork()
+                K.paste_graph(G)
+            except:
+                return None
+
         elif os.path.exists( os.path.join(load_path,date,'graphHistory.c2') ):
             
             try:
