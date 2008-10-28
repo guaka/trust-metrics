@@ -87,7 +87,7 @@ def main():
                 # foreach file save relative path
                 to_remove += [path.join(dir,x)  for x in files]
                 # foreach file save md5 digest
-                to_update += [(md5file(path.join(dir,x)),path.join(dir,x)) for x in files]
+                to_update.update( dict([(md5file(path.join(dir,x)),path.join(dir,x)) for x in files]) )
 
         assert not os.system(SVNUP),'update failied'
 
