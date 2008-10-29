@@ -8,7 +8,7 @@ It uses svn.
 First of all it'll download missed datasets.
 Then merge them with the local version of them.
  - Only c2 file are mergerd. If a regular file yet exists on client it won't updated.
-Finally changes will be committed.
+Finally *all* changes will be committed.
  - Backup files (ends with ~) will not uploaded.
  - Files and directory that begin with _ will not uploaded too.
 
@@ -18,6 +18,10 @@ svn hidden directory: <basepath>/.datasets
 sync creates ~/datasets and ~/.datasets links
 
 sync.py [basepath] [other options]
+  or
+sync rm path [other options]
+
+ - path can be a dir or a file
 
 Options:
    --no-update: no svn update. ¡¡¡ Dangerous option !!!
@@ -29,6 +33,7 @@ import os
 import os.path as path
 import sys
 import shutil
+import re
 
 from trustlet.helpers import merge_cache,mkpath,md5file
 
@@ -41,7 +46,7 @@ SVNADD = 'svn add "%s"'
 
 def main():
 
-    if 'help' in sys.argv:
+    if 'help' in sys.argv or '--help' in sys.argv:
         print __doc__
         return
 
@@ -82,23 +87,24 @@ def main():
     elif not '--no-update' in sys.argv:
         os.chdir(hiddenpath)
         
-        for dir,dirs,files in os.walk(hiddenpath):
-            if not '.svn' in dir:
+        for dirpath,dirs,files in os.walk(hiddenpath):
+            if not '.svn' in dirpath:
                 # foreach file save relative path
-                to_remove += [path.join(dir,x)  for x in files]
+                to_remove += [path.join(dirpath,x)  for x in files]
                 # foreach file save md5 digest
-                to_update.update( dict([(md5file(path.join(dir,x)),path.join(dir,x)) for x in files]) )
+                to_update.update( dict([(md5file(path.join(dirpath,x)),path.join(dirpath,x)) for x in files]) )
 
         assert not os.system(SVNUP),'update failied'
 
         to_remove = set(to_remove)
-        for dir,dirs,files in os.walk(hiddenpath):
-            if not '.svn' in dir:
-                to_remove.difference_update(set([path.join(dir,x) for x in files]))
+        for dirpath,dirs,files in os.walk(hiddenpath):
+            if not '.svn' in dirpath:
+                to_remove.difference_update(set([path.join(dirpath,x) for x in files]))
 
                 # remove files that aren't modified from update
                 for x in files:
-                    del to_update[md5file(path.join(dir,x))]
+                    if x in to_update:
+                        del to_update[md5file(path.join(dirpath,x))]
 
     #print to_remove
     for f in to_remove:
@@ -139,6 +145,9 @@ def merge(svn,datasets,upload=True):
     added = updated = merged = 0
     updatedc2 = set()
     updatedfiles = set()
+
+    re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
+
     # from svn to datasets
     for dirpath,dirnames,filenames in os.walk(svn):
         if '.svn' in dirpath:
@@ -177,7 +186,7 @@ def merge(svn,datasets,upload=True):
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % filename
                         updatedfiles.add(dstpath)
-            else:
+            elif filename[0]!='_' and not re.match(re_svnconflict,filename):
                 #adding
                 print 'adding file',filename
                 added += 1
@@ -213,7 +222,7 @@ def merge(svn,datasets,upload=True):
                 if filename.endswith('~'):
                     # skip backup files
                     continue
-                if filename.startswith('_'):
+                if filename.startswith('_') or re.match(re_svnconflict,filename):
                     # not upload files _*
                     print 'File %s will not uploaded' % filename
                     continue
@@ -224,7 +233,11 @@ def merge(svn,datasets,upload=True):
                 if not path.isfile(dstpath):
                     print 'adding file',filename
                     added += 1
-                    mkpath(destbasepath, lambda x: os.system(SVNADD % x))
+
+                    def l(x):
+                        assert not os.system(SVNADD % x)
+
+                    mkpath(destbasepath, l)
                     shutil.copy(srcpath,destbasepath)
                     assert not os.system(SVNADD % dstpath)
                 elif srcpath in updatedc2:

@@ -1102,12 +1102,12 @@ def load(key,path='.',fault=None):
         except:
             return fault
         
-        if d.has_key(get_sign(key)):
-            #version 2
-            data = d[get_sign(key)]
-        elif d.has_key(hashable(key)):
+        if d.has_key(hashable(key)):
             #version 3
             data = d[hashable(key)]
+        elif d.has_key(get_sign(key)):
+            #version 2
+            data = d[get_sign(key)]
         else:
             return fault
 
