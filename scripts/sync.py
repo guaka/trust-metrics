@@ -186,7 +186,7 @@ def merge(svn,datasets,upload=True):
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % filename
                         updatedfiles.add(dstpath)
-            elif filename[0]!='_' and not re.match(re_svnconflict,filename):
+            elif filename[0]!='_' and not re.match(re_svnconflict,filename) and not filename.endswith('.mine'):
                 #adding
                 print 'adding file',filename
                 added += 1
@@ -222,7 +222,7 @@ def merge(svn,datasets,upload=True):
                 if filename.endswith('~'):
                     # skip backup files
                     continue
-                if filename.startswith('_') or re.match(re_svnconflict,filename):
+                if filename.startswith('_') or re.match(re_svnconflict,filename) or filename.endswith('.mine'):
                     # not upload files _*
                     print 'File %s will not uploaded' % filename
                     continue
