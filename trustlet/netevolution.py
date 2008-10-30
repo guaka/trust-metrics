@@ -61,7 +61,7 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
     if noObserver:
         return evolutionmap( path, trustaverage, (fromdate,todate), no_observer )
     else:
-        return evolutionmap( path, trustaverage, (fromdate,todate) )
+        return evolutionmap( path, trustaverage, (fromdate,todate), debug="log_netevolution" )
 
 def ta_plot(ta, path, filename="trustAverage"):
     prettyplot( ta, os.path.join(path,filename),
@@ -72,7 +72,7 @@ def ta_plot(ta, path, filename="trustAverage"):
             ]
                 )
 
-def evolutionmap(load_path,function,range=None):
+def evolutionmap(load_path,function,range=None,debug=None):
     '''
     apply function function to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -113,6 +113,11 @@ def evolutionmap(load_path,function,range=None):
         #print date only if the function will computed
         if os.path.exists( os.path.join(load_path,date,'graph.dot') ):
             try:
+                if debug:
+                    f = file( debug, 'w' )
+                    f.write( "processing "+date+"\n" )
+                    f.close()
+
                 G = read_dot(os.path.join(load_path,date,'graph.dot'))
                 K = Network.WeightedNetwork()
                 K.paste_graph(G)
