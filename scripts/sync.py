@@ -34,6 +34,7 @@ import os.path as path
 import sys
 import shutil
 import re
+import time
 
 from trustlet.helpers import merge_cache,mkpath,md5file
 
@@ -43,6 +44,15 @@ SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "
 SVNUP = 'svn up --username anybody --password a'
 SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (sync.py)"'
 SVNADD = 'svn add "%s"'
+
+CONFLICT =  '''You might added files yet stored on svn.
+You can execute:
+cd ~/.datasets
+svn revert `file(s) added`
+mv or rm `file(s) added`
+sync.py
+Now you can re add your file with sync.py
+'''
 
 def main():
 
@@ -79,38 +89,38 @@ def main():
     
     #files removed from svn
     to_remove = []
-    to_update = {} # key: md5file, value: path (from server to client)
 
+    tstampup = 0
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
         assert not os.system(SVNCO % hiddenpath)
     elif not '--no-update' in sys.argv:
         os.chdir(hiddenpath)
         
+        #add all svn dir files to to_remove
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
-                # foreach file save relative path
-                to_remove += [path.join(dirpath,x)  for x in files]
-                # foreach file save md5 digest
-                to_update.update( dict([(md5file(path.join(dirpath,x)),path.join(dirpath,x)) for x in files]) )
+                # foreach file saves relative path
+                to_remove += [path.join(dirpath,x) for x in files]
 
-        assert not os.system(SVNUP),'update failied'
+        #timestamp update
+        tstampup = int(time.time())
+        assert not os.system(SVNUP),'Update failied. '+CONFLICT
 
         to_remove = set(to_remove)
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
-                to_remove.difference_update(set([path.join(dirpath,x) for x in files]))
+                # remove from to_remove files yet in datasets dir only if
+                # they have not been modified.
+                to_remove.difference_update(set([path.join(dirpath,x) for x in files
+                                                 if mtime(path.join(dirpath,x))<tstampup]))
 
-                # remove files that aren't modified from update
-                for x in files:
-                    if x in to_update:
-                        del to_update[md5file(path.join(dirpath,x))]
-
-    #print to_remove
-    for f in to_remove:
-        f = f.replace(hiddenpath,datasetspath)
-        print "I'm removing",f
-        os.remove(f)
+        #print to_remove
+        for f in to_remove:
+            f = f.replace(hiddenpath,datasetspath)
+            if path.isfile(f):
+                print "I'm removing",f
+                os.remove(f)
     
     merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv)
 
@@ -137,6 +147,8 @@ def diff(f,g):
             f.close()
             g.close()
             return True
+
+mtime = lambda f: int(os.stat(f).st_mtime)
 
 def merge(svn,datasets,upload=True):
     '''
@@ -247,7 +259,7 @@ def merge(svn,datasets,upload=True):
                     print 'updating file',filename
                     shutil.copy(srcpath,dstpath)
 
-        assert not os.system(SVNCI)
+        assert not os.system(SVNCI),CONFLICT
 
         if added:
             print '# of added files to server repository:',added
