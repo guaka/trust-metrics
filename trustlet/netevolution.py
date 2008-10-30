@@ -9,7 +9,7 @@ from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
 import os,time,re
 
-def trustAverage( fromdate, todate, path, noObserver=False ):
+def trustAverage( fromdate, todate, path, noObserver=False, debug=None ):
     """
     This function evaluate the trust average on more than one datasets.
     If you evaluate twice the same thing, the evaluate 
@@ -61,7 +61,7 @@ def trustAverage( fromdate, todate, path, noObserver=False ):
     if noObserver:
         return evolutionmap( path, trustaverage, (fromdate,todate), no_observer )
     else:
-        return evolutionmap( path, trustaverage, (fromdate,todate), debug="log_netevolution" )
+        return evolutionmap( path, trustaverage, (fromdate,todate), debug=debug )
 
 def ta_plot(ta, path, filename="trustAverage"):
     prettyplot( ta, os.path.join(path,filename),
@@ -112,16 +112,19 @@ def evolutionmap(load_path,function,range=None,debug=None):
         #print date
         #print date only if the function will computed
         if os.path.exists( os.path.join(load_path,date,'graph.dot') ):
-            try:
-                if debug:
-                    f = file( debug, 'w' )
-                    f.write( "processing "+date+"\n" )
-                    f.close()
+            if debug:
+                f = file( debug, 'w' )
+                f.write( "processing "+date+"\n" )
+                f.close()
 
+            try:
                 G = read_dot(os.path.join(load_path,date,'graph.dot'))
                 K = Network.WeightedNetwork()
                 K.paste_graph(G)
             except:
+                print "some errors are occourred! if you are in debug mode, see debug file"
+                print "else restart the script in debug mode to see what happened."
+                print "see doc for more info"
                 return None
 
         elif os.path.exists( os.path.join(load_path,date,'graphHistory.c2') ):
@@ -450,7 +453,7 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution startdate enddate dataset_path save_path [html file]"
+        print "USAGE: netevolution startdate enddate dataset_path save_path [debugfile,html file]"
         print "You can use '-' to skip {start,end}date"
         sys.exit(1)
 
@@ -461,9 +464,14 @@ if __name__ == "__main__":
     path = sys.argv[3]
     savepath = sys.argv[4]
 
+    if sys.argv[5]:
+        debugfile = sys.argv[5]
+    else:
+        debugfile = None
+
     mkpath(savepath)
 
-    ta = trustAverage( startdate, enddate, path)
+    ta = trustAverage( startdate, enddate, path, debug=debugfile)
     ta_plot( ta, savepath )
     plot_numedges( numedges( path,range ), savepath )
     plot_meandegree( meandegree( path,range ), savepath )
@@ -611,8 +619,8 @@ if __name__ == "__main__":
 
 
     # can we erase this?
-    if len(sys.argv) == 6:
-        html = sys.argv[5]
+    if len(sys.argv) >= 7:
+        html = sys.argv[6]
         f = file( os.path.join( savepath, html ) , 'w' )
         fd = file( os.path.join( savepath, '.data' ) , 'w' )
 
