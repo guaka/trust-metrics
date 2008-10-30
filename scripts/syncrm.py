@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
 '''
+Remove file(s) from datasets dir
+USAGE:
+syncrm.py [[[[file0] file1] file2] ...]
+
 Works only if there are links datasets and .datasets in home dir
 '''
 
@@ -14,7 +18,8 @@ SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (syncrm.py)"
 HOME = os.environ['HOME']
 
 def main(args):
-    if not args:
+    if not args or '--help' in args or 'help' in args:
+        print __doc__
         return
 
     ps = []
