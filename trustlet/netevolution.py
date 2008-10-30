@@ -453,7 +453,7 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution startdate enddate dataset_path save_path [debugfile,html file]"
+        print "USAGE: netevolution startdate enddate dataset_path save_path [debug_path,html_file_path]"
         print "You can use '-' to skip {start,end}date"
         sys.exit(1)
 
