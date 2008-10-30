@@ -7,6 +7,7 @@ is be based a few existing free software projects, such as:
 - NetworkX and graphviz: https://networkx.lanl.gov/wiki
 - SciPy and NumPy: http://scipy.org
 - igraph: http://cneurocvs.rmki.kfki.hu/igraph/
+- gnuplot
 
 You can quickly install many dependencies through easy_install
 
