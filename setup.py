@@ -46,7 +46,7 @@ dependencies = ['igraph',
                 'python-gnuplot'
                 ]
 
-pkg = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset']
+pkg = ['trustlet', 'trustlet.pymmetry', 'trustlet.Dataset','trustlet.conversion']
 
 setup(	name = 'trustlet',
 	version = version,
@@ -55,7 +55,7 @@ setup(	name = 'trustlet',
 	author_email = 'kasper.souren@gmail.com',
 	url = 'http://trustlet.org/wiki/Code',
 	license = 'GPL',
-	platforms = ["any"],
+	platforms = ["GNU/Linux","OSX"],
         # see http://www.python.org/pypi?%3Aaction=list_classifiers
 	classifiers = ['Development Status :: 2 - Pre-Alpha',
                        'Intended Audience :: Science/Research',
@@ -79,6 +79,10 @@ if False:
     print "Installing scripts\n"
     os.system( 'cd trustlet && make install && cd ..' )
     os.system( 'cd scripts && make install && cd ..' )
+
+
+
+
 """
 print "Now we try to checkout all the datasets from www.trustlet.org This operation maybe longer."
 

@@ -24,11 +24,10 @@ from trustlet.Dataset.Network import Network,WeightedNetwork
 from trustlet.helpers import *
 from networkx import write_dot
 from string import index, split
-from sys import stdin,argv
+import sys
 import os,re,time
 import urllib
 from gzip import GzipFile
-
 
 # set User-Agent (Wikipedia doesn't give special pages to Python :@ )
 class URLopener(urllib.FancyURLopener):
@@ -54,9 +53,6 @@ def getpage(url):
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
 
-#from socket import gethostname
-#hostname = gethostname()
-
 i18n = {
     'vec':('Discussion utente','Utente','Bot'),
     'nap':('Discussioni utente','Utente','Bot'),
@@ -70,172 +66,91 @@ i18n = {
     'fr' : ('Discussion Utilisateur', 'Utilisateur', 'Bot')
 }
 
-def main():
+def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbose=False):
+    '''
+    t -> h | c (history or current)
+    '''
 
-    if '--current' in argv:
+    assert dst.endswith('.c2')
+
+    if t == 'c':
         WikiContentHandler = WikiCurrentContentHandler
-        outputname = 'graphCurrent'
         
-        argv.remove('--current')
-    else:
+    elif t == 'h':
         WikiContentHandler = WikiHistoryContentHandler
-        outputname = 'graphHistory'
-        
-        if '--history' in argv:
-            argv.remove('--history')
-        
-    if '--input-size' in argv[:-1]:
-        i = argv.index('--input-size')
-        inputsize = int(argv[i+1])
-        del argv[i+1]
-        del argv[i]
-    else:
-        inputsize = None
 
-    if '--distrust' in argv:
-        argv.remove('--distrust')
-        distrust = True
-    else:
-        distrust = False
+    filename = os.path.split(src)[1] #rm dir
+    size = os.stat(src).st_size
 
-    threshold = 0
-    if '--threshold' in argv[:-1]:
-        i = argv.index('--threshold')
-        threshold = int(argv[i+1])
-        del argv[i+1]
-        del argv[i]
-    elif '-t' in argv[:-1]:
-        i = argv.index('-t')
-        threshold = int(argv[i+1])
-        del argv[i+1]
-        del argv[i]
+    s = os.path.split(src)[1]
+    lang = s[:s.index('wiki')]
+    res = re.search('wiki-(\d{4})(\d{2})(\d{2})-',s)
+    date = '-'.join([res.group(x) for x in xrange(1,4)])
 
-    if '--no-lists' in argv:
-        argv.remove('--no-lists')
-        downloadlists = False
-    else:
-        downloadlists = True
+    assert isdate(date)
 
-    if len(argv[1:]) >= 3:
+    mkpath(os.path.split(dst)[0])
 
-        xml,lang,date = argv[1:4]
-        filename = None
-        if xml == '-':
-            xml = stdin
-            size = None
-            nograph = False
-        elif xml == 'no-graph':
-            nograph = True
-        else:
-            filename = os.path.split(xml)[1] #rm dir
-            nograph = False
-            size = os.stat(xml).st_size
-            if (lang,date) == ('-','-'):
-                s = os.path.split(xml)[1]
+    ch = WikiContentHandler(lang,xmlsize=size,
+                            inputfilename=filename,
+                            forcedistrust=distrust,
+                            threshold=threshold,
+                            verbose=verbose)
 
-                lang = s[:s.index('wiki')]
-                res = re.search('wiki-(\d{4})(\d{2})(\d{2})-',s)
-                date = '-'.join([res.group(x) for x in xrange(1,4)])
-                print lang,date
+    sax.parse(src,ch)
 
-        if inputsize:
-            size = inputsize
+    pynet = del_ips(ch.getPyNetwork())
 
-        assert isdate(date)
+    cachedict = {'network':'Wiki','lang':lang,'date':date}
+    if threshold>1:
+        cachedict['threshold'] = threshold
 
-        if argv[4:]:
-            base_path = argv[4]
-        else:
-            assert os.environ.has_key('HOME')
-            base_path = os.environ['HOME']
+    # x^th percentile
+    edges = pynet[1]
+    edges.sort(lambda x,y: cmp(x[2],y[2]))
+    perc90 = edges[len(edges)*9/10][2]
+    perc95 = edges[len(edges)*95/100][2]
+    #print [x[2] for x in edges[len(edges)*95/100:]]
 
-        if base_path.startswith('real'):
-            path = base_path[4:]
-        else:
-            path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
-        mkpath(path)
+    assert save(cachedict,pynet,dst)
 
-        output = os.path.join(path,outputname+'.c2')
+    cachedict['%'] = 90
+    assert save(cachedict,perc90,dst)
+    cachedict['%'] = 95
+    assert save(cachedict,perc95,dst)
+    del cachedict['%']
 
-        if not nograph:
-            ch = WikiContentHandler(lang,xmlsize=size,
-                                    inputfilename=filename,
-                                    forcedistrust=distrust,
-                                    threshold=threshold)
+    if hasattr(ch,'distrust') and ch.distrust:
+        net = ch.getDistrustGraph()
 
-            sax.parse(xml,ch)
+        nodes = set(net.nodes())
+        edges = net.edges()
 
-            pynet = del_ips(ch.getPyNetwork())
+        #if a node is in edges, isn't useful keep it in nodes
+        for e in edges:
+            nodes.discard(e[0])
+            nodes.discard(e[1])
 
-            cachedict = {'network':'Wiki','lang':lang,'date':date}
-            if threshold>1:
-                cachedict['threshold'] = threshold
+        assert save({'network':'DistrustWiki','lang':lang,'date':date},
+                    (list(nodes),edges),
+                    os.path.join(os.path.split(dst)[0],'graphDistrust.c2'))
 
-            # x^th percentile
-            edges = pynet[1]
-            edges.sort(lambda x,y: cmp(x[2],y[2]))
-            perc90 = edges[len(edges)*9/10][2]
-            perc95 = edges[len(edges)*95/100][2]
-            #print [x[2] for x in edges[len(edges)*95/100:]]
+    if not downloadlists:
+        return
 
-            assert save(cachedict,pynet,output)
-            
-            cachedict['%'] = 90
-            assert save(cachedict,perc90,output)
-            cachedict['%'] = 95
-            assert save(cachedict,perc95,output)
-            del cachedict['%']
+    users,bots,blockedusers = get_list_users(lang,
+                                             os.path.join(os.environ['HOME'],'datasets','WikiNetwork'))
 
-            if hasattr(ch,'distrust') and ch.distrust:
-                net = ch.getDistrustGraph()
+    assert save({'lang':lang,'list':'bots'},bots,dst)
+    assert save({'lang':lang,'list':'blockedusers'},blockedusers,dst)
 
-                nodes = set(net.nodes())
-                edges = net.edges()
-
-                #if a node is in edges, isn't useful keep it in nodes
-                for e in edges:
-                    nodes.discard(e[0])
-                    nodes.discard(e[1])
-
-                assert save({'network':'DistrustWiki','lang':lang,'date':date},
-                            (list(nodes),edges),
-                            os.path.join(path,'graphDistrust.c2'))
-
-        if not downloadlists:
-            return
-
-        users,bots,blockedusers = get_list_users(lang,
-                                                 os.path.join(base_path,'datasets','WikiNetwork'))
-
-        assert save({'lang':lang,'list':'bots'},bots,output)
-        assert save({'lang':lang,'list':'blockedusers'},blockedusers,output)
-
-        lenusers = len(users)
-        assert save({'lang':lang,'info':'number of users'},lenusers,output)
-        #assert save({'lang':lang,'info':'number of bots'},len(bots),output)
-        # -> not useful: there is the list of bots in .c2 file
-
-        print 'Output file:',output
-
-        
-        print 'Number of users of whole graph:',lenusers
-        print 'Number of bots:',len(bots)
-
-        #¡¡¡deprecated!!!
-        #for x in pynet[1]:
-        #    x[0] not in bots and x[1] not in bots
-
-        #pynet = (
-        #    list( set(pynet[0]) - set(bots) ),
-        #    [x for x in pynet[1] if x[0] not in bots and x[1] not in bots]
-        #    )
-        #assert save({'network':'Wiki','lang':lang,'date':date,'users':'nobots'},
-        #            pynet,os.path.join(path,outputname+'-nobots.c2'))
-
-    else:
-        print __doc__
+    lenusers = len(users)
+    assert save({'lang':lang,'info':'number of users'},lenusers,dst)
 
 def del_ips(pynetwork):
+    '''
+    remove IPs from nodes and edges
+    '''
     nodes,edges = pynetwork
 
     nodes = [x for x in nodes if not isip(x)]
@@ -243,7 +158,7 @@ def del_ips(pynetwork):
 
     return nodes,edges
 
-def get_list_users(lang,cachepath=None,force=False):
+def get_list_users(lang,cachepath=None,force=False,verbose=False):
     '''
     Return users, bots and blocked users lists
      - cachepath is a directory
@@ -268,9 +183,13 @@ def get_list_users(lang,cachepath=None,force=False):
     ll = 1
     pageurl = url
     count = 0
-    print 'Number of users read:'
+    if verbose:
+        print 'Number of users read:'
+
     while ll:
-        print count
+        if verbose:
+            print count
+
         page = load({'url':pageurl},cachepath)
         if page: t,page = page
 
@@ -292,9 +211,14 @@ def get_list_users(lang,cachepath=None,force=False):
     re_offset = re.compile('offset=(\d{14})\D+')
     busers = [] #blocked users
     pageurl = url
-    print 'Number of blocked users read:'
+    
+    if verbose:
+        print 'Number of blocked users read:'
+
     while pageurl:
-        print len(busers)
+        if verbose:
+            print len(busers)
+
         page = load({'url':pageurl},cachepath)
         if page: t,page = page
 
@@ -323,7 +247,7 @@ def get_list_users(lang,cachepath=None,force=False):
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
-    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0):
+    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0,verbose=False):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
@@ -341,12 +265,14 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         self.allusers = set()
         self.distrust = False
         self.threshold = threshold
+        self.verbose = verbose
 
         if inputfilename:
             assert 'history' in inputfilename
 
         if inputfilename and 'pages-meta-history' in inputfilename or forcedistrust:
-            print "I'll create distrust graph"
+            if verbose:
+                print "I'll create distrust graph"
             self.distrust = True
 
             self.dpages = [] #distrust pages list
@@ -426,7 +352,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         elif self.distrust and self.read == u'text':
             self.ltext += contents
 
-        if self.xmlsize:
+        if self.xmlsize and self.verbose:
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
@@ -466,7 +392,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
-    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0):
+    def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0,verbose=False):
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
@@ -477,7 +403,8 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.count = 0
         self.last_perc_print = ''
         self.threshold = threshold
-
+        self.verbose = verbose
+        
         self.allusers = set()
 
         self.network = Network()
@@ -534,7 +461,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         elif self.read == u'text':
             self.ltext += contents.strip()
 
-        if self.xmlsize:
+        if self.xmlsize and self.verbose:
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
             if perc != self.last_perc_print:
@@ -658,7 +585,6 @@ def getCollaborators( rawWikiText, lang ):
             print "Damn! I cannot be able to find the name!"
             print "This is the raw text:"
             print rawWikiText[start:start+30]
-            import sys
            
             print "What is the end character? (all the character before first were ignored)"
             newdelimiter = sys.stdin.readline().strip()[0]
@@ -754,7 +680,6 @@ def getCharPosition( rawWikiText, search, start ):
             print "can you suggest me how is the end character of the username?"
             print "This is the raw text:"
             print rawWikiText[start:start+30]
-            import sys
            
             print "What is the end character? (all the character before first were ignored)"
             newdelimiter = sys.stdin.readline().strip()[0]
@@ -768,5 +693,8 @@ def getCharPosition( rawWikiText, search, start ):
         end.sort()
         return end[0]
 
-if __name__=="__main__":
-    main()
+currentWikixml2graph = lambda src,dst: \
+    wikixml2graph(src,dst,'c')
+
+historyWikixml2graph = lambda src,dst: \
+    wikixml2graph(src,dst,'h')
