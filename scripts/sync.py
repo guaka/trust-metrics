@@ -54,6 +54,9 @@ sync.py
 Now you can re add your file with sync.py
 '''
 
+def svnadd(p):
+    assert not os.system(SVNADD % p)
+
 def main():
 
     if 'help' in sys.argv or '--help' in sys.argv:
@@ -246,12 +249,9 @@ def merge(svn,datasets,upload=True):
                     print 'adding file',filename
                     added += 1
 
-                    def l(x):
-                        assert not os.system(SVNADD % x)
-
-                    mkpath(destbasepath, l)
+                    mkpath(destbasepath, svnadd)
                     shutil.copy(srcpath,destbasepath)
-                    assert not os.system(SVNADD % dstpath)
+                    svnadd(dstpath)
                 elif srcpath in updatedc2:
                     print 'merging file',filename
                     shutil.copy(srcpath,dstpath)
