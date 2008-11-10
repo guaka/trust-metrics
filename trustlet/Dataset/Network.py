@@ -58,13 +58,86 @@ class Network(XDiGraph):
             self.path = os.path.join(dataset_dir(base_path), self.__class__.__name__)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
-                
+    
         self.savememory = savememory
+        if savememory:
+            self.add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
 
         if from_graph:
             self.paste_graph(from_graph)
 
-    
+    def load_c2(self,cachedict):
+        
+        if not hasattr(self,"filepath"):
+            print "Error: filepath is not defined!"
+            return False
+
+        pydataset = trustlet.helpers.load(cachedict, self.filepath)
+        
+        if not pydataset:
+            return False
+
+        if not pydataset and cachedict.has_key('threshold'):
+            # retry without thresold
+            del cachedict['threshold']
+            pydataset = trustlet.helpers.load(cachedict, self.filepath)
+            
+            #generate dataset with the requested threshold
+            if pydataset and threshold > 1:
+                edges = filter( lambda x: x[2] >= threshold, pydataset[1] )
+                pydataset = (pydataset[0],edges)
+        
+        if pydataset:
+            #now I'm sure that this network is in a c2 file
+            self.filename = os.path.split(self.filepath)[1]
+        
+            nodes,edges = pydataset
+            
+            #implement here the nobots control
+            cachedict = {'lang':cachedict['lang']}
+            #load bots
+            cachedict['list'] = 'bots'
+            botset = trustlet.helpers.load(cachedict, self.filepath )
+            
+            if type(botset) is list:
+                self.botset = set(botset)
+                if not botset:
+                    print 'The list of bots is empty'
+            else:
+                print 'There aren\'t bots in c2 file'
+                self.botset = set()
+
+            #load blockedusers
+            cachedict['list'] = 'blockedusers'
+            self.blockedset = trustlet.helpers.load(cachedict, self.filepath )
+            if type(self.blockedset) is list:
+                self.blockedset = set(self.blockedset)
+                if not botset:
+                    print 'The list of blockedusers is empty'
+            else:
+                print 'There aren\'t blockedusers in c2 file'
+                self.blockedset = set()
+
+            removedusers = set()
+            assert hasattr(self,'bots'),'Is it a WikiNetwork object?'
+            if not self.bots:
+                # I'll remove bots from graph
+                removedusers |= self.botset
+            assert hasattr(self,'blockedusers'),'Is it a WikiNetwork object?'
+            if not self.blockedusers:
+                # and/or blockedusers
+                removedusers |= self.blockedset
+
+            for n in nodes:
+                if toU(n) not in removedusers:
+                    self.add_node(n)
+            for u,v,e in edges:
+                if toU(u) not in removedusers and toU(v) not in removedusers:
+                    self.add_edge((u,v,{'value':e}))
+
+        return True
+  
+
         
     def download_file(self, url, filename):
         '''Download url to filename into the right path '''
@@ -215,11 +288,6 @@ class Network(XDiGraph):
            graph: the graph
            avoidset: the set object that contains all the nodes leaved out from the copying
         """
-    
-        if self.savememory:
-            add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
-        else:
-            add_edge = lambda e: self.add_edge(e)
 
         if avoidset:
 
@@ -227,14 +295,14 @@ class Network(XDiGraph):
                 self.add_node(node)
 
             for edge in [x for x in graph.edges_iter() if x[0] not in avoidset and x[1] not in avoidset]:
-                add_edge(edge)
+                self.add_edge(edge)
 
         else:
             for node in graph.nodes_iter():
                 self.add_node(node)
 
             for edge in graph.edges_iter():
-                add_edge(edge)
+                self.add_edge(edge)
     
     def _paste_graph(self, graph, avoidset=None):
         """Deprecated."""
@@ -458,7 +526,9 @@ class WikiNetwork(WeightedNetwork):
         assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
 
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
-        self.lang = lang; self.date = date; self.current = current
+        self.lang = lang
+        self.date = date
+        self.current = current
         self.threshold = threshold
         self._weights_dictionary = None
         self.__upbound = None
@@ -468,15 +538,10 @@ class WikiNetwork(WeightedNetwork):
         self.blockedusers = blockedusers
         self.bots = bots
 
-        if savememory:
-            add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
-        else:
-            add_edge = lambda e: self.add_edge(e)
-
         if current:
-            filename = "graphCurrent"
+            filename = "graphCurrent.c2"
         else:
-            filename = "graphHistory"
+            filename = "graphHistory.c2"
 
         self.path = os.path.join( self.path, lang, date )
         trustlet.helpers.mkpath(self.path)
@@ -489,100 +554,14 @@ class WikiNetwork(WeightedNetwork):
 
         #load from cache
         if output:
-            print "Reading ", self.filepath+'.c2'
+            print "Reading ", self.filepath
         
         cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
         if threshold > 1:
             cachedict['threshold'] = threshold
         
-        pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
-        
-        if not pydataset:
-            # retry without thresold
-            cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
-            pydataset = trustlet.helpers.load(cachedict, self.filepath+'.c2')
-            
-            #generate dataset with the requested threshold
-            if pydataset and threshold > 1:
-                edges = pydataset[1]
-                edges = filter( lambda x: x[2] >= threshold, edges )
-                pydataset = (pydataset[0],edges)
-                
-            
-        if pydataset:
-            #now I'm sure that this network is in a c2 file
-            self.filepath += '.c2'; self.filename = filename + '.c2'
-        
-            nodes,edges = pydataset
-            
-            #implement here the nobots control
-            cachedict = {'lang':lang}
-            #load bots
-            cachedict['list'] = 'bots'
-            botset = trustlet.helpers.load(cachedict, self.filepath )
-            if type(botset) is list:
-                self.botset = set(botset)
-                if not botset:
-                    print 'The list of bots is empty'
-            else:
-                print 'There aren\'t bots in c2 file'
-                self.botset = set()
-
-            #load blockedusers
-            cachedict['list'] = 'blockedusers'
-            self.blockedset = trustlet.helpers.load(cachedict, self.filepath )
-            if type(self.blockedset) is list:
-                self.blockedset = set(self.blockedset)
-                if not botset:
-                    print 'The list of blockedusers is empty'
-            else:
-                print 'There aren\'t blockedusers in c2 file'
-                self.blockedset = set()
-
-            removedusers = set()
-            if not bots:
-                # I'll remove bots from graph
-                removedusers |= self.botset
-            if not blockedusers:
-                # and/or blockedusers
-                removedusers |= self.blockedset
-
-            for n in nodes:
-                if toU(n) not in removedusers:
-                    self.add_node(n)
-            for u,v,e in edges:
-                if toU(u) not in removedusers and toU(v) not in removedusers:
-                    self.add_edge((u,v,{'value':e}))
-       
-        else:
-            if os.path.exists( self.filepath+'.c2' ):
-                print "Warning! the c2 file does not contain the dataset.."
-                print "the key used was: ", cachedict
-
-            self.filepath += '.dot'; self.filename = filename + '.dot'
-
-            try:
-
-                if dataset == None:
-                    self._read_dot( self.filepath, force )
-                else:
-                    if os.path.isfile( dataset ):
-                        self._read_dot( dataset, force )
-                        data = dataset
-                    else:
-                        data = os.path.join( dataset, filename+'.dot' )
-                        self._read_dot( data, force )
-                                    
-                    #save graph.dot in the right folder
-                    os.rename( data, os.path.join(self.path,filename+'.dot') )
-                
-                #end else
-
-            except IOError:
-                                        
-                raise IOError("There isn't a dot file on this path:\n "+
-                              self.path+"\nplease specify another path with dataset parameter "+
-                              "or create dot file with [wikixml2dot.py|wikixml2graph.py]" )
+        print self.filepath,cachedict
+        assert self.load_c2(cachedict), 'There isn\'t anything here!'
 
         self.__rescale()
 
