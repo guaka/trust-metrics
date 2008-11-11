@@ -263,7 +263,7 @@ if 0 and __name__=="__main__":
         #prettyplot([[(0,0),(1,0.1),(2,0.2),(3,0.3)],[(0,1),(1,2),(2,3)]],'prova',showlines=True,legend=['ciao',''],xlabel='X',ylabel='ErrORReeeee',x_range=(0,13),y_range=(-5,12),plotnow=True)
     else:
         prettyplot([(0,0),(1,0),(2,0),(0,1),(1,2),(2,3)],'prova',plotnow=True)
-    exit(0)
+    exit()
 
 
 def prettyplot( data, path, **args):
@@ -794,7 +794,7 @@ def splittask(function,input,np=None):
     except EOFError:
         print "A son process is dead"
         print "splittask says: it's not my fault!"
-        exit(1)
+        exit()
 
     return result
 

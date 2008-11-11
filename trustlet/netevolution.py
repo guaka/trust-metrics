@@ -101,6 +101,24 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     
     def task(date):        
         resdict = {} #dict of result
+        calcfunctions = []
+
+        #try to find the functions cached
+        for i in xrange(len(functions)):
+            if functions[i].__name__=='<lambda>':
+                calcfunctions.append(functions[i])
+            else:
+                cachekey = {'function':functions[i].__name__,'date':date}
+                cache = load(cachekey,path.join(load_path,cachepath))
+                if cache:
+                    resdict[functions[i].__name__] = cache
+                    #do not calculate for functions cached
+                else:
+                    calcfunctions.append(functions[i])
+        
+        if not calcfunctions:
+            #if is empty
+            return resdict
 
         if path.exists( path.join(load_path,date,'graph.dot') ):
             #load network
@@ -148,7 +166,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             return None
 
 
-        for function in functions: #foreach functions that must be calculated on this network
+        for function in calcfunctions: #foreach functions that must be calculated on this network
             
             if debug:
                 f = file( debug, 'w' )
@@ -158,18 +176,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             if function.__name__!='<lambda>':
                 print 'Task:',function.__name__,"on date:",date
 
-            if function.__name__=='<lambda>':
-                print "i can't save cache with lambda funtions"
-            else:
-                cachekey = {'function':function.__name__,'date':date}
-                cache = load(cachekey,path.join(load_path,cachepath))
-                if cache:
-                    resdict[function.__name__] = cache 
-                    continue
-
-            #print date
-            #print date only if the function will computed
-            
             try:
                 res = function(K,date)
             except:
@@ -177,7 +183,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 continue
 
             if function.__name__!='<lambda>':
-                assert save(cachekey,res,path.join(load_path,cachepath))
+                assert save({'function':function.__name__,'date':date},res,path.join(load_path,cachepath))
             
             resdict[function.__name__] = res 
 
