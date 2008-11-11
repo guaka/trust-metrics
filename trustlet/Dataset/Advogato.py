@@ -191,6 +191,55 @@ class Robots_netNetwork(AdvogatoNetwork):
     """
     url = "http://robots.net/person/graph.dot"
 
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = ''):
+        
+        """
+        e.g. A = Advogato(date = '2007-12-21')
+        date = the date of the dot file, if you would to use a old dataset
+        base_path=the path in wich is located the datasets folder
+        weights = if no value is assigned to this parameter, the class choose automatically
+        between _color_map and _obs_app_jour_mas_map
+        comp_threshold = if this parameter is set, the class evaluate the ditch component
+        """
+
+        self.url = ('http://www.trustlet.org/datasets/' +
+                    self._name_lowered() + '/' +
+                    self._name_lowered())
+        if not date:
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.url += '-graph-latest.dot'
+        else:
+            self.url += '-graph-' + date + '.dot'
+        self.date = date
+
+        # it isn't true.. there are only observer etc.
+        #if not weights:
+            # until 2006-05-20 there were colors on the edges
+            
+        if date <= "2006-05-20":
+            weights = _color_map
+        #else:
+           #weights = _obs_app_jour_mas_map
+
+        self.level_map = weights #level_map deprecated
+        WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
+
+        self.path = os.path.join(self.path, date)
+        if not os.path.exists(self.path):
+            os.mkdir(self.path)
+        self.filepath = os.path.join(self.path, self.dotfile)
+        #'download' parameter say to the class if download the source dot file or not
+        self.download(only_if_needed = download)
+        try:
+            self.get_graph_dot()
+        except: #if doesn't work
+            self.paste_graph( dot2c2( self.filepath ) )
+            
+        # DEPRECATED?
+        if comp_threshold:
+            self.ditch_components(comp_threshold)
+
+
     def fix_graphdot(self):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
         print 'Fixing graph.dot'

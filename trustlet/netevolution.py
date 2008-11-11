@@ -9,60 +9,51 @@ from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
 import os,time,re
 import os.path as path
+import scipy
+    
+    
+def trustvariance( K, d ):
+    """
+    This function evaluate the trust variance on more than one datasets.
+    If you evaluate twice the same thing, the evaluate 
+    function be able to remember it (if you call it with evolutionmap).
+    
+    Parameters:
+    K = network
+    d = date
+    """
 
-def trustAverage( fromdate, todate, dpath, noObserver=False, debug=None ):
+    return (d,scipy.var(K.weights()))
+
+
+
+def trustaverage( K, d ):
     """
     This function evaluate the trust average on more than one datasets.
     If you evaluate twice the same thing, the evaluate 
-    function be able to remember it.
+    function be able to remember it.(if you call it with evolutionmap)
     
     Parameters:
-    fromdate: initial date
-    todate: finishdate
-    dpath: dpath in wich I can find the network
-          ex. /home/ciropom/datasets/AdvogatoNetwork
-    returns: a list of tuple (x,y) that can be represented in a graph
+    K = network
+    d = date
     """
-    
-    avg = lambda ls:float(sum(ls))/len(ls)
-    #filtered date
-    
-    def trustaverage( K, d ):
-    #for d in fdate:
 
-        # evolutionmap manage cache (use thae name of function 'trustaverage')
-
-        #at = load( {'function':'trustAverage', 'date':d}, path.join(dpath,d) )
-        #if at != None:
-        #    return (d,at)
-
-        #temporary dpath
-        #can be advogato/kaitiaki style, or directly with a integer weights
-        weight = K.weights()
-        #try to use some dictionary, because
-        #sometimes the key is 'value' and sometimes is 'level'
+    weight = K.weights()
+    #try to use some dictionary, because
+    #sometimes the key is 'value' and sometimes is 'level'
+    try:
+        averagetrust = avg([_obs_app_jour_mas_map[val.values()[0]] for val in weight])
+    except:
         try:
-            averagetrust = avg([_obs_app_jour_mas_map[val.values()[0]] for val in weight])
+            averagetrust = avg([_color_map[val.values()[0]] for val in weight])
         except:
             try:
-                averagetrust = avg([_color_map[val.values()[0]] for val in weight])
+                averagetrust = avg([val.values()[0] for val in weight])
             except:
-                try:
-                    averagetrust = avg([val.values()[0] for val in weight])
-                except:
-                    averagetrust = avg(weight)
-        #save( {'function':'trustAverage', 'date':d}, averagetrust ,path.join(dpath,d) )
-        
-        return (d,averagetrust)
-    
-    assert not noObserver,"evolutionmap doesn't implement "+\
-                          "filter_edges: you may implement "+\
-                          "it in this function"
+                averagetrust = avg(weight)
 
-    if noObserver:
-        return evolutionmap( dpath, trustaverage, (fromdate,todate), no_observer )
-    else:
-        return evolutionmap( dpath, trustaverage, (fromdate,todate), debug=debug )
+    return (d,averagetrust)
+
 
 def ta_plot(ta, dpath, filename="trustAverage"):
     prettyplot( ta, path.join(dpath,filename),
@@ -73,10 +64,15 @@ def ta_plot(ta, dpath, filename="trustAverage"):
             ]
                 )
 
-def evolutionmap(load_path,function,range=None,debug=None):
+def evolutionmap(load_path,functions,range=None,debug=None):
     '''
     apply function function to each network in range range.
     If you want use cache `function` cannot be lambda functions.
+
+    Parameters:
+    load_path = path in wich the dates of the network are stored #ex. /home/ciropom/datasets/AdvogatoNetwork
+    functions = list of functions to apply to each dataset #ex. [trustvariance,trustaverage...]
+    range = tuple with at first the initial date, and at end the final date #ex. ('2000-01-01','2008-01-01')
     '''
     cachepath = 'netevolution.c2'
 
@@ -98,74 +94,93 @@ def evolutionmap(load_path,function,range=None,debug=None):
         assert isdate(range[0]) and  isdate(range[1])
         dates = [x for x in dates if x>=range[0] and x<=range[1]]
 
-    if function.__name__!='<lambda>':
-        print 'Task:',function.__name__
     print 'There are %d networks' % len(dates)
     
     def task(date):
         print date
-        #cache
-        if function.__name__=='<lambda>':
-            print "i can't save cache with lambda funtions"
-        else:
-            cachekey = {'function':function.__name__,'date':date}
-            cache = load(cachekey,path.join(load_path,cachepath))
-            if cache:
-                return cache
-            
-        #print date
-        #print date only if the function will computed
-        if path.exists( path.join(load_path,date,'graph.dot') ):
-            if debug:
-                f = file( debug, 'w' )
-                f.write( "processing "+date+"\n" )
-                f.close()
+        
+        reslist = {} #list of result
+
+        for function in functions: #foreach functions that must be calculated on this network
+
+            if function.__name__!='<lambda>':
+                print 'Task:',function.__name__
+
+            if function.__name__=='<lambda>':
+                print "i can't save cache with lambda funtions"
+            else:
+                cachekey = {'function':function.__name__,'date':date}
+                cache = load(cachekey,path.join(load_path,cachepath))
+                if cache:
+                    resdict[function.__name__] = cache 
+                    continue
+
+            #print date
+            #print date only if the function will computed
+            if path.exists( path.join(load_path,date,'graph.dot') ):
+                if debug:
+                    f = file( debug, 'w' )
+                    f.write( "processing "+date+"\non function"+function.__name__ )
+                    f.close()
+
+                try:
+                    G = read_dot(path.join(load_path,date,'graph.dot'))
+                    K = Network.WeightedNetwork()
+                    K.paste_graph(G)
+                except:
+                    print "some errors are occourred! if you are in debug mode, see debug file"
+                    print "else restart the script in debug mode to see what happened."
+                    print "see doc for more info"
+                    continue
+
+            elif path.exists( path.join(load_path,date,'graphHistory.c2') ):
+
+                try:
+                    if load_path[-1] == path.sep:
+                        p = load_path[:-1]
+                    else:
+                        p = load_path
+
+                    lang = path.split( p )[1]
+
+                except IndexError:
+                    print "Cannot find lang of this wikinetwork (",date,")"
+                    continue
+
+                if not lang:
+                    print "Lang value is not usable, this is the path "+load_path+" exiting"
+                    continue
+
+                K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
+            else:
+                print "Cannot be able to load network! (date="+date+")"
+                continue
 
             try:
-                G = read_dot(path.join(load_path,date,'graph.dot'))
-                K = Network.WeightedNetwork()
-                K.paste_graph(G)
+                res = function(K,date)
             except:
-                print "some errors are occourred! if you are in debug mode, see debug file"
-                print "else restart the script in debug mode to see what happened."
-                print "see doc for more info"
-                return None
+                print "Error applying "+function.__name__+" to the network "+date+"! Exiting"
+                continue
 
-        elif path.exists( path.join(load_path,date,'graphHistory.c2') ):
+            if function.__name__!='<lambda>':
+                assert save(cachekey,res,path.join(load_path,cachepath))
             
-            try:
-                if load_path[-1] == path.sep:
-                    p = load_path[:-1]
-                else:
-                    p = load_path
+            resdict[function.__name__] = res 
 
-                lang = path.split( p )[1]
+        return resdict
 
-            except IndexError:
-                print "Cannot find lang of this wikinetwork (",date,")"
-                return None
-                
-            if not lang:
-                print "Lang value is not usable, this is the path "+load_path+" exiting"
-                return None
+    #map list of result for each dataset in list of result for each function
+    data_ordered = splittask(task,dates)
+    nd = len( dates )
+    nf = len( functions )
 
-            K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
-        else:
-            print "Cannot be able to load network! (date="+date+")"
-            return None
-            
-        try:
-            res = function(K,date)
-        except:
-            print "Error applying "+function.__name__+" to the network! Exiting"
-            return None
+    func_ordered = []
 
-        if function.__name__!='<lambda>':
-            assert save(cachekey,res,path.join(load_path,cachepath))
-        return res
+    for fi in xrange( nf ):
+        for di in xrange( nd ):
+            func_ordered.append( data_ordered[di][fi] )
 
-    #return [task(val) for val in dates]
-    return splittask(task,dates)
+    return func_ordered
 
 
 def usersgrown(path,range=None):
