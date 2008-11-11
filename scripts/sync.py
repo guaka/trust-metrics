@@ -96,6 +96,7 @@ def main():
     tstampup = 0
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
+        shutil.rmtree(hiddenpath)
         assert not os.system(SVNCO % hiddenpath)
     elif not '--no-update' in sys.argv:
         os.chdir(hiddenpath)
