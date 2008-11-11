@@ -23,7 +23,16 @@ def trustvariance( K, d ):
     d = date
     """
 
-    return (d,scipy.var(K.weights()))
+    return (d,scipy.var(K.weights_list()))
+
+def var_plot(var, dpath, filename="trustVariance"):
+    
+    prettyplot( var, path.join(dpath,filename),
+                title="Trust Variance on time", showlines=True,
+                xlabel='date',ylabel='trust variance',
+                comment=['Network: Advogato',
+                         '>>> trustAverage( fromdate, todate, dpath, noObserver=False )']
+                )
 
 
 
@@ -38,19 +47,10 @@ def trustaverage( K, d ):
     d = date
     """
 
-    weight = K.weights()
+    weight = K.weights_list()
     #try to use some dictionary, because
     #sometimes the key is 'value' and sometimes is 'level'
-    try:
-        averagetrust = avg([_obs_app_jour_mas_map[val.values()[0]] for val in weight])
-    except:
-        try:
-            averagetrust = avg([_color_map[val.values()[0]] for val in weight])
-        except:
-            try:
-                averagetrust = avg([val.values()[0] for val in weight])
-            except:
-                averagetrust = avg(weight)
+    averagetrust = avg(weight)
 
     return (d,averagetrust)
 
@@ -58,7 +58,7 @@ def trustaverage( K, d ):
 def ta_plot(ta, dpath, filename="trustAverage"):
     prettyplot( ta, path.join(dpath,filename),
                 title="Trust Average on time", showlines=True,
-                xlabel='date in seconds',ylabel='trust average',
+                xlabel='date',ylabel='trust average',
                 comment=['Network: Advogato',
                          '>>> trustAverage( fromdate, todate, dpath, noObserver=False )'
             ]
@@ -73,12 +73,15 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     load_path = path in wich the dates of the network are stored #ex. /home/ciropom/datasets/AdvogatoNetwork
     functions = list of functions to apply to each dataset #ex. [trustvariance,trustaverage...]
     range = tuple with at first the initial date, and at end the final date #ex. ('2000-01-01','2008-01-01')
+    
+    return a list of list of value where each list of the first list represent a function 'i',
+           and the value in this list is the return value for each network in range, of the 'i' function passed
     '''
     cachepath = 'netevolution.c2'
 
     dates = sorted(
         [x for x in os.listdir(load_path)
-         if isdate(x) and path.exists(path.join(load_path,x,'graph.dot') or \
+         if isdate(x) and ( path.exists(path.join(load_path,x,'graph.dot')) or \
                                              path.exists(path.join(load_path,x,'graphHistory.c2')) ) ]
         )
     
@@ -88,7 +91,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     if not dates:
         print "There isn't any network in this path"
-        return
+        return None
 
     if range:
         assert isdate(range[0]) and  isdate(range[1])
@@ -96,15 +99,13 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     print 'There are %d networks' % len(dates)
     
-    def task(date):
-        print date
-        
-        reslist = {} #list of result
+    def task(date):        
+        resdict = {} #dict of result
 
         for function in functions: #foreach functions that must be calculated on this network
 
             if function.__name__!='<lambda>':
-                print 'Task:',function.__name__
+                print 'Task:',function.__name__,"on date:",date
 
             if function.__name__=='<lambda>':
                 print "i can't save cache with lambda funtions"
@@ -120,15 +121,25 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             if path.exists( path.join(load_path,date,'graph.dot') ):
                 if debug:
                     f = file( debug, 'w' )
-                    f.write( "processing "+date+"\non function"+function.__name__ )
+                    f.write( "processing "+date+"\non function "+function.__name__ )
                     f.close()
 
                 try:
                     G = read_dot(path.join(load_path,date,'graph.dot'))
-                    K = Network.WeightedNetwork()
+                    edge = G.edges()[0][2]
+                    #test what type of weigths there are on this dot
+                    if edge.keys()[0] == 'color':
+                        map = _color_map
+                    elif edge.keys()[0] == 'level':
+                        map = _obs_app_jour_mas_map
+                    else:
+                        print "cannot find the dictionary that specify the map of the weights in numbers for this network"
+                        continue
+
+                    K = Network.WeightedNetwork(weights=map)
                     K.paste_graph(G)
                 except:
-                    print "some errors are occourred! if you are in debug mode, see debug file"
+                    print "some errors are occourred loading graph! if you are in debug mode, see debug file"
                     print "else restart the script in debug mode to see what happened."
                     print "see doc for more info"
                     continue
@@ -173,33 +184,36 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     data_ordered = splittask(task,dates)
     nd = len( dates )
     nf = len( functions )
-
+    
     func_ordered = []
+    #prepare return value set to empty
+    for fi in xrange( nf ):
+        func_ordered.append( [] )
 
+    #fill the return value
     for fi in xrange( nf ):
         for di in xrange( nd ):
-            func_ordered.append( data_ordered[di][fi] )
+            if data_ordered[di].has_key( functions[fi].__name__ ):
+                func_ordered[fi].append( data_ordered[di][ functions[fi].__name__ ] )
 
     return func_ordered
 
 
-def usersgrown(path,range=None):
-    '''
-    return the number of user for each network in date range
-    '''
-    def usersgrown(K,date):
+def usersgrown(K,date):
+        '''
+        return the number of user for each network in date range
+        '''
         return ( date,K.number_of_nodes() )
     
-    return evolutionmap(path,usersgrown,range)
 
-def plot_usersgrown(data,path='.'):
+def plot_usersgrown(data,data_path='.'):
     '''
     data is the output of usersgrown
     >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
-    prettyplot(data,path.join(path,'usersgrown (%s %s)'%(fromdate,todate)),
+    prettyplot(data,path.join(data_path,'usersgrown (%s %s)'%(fromdate,todate)),
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of users',
@@ -208,15 +222,14 @@ def plot_usersgrown(data,path='.'):
                )
 
 
-def numedges(path,range=None):
+def numedges(K,date):
     '''
     return the number of user for each network in date range
     '''
-    def numedges(K,date):
-        return ( date,K.number_of_edges() )
     
-    return evolutionmap(path,numedges,range)
-
+    return ( date,K.number_of_edges() )
+  
+  
 def plot_numedges(data,dpath='.'):
     '''
     >>> plot_*(*('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
@@ -231,15 +244,14 @@ def plot_numedges(data,dpath='.'):
                comment=['Network: Advogato','>>> plot_numedges(numedges(...))']
                )
 
-def edgespernode(dpath,range=None):
+def edgespernode(K,date):
     '''
     return the average number of edges for each user
     '''
-    def edgespernode(K,date):
-        nodes = K.number_of_nodes()
-        return ( date , 1.0*K.number_of_edges()/nodes )
     
-    return evolutionmap(dpath,edgespernode,range)
+    nodes = K.number_of_nodes()
+    return ( date , 1.0*K.number_of_edges()/nodes )
+
 
 def plot_edgespernode(data,dpath='.'):
     '''
@@ -255,56 +267,46 @@ def plot_edgespernode(data,dpath='.'):
                comment=['Network: Advogato','>>> plot_edgespernode(edgespernode(...))']
                )
 
-def meandegree(dpath,range=None):
-    def meandegree(K,date):
-        return ( date,K.avg_degree() )
-    
-    return evolutionmap(path,meandegree,range)
+def meandegree(K,date):
+    return ( date,K.avg_degree() )
 
-def plot_meandegree(data,path='.'):
+
+def plot_meandegree(data,data_path='.'):
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
-    prettyplot(data,path.join(path,'meandegree (%s %s)'%(fromdate,todate)),
+    prettyplot(data, path.join( data_path,'meandegree (%s %s)'%(fromdate,todate) ),
                showlines=True,
                comment=['Network: Advogato','>>> plot_meandegree(meandegree(...))']
                )
 
-def level_distribution(path,range=None):
-    #'Master','Journeyer','Apprentice','Observer'
-    #and other level maps
-    '''
-    Advogato only!
-    '''
 
-    def level_distribution(K,date):
-        """
-        see AdvogatoNetwork class
-        this code (d = dict(...)) is copyed from there
-        """
-        if get_name( K ) != "WeightedNetwork":
-            return None
+def level_distribution(K,date):
+    """
+    see AdvogatoNetwork class
+    this code (d = dict(...)) is copyed from there
+    """
+    if get_name( K ) != "WeightedNetwork":
+        return None
 
-        #level map = color map + obs_app_jour_mas map 
-        level_map = _obs_app_jour_mas_map.copy()
-        level_map.update(_color_map)
-        
-        # we use values()[0] instead of the key of dict because sometimes
-        # the key is 'value' and sometimes it's 'level'
-        # *need to fix this*
-        d = dict(filter(lambda x:x[0],
-                        map(lambda s: (s,
-                                       len([e for e in K.edges_iter()
-                                            if e[2].values()[0] == s])),
-                            level_map)))
-        #order k from higher to lower values (Master to Observer)
-        l = [d[k] for k,v in sorted(level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
+    #level map = color map + obs_app_jour_mas map 
+    level_map = _obs_app_jour_mas_map.copy()
+    level_map.update(_color_map)
 
-        return ( date, map(lambda x:1.0*x/sum(l),l))
-    
-    return evolutionmap(path,level_distribution,range)    
+    # we use values()[0] instead of the key of dict because sometimes
+    # the key is 'value' and sometimes it's 'level'
+    # *need to fix this*
+    d = dict(filter(lambda x:x[0],
+                    map(lambda s: (s,
+                                   len([e for e in K.edges_iter()
+                                        if e[2].values()[0] == s])),
+                        level_map)))
+    #order k from higher to lower values (Master to Observer)
+    l = [d[k] for k,v in sorted(level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
+
+    return ( date, map(lambda x:1.0*x/sum(l),l))
 
 
-def plot_level_distribution(data,path='.'):
+def plot_level_distribution(data,data_path='.'):
 
     # formatted data:
     # from: [(a,(b,c,d,e)), (a1,(b1,c1,d1,e1)), ...]
@@ -319,7 +321,7 @@ def plot_level_distribution(data,path='.'):
         for i,l in enumerate(f_data):
             l.append((t[0],t[1][i]))
     r = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0])
-    prettyplot(f_data,path.join(path,'level distribution (%s %s)'%r),
+    prettyplot(f_data,path.join(data_path,'level distribution (%s %s)'%r),
                title='Level distribution',
                xlabel='dates (from %s to %s)'%r,
                ylabel='percentage of edges',
@@ -329,18 +331,25 @@ def plot_level_distribution(data,path='.'):
                         '>>> plot_level_distribution(level_distribution(...))']
                )
 
-def genericevaluation(path,function,range=None):
+def genericevaluation(path,functions,range=None):
     '''
+    functions: list of function
     function: f(network) -> value on y axis
 
     genericevaluation implements cache support
     '''
-    f = lambda K,date: (date,function(K))
-    if function.__name__!='<lambda>':
-        f.__name__ = 'generic(%s)'%function.__name__
-    return evolutionmap(path,f,range)
+    fs = []
 
-def plot_genericevaluation(data,path='.',title='',comment=''):
+    for function in functions:
+        f = lambda K,date: (date,function(K))
+        if function.__name__!='<lambda>':
+            f.__name__ = 'generic(%s)'%function.__name__
+            
+        fs.append( f )
+
+    return evolutionmap(path,fs,range)
+
+def plot_genericevaluation(data,data_path='.',title='',comment=''):
     '''
     plot output of genericevolution
 
@@ -360,7 +369,7 @@ def plot_genericevaluation(data,path='.',title='',comment=''):
         title = 'Untitled'
     prettyplot(
         data,
-        path.join(path,'%s (%s %s)'%(title,fromdate,todate)),
+        path.join(data_path,'%s (%s %s)'%(title,fromdate,todate)),
         title=title,
         showlines=True,
         comment=comment,
@@ -490,151 +499,163 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    ta = trustAverage( startdate, enddate, dpath, debug=debugfile)
-    ta_plot( ta, savepath )
-    plot_numedges( numedges( dpath,range ), savepath )
-    plot_meandegree( meandegree(dpath,range ), savepath )
-    plot_usersgrown( usersgrown(dpath,range ), savepath )
-    plot_edgespernode( edgespernode( dpath,range ), savepath )
-    plot_level_distribution( level_distribution( dpath,range ), savepath )
+    data = evolutionmap( dpath, [trustaverage,trustvariance,numedges,meandegree,usersgrown,edgespernode,level_distribution], (startdate,enddate) ,debugfile )
+    if not data:
+        sys.exit(1)
+
+    ta_plot( data[0], savepath )
+    var_plot( data[1], savepath )
+    plot_numedges( data[2], savepath )
+    plot_meandegree( data[3], savepath )
+    plot_usersgrown( data[4], savepath )
+    plot_edgespernode( data[5], savepath )
+    plot_level_distribution( data[6], savepath )
 
     #generic evaluation
+    eval1=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
+    eval1.__name__='diameter-largest-connected-component'
 
-    if True or gethostname()=='sracls01':
+    eval2=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
+    eval2.__name__='radius-largest-connected-component'
+    
+    eval4 = lambda G: avg(
+        networkx.betweenness_centrality(G).values()
+        )
+    eval4.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
+    
+    eval5 = lambda G: avg(
+        networkx.betweenness_centrality(G).values()
+        )
+    eval5.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
+    
+    eval6 = lambda G: avg(
+        networkx.betweenness_centrality(G,normalized=False).values()
+        )
+    eval6.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
 
-        plot_genericevaluation(
-            genericevaluation( dpath,networkx.average_clustering ,range ),
-            savepath, title='average_clustering', comment='Function: nx.average_clustering'
-            )
-        
-        eval=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
-        eval.__name__='diameter-largest-connected-component'
-        plot_genericevaluation(
-            genericevaluation(dpath,eval,range),
-            savepath, title='diameter',
-            comment='eval = nx.diameter(networkx.connected_component_subgraphs'
-            '(G.to_undirected())[0])'
-            )
+    eval7 = lambda G: avg(
+        networkx.closeness_centrality(G).values()
+        )
+    eval7.__name__ = 'closeness_centrality-no-weighted_edges'
+    
+    eval8 = lambda G: avg(
+        networkx.closeness_centrality(G,weighted_edges=True).values()
+        )
+    eval8.__name__ = 'closeness_centrality-yes-weighted_edges'
+    
+    eval9 = lambda G: avg(
+        networkx.newman_betweenness_centrality(G).values()
+        )
+    eval9.__name__ = 'newman_betweenness_centrality'
+    
+    
+    eval10 = lambda G: networkx.number_connected_components(G.to_undirected())
+    eval10.__name__ = 'number_connected_components'
 
-        eval=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
-        eval.__name__='radius-largest-connected-component'
-        plot_genericevaluation(
-            genericevaluation(dpath,eval,range),
-            savepath, title='radius',
-            comment='eval = nx.radius(networkx.connected_component_subgraphs'
-                    '(G.to_undirected())[0])'
-            )
+    data = genericevaluation( dpath,
+                              [networkx.average_clustering,eval1,eval2,networkx.density,eval4,eval5,eval6,eval7,eval8,eval9,eval10,avgcont20,graph_number_of_cliques],
+                              range )
 
-        plot_genericevaluation(
-            genericevaluation( dpath,networkx.density ,range ),
-            savepath, title='density', comment='Function: nx.density'
-            )
 
-        eval = lambda G: avg(
-            networkx.betweenness_centrality(G).values()
-            )
-        eval.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
-        plot_genericevaluation(
-            genericevaluation( dpath, eval ,range ),
-            savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
-            comment='eval = avg(nx.betweenness_centrality'
-                    '(G,normalized=True,weighted_edges=False).values())'
-            )
-
-        eval = lambda G: avg(
-            networkx.betweenness_centrality(G).values()
-            )
-        eval.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
-        #plot_genericevaluation(
-        #    genericevaluation( dpath, eval ,range ),
-        #    savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
-        #    comment='eval = avg(nx.betweenness_centrality'
-        #            '(G,normalized=True,weighted_edges=True).values())'
-        #    ) 
-
-    #elif gethostname()=='sracls03':
-
-        eval = lambda G: avg(
-            networkx.betweenness_centrality(G,normalized=False).values()
-            )
-        eval.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
-        plot_genericevaluation(
-            genericevaluation( dpath, eval ,range ),
-            savepath, title='betweenness_centrality no-normalized no-weighted_edges',
-            comment='eval = avg(nx.betweenness_centrality'
-                   '(G,normalized=False,weighted_edges=False).values())'
-            )
-
-        eval = lambda G: avg(
-            networkx.closeness_centrality(G).values()
-            )
-        eval.__name__ = 'closeness_centrality-no-weighted_edges'
-        plot_genericevaluation(
-            genericevaluation( dpath, eval ,range ),
-            savepath, title='closeness_centrality no-weighted_edges',
-            comment='eval = avg(nx.closeness_centrality'
-                    '(G,weighted_edges=False).values())'
-            )
-
-        eval = lambda G: avg(
-            networkx.closeness_centrality(G,weighted_edges=True).values()
-            )
-        eval.__name__ = 'closeness_centrality-yes-weighted_edges'
-        #plot_genericevaluation(
-        #    genericevaluation( dpath, eval ,range ),
-        #    savepath, title='closeness_centrality yes-weighted_edges',
-        #    comment='eval = avg(nx.closeness_centrality'
-        #            '(G,weighted_edges=True).values())'
-        #    )
-
-        eval = lambda G: avg(
-            networkx.newman_betweenness_centrality(G).values()
-            )
-        eval.__name__ = 'newman_betweenness_centrality'
-        plot_genericevaluation(
-            genericevaluation( dpath, eval ,range ),
-            savepath, title='newman betweenness centrality',
-            comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
-            )
-
-        eval = lambda G: networkx.number_connected_components(G.to_undirected())
-        eval.__name__ = 'number_connected_components'
-        plot_genericevaluation(
-            genericevaluation( dpath, eval ,range ),
-            savepath, title='number_connected_components',
-            comment='eval = nx.number_connected_components(G.to_undirected())'
-            )
-
-    #elif True:
-
-        # avg of (standard deviation in trust received by a user
-        # who received at least x trust statements)
-        comment='''\
-    cont = [] # controversiality array
-
-    for n in K.nodes_iter():
-        in_edges = K.in_edges(n)
-        
-        # min_in_degree -> written in name of function
-        if len(in_edges)<min_in_degree:
-            continue
-
-        cont.append(
-            numpy.std([_obs_app_jour_mas_map[x[2]['level']] for x in in_edges])
+    
+    plot_genericevaluation( 
+        data[0],
+        savepath, title='average_clustering', comment='Function: nx.average_clustering'
         )
 
-    return avg(cont)'''
-        plot_genericevaluation(
-            genericevaluation( dpath, avgcont20 ,range ),
-            savepath, title='avg of standard deviation in received trust (in degree=20)',
-            comment=comment
-            )
 
-        plot_genericevaluation(
-            genericevaluation( dpath, graph_number_of_cliques ,range ),
-            savepath, title='graph number of cliques',
-            comment='eval = nx.graph_number_of_cliques(K)'
-            )
+    plot_genericevaluation(
+        data[1],
+        savepath, title='diameter',
+        comment='eval = nx.diameter(networkx.connected_component_subgraphs'
+        '(G.to_undirected())[0])'
+        )
+
+    plot_genericevaluation(
+        data[2],
+        savepath, title='radius',
+        comment='eval = nx.radius(networkx.connected_component_subgraphs'
+                '(G.to_undirected())[0])'
+        )
+
+    plot_genericevaluation(
+        data[3],
+        savepath, title='density', comment='Function: nx.density'
+        )
+
+    plot_genericevaluation(
+        data[4],
+        savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
+        comment='eval = avg(nx.betweenness_centrality'
+                '(G,normalized=True,weighted_edges=False).values())'
+        )
+
+    plot_genericevaluation(
+        data[5],
+        savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
+        comment='eval = avg(nx.betweenness_centrality'
+                '(G,normalized=True,weighted_edges=True).values())'
+        ) 
+
+    plot_genericevaluation(
+        data[6],
+        savepath, title='betweenness_centrality no-normalized no-weighted_edges',
+        comment='eval = avg(nx.betweenness_centrality'
+               '(G,normalized=False,weighted_edges=False).values())'
+        )
+
+    plot_genericevaluation(
+        data[7],
+        savepath, title='closeness_centrality no-weighted_edges',
+        comment='eval = avg(nx.closeness_centrality'
+                '(G,weighted_edges=False).values())'
+        )
+
+    plot_genericevaluation(
+        data[8],
+        savepath, title='closeness_centrality yes-weighted_edges',
+        comment='eval = avg(nx.closeness_centrality'
+                '(G,weighted_edges=True).values())'
+        )
+
+    plot_genericevaluation(
+        data[9],
+        savepath, title='newman betweenness centrality',
+        comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
+        )
+
+    plot_genericevaluation(
+        data[10],
+        savepath, title='number_connected_components',
+        comment='eval = nx.number_connected_components(G.to_undirected())'
+        )
+
+    
+    plot_genericevaluation(
+        data[11],
+        savepath, title='avg of standard deviation in received trust (in degree=20)',
+        comment='''\
+cont = [] # controversiality array
+
+for n in K.nodes_iter():
+    in_edges = K.in_edges(n)
+
+    # min_in_degree -> written in name of function
+    if len(in_edges)<min_in_degree:
+        continue
+
+    cont.append(
+        numpy.std([_obs_app_jour_mas_map[x[2]['level']] for x in in_edges])
+    )
+
+return avg(cont)'''
+        )
+
+    plot_genericevaluation(
+        data[12],
+        savepath, title='graph number of cliques',
+        comment='eval = nx.graph_number_of_cliques(K)'
+        )
 
 
     # can we erase this?

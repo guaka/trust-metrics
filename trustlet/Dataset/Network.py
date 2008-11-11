@@ -367,6 +367,8 @@ class WeightedNetwork(Network):
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
         self._weights = weights
+        self._weights_list = None
+        self._weights_dictionary = None
 
     def trust_on_edge(self, edge):
         """
@@ -374,32 +376,31 @@ class WeightedNetwork(Network):
         """
         return edge[2]
 
-    def weights(self):
+    def weights_list(self):
         """
         Return a list with the weights of all edges
         """
-        if hasattr(self, "_weights") and self._weights:
-            ws = self._weights
+        if hasattr(self, "_weights") and self._weights_list:
+            ws = self._weights_list
         else:
             ws = []
             for n in self.edges_iter():
-                x = n[2]
-                ws.append( x )
+                x = n[2].values()[0]
+                ws.append( self._weights[x] )
             
-            self._weights = ws
+            self._weights_list = ws
         
         return ws
     
-    def weights_dictionary(self):
+    def weights(self):
         """
         Return a dictionary with the weights of all edges
-        Work only in advogato-like function
         """
-        if trustlet.helpers.get_name( self ) == 'WikiNetwork':
-            return None
 
         if hasattr(self, "_weights_dictionary") and self._weights_dictionary:
             ws = self._weights_dictionary
+        elif hasattr( self, "_weights" ) and self._weights:
+            ws = self._weights
         else:
             ws = {}
             for n in self.edges_iter():
@@ -458,8 +459,8 @@ class WeightedNetwork(Network):
     def show_reciprocity_matrix(self):
         if self.has_discrete_weights:
             recp_mtx = self.reciprocity_matrix()
-            tbl = Table([12] + [12] * len(self.weights_dictionary()))
-            tbl.printHdr(['reciprocity'] + self.weights_dictionary().keys())
+            tbl = Table([12] + [12] * len(self.weights()))
+            tbl.printHdr(['reciprocity'] + self.weights().keys())
             tbl.printSep()
             for k, v in recp_mtx.items():
                 tbl.printRow([k] + v)
@@ -474,9 +475,9 @@ class WeightedNetwork(Network):
         
         if self.has_discrete_weights:
             table = {}
-            for v in self.weights_dictionary().keys():
+            for v in self.weights().keys():
                 line = []
-                for w in self.weights_dictionary().keys():
+                for w in self.weights().keys():
                     line.append(sum([value_on_edge(self.get_edge(e[1], e[0])) == w
                                      for e in self.edges_iter()
                                      if (self.has_edge(e[1], e[0]) and 
@@ -560,13 +561,12 @@ class WikiNetwork(WeightedNetwork):
         if threshold > 1:
             cachedict['threshold'] = threshold
         
-        print self.filepath,cachedict
         assert self.load_c2(cachedict), 'There isn\'t anything here!'
 
         self.__rescale()
 
 
-    def weights(self):
+    def weights_list(self):
         """
         Return a list with the weights of all edges
         """
@@ -603,7 +603,8 @@ class WikiNetwork(WeightedNetwork):
         return a dictionary with all the weights in the network
         and it's rescaled value
         """
-        return self._weights_dictionary
+        print "Warning! deprecate function. Use weights()"
+        return self.weights()
 
     def upbound(self):
         """
@@ -669,7 +670,7 @@ class WikiNetwork(WeightedNetwork):
             maximum = float(wslen) * 5 / 100
             self.__upbound = s[wslen - int(maximum)]
             
-        return self.weights()
+        return self.weights_list()
 
 
 
