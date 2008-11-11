@@ -7,6 +7,8 @@ install:
 	install syncrm.py $(INSTALLDIR)
 	install lsc2.py $(INSTALLDIR)/lsc2
 	install recDeleteSvnFolders.py $(INSTALLDIR)
+
+	install dot2c2.py $(INSTALLDIR)
 love:
 	@echo Sorry but I hadn\'t hardware for this, okay?
 	@echo Contact your hardware vendor for the appropriate module.
