@@ -29,6 +29,7 @@ from Dataset.Dummy import *
 from TrustMetric import *
 from PredGraph import *
 from netevolution import *
+from conversion import *
 
 #should come last since it overrides some networkx functions
 from conv import * 

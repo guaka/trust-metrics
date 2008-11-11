@@ -7,9 +7,6 @@ dot
 
 """
 
-
-# how to use subversion revision number?
-__version__ = '0.1.2' # + "-r" + $Revision: $
-
-
-from wikixml2graph import *
+from wikixml2graph import wikixml2graph
+import dot
+import pajek

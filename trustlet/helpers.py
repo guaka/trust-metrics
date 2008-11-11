@@ -1317,59 +1317,6 @@ def md5file(filename):
     a.update(f.read())
     f.close()
     return a.digest()
-    
-
-def dot2c2( path ):
-    """
-    parse a dot and return a WeightedNetwork (that can be pickled in a c2)
-    """
-    
-    ruser = re.compile( "[^ \/*]+" )
-    redges = re.compile( '([^ ]+) -> ([^ ]+) \[([a-z]+)=\"([A-Za-z]+)\"\];' ) #bug
-    w = trustlet.Network.WeightedNetwork()
-
-    f = file( path, 'r' )
-    lines = []
-
-    for x in f.readlines():
-        lines.append( x.strip() ) #clear \x character
-
-    if lines[0] != 'digraph G {':
-        print "Are you sure this is a dot file?"
-        exit(1)
-
-    #delete top and tail
-    del lines[0]
-    del lines[-1]
-
-    nlines = len(lines)
-
-    #find all nodes
-    for i in xrange(nlines):
-        user = ruser.findall( lines[i] )[0]
-        w.add_node( user )
-        #find all edges
-        for j in xrange(i+1,nlines):
-            res = redges.findall( lines[j] )
-            
-            try:
-                edges = res[0]
-            except IndexError:
-                break
-            
-            if type(edges) is tuple:
-                indegree = edges[0]
-                outdegree = edges[1]
-                typeNet = edges[2]
-                value = edges[3]
-                
-                w.add_edge(indegree, outdegree, {typeNet:value} )
-            else:
-                print "Warning! output may be checked"
-
-    return w
-
-
 
 if __name__=="__main__":
     from trustlet import *
