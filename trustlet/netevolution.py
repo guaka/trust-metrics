@@ -556,7 +556,7 @@ if __name__ == "__main__":
     eval10.__name__ = 'number_connected_components'
 
     data = genericevaluation( dpath,
-                              [networkx.average_clustering,eval1,eval2,networkx.density,eval4,eval5,eval6,eval7,eval8,eval9,eval10,avgcont20,graph_number_of_cliques],
+                              [networkx.average_clustering,eval1,eval2,networkx.density,eval4,eval5,eval6,eval7,eval8,eval9,eval10,avgcont20],
                               range )
 
 
@@ -652,12 +652,6 @@ for n in K.nodes_iter():
     )
 
 return avg(cont)'''
-        )
-
-    plot_genericevaluation(
-        data[12],
-        savepath, title='graph number of cliques',
-        comment='eval = nx.graph_number_of_cliques(K)'
         )
 
 
