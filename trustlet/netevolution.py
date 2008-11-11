@@ -102,7 +102,58 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     def task(date):        
         resdict = {} #dict of result
 
+        if path.exists( path.join(load_path,date,'graph.dot') ):
+            #load network
+            try:
+                G = read_dot(path.join(load_path,date,'graph.dot'))
+                edge = G.edges()[0][2]
+                #test what type of weigths there are on this dot
+                if edge.keys()[0] == 'color':
+                    map = _color_map
+                elif edge.keys()[0] == 'level':
+                    map = _obs_app_jour_mas_map
+                else:
+                    print "cannot find the dictionary that specify the map of the weights in numbers for this network"
+                    return None
+
+                K = Network.WeightedNetwork(weights=map)
+                K.paste_graph(G)
+            except:
+                print "some errors are occourred loading graph! if you are in debug mode, see debug file"
+                print "else restart the script in debug mode to see what happened."
+                print "see doc for more info"
+                return None
+
+        elif path.exists( path.join(load_path,date,'graphHistory.c2') ):
+            #load network
+            try:
+                if load_path[-1] == path.sep:
+                    p = load_path[:-1]
+                else:
+                    p = load_path
+
+                lang = path.split( p )[1]
+
+            except IndexError:
+                print "Cannot find lang of this wikinetwork (",date,")"
+                return None
+
+            if not lang:
+                print "Lang value is not usable, this is the path "+load_path+" exiting"
+                return None
+
+            K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
+        else:
+            print "Cannot be able to load network! (date="+date+")"
+            return None
+
+
         for function in functions: #foreach functions that must be calculated on this network
+            
+            if debug:
+                f = file( debug, 'w' )
+                f.write( "processing "+date+"\non function "+function.__name__ )
+                f.close()
 
             if function.__name__!='<lambda>':
                 print 'Task:',function.__name__,"on date:",date
@@ -118,55 +169,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
             #print date
             #print date only if the function will computed
-            if path.exists( path.join(load_path,date,'graph.dot') ):
-                if debug:
-                    f = file( debug, 'w' )
-                    f.write( "processing "+date+"\non function "+function.__name__ )
-                    f.close()
-
-                try:
-                    G = read_dot(path.join(load_path,date,'graph.dot'))
-                    edge = G.edges()[0][2]
-                    #test what type of weigths there are on this dot
-                    if edge.keys()[0] == 'color':
-                        map = _color_map
-                    elif edge.keys()[0] == 'level':
-                        map = _obs_app_jour_mas_map
-                    else:
-                        print "cannot find the dictionary that specify the map of the weights in numbers for this network"
-                        continue
-
-                    K = Network.WeightedNetwork(weights=map)
-                    K.paste_graph(G)
-                except:
-                    print "some errors are occourred loading graph! if you are in debug mode, see debug file"
-                    print "else restart the script in debug mode to see what happened."
-                    print "see doc for more info"
-                    continue
-
-            elif path.exists( path.join(load_path,date,'graphHistory.c2') ):
-
-                try:
-                    if load_path[-1] == path.sep:
-                        p = load_path[:-1]
-                    else:
-                        p = load_path
-
-                    lang = path.split( p )[1]
-
-                except IndexError:
-                    print "Cannot find lang of this wikinetwork (",date,")"
-                    continue
-
-                if not lang:
-                    print "Lang value is not usable, this is the path "+load_path+" exiting"
-                    continue
-
-                K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
-            else:
-                print "Cannot be able to load network! (date="+date+")"
-                continue
-
+            
             try:
                 res = function(K,date)
             except:
