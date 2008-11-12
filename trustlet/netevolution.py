@@ -169,7 +169,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         for function in calcfunctions: #foreach functions that must be calculated on this network
             
             if debug:
-                f = file( debug, 'w' )
+                f = file( debug, 'w' ) #in debug file was stored the last function to be evaluated and on which network
                 f.write( "processing "+date+"\non function "+function.__name__ )
                 f.close()
 
@@ -183,7 +183,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 continue
 
             if function.__name__!='<lambda>':
-                assert save({'function':function.__name__,'date':date},res,path.join(load_path,cachepath))
+                if not save({'function':function.__name__,'date':date},res,path.join(load_path,cachepath)):
+                    print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
             resdict[function.__name__] = res 
 

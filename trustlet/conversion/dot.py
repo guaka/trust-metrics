@@ -1,3 +1,8 @@
+"""
+Module for convert dot files in format c2 (the only readable from trustlet)
+and viceversa.
+"""
+
 import re
 import trustlet
 
@@ -55,7 +60,29 @@ def to_c2( dot, c2, key ):
     return trustlet.helpers.save(key,w,c2)
 
 def from_c2( dot, c2, key ):
-    '''
-    not yet implemented
-    '''
-    raise NotImplementedError,'try tomorrow'
+    """
+    parse a c2 with key and save a dot file
+    parameters:
+    key: dictionary in this form:
+    {'network':'name','date':date}
+    if 'network' is has value 'Wiki' (that mean that you want to load a wikinetwork)
+    the key must have another value 'lang':'it/fur/la/de.....'
+    that specify the language of the network.
+    Warning! with the wikiNetwork the conversion could not work.
+    """
+
+    w = trustlet.helpers.load( key, c2, fault=False ) #the weighted network stored in c2
+
+    if  not w:
+        print "c2 doesn't contain this key! give me the correct key."
+        print "if you don't know the key try to use lsc2 script in scripts"
+        print "or insert as date the date the dataset, "
+        print "and as name the name of the network, like Advogato, Kaitiaki, Wiki.."
+        return False
+
+    x = trustlet.helpers.toNetwork( w )
+
+    trustlet.write_dot( x, dot )
+
+    return True
+

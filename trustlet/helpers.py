@@ -1311,6 +1311,9 @@ def svn_update(path,user='anybody',passwd='a'):
     os.chdir(curdir)
     return res
 
+def toNetwork( data , net=None ):
+    raise NotImplementedError , 'try tomorrow'
+
 def md5file(filename):
     f = file(filename)
     a = md5.new()

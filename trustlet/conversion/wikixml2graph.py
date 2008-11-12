@@ -2,21 +2,8 @@
 # -*- coding: utf-8 -*-
 
 '''
-USAGE:
-   ./wikixml2graph.py xml_file [--current] lang date
-      [base_path|real<real_path>] [--hash] [--input-size bytes]
-      [--distrust] [--threshold value|-t value] [--no-lists]
-          Default base_path = home dir
-          If --current isn't set, it'll use history xml
-          If base_path starts with 'real' graph will save in real_path
-          If lang and date are both '-' wikixml2dot will
-              read them from file name
-          If xml_file is - it will use stdin
-          If xml_file is no-graph will insert only lists of users in .c2
-          input-size: useful if xml_file is stdin
-          distrust: force distrust graph creation (input file must be pages-meta-history)
-          threshold: remove edge if weight is less then value
-          no-lists: don't download list of users from wikipedia.org
+this script convert xml downloaded from www.download.wikimedia.org (history or current)
+in c2 dataset format, usable by trustlet
 '''
 
 from xml import sax
