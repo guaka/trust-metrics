@@ -13,7 +13,7 @@ from xml.dom.minidom import parse
 
 if '--help' in sys.argv[1:] or len(sys.argv) < 2:
     print "Parse an xml file and translate it in dot format"
-    print "USAGE: xml2dot [path]"
+    print "USAGE: xml2dot [*.tar.bz2 directory path]"
     sys.exit(1)
 
 path = sys.argv[1]
@@ -34,11 +34,13 @@ for arc in arcs:
     os.system('tar xjf ../'+arc)
     os.chdir('..')
 
-datasets = [x for x in os.listdir(path) if isdir(join(path,x))]
+datasets = [x for x in os.listdir(os.curdir) if isdir(x)]
 
 for dataset in datasets:
-    datasetpath = join(path,dataset) + '/www.advogato.org/acct'
+    datasetpath = dataset + '/www.advogato.org/acct'
     userpath = datasetpath + "/%s/profile.xml"
+    if not isdir(datasetpath):
+        continue
     users = [x for x in os.listdir(datasetpath) if isdir(join(datasetpath,x))]
     
     n = Network.Network()
@@ -68,5 +70,5 @@ for dataset in datasets:
             #print ">",user, subj, level
             n.add_edge(user,subj,{'value':level})
             
-    os.mkdir(addsep(dataset))
-    write_dot(n,join(path,addsep(dataset))+'/graph.dot')
+    helpers.mkpath(addsep(dataset))
+    write_dot(n,join(addsep(dataset),'graph.dot'))
