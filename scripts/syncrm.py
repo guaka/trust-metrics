@@ -5,7 +5,7 @@ Remove file(s) from datasets dir
 USAGE:
 syncrm.py [[[[file0] file1] file2] ...]
 
-Works only if there are links datasets and .datasets in home dir
+Works only if there are datasets and .datasets links in home dir
 '''
 
 import sys

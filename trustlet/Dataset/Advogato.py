@@ -181,8 +181,9 @@ class AdvogatoNetwork(WeightedNetwork):
         """Read graph.dot file into object."""
         if not filepath:
             filepath = self.filepath
-        self._read_dot(filepath)
-
+        #self._read_dot(filepath)
+        self.load_c2({'network':'Advogato','date',self.date})
+            
 
 class Robots_netNetwork(AdvogatoNetwork):
     """

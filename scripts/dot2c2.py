@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     if not date or not name: 
         redate = re.compile( "[0-9]{4}-[0-9]{2}-[0-9]{2}" )
-        rename = re.compile( "[a-z_A-Z]+Network" )
+        rename = re.compile( "([a-z_A-Z])+Network" )
         dot = abspath(dot)
         try:
             date = redate.findall( dot )[0]
