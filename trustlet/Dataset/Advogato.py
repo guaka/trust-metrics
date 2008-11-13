@@ -40,12 +40,13 @@ More to add:
 __author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)\nDanilo Tomasoni (ciropom@gmail.com)\nMartino Salvetti (martino@silix.org)"""
 __license__ = "GPL"
 
-from trustlet.Dataset.Network import WeightedNetwork
+import trustlet
 import os
 import re
 import datetime
 
-
+WeightedNetwork = trustlet.Dataset.Network.WeightedNetwork
+to_c2 = trustlet.conversion.dot.to_c2
 
 _color_map = {
     'violet': 1.0, #master
@@ -117,7 +118,7 @@ class AdvogatoNetwork(WeightedNetwork):
         self.filepath = os.path.join(self.path, self.dotfile)
         #'download' parameter say to the class if download the source dot file or not
         self.download(only_if_needed = download)
-        self.get_graph_dot()
+        self.get_graph()
 
         # DEPRECATED?
         if comp_threshold:
@@ -130,6 +131,12 @@ class AdvogatoNetwork(WeightedNetwork):
             name = name[:-7]
         return name
 
+    def _name():
+        """
+        return Advogato, or Squeakfoundation, or Kaitiaki..
+        """
+        name = self._name_lowered()
+        return name[0].upper()+name[1:] #up only first letter
 
     def trust_on_edge(self, edge):
         """Trust level on edge."""
@@ -159,6 +166,14 @@ class AdvogatoNetwork(WeightedNetwork):
             if only_if_needed and (not os.path.exists(self.filepath)):
                 self.download_file(self.url, self.dotfile)
                 self.fix_graphdot()
+                #convert dot in c2
+                c2path = self.filepath[:-3]+'c2'
+                to_c2(self.filepath,c2path,{'network':self._name(),'date':self.date})
+                #delete dot
+                os.remove( self.filepath )
+                #reset filepath
+                self.filepath = c2path
+                    
 
     def fix_graphdot(self):
         """
@@ -177,12 +192,17 @@ class AdvogatoNetwork(WeightedNetwork):
         writefile.close()
         return self.filepath
 
-    def get_graph_dot(self, filepath = None):
+    def get_graph(self, filepath = None):
         """Read graph.dot file into object."""
         if not filepath:
             filepath = self.filepath
+
         #self._read_dot(filepath)
-        self.load_c2({'network':'Advogato','date',self.date})
+
+        key = {'network':self._name(),'date':self.date}
+
+        if not self.load_c2(key): #if I can't be able to read
+            raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
             
 
 class Robots_netNetwork(AdvogatoNetwork):
@@ -231,10 +251,7 @@ class Robots_netNetwork(AdvogatoNetwork):
         self.filepath = os.path.join(self.path, self.dotfile)
         #'download' parameter say to the class if download the source dot file or not
         self.download(only_if_needed = download)
-        try:
-            self.get_graph_dot()
-        except: #if doesn't work
-            self.paste_graph( dot2c2( self.filepath ) )
+        self.get_graph()
             
         # DEPRECATED?
         if comp_threshold:
