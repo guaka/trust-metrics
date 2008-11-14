@@ -69,7 +69,8 @@ def to_c2( dot, c2, key ):
 def from_c2( dot, c2, key ):
     """
     parse a c2 with key and save a dot file
-    parameters:
+
+    Parameters:
     key: dictionary in this form:
     {'network':'name','date':date}
     if 'network' is has value 'Wiki' (that mean that you want to load a wikinetwork)
