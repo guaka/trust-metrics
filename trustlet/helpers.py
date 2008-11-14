@@ -4,6 +4,8 @@ import math
 import numpy
 from trustlet.TrustMetric import *
 from trustlet.trustmetrics import *
+from trustlet.Dataset.Network import *
+from trustlet.Dataset.Advogato import *
 import trustlet
 import os,sys,re
 import datetime
@@ -1311,8 +1313,49 @@ def svn_update(path,user='anybody',passwd='a'):
     os.chdir(curdir)
     return res
 
-def toNetwork( data , net=None ):
-    raise NotImplementedError , 'try tomorrow'
+def toNetwork( data , key, net=None ):
+    """
+    convert a tuple of two list
+    (the first that contains the nodes [as string],
+    and the second that contains a tuple formed in this way (nodes1,nodes2,int)
+    where 'int' is the weight on the edge.)
+    The key is a string that represent the key of the dictionary on the edge
+
+    parameters:
+    data: tuple with two list
+    key: string with key value of dictionary on edge
+    net: network in which i must add the nodes/edges, if don't set is weightedNetwork
+    """
+    ANetwork = set() #avaiable network
+    ANetwork.add( WikiNetwork )
+    ANetwork.add( WeightedNetwork )
+    ANetwork.add( Network )
+    ANetwork.add( AdvogatoNetwork )
+    ANetwork.add( KaitiakiNetwork )
+    ANetwork.add( SqueakfoundationNetwork )
+    ANetwork.add( Robots_netNetwork )
+    
+    if not (type(data) is tuple and type(data[0]) is list and type(data[1]) is list and type(data[1][0]) is tuple):
+        if type(data) in ANetwork:
+            return data #if it is just a network i return it simply
+        else:
+            raise IOError( "Data type is not a tuple with two list" )
+
+    #create Network
+    nodes = data[0]
+    edges = data[1]
+    if net == None:
+        w = trustlet.Dataset.Network.WeightedNetwork()
+    else:
+        w = net
+
+    for name in nodes:
+        w.add_node( name )
+
+    for link in edges:
+        w.add_edge( link[0], link[1], {key:link[2]} )
+
+    return w
 
 def md5file(filename):
     f = file(filename)

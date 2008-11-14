@@ -9,6 +9,13 @@ import trustlet
 def to_c2( dot, c2, key ):
     """
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
+
+    Parameters:
+       dot: path of dot (ex /home/..../graph.dot)
+       c2: path in which save c2 (ex. /home/.../graph.c2)
+       key: key of dictionary in c2 that identify the network
+       (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
+        and {'network':'Wiki','lang':'it','date':'2000-01-01'} for wiki network)
     """
     
     ruser = re.compile( "[^ \/*]+" )
@@ -80,7 +87,20 @@ def from_c2( dot, c2, key ):
         print "and as name the name of the network, like Advogato, Kaitiaki, Wiki.."
         return False
 
-    x = trustlet.helpers.toNetwork( w )
+    if key['network'] == 'Wiki':
+        edgekey = 'value'
+    elif key['network'] == 'Robots_net':
+        edgekey = 'level'
+    elif key['network'] == 'Advogato':
+        if key['date'] <= "2006-05-20":
+            edgekey = 'color'
+        else:
+            edgekey = 'level'
+            
+    elif key['network'] == 'Kaitiaki' or key['network'] == 'Squeakfoundation':
+        edgekey = 'color'
+
+    x = trustlet.helpers.toNetwork( w, edgekey )
 
     trustlet.write_dot( x, dot )
 

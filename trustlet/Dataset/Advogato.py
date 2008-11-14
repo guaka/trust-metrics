@@ -45,8 +45,6 @@ import os
 import re
 import datetime
 
-WeightedNetwork = trustlet.Dataset.Network.WeightedNetwork
-to_c2 = trustlet.conversion.dot.to_c2
 
 _color_map = {
     'violet': 1.0, #master
@@ -66,7 +64,7 @@ _obs_app_jour_mas_map = {
     }
 
 
-class AdvogatoNetwork(WeightedNetwork):
+class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
     """The Advogato dataset.
 
     http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
@@ -110,7 +108,7 @@ class AdvogatoNetwork(WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
-        WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
+        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -143,7 +141,7 @@ class AdvogatoNetwork(WeightedNetwork):
         return self.level_map[edge[2].values()[0]]  # ['level']]
 
     def info(self):
-        WeightedNetwork.info(self)
+        trustlet.Dataset.Network.WeightedNetwork.info(self)
         self.show_reciprocity_matrix()
         print "Level distribution:"
         for l in self.level_distribution():
@@ -168,7 +166,7 @@ class AdvogatoNetwork(WeightedNetwork):
                 self.fix_graphdot()
                 #convert dot in c2
                 c2path = self.filepath[:-3]+'c2'
-                to_c2(self.filepath,c2path,{'network':self._name(),'date':self.date})
+                trustlet.conversion.dot.to_c2(self.filepath,c2path,{'network':self._name(),'date':self.date})
                 #delete dot
                 os.remove( self.filepath )
                 #reset filepath
@@ -243,7 +241,7 @@ class Robots_netNetwork(AdvogatoNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
-        WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
+        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
