@@ -104,7 +104,9 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
             
         if date <= "2006-05-20":
             weights = _color_map
-        #else:
+            self.key_on_edge = 'color'
+        else:
+            self.key_on_edge = 'level'
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
@@ -220,7 +222,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         
         print "Reading ", filepath
         
-        if not self.load_c2(key): #if I can't be able to read
+        if not self.load_c2(key,self.key_on_edge): #if I can't be able to read
             raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
             
 
@@ -245,6 +247,8 @@ class Robots_netNetwork(AdvogatoNetwork):
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
                     self._name_lowered())
+
+        
         if not date:
             date = datetime.datetime.now().strftime("%Y-%m-%d")
             self.url += '-graph-latest.dot'
@@ -258,16 +262,18 @@ class Robots_netNetwork(AdvogatoNetwork):
             
         if date <= "2006-05-20":
             weights = _color_map
-        #else:
-           #weights = _obs_app_jour_mas_map
-
+            self.key_on_edge = 'level'
+        else:
+            self.key_on_edge = 'color'
+   
         self.level_map = weights #level_map deprecated
         trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
             os.mkdir(self.path)
-        self.filepath = os.path.join(self.path, self.dotfile)
+        self.dotpath = os.path.join(self.path, self.dotfile)
+        self.filepath = self.dotpath[:-3]+'c2'
         #'download' parameter say to the class if download the source dot file or not
         self.download(only_if_needed = download)
         self.get_graph()

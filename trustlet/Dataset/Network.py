@@ -66,7 +66,14 @@ class Network(XDiGraph):
         if from_graph:
             self.paste_graph(from_graph)
 
-    def load_c2(self,cachedict):
+    def load_c2(self,cachedict, key_dictionary):
+        """
+        cachedict: dictionary that is unique key for c2 network that you would load
+        key_dictionary: string value used as key for the weight dictionary
+                      ex: x=network.edges()[0]
+                          x[2]
+                          >> {key:weight_on_edge}
+        """
         
         if not hasattr(self,"filepath"):
             print "Error: filepath is not defined!"
@@ -91,50 +98,8 @@ class Network(XDiGraph):
             #now I'm sure that this network is in a c2 file
             self.filename = os.path.split(self.filepath)[1]
         
-            nodes,edges = pydataset
+            self.paste_graph( trustlet.helpers.toNetwork( pydataset, key_dictionary ) ) #copy the graph loaded in self
             
-            #implement here the nobots control
-            cachedict = {'lang':cachedict['lang']}
-            #load bots
-            cachedict['list'] = 'bots'
-            botset = trustlet.helpers.load(cachedict, self.filepath )
-            
-            if type(botset) is list:
-                self.botset = set(botset)
-                if not botset:
-                    print 'The list of bots is empty'
-            else:
-                print 'There aren\'t bots in c2 file'
-                self.botset = set()
-
-            #load blockedusers
-            cachedict['list'] = 'blockedusers'
-            self.blockedset = trustlet.helpers.load(cachedict, self.filepath )
-            if type(self.blockedset) is list:
-                self.blockedset = set(self.blockedset)
-                if not botset:
-                    print 'The list of blockedusers is empty'
-            else:
-                print 'There aren\'t blockedusers in c2 file'
-                self.blockedset = set()
-
-            removedusers = set()
-            assert hasattr(self,'bots'),'Is it a WikiNetwork object?'
-            if not self.bots:
-                # I'll remove bots from graph
-                removedusers |= self.botset
-            assert hasattr(self,'blockedusers'),'Is it a WikiNetwork object?'
-            if not self.blockedusers:
-                # and/or blockedusers
-                removedusers |= self.blockedset
-
-            for n in nodes:
-                if toU(n) not in removedusers:
-                    self.add_node(n)
-            for u,v,e in edges:
-                if toU(u) not in removedusers and toU(v) not in removedusers:
-                    self.add_edge((u,v,{'value':e}))
-
         return True
   
 
