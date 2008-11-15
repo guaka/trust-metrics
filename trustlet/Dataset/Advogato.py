@@ -113,7 +113,12 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
             os.mkdir(self.path)
-        self.filepath = os.path.join(self.path, self.dotfile)
+
+        self.c2file = self.dotfile[:-3]+"c2"
+
+        self.filepath = os.path.join(self.path, self.c2file)
+        self.dotpath = self.filepath[:-2]+'dot'
+        
         #'download' parameter say to the class if download the source dot file or not
         self.download(only_if_needed = download)
         self.get_graph()
@@ -129,7 +134,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
             name = name[:-7]
         return name
 
-    def _name():
+    def _name(self):
         """
         return Advogato, or Squeakfoundation, or Kaitiaki..
         """
@@ -152,25 +157,39 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
                                       if e[2].values()[0] == s])), self.level_map.keys()))
         
 
+    def __convert(self):
+        """
+        this function assume that self.filepath was set
+        """
+        print "dot format detected, converting dot file in c2..."
+        
+        #convert dot in c2
+        if not trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,{'network':self._name(),'date':self.date}):
+            print "Error converting dot into c2 file."
+            return None
+        #delete dot
+        os.remove( self.dotpath )
+        
+        print "Done."
+        return None
+
     def download(self, only_if_needed = False):
         """Download dataset."""
         if os.path.exists(self.filepath):
             return
 
-        if not os.path.exists(self.filepath+'.bz2') and not only_if_needed:
+        if os.path.exists(self.dotpath):
+            self.__convert()
+            return
+
+        if not os.path.exists(self.dotpath+'.bz2') and not only_if_needed:
             raise IOError("dot file does not exist (%s), if you would download it,\n"
-                          "set 'download' parameter to True" % self.filepath)
+                          "set 'download' parameter to True" % self.dotpath)
         else:
             if only_if_needed and (not os.path.exists(self.filepath)):
                 self.download_file(self.url, self.dotfile)
                 self.fix_graphdot()
-                #convert dot in c2
-                c2path = self.filepath[:-3]+'c2'
-                trustlet.conversion.dot.to_c2(self.filepath,c2path,{'network':self._name(),'date':self.date})
-                #delete dot
-                os.remove( self.filepath )
-                #reset filepath
-                self.filepath = c2path
+                self.__convert()
                     
 
     def fix_graphdot(self):
@@ -198,7 +217,9 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         #self._read_dot(filepath)
 
         key = {'network':self._name(),'date':self.date}
-
+        
+        print "Reading ", filepath
+        
         if not self.load_c2(key): #if I can't be able to read
             raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
             
