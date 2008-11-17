@@ -77,6 +77,7 @@ def from_c2( dot, c2, key ):
     the key must have another value 'lang':'it/fur/la/de.....'
     that specify the language of the network.
     Warning! with the wikiNetwork the conversion could not work.
+    Warning! the value of the key 'network' could not be 'AdvogatoNetwork' it must be 'Advogato' only
     """
 
     w = trustlet.helpers.load( key, c2, fault=False ) #the weighted network stored in c2

@@ -80,10 +80,20 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     '''
     cachepath = 'netevolution.c2'
 
+    #check if the path ends with /
+    if load_path[-1] == path.sep:
+        lpath = load_path[:-1]
+        
+    if debug:
+        deb = file( debug, 'w' ) #in debug file was stored the last function to be evaluated and on which network
+        deb.close()
+
+
     dates = sorted(
-        [x for x in os.listdir(load_path)
-         if isdate(x) and ( path.exists(path.join(load_path,x,'graph.dot')) or \
-                                             path.exists(path.join(load_path,x,'graphHistory.c2')) ) ]
+        [date for date in os.listdir(lpath)
+         if isdate(date) and ( path.exists(path.join(lpath,date,'graph.dot')) or \
+                               path.exists(path.join(lpath,date,'graph.c2')) or \
+                               path.exists(path.join(lpath,date,'graphHistory.c2')) ) ]
         )
     
     #if not dates:
@@ -110,7 +120,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 calcfunctions.append(functions[i])
             else:
                 cachekey = {'function':functions[i].__name__,'date':date}
-                cache = load(cachekey,path.join(load_path,cachepath))
+                cache = load(cachekey,path.join(lpath,cachepath))
                 if cache:
                     resdict[functions[i].__name__] = cache
                     #do not calculate for functions cached
@@ -121,25 +131,45 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             #if is empty
             return resdict
 
-        ton = os.path.split( load_path )[1] #wikinetwork/advogatonetwork...
+        ton = os.path.split( lpath )[1] #wikinetwork/advogatonetwork...
+        
+        if debug:
+            deb = file( debug, 'a' )
+            deb.write( "evaluating functions "+str(calcfunctions)+"\non "+ton+" at date "+date+"\n" )
+            deb.close()
 
         if ton != 'WikiNetwork':
-            dotpath = path.join(load_path,date,'graph.dot')
+            dotpath = path.join(lpath,date,'graph.dot')
             c2path = dotpath[:-3]+'c2'
+    
             #convert in c2
             if path.exists( dotpath ):
-                print "dot format detected! in network",ton," on date",date,"converting in c2..."
+                #debug
+                if debug:
+                    deb = file( debug, 'a' )
+                    deb.write( "dot format detected! in network "+ton+" on date "+date+" converting in c2...\n" )
+                    deb.close()
+                #converting
                 dot.to_c2(dotpath,c2path,{'network':ton,'date':date})
                 os.remove( dotpath )
-                print "done."
 
             #load network
             #try:
-            w = WeightedNetwork()
-            w.load_c2({'network':ton,'date':date}, 'value') #key on edge is not important
+            K = WeightedNetwork()
+            #set filepath on which load network
+            K.filepath = c2path
+            if not K.load_c2({'network':ton[:-7],'date':date}, 'value'): #key on edge is not important
+                if debug:
+                    deb = file( debug, 'a' )
+                    deb.write( "cannot be able to load c2 on "+ton+" at date "+date+"\n" )
+                    deb.close()
+                else:
+                    print "Error! can't load network",ton,"on date",date
+                    
+                return None
             """
                 dot support
-                G = read_dot(path.join(load_path,date,'graph.dot'))
+                G = read_dot(path.join(lpath,date,'graph.dot'))
                 edge = G.edges()[0][2]
                 #test what type of weigths there are on this dot
                 if edge.keys()[0] == 'color':
@@ -159,36 +189,39 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 print "see doc for more info"
                 return None
             """
-        elif path.exists( path.join(load_path,date,'graphHistory.c2') ):
+        elif path.exists( path.join(lpath,date,'graphHistory.c2') ):
             #load network
             try:
-                if load_path[-1] == path.sep:
-                    p = load_path[:-1]
-                else:
-                    p = load_path
 
-                lang = path.split( p )[1]
+                lang = path.split( lpath )[1]
 
             except IndexError:
-                print "Cannot find lang of this wikinetwork (",date,")"
+                if debug:
+                    deb = file( debug, 'a' )
+                    deb.write( "Cannot find lang of this wikinetwork ("+date+")\n" )
+                    deb.close()
                 return None
 
             if not lang:
-                print "Lang value is not usable, this is the path "+load_path+" exiting"
+                print "Lang value is not usable, this is the path "+lpath+" exiting"
                 return None
 
             K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
         else:
-            print "Cannot be able to load network! (date="+date+")"
+            if debug:
+                deb = file( debug, 'a' )
+                deb.write( "Cannot be able to load network! (date="+date+") on network "+ton+"\n" )
+                deb.close()
+            else:
+                print "Cannot be able to load network! (date="+date+") on network "+ton
             return None
 
 
         for function in calcfunctions: #foreach functions that must be calculated on this network
-            
             if debug:
-                f = file( debug, 'w' ) #in debug file was stored the last function to be evaluated and on which network
-                f.write( "processing "+date+"\non function "+function.__name__ )
-                f.close()
+                deb = file( debug, 'a' )
+                deb.write( "processing "+date+"\non function "+function.__name__+"\n" )
+                deb.close()
 
             if function.__name__!='<lambda>':
                 print 'Task:',function.__name__,"on date:",date
@@ -200,7 +233,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 continue
 
             if function.__name__!='<lambda>':
-                if not save({'function':function.__name__,'date':date},res,path.join(load_path,cachepath)):
+                if not save({'function':function.__name__,'date':date},res,path.join(lpath,cachepath)):
                     print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
             resdict[function.__name__] = res 
