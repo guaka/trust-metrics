@@ -68,6 +68,9 @@ class Network(XDiGraph):
 
     def load_c2(self,cachedict, key_dictionary):
         """
+        load a c2 into this instance of Network.
+        
+        Parameters:
         cachedict: dictionary that is unique key for c2 network that you would load
         key_dictionary: string value used as key for the weight dictionary
                       ex: x=network.edges()[0]

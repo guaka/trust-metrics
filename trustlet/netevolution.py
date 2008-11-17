@@ -4,6 +4,7 @@ This package contains all the function
 on the evolution of a network
 """
 from trustlet.helpers import *
+from trustlet.conversion import dot
 from trustlet.Dataset import Network
 from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
 from networkx import read_dot
@@ -120,9 +121,24 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             #if is empty
             return resdict
 
-        if path.exists( path.join(load_path,date,'graph.dot') ):
+        ton = os.path.split( load_path )[1] #wikinetwork/advogatonetwork...
+
+        if ton != 'WikiNetwork':
+            dotpath = path.join(load_path,date,'graph.dot')
+            c2path = dotpath[:-3]+'c2'
+            #convert in c2
+            if path.exists( dotpath ):
+                print "dot format detected! in network",ton," on date",date,"converting in c2..."
+                dot.to_c2(dotpath,c2path,{'network':ton,'date':date})
+                os.remove( dotpath )
+                print "done."
+
             #load network
-            try:
+            #try:
+            w = WeightedNetwork()
+            w.load_c2({'network':ton,'date':date}, 'value') #key on edge is not important
+            """
+                dot support
                 G = read_dot(path.join(load_path,date,'graph.dot'))
                 edge = G.edges()[0][2]
                 #test what type of weigths there are on this dot
@@ -136,12 +152,13 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
                 K = Network.WeightedNetwork(weights=map)
                 K.paste_graph(G)
+                
             except:
                 print "some errors are occourred loading graph! if you are in debug mode, see debug file"
                 print "else restart the script in debug mode to see what happened."
                 print "see doc for more info"
                 return None
-
+            """
         elif path.exists( path.join(load_path,date,'graphHistory.c2') ):
             #load network
             try:
