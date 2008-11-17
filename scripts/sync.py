@@ -42,7 +42,7 @@ HOME = os.environ['HOME']
 CURDIR = os.getcwd()
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"'
 SVNUP = 'svn up --username anybody --password a'
-SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (sync.py)"'
+SVNCI = 'svn ci --username anybody --password a -m "auomatic commit (sync.py)"'
 SVNADD = 'svn add "%s"'
 
 CONFLICT =  '''You might added files yet stored on svn.

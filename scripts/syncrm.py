@@ -14,7 +14,7 @@ import shutil
 import os.path as path
 
 SVNRM = 'svn rm "%s"'
-SVNCI = 'svn ci --username anybody --password a -m="auomatic commit (syncrm.py)"'
+SVNCI = 'svn ci --username anybody --password a -m "auomatic commit (syncrm.py)"'
 HOME = os.environ['HOME']
 
 def main(args):
