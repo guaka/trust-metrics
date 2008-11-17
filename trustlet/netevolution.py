@@ -153,12 +153,38 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 dot.to_c2(dotpath,c2path,{'network':ton,'date':date})
                 os.remove( dotpath )
 
+            #test what type of weigths there are on this c2
+            if ton == 'AdvogatoNetwork':
+                if date <= "2006-05-20":
+                    map = _color_map
+                    key_value = 'color'
+                else:
+                    map = _obs_app_jour_mas_map
+                    key_value = 'level'
+            elif ton == 'SqueakfoundationNetwork':
+                map = _color_map
+                key_value = 'color'
+            elif ton == 'KaitiakiNetwork':
+                map = _color_map
+                key_value = 'color'
+            elif ton == 'Robots_netNetwork':
+                map = _obs_app_jour_mas_map
+                key_value = 'level'
+            else:
+                if debug:
+                    deb = file( debug, 'a' )
+                    deb.write( "cannot find the dictionary that specify the map of the weights in numbers for this "+ton+" on date "+date+"\n" )
+                    deb.close()
+                else:
+                    print "cannot find the dictionary that specify the map of the weights in numbers for this network"
+                return None
+            
             #load network
-            #try:
-            K = WeightedNetwork()
+            K = WeightedNetwork(weights=map)
             #set filepath on which load network
             K.filepath = c2path
-            if not K.load_c2({'network':ton[:-7],'date':date}, 'value'): #key on edge is not important
+
+            if not K.load_c2({'network':ton[:-7],'date':date}, key_value): 
                 if debug:
                     deb = file( debug, 'a' )
                     deb.write( "cannot be able to load c2 on "+ton+" at date "+date+"\n" )
