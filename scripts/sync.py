@@ -51,11 +51,23 @@ cd ~/.datasets
 svn revert `file(s) added`
 mv or rm `file(s) added`
 sync.py
-Now you can re add your file with sync.py
+Now you can readd your file with sync.py
 '''
 
 def svnadd(p):
     assert not os.system(SVNADD % p)
+
+def svnaddpath(p):
+    
+    assert path.abspath(p)!='/',p
+
+    if path.isdir(path.join(p,'.svn')):
+        return True
+    
+    if svnaddpath(path.join(p,os.pardir)):
+        svnadd(p)
+
+    return False
 
 def main():
 
@@ -250,7 +262,8 @@ def merge(svn,datasets,upload=True):
                     print 'adding file',filename
                     added += 1
 
-                    mkpath(destbasepath, svnadd)
+                    mkpath(destbasepath)
+                    svnaddpath(destbasepath)
                     shutil.copy(srcpath,destbasepath)
                     svnadd(dstpath)
                 elif srcpath in updatedc2:
