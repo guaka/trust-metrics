@@ -35,14 +35,16 @@ import sys
 import shutil
 import re
 import time
+from socket import gethostname
 
 from trustlet.helpers import merge_cache,mkpath,md5file
 
 HOME = os.environ['HOME']
+HOSTNAME = gethostname()
 CURDIR = os.getcwd()
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"'
 SVNUP = 'svn up --username anybody --password a'
-SVNCI = 'svn ci --username anybody --password a -m "auomatic commit (sync.py)"'
+SVNCI = 'svn ci --username anybody --password a -m "auomatic commit by %s (sync.py)"' % HOSTNAME
 SVNADD = 'svn add "%s"'
 
 CONFLICT =  '''You might added files yet stored on svn.
@@ -206,7 +208,7 @@ def merge(svn,datasets,upload=True):
                 if not diff(srcpath,dstpath):
                     # file modified
                     if filename.endswith('.c2'):
-                        print 'merging file %s with new version' % filename
+                        print 'merging file %s with %s' % (srcpath,dstpath)
                         updatedc2.add(dstpath)
                         merged += 1
                         # priority: dstpath
@@ -250,7 +252,7 @@ def merge(svn,datasets,upload=True):
                 if filename.endswith('~'):
                     # skip backup files
                     continue
-                if filename.startswith('_') or re.match(re_svnconflict,filename) or filename.endswith('.mine'):
+                if filename.startswith('_') or re_svnconflict.match(filename) or filename.endswith('.mine'):
                     # not upload files _*
                     print 'File %s will not uploaded' % filename
                     continue
@@ -259,18 +261,15 @@ def merge(svn,datasets,upload=True):
                 dstpath = path.join(destbasepath,filename)
             
                 if not path.isfile(dstpath):
-                    print 'adding file',filename
+                    print 'adding file',dstpath
                     added += 1
 
                     mkpath(destbasepath)
                     svnaddpath(destbasepath)
                     shutil.copy(srcpath,destbasepath)
                     svnadd(dstpath)
-                elif srcpath in updatedc2:
-                    print 'merging file',filename
-                    shutil.copy(srcpath,dstpath)
-                elif srcpath in updatedfiles:
-                    print 'updating file',filename
+                elif srcpath in updatedc2 or srcpath in updatedfiles:
+                    print 'updating file',dstpath
                     shutil.copy(srcpath,dstpath)
 
         assert not os.system(SVNCI),CONFLICT

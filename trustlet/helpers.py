@@ -1149,12 +1149,20 @@ def merge_cache(path1 , path2 , mpath=None):
     '''
 
     f1 = GzipFile(path1)
-    f2 = GzipFile(path2)
-
-    c1 = pickle.load(f1)
-    c2 = pickle.load(f2)
-
+    try:
+        c1 = pickle.load(f1)
+    except IOError:
+        print 'File %s corrupted' % path1
+        return
     f1.close()
+
+    f2 = GzipFile(path2)
+    try:
+        c2 = pickle.load(f2)
+    except IOError:
+        print 'File %s corrupted' % path2
+        return
+    
     f2.close()
 
     # Priority: c2
@@ -1324,7 +1332,7 @@ def toNetwork( data , key, net=None ):
     parameters:
     data: tuple with two list
     key: string with key value of dictionary on edge
-    net: network in which i must add the nodes/edges, if don't set is weightedNetwork
+    net: network instance in which i must add the nodes/edges, if don't set is WeightedNetwork
     """
     ANetwork = set() #avaiable network
     ANetwork.add( WikiNetwork )

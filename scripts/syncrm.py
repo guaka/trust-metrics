@@ -12,9 +12,11 @@ import sys
 import os
 import shutil
 import os.path as path
+from socket import gethostname
 
+HOSTNAME = gethostname()
 SVNRM = 'svn rm "%s"'
-SVNCI = 'svn ci --username anybody --password a -m "auomatic commit (syncrm.py)"'
+SVNCI = 'svn ci --username anybody --password a -m "auomatic commit by %s (syncrm.py)"' % HOSTNAME
 HOME = os.environ['HOME']
 
 def main(args):
@@ -25,7 +27,7 @@ def main(args):
     ps = []
  
     for p in args:
-        p = path.abspath(p)
+        p = path.realpath(p)
 
         if not p.startswith(path.join(HOME,'datasets')):
             print 'Path to remove have to be in ~/datasets dir'
