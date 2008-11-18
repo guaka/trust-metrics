@@ -172,9 +172,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 if debug:
                     deb = file( debug, 'a' )
                     deb.write( "ERROR!: cannot be able to load c2 on "+ton+" at date "+date+"\n" )
-                    deb.write( "----- details -----\n" )
-                    deb.write( "   parameter passed to load_c2: \n" )
-                    deb.write( "   "+str({'network':ton[:-7],'date':date})+","+key_value+"\n" )
                     deb.close()
                 else:
                     print "Error! can't load network",ton,"on date",date
