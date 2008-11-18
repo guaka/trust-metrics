@@ -131,7 +131,9 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             return resdict
 
         ton = os.path.split( lpath )[1] #wikinetwork/advogatonetwork...
-        
+        if ton[1] == '_':
+            ton = ton[1:]
+
         if debug:
             deb = file( debug, 'a' )
             deb.write( "evaluating functions "+str(calcfunctions)+"\non "+ton+" at date "+date+"\n" )
