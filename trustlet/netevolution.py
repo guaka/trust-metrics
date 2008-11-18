@@ -131,8 +131,16 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             return resdict
 
         ton = os.path.split( lpath )[1] #wikinetwork/advogatonetwork...
-        if ton[1] == '_':
-            ton = ton[1:]
+        try:
+            ton = re.findall( "[a-zA-Z]+", ton )[0]
+        except IndexError:
+            if debug:
+                deb = file( debug, 'a' )
+                deb.write( "ERROR!: problem in path! is this path correct? "+lpath+"\n" )
+                deb.close()
+            
+            return None
+                
 
         if debug:
             deb = file( debug, 'a' )
