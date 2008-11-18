@@ -170,7 +170,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
             print "Error converting dot into c2 file."
             return None
         #delete dot
-        os.remove( self.dotpath )
+        #os.remove( self.dotpath )
         
         print "Done."
         return None

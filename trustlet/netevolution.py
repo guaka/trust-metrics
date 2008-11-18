@@ -150,7 +150,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                     deb.close()
                 #converting
                 dot.to_c2(dotpath,c2path,{'network':ton,'date':date})
-                os.remove( dotpath )
+                #os.remove( dotpath )
 
             #test what type of network I had to use
             try:
