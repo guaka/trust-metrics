@@ -77,7 +77,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = ''):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None):
 
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -110,7 +110,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated
-        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
+        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -233,7 +233,7 @@ class Robots_netNetwork(AdvogatoNetwork):
     """
     url = "http://robots.net/person/graph.dot"
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = ''):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None):
         
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -267,7 +267,7 @@ class Robots_netNetwork(AdvogatoNetwork):
             self.key_on_edge = 'color'
    
         self.level_map = weights #level_map deprecated
-        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path)
+        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -305,8 +305,8 @@ class SqueakfoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
-    def __init__(self, download = False, date=None, base_path=None):
-        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date=date, base_path=base_path)
+    def __init__(self, download = False, date=None, base_path=None,prefix=None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date=date, base_path=base_path,prefix=prefix)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -322,8 +322,8 @@ class KaitiakiNetwork(SqueakfoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self, download=False, date = None, base_path = None):
-        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date, base_path = base_path )
+    def __init__(self, download=False, date = None, base_path = None,prefix=None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date, base_path = base_path,prefix=prefix )
 
 
 if __name__ == "__main__":

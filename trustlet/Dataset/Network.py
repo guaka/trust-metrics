@@ -43,7 +43,7 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, base_path = None, savememory = False):
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None, savememory = False, prefix=None):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
@@ -51,11 +51,20 @@ class Network(XDiGraph):
            decrease of ~9% time to load graph, and it saves some memory
            (50MB (on 300MB) in Italian Wiki graph)
            *but* we can't modify edges after graph creation.
+        prefix:
+           you can specify a prefix in path for the Network folder if you want
+           ex. prefix = '_' --> path = /home/.../datasets/_NetworkName/date/graph.c2
         '''
 
         XDiGraph.__init__(self, multiedges = False)
         if make_base_path:
-            self.path = os.path.join(dataset_dir(base_path), self.__class__.__name__)
+
+            if prefix:
+                classpath = prefix+self.__class__.__name__
+            else:
+                classpath = self.__class__.__name__
+
+            self.path = os.path.join(dataset_dir(base_path), classpath)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
     
@@ -330,8 +339,8 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,savememory = False):
-        Network.__init__(self, base_path=base_path,savememory=savememory)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,savememory = False,prefix=None):
+        Network.__init__(self, base_path=base_path,savememory=savememory,prefix=prefix)
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
         self._weights = weights
@@ -488,9 +497,9 @@ class WikiNetwork(WeightedNetwork):
        
     def __init__(self, lang, date, current=False, bots=True, blockedusers=True, base_path = None,
                  dataset = None, force = False,
-                 savememory = False, threshold=1, output=False ):
+                 savememory = False, threshold=1, output=False,prefix=None ):
 
-        WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory)
+        WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory,prefix=prefix)
         
         assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
 

@@ -149,7 +149,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                     deb.write( "dot format detected! in network "+ton+" on date "+date+" converting in c2...\n" )
                     deb.close()
                 #converting
-                dot.to_c2(dotpath,c2path,{'network':ton,'date':date})
+                dot.to_c2(dotpath,c2path,{'network':ton[:-7],'date':date})
                 #os.remove( dotpath )
 
             #test what type of network I had to use
@@ -166,8 +166,11 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                     return None
 
             #load network
-            K = networkclass(date=date)
-           
+            try:
+                K = networkclass(date=date)
+            except IOError:
+                K = networkclass(date=date,prefix='_')
+
             if not K:
                 if debug:
                     deb = file( debug, 'a' )
