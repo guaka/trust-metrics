@@ -143,17 +143,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             dotpath = path.join(lpath,date,'graph.dot')
             c2path = dotpath[:-3]+'c2'
     
-            #convert in c2
-            if path.exists( dotpath ):
-                #debug
-                if debug:
-                    deb = file( debug, 'a' )
-                    deb.write( "dot format detected! in network "+ton+" on date "+date+" converting in c2...\n" )
-                    deb.close()
-                #converting
-                dot.to_c2(dotpath,c2path,{'network':ton[:-7],'date':date})
-                #os.remove( dotpath )
-
             #test what type of network I had to use
             try:
                 networkclass = getattr( Advogato , ton )
