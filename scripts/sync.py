@@ -37,15 +37,17 @@ import re
 import time
 from socket import gethostname
 
-from trustlet.helpers import merge_cache,mkpath,md5file
+from trustlet.helpers import merge_cache,mkpath,md5file,relative_path
 
 HOME = os.environ['HOME']
 HOSTNAME = gethostname()
 CURDIR = os.getcwd()
+HIDDENDIR = '.datasets'
+DIR = 'datasets'
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"'
-SVNUP = 'svn up --username anybody --password a'
-SVNCI = 'svn ci --username anybody --password a -m "auomatic commit by %s (sync.py)"' % HOSTNAME
-SVNADD = 'svn add "%s"'
+SVNUP = 'svn up --non-interactive --username anybody --password a'
+SVNCI = 'svn ci --non-interactive --username anybody --password a -m "automatic commit by %s (sync.py)%s"' % (HOSTNAME,'%s')
+SVNADD = 'svn add --non-interactive "%s"'
 
 CONFLICT =  '''You might added files yet stored on svn.
 You can execute:
@@ -57,7 +59,7 @@ Now you can readd your file with sync.py
 '''
 
 def svnadd(p):
-    assert not os.system(SVNADD % p)
+    assert not os.system(SVNADD % p),SVNADD % p
 
 def svnaddpath(p):
     
@@ -82,18 +84,18 @@ def main():
     else:
         basepath = HOME
 
-    hiddenpath = path.join(basepath,'.datasets')
-    datasetspath = path.join(basepath,'datasets')
+    hiddenpath = path.join(basepath,HIDDENDIR)
+    datasetspath = path.join(basepath,DIR)
 
     #remove old links
-    if path.islink(path.join(HOME,'.datasets')):
-        os.remove(path.join(HOME,'.datasets'))
-    if path.islink(path.join(HOME,'datasets')):
-        os.remove(path.join(HOME,'datasets'))
+    if path.islink(path.join(HOME,HIDDENDIR)):
+        os.remove(path.join(HOME,HIDDENDIR))
+    if path.islink(path.join(HOME,DIR)):
+        os.remove(path.join(HOME,DIR))
 
     if basepath != HOME:
-        path1 = path.join(HOME,'.datasets')
-        path2 = path.join(HOME,'datasets')
+        path1 = path.join(HOME,HIDDENDIR)
+        path2 = path.join(HOME,DIR)
         assert not path.islink(path1) and not path.exists(path1),'remove '+path1
         assert not path.islink(path2) and not path.exists(path2),'remove '+path2
         assert not os.system('ln -s "%s" "%s"' % (hiddenpath,path1))
@@ -137,7 +139,7 @@ def main():
         for f in to_remove:
             f = f.replace(hiddenpath,datasetspath)
             if path.isfile(f):
-                print "I'm removing",f
+                print "I'm removing",relative_path(f,DIR)[1]
                 os.remove(f)
     
     merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv)
@@ -167,6 +169,7 @@ def diff(f,g):
             return True
 
 mtime = lambda f: int(os.stat(f).st_mtime)
+re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
 
 def merge(svn,datasets,upload=True):
     '''
@@ -175,8 +178,6 @@ def merge(svn,datasets,upload=True):
     added = updated = merged = 0
     updatedc2 = set()
     updatedfiles = set()
-
-    re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
 
     # from svn to datasets
     for dirpath,dirnames,filenames in os.walk(svn):
@@ -203,22 +204,25 @@ def merge(svn,datasets,upload=True):
             #print filename
             srcpath = path.join(dirpath,filename)
             dstpath = path.join(destbasepath,filename)
+            # relative path, without HOME/(.)datasets
+            rpath = relative_path(srcpath,HIDDENDIR)[1]
+            #print '<<< File:',rpath
             
             if path.isfile(dstpath):
                 if not diff(srcpath,dstpath):
                     # file modified
                     if filename.endswith('.c2'):
-                        print 'merging file %s with %s' % (srcpath,dstpath)
+                        print 'merging client and server version of %s' % rpath
                         updatedc2.add(dstpath)
                         merged += 1
                         # priority: dstpath
                         merge_cache(srcpath,dstpath)
                     else:
-                        print 'file %s differs from client to server. The client version will be kept.' % filename
+                        print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
-            elif filename[0]!='_' and not re.match(re_svnconflict,filename) and not filename.endswith('.mine'):
+            elif filename[0]!='_' and not re_svnconflict.match(filename) and not filename.endswith('.mine'):
                 #adding
-                print 'adding file',filename
+                print 'adding file',rpath
                 added += 1
                 #print srcpath,dstpath
                 shutil.copy(srcpath,dstpath)
@@ -234,7 +238,7 @@ def merge(svn,datasets,upload=True):
     # from datasets to svn
     if upload:
         print 'Upload on server'
-        added = 0
+        added = updated = 0
 
         # to adding files
         os.chdir(svn)
@@ -249,19 +253,21 @@ def merge(svn,datasets,upload=True):
                 continue
 
             for filename in filenames:
-                if filename.endswith('~'):
-                    # skip backup files
-                    continue
-                if filename.startswith('_') or re_svnconflict.match(filename) or filename.endswith('.mine'):
-                    # not upload files _*
-                    print 'File %s will not uploaded' % filename
-                    continue
 
                 srcpath = path.join(dirpath,filename)
                 dstpath = path.join(destbasepath,filename)
+                # relative path, without HOME/(.)datasets
+                rpath = relative_path(srcpath,DIR)[1]
+                #print '>>> File:',rpath
             
+                if filename.startswith('_') or re_svnconflict.match(filename) \
+                        or filename.endswith('.mine') or filename.endswith('~'):
+                    # not upload files _*, svn file and backup files
+                    print 'File %s will not uploaded' % rpath
+                    continue
+
                 if not path.isfile(dstpath):
-                    print 'adding file',dstpath
+                    print 'adding file',rpath
                     added += 1
 
                     mkpath(destbasepath)
@@ -269,10 +275,19 @@ def merge(svn,datasets,upload=True):
                     shutil.copy(srcpath,destbasepath)
                     svnadd(dstpath)
                 elif srcpath in updatedc2 or srcpath in updatedfiles:
-                    print 'updating file',dstpath
+                    print 'updating file',rpath
+                    updated += 1
                     shutil.copy(srcpath,dstpath)
 
-        assert not os.system(SVNCI),CONFLICT
+        comment = ''
+        if added:
+            comment += ' Added %d files.' % added
+        if updated:
+            comment += ' Updated %d files.' % updated
+        
+        if comment and '-v' in sys.argv:
+            print 'Commit comment:', comment
+        assert not os.system(SVNCI % comment),CONFLICT
 
         if added:
             print '# of added files to server repository:',added

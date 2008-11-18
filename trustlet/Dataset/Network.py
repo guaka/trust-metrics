@@ -70,7 +70,7 @@ class Network(XDiGraph):
     
         self.savememory = savememory
         if savememory:
-            self.add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
+            self.set_pool()
 
         if from_graph:
             self.paste_graph(from_graph)
@@ -139,6 +139,11 @@ class Network(XDiGraph):
                 print e.code
                 print "Cannot download dataset, for a complete list of it, go to ", os.path.split( os.path.split( url )[0] )[0]
 
+    def set_pool(self):
+        '''
+        save memory
+        '''
+        self.add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
 
     def connected_components(self):
         G = self

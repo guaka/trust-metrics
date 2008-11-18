@@ -7,6 +7,8 @@ dot
 
 """
 
+__all__ = ['wikixml2graph','dot','pajek']
+
 from wikixml2graph import wikixml2graph
 import dot
 import pajek
