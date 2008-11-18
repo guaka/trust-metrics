@@ -5,8 +5,7 @@ on the evolution of a network
 """
 from trustlet.helpers import *
 from trustlet.conversion import dot
-from trustlet.Dataset import Network
-from trustlet.Dataset.Advogato import _color_map,_obs_app_jour_mas_map
+from trustlet.Dataset import Network,Advogato
 from networkx import read_dot
 import os,time,re
 import os.path as path
@@ -153,68 +152,41 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 dot.to_c2(dotpath,c2path,{'network':ton,'date':date})
                 os.remove( dotpath )
 
-            #test what type of weigths there are on this c2
-            if ton == 'AdvogatoNetwork':
-                if date <= "2006-05-20":
-                    map = _color_map
-                    key_value = 'color'
-                else:
-                    map = _obs_app_jour_mas_map
-                    key_value = 'level'
-            elif ton == 'SqueakfoundationNetwork':
-                map = _color_map
-                key_value = 'color'
-            elif ton == 'KaitiakiNetwork':
-                map = _color_map
-                key_value = 'color'
-            elif ton == 'Robots_netNetwork':
-                map = _obs_app_jour_mas_map
-                key_value = 'level'
-            else:
-                if debug:
-                    deb = file( debug, 'a' )
-                    deb.write( "cannot find the dictionary that specify the map of the weights in numbers for this "+ton+" on date "+date+"\n" )
-                    deb.close()
-                else:
-                    print "cannot find the dictionary that specify the map of the weights in numbers for this network"
-                return None
-            
-            #load network
-            K = WeightedNetwork(weights=map)
-            #set filepath on which load network
-            K.filepath = c2path
+            #test what type of network I had to use
+            try:
+                networkclass = getattr( Advogato , ton )
+            except AttributeError:
+                try:
+                    networkclass = getattr( Network , ton )
+                except AttributeError:
+                    if debug:
+                        deb = file( debug, 'a' )
+                        deb.write( "ERROR!: this type of network("+ton+") is not defined in trustlet.Dataset module\n" )
+                        deb.close()
+                    return None
 
-            if not K.load_c2({'network':ton[:-7],'date':date}, key_value): 
+            #load network
+            K = networkclass(date=date)
+           
+            if not K:
                 if debug:
                     deb = file( debug, 'a' )
-                    deb.write( "cannot be able to load c2 on "+ton+" at date "+date+"\n" )
+                    deb.write( "ERROR!: cannot be able to load c2 on "+ton+" at date "+date+"\n" )
+                    deb.write( "----- details -----\n" )
+                    deb.write( "   parameter passed to load_c2: \n" )
+                    deb.write( "   "+str({'network':ton[:-7],'date':date})+","+key_value+"\n" )
                     deb.close()
                 else:
                     print "Error! can't load network",ton,"on date",date
-                    
-                return None
-            """
-                dot support
-                G = read_dot(path.join(lpath,date,'graph.dot'))
-                edge = G.edges()[0][2]
-                #test what type of weigths there are on this dot
-                if edge.keys()[0] == 'color':
-                    map = _color_map
-                elif edge.keys()[0] == 'level':
-                    map = _obs_app_jour_mas_map
-                else:
-                    print "cannot find the dictionary that specify the map of the weights in numbers for this network"
-                    return None
-
-                K = Network.WeightedNetwork(weights=map)
-                K.paste_graph(G)
                 
-            except:
-                print "some errors are occourred loading graph! if you are in debug mode, see debug file"
-                print "else restart the script in debug mode to see what happened."
-                print "see doc for more info"
                 return None
-            """
+            
+            if K.number_of_nodes() == 0 or K.number_of_edges() == 0:
+                if debug:
+                    deb = file( debug, 'a' )
+                    deb.write( "WARNING!: the network "+ton+" at date "+date+" may be wrong! check it\n" )
+                    deb.close()
+
         elif path.exists( path.join(lpath,date,'graphHistory.c2') ):
             #load network
             try:
@@ -224,7 +196,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             except IndexError:
                 if debug:
                     deb = file( debug, 'a' )
-                    deb.write( "Cannot find lang of this wikinetwork ("+date+")\n" )
+                    deb.write( "ERROR: Cannot find lang of this wikinetwork ("+date+")\n" )
                     deb.close()
                 return None
 
@@ -236,7 +208,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         else:
             if debug:
                 deb = file( debug, 'a' )
-                deb.write( "Cannot be able to load network! (date="+date+") on network "+ton+"\n" )
+                deb.write( "ERROR!: Cannot be able to load network! (date="+date+") on network "+ton+"\n" )
                 deb.close()
             else:
                 print "Cannot be able to load network! (date="+date+") on network "+ton
@@ -255,7 +227,12 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             try:
                 res = function(K,date)
             except:
-                print "Error applying "+function.__name__+" to the network "+date+"! Exiting"
+                if debug:
+                    deb = file( debug, 'a' )
+                    deb.write( "ERROR!: Error applying "+function.__name__+" to the network "+date+"! Exiting\n" )
+                    deb.close()
+                else:
+                    print "Error applying "+function.__name__+" to the network "+date+"! Exiting"
                 continue
 
             if function.__name__!='<lambda>':
@@ -375,8 +352,8 @@ def level_distribution(K,date):
         return None
 
     #level map = color map + obs_app_jour_mas map 
-    level_map = _obs_app_jour_mas_map.copy()
-    level_map.update(_color_map)
+    level_map = Advogato._obs_app_jour_mas_map.copy()
+    level_map.update(Advogato._color_map)
 
     # we use values()[0] instead of the key of dict because sometimes
     # the key is 'value' and sometimes it's 'level'
@@ -473,7 +450,7 @@ def avgcontroversiality(K,min_in_degree=10):
             continue
 
         cont.append(
-            numpy.std([_obs_app_jour_mas_map[x[2].values()[0]] for x in in_edges])
+            numpy.std([K.level_map[x[2].values()[0]] for x in in_edges])
             # We get the first value because the key is sometimes
             # 'value' and sometimes 'level'
         )

@@ -84,16 +84,16 @@ class Network(XDiGraph):
 
         pydataset = trustlet.helpers.load(cachedict, self.filepath)
         
-        if not pydataset:
-            return False
-
         if not pydataset and cachedict.has_key('threshold'):
             # retry without thresold
             del cachedict['threshold']
             pydataset = trustlet.helpers.load(cachedict, self.filepath)
-            
+        
+            if not pydataset:
+                return False
+    
             #generate dataset with the requested threshold
-            if pydataset and threshold > 1:
+            if threshold > 1:
                 edges = filter( lambda x: x[2] >= threshold, pydataset[1] )
                 pydataset = (pydataset[0],edges)
         
@@ -502,36 +502,99 @@ class WikiNetwork(WeightedNetwork):
         self._weights_dictionary = None
         self.__upbound = None
         self.__user_map = None
+        self.savememory = savememory
+        self.level_map = None #set in __rescale()
 
+        if self.savememory:
+            self.add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
+        
         # booleans for list of special users
         self.blockedusers = blockedusers
         self.bots = bots
 
         if current:
-            filename = "graphCurrent.c2"
+            self.filename = "graphCurrent.c2"
         else:
-            filename = "graphHistory.c2"
+            self.filename = "graphHistory.c2"
 
         self.path = os.path.join( self.path, lang, date )
         trustlet.helpers.mkpath(self.path)
         
-        self.filepath = os.path.join( self.path, filename )
+        self.filepath = os.path.join( self.path, self.filename )
 
         path,relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
         #                                  the first value is the name of the file
         self.url = os.path.join( self.url, os.path.split(relpath)[0])
 
-        #load from cache
-        if output:
-            print "Reading ", self.filepath
-        
-        cachedict = {'network':'Wiki','lang':str(lang),'date':str(date)}
-        if threshold > 1:
-            cachedict['threshold'] = threshold
-        
-        assert self.load_c2(cachedict), 'There isn\'t anything here!'
+        assert self.load_c2(), 'There isn\'t anything here!'
 
         self.__rescale()
+
+
+    def load_c2(self):
+        #load from cache
+        print "Reading ", self.filepath
+        cachedict = {'network':'Wiki','lang':str(self.lang),'date':str(self.date)}
+        if self.threshold > 1:
+            cachedict['threshold'] = self.threshold
+
+        #if not bots:
+        #    cachedict['users'] = 'nobots'
+
+        
+        pydataset = trustlet.helpers.load(cachedict, self.filepath )
+        
+        if pydataset == None:
+            cachedict = {'network':'Wiki','lang':str(self.lang),'date':str(self.date)}
+            pydataset = trustlet.helpers.load(cachedict, self.filepath )
+            
+            if pydataset and self.threshold > 1:
+                edges = pydataset[1]
+                edges = filter( lambda x: x[2] >= self.threshold, edges )
+                pydataset = (pydataset[0],edges)
+                
+            
+        if pydataset:
+            
+            nodes,edges = pydataset
+            toU = lambda x: unicode(x) #to unicode
+            
+            #implement here the nobots control
+            cachedict = {'lang':self.lang}
+            if not self.bots:
+                cachedict['list'] = 'bots'
+                botset = trustlet.helpers.load(cachedict, self.filepath )
+                self.botset = botset #save botset for future use
+            else:
+                self.botset = None
+
+            if not self.blockedusers:
+                cachedict['list'] = 'blockedusers'
+                blockedset = trustlet.helpers.load(cachedict, self.filepath )
+                self.blockedset = blockedset #save blockset for future use
+            else:
+                self.blockedset = None
+                
+            if not self.botset:
+                botset = []
+
+            if not self.blockedset:
+                blockedset = []
+                    #if bots false x not in botset is always true!
+            for u in [x for x in nodes if (toU(x) not in botset) and (toU(x) not in blockedset)]:
+                self.add_node(u)
+            for u,v,e in [x for x in edges if toU(x[0]) not in botset and toU(x[1]) not in botset and toU(x[0]) not in blockedset and toU(x[1]) not in blockedset]:
+                self.add_node(u)
+                self.add_node(v)
+                self.add_edge( ( u,v,{'value':e} ) )
+       
+        else:
+            if os.path.exists( self.filepath ):
+                print "Warning! the c2 file does not contain the dataset.."
+                print "the key used were: ", cachedict
+            return False
+
+        return True
 
 
     def weights_list(self):
@@ -560,7 +623,8 @@ class WikiNetwork(WeightedNetwork):
                     ws_dict[int(n[2]['value'])] = x
                     
                 ws.append( x )
-                                
+                             
+            self.level_map = ws_dict
             self._weights_dictionary = ws_dict
             self._weights = ws
         
@@ -639,7 +703,6 @@ class WikiNetwork(WeightedNetwork):
             self.__upbound = s[wslen - int(maximum)]
             
         return self.weights_list()
-
 
 
     def trust_on_edge(self,edge):
