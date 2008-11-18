@@ -169,8 +169,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             try:
                 K = networkclass(date=date)
             except IOError:
-                K = networkclass(date=date,prefix='_')
-
+                K = networkclass(date=date,prefix='_') #try with _ if there isn't in normal path (because sync does not upload folder with _ prefix)
+                
             if not K:
                 if debug:
                     deb = file( debug, 'a' )
