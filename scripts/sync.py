@@ -194,8 +194,6 @@ def merge(svn,datasets,upload=True):
 
         destbasepath = dirpath.replace(svn,datasets)
         
-        if '-v' in sys.argv:
-            print destbasepath
         if not path.isdir(destbasepath):
             assert not path.isfile(destbasepath),destbasepath
             os.mkdir(destbasepath)
