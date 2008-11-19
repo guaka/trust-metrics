@@ -31,6 +31,9 @@ colors = filter(None,_color_map.keys())
 islevel = lambda x: x in levels
 iscolor = lambda x: x in colors
 
+if 'help' in sys.argv or '-h' in sys.argv or '--help' in sys.argv:
+    print __doc__
+
 if sys.argv[1:]:
     path = sys.argv[1]
 else:
