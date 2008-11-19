@@ -133,8 +133,12 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             #if is empty
             return resdict
 
-        ton = os.path.split( lpath )[1] #wikinetwork/advogatonetwork...
+        ton = ''
+        p = lpath
+        while( 'Network'  not in ton ):
+            p,ton = os.path.split( p ) #wikinetwork/advogatonetwork...
         
+
         alphabetic = re.search( "[A-Za-z]+", ton ) #search alpabetic character (delete non A-Za-z prefix)
         ton = ton[alphabetic.start():] #delete first non alphabetic character
         
