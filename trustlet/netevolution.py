@@ -259,6 +259,11 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     for fi in xrange( nf ):
         func_ordered.append( [] )
 
+    if debug:
+        deb = file( debug, 'a' )
+        deb.write( "computation of functions finished! filling the return value\n" )
+        deb.close()
+
     #fill the return value
     for fi in xrange( nf ):
         for di in xrange( nd ):
@@ -354,13 +359,7 @@ def level_distribution(K,date):
     see AdvogatoNetwork class
     this code (d = dict(...)) is copyed from there
     """
-    if get_name( K ) != "WeightedNetwork":
-        return None
-
-    #level map = color map + obs_app_jour_mas map 
-    level_map = Advogato._obs_app_jour_mas_map.copy()
-    level_map.update(Advogato._color_map)
-
+    
     # we use values()[0] instead of the key of dict because sometimes
     # the key is 'value' and sometimes it's 'level'
     # *need to fix this*
@@ -368,9 +367,9 @@ def level_distribution(K,date):
                     map(lambda s: (s,
                                    len([e for e in K.edges_iter()
                                         if e[2].values()[0] == s])),
-                        level_map)))
+                        K.level_map)))
     #order k from higher to lower values (Master to Observer)
-    l = [d[k] for k,v in sorted(level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
+    l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
 
     return ( date, map(lambda x:1.0*x/sum(l),l))
 
