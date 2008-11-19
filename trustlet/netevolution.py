@@ -71,6 +71,9 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     Parameters:
     load_path = path in wich the dates of the network are stored #ex. /home/ciropom/datasets/AdvogatoNetwork
+                If loadPath contains a prefix (if you have set prefix parameter in network) ex. /home/..../___AdvogatoNetwork
+                this prefix can be handle, but it must be only a non-alphabetical character. All prefix in range A-Z a-z could not
+                be handle.
     functions = list of functions to apply to each dataset #ex. [trustvariance,trustaverage...]
     range = tuple with at first the initial date, and at end the final date #ex. ('2000-01-01','2008-01-01')
     
@@ -131,11 +134,10 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             return resdict
 
         ton = os.path.split( lpath )[1] #wikinetwork/advogatonetwork...
-        try:
-            re.findall( "[A-Za-z]+", ton[1] )[0]
-        except KeyError:
-            ton = ton[1:] #delete first character
-
+        
+        alphabetic = re.search( "[A-Za-z]+", ton ) #search alpabetic character (delete non A-Za-z prefix)
+        ton = ton[alphabetic.start():] #delete first non alphabetic character
+        
         try:
             ton = re.findall( "[a-zA-Z_]+", ton )[0] # _ added to support robots_net network
         except IndexError:
