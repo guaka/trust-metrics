@@ -12,6 +12,7 @@ import datetime
 import time
 import marshal
 #cache
+import re
 import md5
 import cPickle as pickle
 from gzip import GzipFile
@@ -1343,6 +1344,8 @@ def toNetwork( data , key, net=None ):
     ANetwork.add( SqueakfoundationNetwork )
     ANetwork.add( Robots_netNetwork )
     
+    rname = re.compile( '[^"]+' ) #erase "
+
     if not (type(data) is tuple and type(data[0]) is list and type(data[1]) is list and type(data[1][0]) is tuple):
         if type(data) in ANetwork:
             return data #if it is just a network i return it simply
@@ -1357,8 +1360,9 @@ def toNetwork( data , key, net=None ):
     else:
         w = net
 
+    print "ciao"
     for name in nodes:
-        w.add_node( name )
+        w.add_node( rname.findall(name)[0] )
 
     for link in edges:
         w.add_edge( link[0], link[1], {key:link[2]} )

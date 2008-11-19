@@ -87,6 +87,13 @@ class CalcGraph(Network):
             name += "-r" + str(self.predict_ratio)
         return name
 
+    def load_c2(self,cachedict, key_dictionary):
+        """
+        loading c2 is not possible for predgraph
+        """
+        print "Warning! You can't load a c2 into a predgraph" 
+        return None
+
     def _rescale(self):
         """Rescale if needed."""
         # scale = (0.4, 1)  # probably for the dataset
