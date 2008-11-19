@@ -11,7 +11,7 @@ from trustlet import Network,helpers
 from networkx import write_dot
 from xml.dom.minidom import parse
 
-if '--help' in sys.argv[1:] or len(sys.argv) < 2:
+if '--help' in sys.argv[1:]:
     print "Parse an xml file and translate it in dot format"
     print "USAGE: xml2dot [*.tar.bz2 directory path]"
     sys.exit(1)
