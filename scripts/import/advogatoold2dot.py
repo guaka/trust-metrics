@@ -14,14 +14,15 @@ key of c2:
 {'network':'Advogato','date','2003-03-04'}
 
 USAGE
-   ./advogatoold2c2.py [path_directory [bast_path_output]]
+   ./advogatoold2dot.py [path_directory [bast_path_output]]
 '''
 
 import sys,os,re
 from os.path import isfile,join
 from trustlet.Dataset.Network import WeightedNetwork
-from trustlet.helpers import pool,save
+from trustlet.helpers import pool,mkpath
 from trustlet.Dataset.Advogato import _obs_app_jour_mas_map,_color_map
+from networkx import write_dot
 
 refname = re.compile('advogato(?:\.org)?\.certs-(\d{4})(\d{2})(\d{2})')
 
@@ -68,4 +69,6 @@ for dataset in os.listdir(path):
         W.add_node(t)
         W.add_edge(s,t,pool({key:e}))
         
-    assert save({'network':'Advogato','date':date},W,join(output_path,date,'graph.c2'))    
+    #assert save({'network':'Advogato','date':date},W,join(output_path,date,'graph.c2'))    
+    mkpath( join( output_path,date ) )
+    write_dot( W, join( output_path,date,'graph.dot') )

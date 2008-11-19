@@ -109,4 +109,3 @@ def from_c2( dot, c2, key ):
     trustlet.write_dot( x, dot )
 
     return True
-
