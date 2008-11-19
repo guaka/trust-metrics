@@ -85,6 +85,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     #check if the path ends with /
     if load_path[-1] == path.sep:
         lpath = load_path[:-1]
+    else:
+        lpath = load_path
         
     if debug:
         deb = file( debug, 'w' ) #in debug file was stored the last function to be evaluated and on which network
