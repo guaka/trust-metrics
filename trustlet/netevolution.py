@@ -132,7 +132,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
         ton = os.path.split( lpath )[1] #wikinetwork/advogatonetwork...
         try:
-            ton = re.findall( "[a-zA-Z]+", ton )[0]
+            ton = re.findall( "[a-zA-Z_]+", ton )[0] # _ added to support robots_net network
         except IndexError:
             if debug:
                 deb = file( debug, 'a' )
