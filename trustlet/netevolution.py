@@ -50,7 +50,10 @@ def trustaverage( K, d ):
     weight = K.weights_list()
     #try to use some dictionary, because
     #sometimes the key is 'value' and sometimes is 'level'
-    averagetrust = avg(weight)
+    if not weight:
+        averagetrust = 0
+    else:
+        averagetrust = avg(weight)
 
     return (d,averagetrust)
 
@@ -64,21 +67,30 @@ def ta_plot(ta, dpath, filename="trustAverage"):
             ]
                 )
 
+
+re_alphabetic = re.compile("[A-Za-z]+")
 def evolutionmap(load_path,functions,range=None,debug=None):
     '''
     apply function function to each network in range range.
     If you want use cache `function` cannot be lambda functions.
 
     Parameters:
-    load_path = path in wich the dates of the network are stored #ex. /home/ciropom/datasets/AdvogatoNetwork
-                If loadPath contains a prefix (if you have set prefix parameter in network) ex. /home/..../___AdvogatoNetwork
-                this prefix can be handle, but it must be only a non-alphabetical character. All prefix in range A-Z a-z could not
-                be handle.
-    functions = list of functions to apply to each dataset #ex. [trustvariance,trustaverage...]
-    range = tuple with at first the initial date, and at end the final date #ex. ('2000-01-01','2008-01-01')
+    load_path = path in wich the dates of the network are stored
+                #eg. /home/ciropom/datasets/AdvogatoNetwork
+                If loadPath contains a prefix (if you have set
+                prefix parameter in network) ex. /home/..../___AdvogatoNetwork
+                this prefix can be handle, but it must be only a
+                non-alphabetical character. All prefix in range
+                A-Z a-z could not be handle.
+    functions = list of functions to apply to each dataset
+                #eg. [trustvariance,trustaverage...]
+    range = tuple with at first the initial date, and at end the
+                final date #ex. ('2000-01-01','2008-01-01')
     
-    return a list of list of value where each list of the first list represent a function 'i',
-           and the value in this list is the return value for each network in range, of the 'i' function passed
+    return a list of list of value where each list of the first
+                list represent a function 'i', and the value in
+                this list is the return value for each network in
+                range, of the 'i' function passed
     '''
     cachepath = 'netevolution.c2'
 
@@ -109,11 +121,29 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         return None
 
     if range:
-        assert isdate(range[0]) and  isdate(range[1])
-        dates = [x for x in dates if x>=range[0] and x<=range[1]]
+        assert isdate(range[0]) and  isdate(range[1]) and (len(range)<3 or type(range[2]) == int),range
+        #dates = [x for x in dates if x>=range[0] and x<=range[1]]
+        new = []
+        prec = '1970-01-01'
+        for date in dates:
+            #range check
+            if date<range[0]:
+                continue
+            elif date>range[1]:
+                break
 
-    print 'There are %d networks' % len(dates)
-    
+            #step check
+            if len(range)==3 and mktimefromdate(date) - mktimefromdate(prec) < 3600*24*range[2]:
+                continue
+            new.append(date)
+            prec = date
+        dates = new
+
+    if len(dates)==1:
+        print 'There is a network'
+    else:
+        print 'There are %d networks' % len(dates)
+
     def task(date):        
         resdict = {} #dict of result
         calcfunctions = []
@@ -135,23 +165,28 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             #if is empty
             return resdict
 
+        print 'wwwwwwwwwwwwwwwwwww'
+        print [x.__name__ for x in calcfunctions]
+
+        # Type Of Network
         ton = ''
         p = lpath
-        while( 'Network'  not in ton ):
+        while 'Network' not in ton:
             p,ton = os.path.split( p ) #wikinetwork/advogatonetwork...
         
 
-        alphabetic = re.search( "[A-Za-z]+", ton ) #search alpabetic character (delete non A-Za-z prefix)
+        alphabetic = re_alphabetic.search( ton ) #search alphabetic character (delete non A-Za-z prefix)
         ton = ton[alphabetic.start():] #delete first non alphabetic character
         
         try:
-            ton = re.findall( "[a-zA-Z_]+", ton )[0] # _ added to support robots_net network
+            ton = re_alphabetic.findall( ton )[0] # _ added to support robots_net network
         except IndexError:
             if debug:
                 deb = file( debug, 'a' )
                 deb.write( "ERROR!: problem in path! is this path correct? "+lpath+"\n" )
                 deb.close()
-            
+            else:
+                print "ERROR!: problem in path! is this path correct? "+lpath
             return None
                 
 
@@ -166,10 +201,10 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     
             #test what type of network I had to use
             try:
-                networkclass = getattr( Advogato , ton )
+                Networkclass = getattr( Advogato , ton )
             except AttributeError:
                 try:
-                    networkclass = getattr( Network , ton )
+                    Networkclass = getattr( Network , ton )
                 except AttributeError:
                     if debug:
                         deb = file( debug, 'a' )
@@ -179,9 +214,11 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
             #load network
             try:
-                K = networkclass(date=date)
+                K = Networkclass(date=date)
             except IOError:
-                K = networkclass(date=date,prefix='_') #try with _ if there isn't in normal path (because sync does not upload folder with _ prefix)
+                K = Networkclass(date=date,prefix='_')
+                #try with _ if there isn't in normal path
+                #(because sync does not upload folder with _ prefix)
                 
             if not K:
                 if debug:
@@ -202,7 +239,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         elif path.exists( path.join(lpath,date,'graphHistory.c2') ):
             #load network
             try:
-
                 lang = path.split( lpath )[1]
 
             except IndexError:
@@ -216,7 +252,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 print "Lang value is not usable, this is the path "+lpath+" exiting"
                 return None
 
-            K = Network.WikiNetwork( lang = lang, date = date, current = False, output=False ) #netevolution only with history
+            K = Network.WikiNetwork( lang=lang, date=date, current=False, output=False )
+            #netevolution only with history
         else:
             if debug:
                 deb = file( debug, 'a' )
@@ -236,15 +273,19 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             if function.__name__!='<lambda>':
                 print 'Task:',function.__name__,"on date:",date
 
-            try:
-                res = function(K,date)
-            except:
+            res = function(K,date)
+            try: #2000-05-25 bug!
+                pass
+                #res = function(K,date)
+            except Exception,e:
                 if debug:
                     deb = file( debug, 'a' )
                     deb.write( "ERROR!: Error applying "+function.__name__+" to the network "+date+"! Exiting\n" )
+                    deb.write(str(e)+'\n')
                     deb.close()
                 else:
                     print "Error applying "+function.__name__+" to the network "+date+"! Exiting"
+                    print e
                 continue
 
             if function.__name__!='<lambda>':
@@ -257,6 +298,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     #map list of result for each dataset in list of result for each function
     data_ordered = splittask(task,dates)
+    print 'qqqqqqqqqqqqqqq'
+    print data_ordered
     nd = len( dates )
     nf = len( functions )
     
@@ -555,16 +598,27 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution startdate enddate dataset_path save_path [debug_path,html_file_path]"
+        print "USAGE: netevolution startdate enddate dataset_path save_path [debug_path] [-s step]"
         print "You can use '-' to skip {start,end}date"
+        print "step is the min numer of days between a computed network and the next one"
         sys.exit(1)
 
 
     startdate = sys.argv[1] == '-' and '0000-00-00' or sys.argv[1]
     enddate = sys.argv[2] == '-' and '9999-99-99' or sys.argv[2]
-    range = (startdate,enddate)
     dpath = sys.argv[3]
     savepath = sys.argv[4]
+
+    if '-s' in sys.argv[1:-1]:
+        i = sys.argv.index('-s')
+        step = int(sys.argv[i+1])
+        del sys.argv[i+1]
+        del sys.argv[i]
+    else:
+        step = 0
+
+    
+    range = (startdate,enddate,step)
 
     if sys.argv[5:]:
         debugfile = sys.argv[5]
@@ -573,7 +627,11 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    data = evolutionmap( dpath, [trustaverage,trustvariance,numedges,meandegree,usersgrown,edgespernode,level_distribution], (startdate,enddate) ,debugfile )
+    data = evolutionmap( dpath, [trustaverage,trustvariance,numedges,meandegree,usersgrown,edgespernode,level_distribution], range ,debugfile )
+    print len(data)
+    print len([trustaverage,trustvariance,numedges,meandegree,usersgrown,edgespernode,level_distribution])
+    print data
+    exit()
     if not data:
         sys.exit(1)
 
