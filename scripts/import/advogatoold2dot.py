@@ -20,7 +20,7 @@ USAGE
 import sys,os,re
 from os.path import isfile,join
 from trustlet.Dataset.Network import WeightedNetwork
-from trustlet.helpers import pool,mkpath
+from trustlet.helpers import pool,mkpath,save
 from trustlet.Dataset.Advogato import _obs_app_jour_mas_map,_color_map
 from networkx import write_dot
 
@@ -69,6 +69,8 @@ for dataset in os.listdir(path):
         W.add_node(t)
         W.add_edge(s,t,pool({key:e}))
         
-    #assert save({'network':'Advogato','date':date},W,join(output_path,date,'graph.c2'))    
-    mkpath( join( output_path,date ) )
-    write_dot( W, join( output_path,date,'graph.dot') )
+    print date,W.number_of_nodes(),W.number_of_edges()
+    assert save({'network':'Advogato','date':date},W,join(output_path,date,'graph.c2'))    
+    # ¡¡¡bug!!!
+    #mkpath( join( output_path,date ) )
+    #write_dot( W, join( output_path,date,'graph.dot') )

@@ -7,6 +7,7 @@ from trustlet.helpers import *
 from trustlet.conversion import dot
 from trustlet.Dataset import Network,Advogato
 from networkx import read_dot
+from pprint import pprint
 import os,time,re
 import os.path as path
 import scipy
@@ -46,7 +47,7 @@ def trustaverage( K, d ):
     K = network
     d = date
     """
-
+    
     weight = K.weights_list()
     #try to use some dictionary, because
     #sometimes the key is 'value' and sometimes is 'level'
@@ -144,7 +145,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     else:
         print 'There are %d networks' % len(dates)
 
-    def task(date):        
+    def task(date):
         resdict = {} #dict of result
         calcfunctions = []
 
@@ -155,6 +156,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             else:
                 cachekey = {'function':functions[i].__name__,'date':date}
                 cache = load(cachekey,path.join(lpath,cachepath))
+                cache = None # debug
                 if cache:
                     resdict[functions[i].__name__] = cache
                     #do not calculate for functions cached
@@ -164,9 +166,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         if not calcfunctions:
             #if is empty
             return resdict
-
-        print 'wwwwwwwwwwwwwwwwwww'
-        print [x.__name__ for x in calcfunctions]
 
         # Type Of Network
         ton = ''
@@ -230,6 +229,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 
                 return None
             
+            print 'K is a',K.__class__.__name__
+            
             if K.number_of_nodes() == 0 or K.number_of_edges() == 0:
                 if debug:
                     deb = file( debug, 'a' )
@@ -253,6 +254,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 return None
 
             K = Network.WikiNetwork( lang=lang, date=date, current=False, output=False )
+            assert K,'mmm... K not loaded...'
+            print 'K is a WikiNetwork'
             #netevolution only with history
         else:
             if debug:
@@ -263,7 +266,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 print "Cannot be able to load network! (date="+date+") on network "+ton
             return None
 
-
         for function in calcfunctions: #foreach functions that must be calculated on this network
             if debug:
                 deb = file( debug, 'a' )
@@ -273,10 +275,10 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             if function.__name__!='<lambda>':
                 print 'Task:',function.__name__,"on date:",date
 
-            res = function(K,date)
+            
+            
             try: #2000-05-25 bug!
-                pass
-                #res = function(K,date)
+                res = function(K,date)
             except Exception,e:
                 if debug:
                     deb = file( debug, 'a' )
@@ -297,9 +299,9 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         return resdict
 
     #map list of result for each dataset in list of result for each function
-    data_ordered = splittask(task,dates)
-    print 'qqqqqqqqqqqqqqq'
-    print data_ordered
+    #data_ordered = splittask(task,dates)
+    data_ordered = [task(x) for x in dates]
+    pprint(data_ordered)
     nd = len( dates )
     nf = len( functions )
     
@@ -448,12 +450,12 @@ def plot_level_distribution(data,data_path='.'):
                         '>>> plot_level_distribution(level_distribution(...))']
                )
 
-def genericevaluation(path,functions,range=None):
+def genericevaluation(functions):
     '''
     functions: list of function
-    function: f(network) -> value on y axis
+    function: f(network) -> y value
 
-    genericevaluation implements cache support
+    return a list of functions to pass to evolutionmap
     '''
     fs = []
 
@@ -464,7 +466,7 @@ def genericevaluation(path,functions,range=None):
             
         fs.append( f )
 
-    return evolutionmap(path,fs,range)
+    return fs
 
 def plot_genericevaluation(data,data_path='.',title='',comment=''):
     '''
@@ -477,6 +479,7 @@ def plot_genericevaluation(data,data_path='.',title='',comment=''):
             '.', title='Average clustering'
             )
     '''
+
     if not data or None in data:
         return None
 
@@ -520,76 +523,48 @@ avgcont10.__name__ = 'avgcontroversiality-min_in_degree-10'
 avgcont20 = lambda G: avgcontroversiality(G,20)
 avgcont20.__name__ = 'avgcontroversiality-min_in_degree-20'
 
-def createHTML( points ):
-    """
-    This function create a HTML document, that contains a graph using "SMILE timeplot"
-    http://simile.mit.edu/timeplot
-    
-    There isn't necessary to install webserver or moreover, but it's necessary
-    to have an internet connection (because the html file use a javascript remote script)
-    Parameters:
-       points: list of tuple
-       returns: tuple with html in a string, data in another string. 
-                
-       NB: data must be written to a file named '.data'
-           if you would write the html file
-    """
 
-    htmldoc = """<html><head>
-  <title>Trustlet Evolution Graph</title>
-    <script src="http://static.simile.mit.edu/timeplot/api/1.0/timeplot-api.js" 
-       type="text/javascript"></script>
+#generic evaluation
+eval1=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
+eval1.__name__='diameter-largest-connected-component'
 
-    <script language="Javascript1.2">
-var timeplot;
+eval2=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
+eval2.__name__='radius-largest-connected-component'
 
-function onLoad() {
-  var eventSource = new Timeplot.DefaultEventSource();
-  var plotInfo = [
-    Timeplot.createPlotInfo({
-      id: "plot1",
-      dataSource: new Timeplot.ColumnSource(eventSource,1),
-      timeGeometry: new Timeplot.DefaultTimeGeometry({
-        gridColor: "#000000",
-        axisLabelsPlacement: "top"
-      }),
-      lineColor: "#ff0000",
-      fillColor: "#cc8080",
-      showValues: true
-    })
-  ];
-            
-  timeplot = Timeplot.create(document.getElementById("trustlet-timeplot"), plotInfo);
-  timeplot.loadText(".data", ",", eventSource);
-}
+eval4 = lambda G: avg(
+    networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values()
+    )
+eval4.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
 
-var resizeTimerID = null;
+eval5 = lambda G: avg(
+    networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values()
+    )
+eval5.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
 
-function onResize() {
-    if (resizeTimerID == null) {
-        resizeTimerID = window.setTimeout(function() {
-            resizeTimerID = null;
-            timeplot.repaint();
-        }, 100);
-    }
-}
+eval6 = lambda G: avg(
+    networkx.betweenness_centrality(G,normalized=False,weighted_edges=False).values()
+    )
+eval6.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
+
+eval7 = lambda G: avg(
+    networkx.closeness_centrality(G,weighted_edges=False).values()
+    )
+eval7.__name__ = 'closeness_centrality-no-weighted_edges'
+
+eval8 = lambda G: avg(
+    networkx.closeness_centrality(G,weighted_edges=True).values()
+    )
+eval8.__name__ = 'closeness_centrality-yes-weighted_edges'
+
+eval9 = lambda G: avg(
+    networkx.newman_betweenness_centrality(G).values()
+    )
+eval9.__name__ = 'newman_betweenness_centrality'
 
 
-    </script>
-  </head>
-  <body  onload="onLoad();" onresize="onResize();">
+eval10 = lambda G: networkx.number_connected_components(G.to_undirected())
+eval10.__name__ = 'number_connected_components'
 
-  <div id="trustlet-timeplot" style="height: 150px;"></div>
-
-  </body></html>
-"""
-
-    data = "#Trustlet, autogenerated data file\n\n"
-    
-    for (x,y) in points:
-        data += str(x)+","+str(y)+"\n" 
-
-    return (htmldoc,data)
 
 
 if __name__ == "__main__":    
@@ -604,8 +579,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
 
-    startdate = sys.argv[1] == '-' and '0000-00-00' or sys.argv[1]
-    enddate = sys.argv[2] == '-' and '9999-99-99' or sys.argv[2]
+    startdate = sys.argv[1] == '-' and '1970-01-01' or sys.argv[1]
+    enddate = sys.argv[2] == '-' and '9999-12-31' or sys.argv[2]
     dpath = sys.argv[3]
     savepath = sys.argv[4]
 
@@ -627,13 +602,51 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    data = evolutionmap( dpath, [trustaverage,trustvariance,numedges,meandegree,usersgrown,edgespernode,level_distribution], range ,debugfile )
-    print len(data)
-    print len([trustaverage,trustvariance,numedges,meandegree,usersgrown,edgespernode,level_distribution])
-    print data
-    exit()
+    data = evolutionmap( dpath, [
+            trustaverage,
+            trustvariance,
+            numedges,
+            meandegree,
+            usersgrown,
+            edgespernode,
+            level_distribution] + genericevaluation([
+                networkx.average_clustering,
+                eval1,
+                eval2,
+                networkx.density,
+                eval4,
+                eval5,
+                eval6,
+                eval7,
+                eval8,
+                eval9,
+                eval10,
+                avgcont20]), range ,debugfile )
+    
     if not data:
         sys.exit(1)
+
+    pprint([x.__name__ for x in [
+            trustaverage,
+            trustvariance,
+            numedges,
+            meandegree,
+            usersgrown,
+            edgespernode,
+            level_distribution] + genericevaluation([
+                networkx.average_clustering,
+                eval1,
+                eval2,
+                networkx.density,
+                eval4,
+                eval5,
+                eval6,
+                eval7,
+                eval8,
+                eval9,
+                eval10,
+                avgcont20])
+            ])
 
     ta_plot( data[0], savepath )
     var_plot( data[1], savepath )
@@ -643,128 +656,83 @@ if __name__ == "__main__":
     plot_edgespernode( data[5], savepath )
     plot_level_distribution( data[6], savepath )
 
-    #generic evaluation
-    eval1=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
-    eval1.__name__='diameter-largest-connected-component'
-
-    eval2=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
-    eval2.__name__='radius-largest-connected-component'
-    
-    eval4 = lambda G: avg(
-        networkx.betweenness_centrality(G).values()
-        )
-    eval4.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
-    
-    eval5 = lambda G: avg(
-        networkx.betweenness_centrality(G).values()
-        )
-    eval5.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
-    
-    eval6 = lambda G: avg(
-        networkx.betweenness_centrality(G,normalized=False).values()
-        )
-    eval6.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
-
-    eval7 = lambda G: avg(
-        networkx.closeness_centrality(G).values()
-        )
-    eval7.__name__ = 'closeness_centrality-no-weighted_edges'
-    
-    eval8 = lambda G: avg(
-        networkx.closeness_centrality(G,weighted_edges=True).values()
-        )
-    eval8.__name__ = 'closeness_centrality-yes-weighted_edges'
-    
-    eval9 = lambda G: avg(
-        networkx.newman_betweenness_centrality(G).values()
-        )
-    eval9.__name__ = 'newman_betweenness_centrality'
-    
-    
-    eval10 = lambda G: networkx.number_connected_components(G.to_undirected())
-    eval10.__name__ = 'number_connected_components'
-
-    data = genericevaluation( dpath,
-                              [networkx.average_clustering,eval1,eval2,networkx.density,eval4,eval5,eval6,eval7,eval8,eval9,eval10,avgcont20],
-                              range )
-
-
+    pprint(data)
     
     plot_genericevaluation( 
-        data[0],
+        data[7],
         savepath, title='average_clustering', comment='Function: nx.average_clustering'
         )
 
 
     plot_genericevaluation(
-        data[1],
+        data[8],
         savepath, title='diameter',
         comment='eval = nx.diameter(networkx.connected_component_subgraphs'
         '(G.to_undirected())[0])'
         )
 
     plot_genericevaluation(
-        data[2],
+        data[9],
         savepath, title='radius',
         comment='eval = nx.radius(networkx.connected_component_subgraphs'
                 '(G.to_undirected())[0])'
         )
 
     plot_genericevaluation(
-        data[3],
+        data[10],
         savepath, title='density', comment='Function: nx.density'
         )
 
     plot_genericevaluation(
-        data[4],
+        data[11],
         savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=False).values())'
         )
 
     plot_genericevaluation(
-        data[5],
+        data[12],
         savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=True).values())'
         ) 
 
     plot_genericevaluation(
-        data[6],
+        data[13],
         savepath, title='betweenness_centrality no-normalized no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                '(G,normalized=False,weighted_edges=False).values())'
         )
 
     plot_genericevaluation(
-        data[7],
+        data[14],
         savepath, title='closeness_centrality no-weighted_edges',
         comment='eval = avg(nx.closeness_centrality'
                 '(G,weighted_edges=False).values())'
         )
 
     plot_genericevaluation(
-        data[8],
+        data[15],
         savepath, title='closeness_centrality yes-weighted_edges',
         comment='eval = avg(nx.closeness_centrality'
                 '(G,weighted_edges=True).values())'
         )
 
     plot_genericevaluation(
-        data[9],
+        data[16],
         savepath, title='newman betweenness centrality',
         comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
         )
 
     plot_genericevaluation(
-        data[10],
+        data[17],
         savepath, title='number_connected_components',
         comment='eval = nx.number_connected_components(G.to_undirected())'
         )
 
     
     plot_genericevaluation(
-        data[11],
+        data[18],
         savepath, title='avg of standard deviation in received trust (in degree=20)',
         comment='''\
 cont = [] # controversiality array
@@ -782,16 +750,3 @@ for n in K.nodes_iter():
 
 return avg(cont)'''
         )
-
-
-    # can we erase this?
-    if len(sys.argv) >= 7:
-        html = sys.argv[6]
-        f = file( path.join( savepath, html ) , 'w' )
-        fd = file( path.join( savepath, '.data' ) , 'w' )
-
-        html,data = createHTML( ta )
-        f.write(html)
-        fd.write(data)
-        f.close()
-        fd.close()

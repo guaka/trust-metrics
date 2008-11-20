@@ -37,7 +37,10 @@ More to add:
 
 """
 
-__author__ = """Kasper Souren (kasper.souren@gmail.com)\nPaolo Massa (massa@itc.it)\nDanilo Tomasoni (ciropom@gmail.com)\nMartino Salvetti (martino@silix.org)"""
+__author__ = """Kasper Souren (kasper.souren@gmail.com)
+Paolo Massa (massa@itc.it)
+Danilo Tomasoni (ciropom@gmail.com)
+Martino Salvetti (martino@silix.org)"""
 __license__ = "GPL"
 
 import trustlet
@@ -51,7 +54,12 @@ _color_map = {
     'blue': 0.8,   #journeyer
     'green': 0.6,  #apprentice
     'gray': 0.4,   #observer
-    '' : 0.0
+    '' : 0.0,
+    # Workaround !!!
+    'Observer': 0.4,
+    'Apprentice': 0.6,
+    'Journeyer': 0.8,
+    'Master': 1.0,
     }
 
 
