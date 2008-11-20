@@ -900,6 +900,9 @@ reip = re.compile('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
                   '(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
 isip = lambda x: bool(re.match(reip,x))
 
+#converts date in seconds from Epoch
+mktimefromdate = lambda date: time.mktime(tuple(map(int,date.split('-'))) + (0,)*6)
+
 class Progress:
     '''
     print percentage of done work
