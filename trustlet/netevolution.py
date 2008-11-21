@@ -229,8 +229,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 
                 return None
             
-            print 'K is a',K.__class__.__name__
-            
             if K.number_of_nodes() == 0 or K.number_of_edges() == 0:
                 if debug:
                     deb = file( debug, 'a' )
@@ -254,8 +252,6 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 return None
 
             K = Network.WikiNetwork( lang=lang, date=date, current=False, output=False )
-            assert K,'mmm... K not loaded...'
-            print 'K is a WikiNetwork'
             #netevolution only with history
         else:
             if debug:
@@ -294,15 +290,13 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 if not save({'function':function.__name__,'date':date},res,path.join(lpath,cachepath)):
                     print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
-            resdict[function.__name__] = res 
-            print res
+            resdict[function.__name__] = res
 
         return resdict
 
     #map list of result for each dataset in list of result for each function
     data_ordered = splittask(task,dates)
     #data_ordered = [task(x) for x in dates]
-    pprint(data_ordered)
     nd = len( dates )
     nf = len( functions )
     
@@ -644,8 +638,6 @@ if __name__ == "__main__":
     plot_edgespernode( data[5], savepath )
     plot_level_distribution( data[6], savepath )
 
-    pprint(data)
-    
     plot_genericevaluation( 
         data[7],
         savepath, title='average_clustering', comment='Function: nx.average_clustering'
