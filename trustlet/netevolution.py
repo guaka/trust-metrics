@@ -521,52 +521,58 @@ def avgcontroversiality(K,min_in_degree=10):
     else:
         return avg(cont)
 
-avgcont10 = lambda G: avgcontroversiality(G,10)
-avgcont10.__name__ = 'avgcontroversiality-min_in_degree-10'
-
-avgcont20 = lambda G: avgcontroversiality(G,20)
-avgcont20.__name__ = 'avgcontroversiality-min_in_degree-20'
-
 
 #generic evaluation
-eval1=lambda G:networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])
+avgcont10 = lambda G,d: (d,avgcontroversiality(G,10))
+avgcont10.__name__ = 'avgcontroversiality-min_in_degree-10'
+
+avgcont20 = lambda G,d: (d,avgcontroversiality(G,20))
+avgcont20.__name__ = 'avgcontroversiality-min_in_degree-20'
+
+eval0=lambda G,d:(d,networkx.average_clustering(G))
+eval0.__name__='average_clustering'
+
+eval1=lambda G,d:(d,networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0]))
 eval1.__name__='diameter-largest-connected-component'
 
-eval2=lambda G:networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])
+eval2=lambda G,d:(d,networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0]))
 eval2.__name__='radius-largest-connected-component'
 
-eval4 = lambda G: avg(
+eval3=lambda G,d:(d,networkx.density(G))
+eval3.__name__='density'
+
+eval4 = lambda G,d: (d,avg(
     networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values()
-    )
+    ))
 eval4.__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
 
-eval5 = lambda G: avg(
+eval5 = lambda G,d: (d,avg(
     networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values()
-    )
+    ))
 eval5.__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
 
-eval6 = lambda G: avg(
+eval6 = lambda G,d: (d,avg(
     networkx.betweenness_centrality(G,normalized=False,weighted_edges=False).values()
-    )
+    ))
 eval6.__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
 
-eval7 = lambda G: avg(
+eval7 = lambda G,d: (d,avg(
     networkx.closeness_centrality(G,weighted_edges=False).values()
-    )
+    ))
 eval7.__name__ = 'closeness_centrality-no-weighted_edges'
 
-eval8 = lambda G: avg(
+eval8 = lambda G,d: (d,avg(
     networkx.closeness_centrality(G,weighted_edges=True).values()
-    )
+    ))
 eval8.__name__ = 'closeness_centrality-yes-weighted_edges'
 
-eval9 = lambda G: avg(
+eval9 = lambda G,d: (d,avg(
     networkx.newman_betweenness_centrality(G).values()
-    )
+    ))
 eval9.__name__ = 'newman_betweenness_centrality'
 
 
-eval10 = lambda G: networkx.number_connected_components(G.to_undirected())
+eval10 = lambda G,d: (d,networkx.number_connected_components(G.to_undirected()))
 eval10.__name__ = 'number_connected_components'
 
 
@@ -613,44 +619,22 @@ if __name__ == "__main__":
             meandegree,
             usersgrown,
             edgespernode,
-            level_distribution] + genericevaluation([
-                networkx.average_clustering,
-                eval1,
-                eval2,
-                networkx.density,
-                eval4,
-                eval5,
-                eval6,
-                eval7,
-                eval8,
-                eval9,
-                eval10,
-                avgcont20]), range ,debugfile )
+            level_distribution,
+            networkx.average_clustering,
+            eval1,
+            eval2,
+            eval3,
+            eval4,
+            eval5,
+            eval6,
+            eval7,
+            eval8,
+            eval9,
+            eval10,
+            avgcont20], range ,debugfile )
     
     if not data:
         sys.exit(1)
-
-    pprint([x.__name__ for x in [
-            trustaverage,
-            trustvariance,
-            numedges,
-            meandegree,
-            usersgrown,
-            edgespernode,
-            level_distribution] + genericevaluation([
-                networkx.average_clustering,
-                eval1,
-                eval2,
-                networkx.density,
-                eval4,
-                eval5,
-                eval6,
-                eval7,
-                eval8,
-                eval9,
-                eval10,
-                avgcont20])
-            ])
 
     ta_plot( data[0], savepath )
     var_plot( data[1], savepath )
