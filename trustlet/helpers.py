@@ -900,6 +900,8 @@ reip = re.compile('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
                   '(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
 isip = lambda x: bool(re.match(reip,x))
 
+repid = re.compile("\d+\.c2") # match `int`.c2
+
 #converts date in seconds from Epoch
 mktimefromdate = lambda date: time.mktime(tuple(map(int,date.split('-'))) + (0,)*6)
 
@@ -986,7 +988,7 @@ def hashable(x):
 
     raise TypeError,"I don't know this type"
 
-def save(key,data,path='.',human=False,version=3):
+def save(key,data,path='.',human=False,version=3,threadsafe=True):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
@@ -997,31 +999,38 @@ def save(key,data,path='.',human=False,version=3):
     human is not suported in the new format.
     """
 
-    def lock():
-        TIMEOUT = 300 # 5min
-        def readall(fname):
-            try:
-                f = file(fname)
-                data = f.read()
+    # used by safe_save because it implements this
+    if threadsafe:
+        def lock():
+            TIMEOUT = 300 # 5min
+            def readall(fname):
+                try:
+                    f = file(fname)
+                    data = f.read()
+                    f.close()
+                except:
+                    data = ''
+                return data or '0.0'
+            def writeall(fname,data):
+                f = file(fname,'w')
+                f.write(data)
                 f.close()
-            except:
-                data = ''
-            return data or '0.0'
-        def writeall(fname,data):
-            f = file(fname,'w')
-            f.write(data)
-            f.close()
-        while True:
-            if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
-                writeall(path+'.lock',str(time.time()))
-                return
+            while True:
+                if not os.path.isfile(path+'.lock') or time.time()-float(readall(path+'.lock'))>TIMEOUT:
+                    writeall(path+'.lock',str(time.time()))
+                    return
 
-            time.sleep(1)
+                time.sleep(1)
 
-    def unlock():
-        try:
-            os.remove(path+'.lock')
-        except OSError:
+        def unlock():
+            try:
+                os.remove(path+'.lock')
+            except OSError:
+                pass
+    else:
+        def lock():
+            pass
+        def unlock():
             pass
 
     if path.endswith('.c2'):
@@ -1070,6 +1079,41 @@ def save(key,data,path='.',human=False,version=3):
             return False
     return True
     
+def safe_save(key,data,path):
+    '''
+    safe_save() is thread-safe version of save()
+    Only version 3 is supported.
+    '''
+    
+    assert path.endswith('.c2'),'Path doesn\'t ends with .c2'
+    
+    path = path[:-2] + str(os.getpid()) + '.c2'
+    
+    return save(key,data,path,threadsafe=False)
+
+def safe_merge(path):
+    '''
+    merge files created by safe_save into the original c2 (path)
+    '''
+
+    assert path.endswith('.c2'),'Path doesn\'t ends with .c2'
+
+    fullpath = path
+    path,name = os.path.split(fullpath)
+    if not path:
+        path = os.curdir
+
+    def f(x):
+        #      get name.                   get pid.c2
+        return x.startswith(name[:-2]) and repid.match(x[len(name)-2:])
+
+    files = filter(f,os.listdir(path))
+
+    for file in files:
+        file = os.path.join(path,file)
+        merge_cache(file,fullpath,ignoreerrors=True)
+        os.remove(file)
+
 def load(key,path='.',fault=None):
     """
     Cache.
@@ -1144,30 +1188,37 @@ def convert_cache(path1,path2):
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
 
-def merge_cache(path1 , path2 , mpath=None):
+def merge_cache(path1 , path2 , mpath=None, ignoreerrors=False):
     '''
     mpath: new destination file (merged path).
-    if mpath is None, path2 will be used
+    if mpath is None, *path2* will be used
     if `path1` and `path2` file cache has the same
     key will keep the `path2` value for that key.
     '''
 
-    f1 = GzipFile(path1)
     try:
+        f1 = GzipFile(path1)
         c1 = pickle.load(f1)
+        f1.close()
     except IOError:
-        print 'File %s corrupted' % path1
-        return
-    f1.close()
-
-    f2 = GzipFile(path2)
-    try:
-        c2 = pickle.load(f2)
-    except IOError:
-        print 'File %s corrupted' % path2
-        return
+        if ignoreerrors:
+            c1 = {}
+        else:
+            print 'File %s corrupted' % path1
+            return
     
-    f2.close()
+    
+    try:
+        f2 = GzipFile(path2)
+        c2 = pickle.load(f2)
+        f2.close()
+    except IOError:
+        if ignoreerrors:
+            c2 = {}
+        else:
+            print 'File %s corrupted' % path2
+            return
+    
 
     # Priority: c2
     # if c1 and c2 has the same key will keep the c2
