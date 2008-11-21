@@ -295,6 +295,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                     print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
             resdict[function.__name__] = res 
+            print res
 
         return resdict
 
@@ -318,8 +319,11 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     #fill the return value
     for fi in xrange( nf ):
         for di in xrange( nd ):
-            if data_ordered[di].has_key( functions[fi].__name__ ):
-                func_ordered[fi].append( data_ordered[di][ functions[fi].__name__ ] )
+            if data_ordered[di]:
+                if data_ordered[di].has_key( functions[fi].__name__ ):
+                    func_ordered[fi].append( data_ordered[di][ functions[fi].__name__ ] )
+            else:
+                print 'Warning: data_ordered[di] not defined'
 
     return func_ordered
 
