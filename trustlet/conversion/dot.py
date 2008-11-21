@@ -1,4 +1,3 @@
-
 """
 Module for convert dot files in format c2 (the only readable from trustlet)
 and viceversa.
@@ -19,7 +18,6 @@ def to_c2( dot, c2, key ):
        key: key of dictionary in c2 that identify the network
        (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
         and {'network':'Wiki','lang':'it','date':'2000-01-01'} for wiki network)
-    """
     """
     rname = re.compile( '[^"]+' ) #erase "
     ruser = re.compile( "[^ \/*]+" )
@@ -67,11 +65,6 @@ def to_c2( dot, c2, key ):
                 w.add_edge( rname.findall(indegree)[0], rname.findall(outdegree)[0], trustlet.helpers.pool({typeNet:value}) )
             else:
                 print "Warning! output may be checked"
-    """
-    try:
-        w=read_dot(dot)
-    except:
-        return False
 
     return trustlet.helpers.save(key,w,c2)
 
