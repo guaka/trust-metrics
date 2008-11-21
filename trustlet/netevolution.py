@@ -299,8 +299,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         return resdict
 
     #map list of result for each dataset in list of result for each function
-    #data_ordered = splittask(task,dates)
-    data_ordered = [task(x) for x in dates]
+    data_ordered = splittask(task,dates)
+    #data_ordered = [task(x) for x in dates]
     pprint(data_ordered)
     nd = len( dates )
     nf = len( functions )
