@@ -19,9 +19,8 @@ def to_c2( dot, c2, key ):
        (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
         and {'network':'Wiki','lang':'it','date':'2000-01-01'} for wiki network)
     """
-    rname = re.compile( '[^"]+' ) #erase "
-    ruser = re.compile( "[^ \/*]+" )
-    redges = re.compile( '([^ ]+) -> ([^ ]+) \[([a-z]+)=\"([A-Za-z]+)\"\];' )
+    ruser = re.compile( '(\w+)' )
+    redges = re.compile( '"?(\w+)"?\s*->\s*(\w+)\s*\[(\w+)="?(\w+)"?\];' )
     w = trustlet.Network.WeightedNetwork()
 
     f = file( dot )
@@ -46,7 +45,7 @@ def to_c2( dot, c2, key ):
     #find all nodes
     for i in xrange(nlines):
         user = ruser.findall( lines[i] )[0]
-        w.add_node( rname.findall( user )[0] )
+        w.add_node( user )
         #find all edges
         for j in xrange(i+1,nlines):
             res = redges.findall( lines[j] )
@@ -62,7 +61,7 @@ def to_c2( dot, c2, key ):
                 typeNet = edges[2]
                 value = edges[3]
                 
-                w.add_edge( rname.findall(indegree)[0], rname.findall(outdegree)[0], trustlet.helpers.pool({typeNet:value}) )
+                w.add_edge( indegree, outdegree, trustlet.helpers.pool({typeNet:value}) )
             else:
                 print "Warning! output may be checked"
 

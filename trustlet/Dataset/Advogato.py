@@ -176,12 +176,12 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         #convert dot in c2
         if not trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,{'network':self._name(),'date':self.date}):
             print "Error converting dot into c2 file."
-            return None
+            return False
         #delete dot
         #os.remove( self.dotpath )
         
         print "Done."
-        return None
+        return True
 
     def download(self, only_if_needed = False):
         """Download dataset."""
