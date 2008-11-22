@@ -6,7 +6,7 @@ Try:
 
 == Depending packages ==
 
-* NetworkX >=0.36
+* NetworkX >=0.37
 * scipy
 * graphviz
 * pygraphviz (need [graphviz-dev|graphviz-devel] )
