@@ -57,6 +57,7 @@ class Network(XDiGraph):
         '''
 
         XDiGraph.__init__(self, multiedges = False)
+        self.filepath = ''
         if make_base_path:
 
             if prefix:
@@ -97,7 +98,7 @@ class Network(XDiGraph):
             # retry without thresold
             del cachedict['threshold']
             pydataset = trustlet.helpers.load(cachedict, self.filepath)
-        
+            
             if not pydataset:
                 return False
     
@@ -105,7 +106,7 @@ class Network(XDiGraph):
             if threshold > 1:
                 edges = filter( lambda x: x[2] >= threshold, pydataset[1] )
                 pydataset = (pydataset[0],edges)
-        
+            
         if pydataset:
             #now I'm sure that this network is in a c2 file
             self.filename = os.path.split(self.filepath)[1]
@@ -114,7 +115,13 @@ class Network(XDiGraph):
             
         return True
   
-
+    
+    def _name_lowered(self):
+        """Helper for url."""
+        name = self.__class__.__name__.lower()
+        if name[-7:] == 'network':
+            name = name[:-7]
+        return name
         
     def download_file(self, url, filename):
         '''Download url to filename into the right path '''

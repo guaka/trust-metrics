@@ -137,13 +137,6 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         if comp_threshold:
             self.ditch_components(comp_threshold)
 
-    def _name_lowered(self):
-        """Helper for url."""
-        name = self.__class__.__name__.lower()
-        if name[-7:] == 'network':
-            name = name[:-7]
-        return name
-
     def _name(self):
         """
         return Advogato, or Squeakfoundation, or Kaitiaki..

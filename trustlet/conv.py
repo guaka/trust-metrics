@@ -4,6 +4,34 @@ import netconv
 import networkx as NX
 from Dataset import Network
 
+
+def keyOnEdge(key):
+    """
+    Warning! this function cannot be used by an user
+    this function take the key passed to all 'conversion function'
+    and return the key on edge's dictionary used by the network associated
+    """
+
+    if 'network' not in key:
+        return False
+
+    if key['network'] == 'Wiki':
+        return 'value'
+    elif key['network'] == 'Robots_net':
+        return 'level'
+    elif key['network'] == 'Advogato':
+        if 'date' not in key:
+            return False
+
+        if key['date'] <= "2006-05-20":
+            return 'color'
+        else:
+            return 'level'
+            
+    elif key['network'] == 'Kaitiaki' or key['network'] == 'Squeakfoundation':
+        return 'color'
+
+
 def read_pajek(filename):
     """Read pajek files into a WeightedNetwork."""
     

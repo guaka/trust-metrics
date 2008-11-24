@@ -90,18 +90,11 @@ def from_c2( dot, c2, key ):
         print "and as name the name of the network, like Advogato, Kaitiaki, Wiki.."
         return False
 
-    if key['network'] == 'Wiki':
-        edgekey = 'value'
-    elif key['network'] == 'Robots_net':
-        edgekey = 'level'
-    elif key['network'] == 'Advogato':
-        if key['date'] <= "2006-05-20":
-            edgekey = 'color'
-        else:
-            edgekey = 'level'
-            
-    elif key['network'] == 'Kaitiaki' or key['network'] == 'Squeakfoundation':
-        edgekey = 'color'
+    edgekey = trustlet.conv.keyOnEdge( key )
+
+    if not edgekey:
+        print "Invalid key"
+        return False
 
     x = trustlet.helpers.toNetwork( w, edgekey )
 

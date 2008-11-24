@@ -21,9 +21,11 @@ def to_c2( pj, c2, key ):
     except:
         return False
 
+    #now you must delete all key 'value' on all edges
+
     return trustlet.helpers.save(key,w,c2)
 
-def from_c2( pj, c2, key ):
+def from_c2( pj, c2, key, name=None ):
     """
     parse a c2 with key and save a pajek file
 
@@ -34,11 +36,44 @@ def from_c2( pj, c2, key ):
     the key must have another value 'lang':'it/fur/la/de.....'
     that specify the language of the network.
     Warning! the value of the key 'network' could not be 'AdvogatoNetwork' it must be 'Advogato' only
+    return True
     """
     
-    w = trustlet.helpers.load(key,c2,False)
-    
-    if not w:
+    x = trustlet.helpers.load(key,c2,False)
+    if not x:
+        print "Invalid key"
         return False
 
-    return write_pajek(w, pj )
+    #if c2 contains a list of tuple
+    edgekey = trustlet.conv.keyOnEdge(key)
+    if not edgekey:
+        print "invalid key"
+        return False
+
+    w = trustlet.helpers.toNetwork( x, edgekey )
+    
+    if not w or 'date' not in key:
+        print "Incomplete entry in key"
+        return False
+
+    if not w.name:
+        if hasattr(w,"lang"):
+            #then this is a wiki-like network
+            w.name = 'wiki_'+key['lang']+'_'+key['date']
+        else:
+            w.name = key['network']+'_'+key['date']
+            
+        if name:
+            w.name = name
+
+    #now you must add 'value' key on edge, and set it to level_map['value_on_edge']
+
+    try:
+        write_pajek(w, pj )
+    except:
+        return False
+
+    return True
+
+
+#warning to_c2 doesn't work! test

@@ -1404,7 +1404,7 @@ def toNetwork( data , key, net=None ):
         if type(data) in ANetwork:
             return data #if it is just a network i return it simply
         else:
-            raise IOError( "Data type is not a tuple with two list" )
+            raise IOError( "Data type is not a tuple with two list, this is the data parameter passed: "+str(data) )
 
     #create Network
     nodes = data[0]
@@ -1414,7 +1414,6 @@ def toNetwork( data , key, net=None ):
     else:
         w = net
 
-    print "ciao"
     for name in nodes:
         w.add_node( rname.findall(name)[0] )
 
