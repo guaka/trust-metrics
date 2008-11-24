@@ -13,7 +13,7 @@ def to_c2( dot, c2, key ):
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
 
     Parameters:
-       dot: path of dot (ex /home/..../graph.dot)
+       dot: path to dot (ex /home/..../graph.dot)
        c2: path in which save c2 (ex. /home/.../graph.c2)
        key: key of dictionary in c2 that identify the network
        (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
