@@ -21,8 +21,13 @@ def to_c2( pj, c2, key ):
     except:
         return False
 
-    #now you must delete all key 'value' on all edges
-
+    #now I had to delete all key 'value' on all edges
+    for edge in w.edges_iter():
+        try:
+            del edge[2]['value']
+        except KeyError:
+            continue
+    
     return trustlet.helpers.save(key,w,c2)
 
 def from_c2( pj, c2, key, name=None ):
@@ -67,6 +72,12 @@ def from_c2( pj, c2, key, name=None ):
             w.name = name
 
     #now you must add 'value' key on edge, and set it to level_map['value_on_edge']
+    for edge in w.edges_iter():
+        try:
+            edge[2]['value'] = w.level_map[edgekey]
+        except:
+            print "Warning! output may be incosistent. Level map not defined!!"
+            continue
 
     try:
         write_pajek(w, pj )

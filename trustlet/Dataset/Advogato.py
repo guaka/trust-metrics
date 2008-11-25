@@ -201,13 +201,13 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         Put nodes names into `"`
         """
         print 'Fixing graph.dot'
-        graph_file = open(self.filepath, 'r')
+        graph_file = open(self.dotpath, 'r')
         l_names = graph_file.readlines()
         graph_file.close()
         re_fix = re.compile(' (\w+)')
         fixed_lines = map(lambda s: re_fix.sub(r' "\1"', s), l_names)
 
-        writefile = open(self.filepath, 'w')
+        writefile = open(self.dotpath, 'w')
         writefile.writelines(fixed_lines)
         writefile.close()
         return self.filepath
