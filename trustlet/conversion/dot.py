@@ -22,6 +22,10 @@ def to_c2( dot, c2, key ):
     ruser = re.compile( '(\w+)' )
     redges = re.compile( '"?(\w+)"?\s*->\s*(\w+)\s*\[(\w+)="?(\w+)"?\];' )
     w = trustlet.Network.WeightedNetwork()
+    
+    if trustlet.conv.keyOnEdge(key) != 'value':
+        w.level_map = trustlet.Dataset.Advogato._color_map #contains all the possible value except 'value' that is used only in wikinetwork
+        
 
     f = file( dot )
     lines = []
@@ -44,26 +48,27 @@ def to_c2( dot, c2, key ):
 
     #find all nodes
     for i in xrange(nlines):
-        user = ruser.findall( lines[i] )[0]
-        w.add_node( user )
-        #find all edges
-        for j in xrange(i+1,nlines):
-            res = redges.findall( lines[j] )
-            
-            try:
-                edges = res[0]
-            except IndexError:
-                break
-            
-            if type(edges) is tuple:
-                indegree = edges[0]
-                outdegree = edges[1]
-                typeNet = edges[2]
-                value = edges[3]
-                
-                w.add_edge( indegree, outdegree, trustlet.helpers.pool({typeNet:value}) )
-            else:
-                print "Warning! output may be checked"
+        user = ruser.search( lines[i] )
+        w.add_node( user.group() )
+    
+    #find all edges
+    for j in xrange(nlines):
+        res = redges.findall( lines[j] )
+
+        try:
+            edges = res[0]
+        except IndexError:
+            continue
+
+        if type(edges) is tuple:
+            indegree = edges[0]
+            outdegree = edges[1]
+            typeNet = edges[2]
+            value = edges[3]
+
+            w.add_edge( indegree, outdegree, trustlet.helpers.pool({typeNet:value}) )
+        else:
+            print "Warning! output may be checked"
 
     return trustlet.helpers.save(key,w,c2)
 

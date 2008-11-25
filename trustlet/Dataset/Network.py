@@ -358,6 +358,7 @@ class WeightedNetwork(Network):
         self._weights = weights
         self._weights_list = None
         self._weights_dictionary = None
+        self.level_map = None
 
     def trust_on_edge(self, edge):
         """

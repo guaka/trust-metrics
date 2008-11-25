@@ -27,7 +27,7 @@ def to_c2( pj, c2, key ):
             del edge[2]['value']
         except KeyError:
             continue
-    
+
     return trustlet.helpers.save(key,w,c2)
 
 def from_c2( pj, c2, key, name=None ):
@@ -45,6 +45,7 @@ def from_c2( pj, c2, key, name=None ):
     """
     
     x = trustlet.helpers.load(key,c2,False)
+    
     if not x:
         print "Invalid key"
         return False
@@ -71,20 +72,19 @@ def from_c2( pj, c2, key, name=None ):
         if name:
             w.name = name
 
-    #now you must add 'value' key on edge, and set it to level_map['value_on_edge']
-    for edge in w.edges_iter():
-        try:
-            edge[2]['value'] = w.level_map[edgekey]
-        except:
-            print "Warning! output may be incosistent. Level map not defined!!"
-            continue
+    #now you must add 'value' key on edge, and set it to level_map['value_on_edge'] (useful for pajek?)
+    if hasattr( w, "level_map" ):
+        for edge in w.edges_iter():
+            w.delete_edge( edge[0], edge[1] )
+            w.add_edge( edge[0], edge[1], {'value':w.level_map[edge[2].values()[0]],edgekey:edge[2].values()[0]} )
+
 
     try:
-        write_pajek(w, pj )
+        write_pajek( w, pj )
     except:
         return False
 
     return True
 
 
-#warning to_c2 doesn't work! test
+#warning from_c2 doesn't work! load of a c2 converted doesn't work (even if c2 is correct O.o)

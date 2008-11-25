@@ -2,6 +2,7 @@
 """Collection of random useful stuff."""
 import math
 import numpy
+import networkx
 from trustlet.TrustMetric import *
 from trustlet.trustmetrics import *
 from trustlet.Dataset.Network import *
@@ -995,7 +996,8 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
     If human=True it will save another file in plain text for human beings.
     DEPRECATED: You can set *time* (integer, in seconds) to indicate the
     time of computation.
-    If path ends with '.c2' data will save in the new format (less files).
+    If path ends with '.c2' (cache version 2) 
+    data will save in the new format (less files).
     human is not suported in the new format.
     """
 
@@ -1397,7 +1399,8 @@ def toNetwork( data , key, net=None ):
     ANetwork.add( KaitiakiNetwork )
     ANetwork.add( SqueakfoundationNetwork )
     ANetwork.add( Robots_netNetwork )
-    
+    ANetwork.add( networkx.xdigraph.XDiGraph )
+
     rname = re.compile( '[^"]+' ) #erase "
 
     if not (type(data) is tuple and type(data[0]) is list and type(data[1]) is list and type(data[1][0]) is tuple):
