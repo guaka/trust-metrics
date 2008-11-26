@@ -323,7 +323,7 @@ class KaitiakiNetwork(SqueakfoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self, download=False, date = None, base_path = None,prefix=None):
+    def __init__(self, date = None, download=False, base_path = None,prefix=None):
         AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date, base_path = base_path,prefix=prefix )
 
 

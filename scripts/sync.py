@@ -18,8 +18,6 @@ svn hidden directory: <basepath>/.datasets
 sync creates ~/datasets and ~/.datasets links
 
 sync.py [basepath] [other options]
-  or
-sync rm path [other options]
 
  - path can be a dir or a file
 
@@ -42,8 +40,8 @@ from trustlet.helpers import merge_cache,mkpath,md5file,relative_path
 HOME = os.environ['HOME']
 HOSTNAME = gethostname()
 CURDIR = os.getcwd()
-HIDDENDIR = '.datasets'
-DIR = 'datasets'
+HIDDENDIR = '.shared_datasets'
+DIR = 'shared_datasets'
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"'
 SVNUP = 'svn up --non-interactive --username anybody --password a'
 SVNCI = 'svn ci --non-interactive --username anybody --password a -m "automatic commit by %s (sync.py)%s"' % (HOSTNAME,'%s')
@@ -112,7 +110,8 @@ def main():
     tstampup = 0
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
-        shutil.rmtree(hiddenpath)
+        if path.exists(hiddenpath):
+            shutil.rmtree(hiddenpath)
         assert not os.system(SVNCO % hiddenpath)
     elif not '--no-update' in sys.argv:
         os.chdir(hiddenpath)

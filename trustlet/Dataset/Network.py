@@ -114,6 +114,39 @@ class Network(XDiGraph):
             self.paste_graph( trustlet.helpers.toNetwork( pydataset, key_dictionary ) ) #copy the graph loaded in self
             
         return True
+
+    def get_edge_value(self):
+        '''
+        tell to get_edge() to return a value
+        '''
+        #assert not hasattr(G,'get_edge_orig'),'This have to no exists'
+        assert hasattr(G,'level_map'),'I need level_map!'
+
+        def get_edge(self,u,v=None):
+            d = G.get_edge_orig(u,v)
+
+            if 'color' in d:
+                k = 'color'
+            elif 'level' in d:
+                k = 'level'
+            else:
+                assert 0,'no key found'
+            return G.level_map[d[k]]
+
+
+        self.get_edge_orig = self.get_edge
+        self.get_edge = get_edge
+
+    def get_edge_dict(self):
+        '''
+        tell to get_edge() to return a dictionary
+        '''
+        
+        if hasattr(self,'get_edge_orig'):
+            self.get_edge = self.get_edge_orig
+            del self.get_edge_orig
+        else:
+            assert 0,'You called me twice'
   
     
     def _name_lowered(self):
@@ -150,7 +183,23 @@ class Network(XDiGraph):
         '''
         save memory
         '''
-        self.add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
+        self.add_edge_orig = self.add_edge
+
+        self.add_edge = self.add_edge_savememory
+
+
+    def add_edge_savememory(self,u,v=None,e=None):
+        '''
+        don't call this directly
+        '''
+
+        assert hasattr(self,'add_edge_orig')
+
+        if not v:
+            u,v,e = u
+
+        self.add_edge_orig(u,v,trustlet.helpers.pool(e))
+
 
     def connected_components(self):
         G = self
@@ -351,7 +400,7 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,savememory = False,prefix=None):
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,savememory = True,prefix=None):
         Network.__init__(self, base_path=base_path,savememory=savememory,prefix=prefix)
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True

@@ -15,6 +15,7 @@ from TrustMetric import *
 import os
 import math
 from random import random
+from bz2 import BZ2File
 import time
 
 from networkx import XDiGraph
@@ -50,8 +51,7 @@ class CalcGraph(Network):
             #not necessary
             #if hasattr(TM,"noneToValue") and TM.noneToValue:
             #    self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
-            if not os.path.exists(self.path):
-                mkpath(self.path)
+            mkpath(self.path)
             
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + '.dot')
@@ -71,7 +71,7 @@ class CalcGraph(Network):
                 
             else:
                 graph = self._generate()
-                self._write_pred_graph_dot(graph)        
+                self._write_pred_graph_dot(graph)
                 
             self._set_arrays()
             self._prepare()
@@ -121,7 +121,7 @@ class CalcGraph(Network):
         """Return numpy array of pred (default) or orig values."""
         def mapper(edge):
             val = edge[2][which_one]
-            return ( (val == 'None') or (val == 0.0) ) and UNDEFINED or float(val)
+            return ( val == 'None' or val == 0.0 ) and UNDEFINED or float(val)
         return self._edge_array(mapper)
 
     def _write_pred_graph_dot(self, pred_graph):
@@ -137,8 +137,6 @@ class CalcGraph(Network):
         write_dot(pred_graph, name)
 
         try:
-            from bz2 import BZ2File
-        
             BZ2File( self.filepath+'.bz2' , 'w' ).write( file( name ).read() )
         except:
             os.system( 'bzip2 -z "'+name+'" -c > "'+self.filepath+'.bz2"' )

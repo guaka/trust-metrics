@@ -14,6 +14,14 @@ import shutil
 import os.path as path
 from socket import gethostname
 
+try:
+    from sync import HIDDENDIR,DIR
+except ImportError:
+    HIDDENDIR = '.shared_datasets'
+    DIR = 'shared_datasets'
+    print 'Warning: sync.py not found'
+    print 'Datasets dir:',DIR
+
 HOSTNAME = gethostname()
 SVNRM = 'svn rm "%s"'
 SVNCI = 'svn ci --username anybody --password a -m "auomatic commit by %s (syncrm.py)"' % HOSTNAME
@@ -29,8 +37,8 @@ def main(args):
     for p in args:
         p = path.realpath(p)
 
-        if not p.startswith(path.join(HOME,'datasets')):
-            print 'Path to remove have to be in ~/datasets dir'
+        if not p.startswith(path.join(HOME,DIR)):
+            print 'Path to remove have to be in %s dir' % path.join(HOME,DIR)
             print '(%s)'%p
             return
 
@@ -43,9 +51,9 @@ def main(args):
             continue
 
         # path to hidden path
-        ps.append(p.replace(path.join(HOME,'datasets'),path.join(HOME,'.datasets')))
+        ps.append(p.replace(path.join(HOME,DIR),path.join(HOME,HIDDENDIR)))
 
-    os.chdir(path.join(HOME,'.datasets'))
+    os.chdir(path.join(HOME,HIDDENDIR))
     for p in ps:
         assert not os.system(SVNRM % p),SVNRM % p
     assert not os.system(SVNCI)

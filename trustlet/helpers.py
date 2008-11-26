@@ -1105,13 +1105,13 @@ def safe_merge(path):
     if not path:
         path = os.curdir
 
-    def f(x):
-        #      get name.                   get pid.c2
-        return x.startswith(name[:-2]) and repid.match(x[len(name)-2:])
+    #             get name.                   get pid.c2
+    f = lambda x: x.startswith(name[:-2]) and repid.match(x[len(name)-2:])
 
     files = filter(f,os.listdir(path))
 
     for file in files:
+        print 'DEBUG',file
         file = os.path.join(path,file)
         merge_cache(file,fullpath,ignoreerrors=True)
         os.remove(file)
