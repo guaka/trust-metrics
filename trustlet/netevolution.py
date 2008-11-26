@@ -70,7 +70,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         return None
 
     if range:
-        assert isdate(range[0]) and  isdate(range[1]) and (len(range)<3 or type(range[2]) == int),range
+        assert isdate(range[0]) and  isdate(range[1]) and (len(range)<3 or type(range[2]) is int),range
         #dates = [x for x in dates if x>=range[0] and x<=range[1]]
         new = []
         prec = '1970-01-01'
@@ -100,6 +100,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         #try to find the functions cached
         for i in xrange(len(functions)):
             if functions[i].__name__=='<lambda>':
+                print 'warning: only a lambda function is correctly managed'
                 calcfunctions.append(functions[i])
             else:
                 cachekey = {'function':functions[i].__name__,'date':date}
@@ -166,7 +167,9 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 K = Networkclass(date=date,prefix='_')
                 #try with _ if there isn't in normal path
                 #(because sync does not upload folder with _ prefix)
-                
+            
+            print 'K is a %s' % K.__class__.__name__
+    
             if not K:
                 if debug:
                     deb = file( debug, 'a' )
@@ -505,31 +508,13 @@ al(lambda G,d:avg(networkx.betweenness_centrality(G,normalized=True,weighted_edg
 fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
 
 def eval(G,d):
-    '''
-    doesn't work :(
-    '''
-    
-    assert not hasattr(G,'get_edge_orig'),'This have to no exists'
+    #assert not hasattr(G,'get_edge_orig'),'This have to no exists'
     assert hasattr(G,'level_map'),'I need level_map!'
 
-    def get_edge(u,v=None):
-        d = G.get_edge_orig(u,v)
-
-        if 'color' in d:
-            k = 'color'
-        elif 'level' in d:
-            k = 'level'
-        else:
-            assert 0,'no key found'
-        return G.level_map[d[k]]
-
-    G.get_edge_orig = G.get_edge
-    G.get_edge = get_edge
-
+    print hasattr(G,'get_edge_value'),hasattr(KaitiakiNetwork,'get_edge_value')
+    G.get_edge_value()
     ret = avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values())
-
-    G.get_edge = G.get_edge_orig
-    del G.get_edge_orig
+    G.get_edge_dict()
     return ret
 
 al(eval,plot_generic)

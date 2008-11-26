@@ -48,6 +48,13 @@ import os
 import re
 import datetime
 
+_generic_map = {
+    'violet': 1.0, 'Master': 1.0,
+    'blue': 0.8,   'Journeyer': 0.8,
+    'green': 0.6,  'Apprentice': 0.6,
+    'gray': 0.4,   'Observer': 0.4,
+    '' : 0.0,
+}
 
 _color_map = {
     'violet': 1.0, #master
@@ -117,7 +124,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
             self.key_on_edge = 'level'
            #weights = _obs_app_jour_mas_map
 
-        self.level_map = weights #level_map deprecated
+        self.level_map = weights #level_map deprecated (really?)
         trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix)
 
         self.path = os.path.join(self.path, date)

@@ -115,27 +115,34 @@ class Network(XDiGraph):
             
         return True
 
+    def get_edge_2(self,u,v=None):
+        '''
+        Don't call this directly (use get_edge_value)
+        '''
+        d = self.get_edge_orig(u,v)
+        print d
+        if 'color' in d:
+            k = 'color'
+        elif 'level' in d:
+            k = 'level'
+        else:
+            assert 0,'no key found'
+            
+        if hasattr(self,'level_map') and self.level_map:
+            return self.level_map[d[k]]
+        else:
+            return d[k]
+
+
     def get_edge_value(self):
         '''
         tell to get_edge() to return a value
         '''
-        #assert not hasattr(G,'get_edge_orig'),'This have to no exists'
-        assert hasattr(G,'level_map'),'I need level_map!'
-
-        def get_edge(self,u,v=None):
-            d = G.get_edge_orig(u,v)
-
-            if 'color' in d:
-                k = 'color'
-            elif 'level' in d:
-                k = 'level'
-            else:
-                assert 0,'no key found'
-            return G.level_map[d[k]]
-
+        #assert not hasattr(self,'get_edge_orig'),'This have to no exists'
+        #assert hasattr(self,'level_map') and self.level_map,'I need level_map!'
 
         self.get_edge_orig = self.get_edge
-        self.get_edge = get_edge
+        self.get_edge = self.get_edge_2
 
     def get_edge_dict(self):
         '''
@@ -407,7 +414,9 @@ class WeightedNetwork(Network):
         self._weights = weights
         self._weights_list = None
         self._weights_dictionary = None
-        self.level_map = None
+        #self.level_map = None #this *erase* leve_map
+        if not hasattr(self,'level_map'):
+            self.level_map = {}
 
     def trust_on_edge(self, edge):
         """
