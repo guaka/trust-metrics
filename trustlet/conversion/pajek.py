@@ -16,6 +16,10 @@ def to_c2( pj, c2, key ):
        (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
         and {'network':'Wiki','lang':'it','date':'2000-01-01'} for wiki network)
     """
+    if 'lang' in key:
+        print "Wikinetwork not supported yet."
+        return False
+
     try:
         w = read_pajek( pj )
     except:
@@ -30,7 +34,7 @@ def to_c2( pj, c2, key ):
 
     return trustlet.helpers.save(key,w,c2)
 
-def from_c2( pj, c2, key, name=None ):
+def from_c2( pj, c2, key, name=None, wikiHistory=True ):
     """
     parse a c2 with key and save a pajek file
 
@@ -38,32 +42,60 @@ def from_c2( pj, c2, key, name=None ):
     key: dictionary in this form:
     {'network':'name','date':date}
     if 'network' is has value 'Wiki' (that mean that you want to load a wikinetwork)
-    the key must have another value 'lang':'it/fur/la/de.....'
+    the key must have another value 'lang':'it/fur/la/de.....', and if you want convert 'current' wiki
+    you have to set wikiHistory parameter to False. This parameter is ignored if the network is not wiki.
     that specify the language of the network.
     Warning! the value of the key 'network' could not be 'AdvogatoNetwork' it must be 'Advogato' only
     return True
     """
     
-    x = trustlet.helpers.load(key,c2,False)
-    
-    if not x:
-        print "Invalid key"
+    if 'date' not in key:
+        print "'date' not present in key!"
         return False
 
-    #if c2 contains a list of tuple
     edgekey = trustlet.conv.keyOnEdge(key)
+    
     if not edgekey:
         print "invalid key"
         return False
 
-    w = trustlet.helpers.toNetwork( x, edgekey )
-    
-    if not w or 'date' not in key:
+    if "lang" in key:
+        if wikiHistory:
+            x = trustlet.Dataset.Network.WikiNetwork( date=key['date'], lang=key['lang'] )
+        else:
+            x = trustlet.Dataset.Network.WikiNetwork( date=key['date'], lang=key['lang'], current=True )
+
+        wiki = True
+    else:
+        wiki = False
+        
+        if 'network' in key:
+            if key['network'] == 'Advogato':
+                w = trustlet.Dataset.Advogato.AdvogatoNetwork( date=key['date'] )
+            elif key['network'] == 'Kaitiaki':
+                w = trustlet.Dataset.Advogato.KaitiakiNetwork( date=key['date'] )
+            elif key['network'] == 'Squeakfoundation':
+                w = trustlet.Dataset.Advogato.SqueakfoundationNetwork( date=key['date'] )
+            elif key['network'] == 'Robots_net':
+                w = trustlet.Dataset.Advogato.Robots_netNetwork( date=key['date'] )
+            else:
+                x = trustlet.helpers.load(key,c2,False)
+                if not x:
+                    print "Invalid key"
+                    return False
+                
+                w = trustlet.helpers.toNetwork( x, edgekey )
+        
+        else:
+            print "'network' not present in key!"
+            return False
+
+    if not w: #unnecessary control if wiki
         print "Incomplete entry in key"
         return False
 
     if not w.name:
-        if hasattr(w,"lang"):
+        if wiki:
             #then this is a wiki-like network
             w.name = 'wiki_'+key['lang']+'_'+key['date']
         else:
@@ -73,15 +105,34 @@ def from_c2( pj, c2, key, name=None ):
             w.name = name
 
     #now you must add 'value' key on edge, and set it to level_map['value_on_edge'] (useful for pajek?)
-    if hasattr( w, "level_map" ):
-        for edge in w.edges_iter():
+    if hasattr( w, "level_map" ) and (w.level_map != None):
+        for edge in w.edges(): #I can't use edges_iter because I modify the edge during loop
             w.delete_edge( edge[0], edge[1] )
-            w.add_edge( edge[0], edge[1], {'value':w.level_map[edge[2].values()[0]],edgekey:edge[2].values()[0]} )
+            
+            if (edge[0].find('\xb0') != -1) or (edge[1].find('\xb0') != -1):
+                print map( lambda x: ((ord(x)<127) and x or '?' ) , edge[0]  )
+                print map( lambda x: ((ord(x)<127) and x or '?' ) , edge[1]  )
 
+            edge0 = str( ''.join( map( lambda x: ((ord(x)<127) and x or '?' ) , edge[0]  ) ) ) #avoid Unicode encode Error
+            edge1 = str( ''.join( map( lambda x: ((ord(x)<127) and x or '?' ) , edge[1] ) ) )
 
+            if wiki:
+                keyvalue = 'rescaled'
+            else:
+                keyvalue = 'value'
+            #                              keyvalue is a numeric value (useful for pajek)  edgekey is the real value on edge in network (can be a string)
+            w.add_edge( edge0, edge1, {keyvalue:w.level_map[edge[2].values()[0]],edgekey:edge[2].values()[0]} )
+            
     try:
         write_pajek( w, pj )
+    except IOError:
+        print "Error! path ",pj,"could not exists! check it."
+        return False
+    except UnicodeEncodeError:
+        print "Decoding to utf-8 failed!"
+        return False
     except:
+        print "Error while trying to write network! exiting"
         return False
 
     return True
