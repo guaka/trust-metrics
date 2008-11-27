@@ -532,25 +532,7 @@ class WeightedNetwork(Network):
             self.get_edge = self.get_edge_orig
             del self.get_edge_orig
         #else:
-        #    assert 0,'You called me twice'
-  
-
-
-
-class MovieLensNetwork(WeightedNetwork):
-    """
-    MovieLens dataset network
-    """
-    def __init__(self, base_path = None):
-        WeightedNetwork.__init__(self, base_path = base_path)
-        
-        try:
-            #print os.path.join(self.path,"graph.dot")
-            self._read_dot( os.path.join(self.path,"graph.dot") )
-        except IOError:
-            raise IOError("There aren't a dot file on this path:\n "+
-                          self.path+"\nplease specify another path or create dot file with movielens.py" )
-        
+        #    assert 0,'You called me twice'        
 
 class WikiNetwork(WeightedNetwork):
     """
