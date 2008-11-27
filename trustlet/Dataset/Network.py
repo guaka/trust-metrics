@@ -114,47 +114,6 @@ class Network(XDiGraph):
             self.paste_graph( trustlet.helpers.toNetwork( pydataset, key_dictionary ) ) #copy the graph loaded in self
             
         return True
-
-    def get_edge_2(self,u,v=None):
-        '''
-        Don't call this directly (use get_edge_value)
-        '''
-        d = self.get_edge_orig(u,v)
-        print d
-        if 'color' in d:
-            k = 'color'
-        elif 'level' in d:
-            k = 'level'
-        else:
-            assert 0,'no key found'
-            
-        if hasattr(self,'level_map') and self.level_map:
-            return self.level_map[d[k]]
-        else:
-            return d[k]
-
-
-    def get_edge_value(self):
-        '''
-        tell to get_edge() to return a value
-        '''
-        #assert not hasattr(self,'get_edge_orig'),'This have to no exists'
-        #assert hasattr(self,'level_map') and self.level_map,'I need level_map!'
-
-        self.get_edge_orig = self.get_edge
-        self.get_edge = self.get_edge_2
-
-    def get_edge_dict(self):
-        '''
-        tell to get_edge() to return a dictionary
-        '''
-        
-        if hasattr(self,'get_edge_orig'):
-            self.get_edge = self.get_edge_orig
-            del self.get_edge_orig
-        else:
-            assert 0,'You called me twice'
-  
     
     def _name_lowered(self):
         """Helper for url."""
@@ -534,6 +493,47 @@ class WeightedNetwork(Network):
             return table
         else:
             raise Exception( "Not implemented" )
+
+
+    def __get_edge_value(self,u,v=None):
+        '''
+        Don't call this directly (use get_edge_value)
+        '''
+        d = self.get_edge_orig(u,v)
+        
+        if 'color' in d:
+            k = 'color'
+        elif 'level' in d:
+            k = 'level'
+        else:
+            assert 0,'no key found'
+            
+        if hasattr(self,'level_map') and self.level_map:
+            return self.level_map[d[k]]
+        else:
+            return d[k]
+
+    def get_edge_value(self):
+        '''
+        tell to get_edge() to return a value
+        '''
+        #assert not hasattr(self,'get_edge_orig'),'This have to no exists'
+        #assert hasattr(self,'level_map') and self.level_map,'I need level_map!'
+
+        self.get_edge_orig = self.get_edge
+        self.get_edge = self.__get_edge_value
+
+    def get_edge_dict(self):
+        '''
+        tell to get_edge() to return a dictionary
+        '''
+        
+        if hasattr(self,'get_edge_orig'):
+            self.get_edge = self.get_edge_orig
+            del self.get_edge_orig
+        #else:
+        #    assert 0,'You called me twice'
+  
 
 
 

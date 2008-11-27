@@ -16,7 +16,7 @@ re_alphabetic = re.compile("[A-Za-z]+")
 
 # functions list
 fl = []
-al = lambda f,pf: fl.append((f,pf))
+al = lambda f,pf: fl.append((f,pf)) #function, print function
 
 def evolutionmap(load_path,functions,range=None,debug=None):
     '''
@@ -511,7 +511,7 @@ def eval(G,d):
     #assert not hasattr(G,'get_edge_orig'),'This have to no exists'
     assert hasattr(G,'level_map'),'I need level_map!'
 
-    print hasattr(G,'get_edge_value'),hasattr(KaitiakiNetwork,'get_edge_value')
+    print '_name_lowered' in dir(G),'get_edge_value' in dir(G)
     G.get_edge_value()
     ret = avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values())
     G.get_edge_dict()
