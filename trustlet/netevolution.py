@@ -27,12 +27,12 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     load_path = path in wich the dates of the network are stored
                 #eg. /home/ciropom/datasets/AdvogatoNetwork
                 If loadPath contains a prefix (if you have set
-                prefix parameter in network) ex. /home/..../___AdvogatoNetwork
+                prefix parameter in network) e.g. /home/..../___AdvogatoNetwork
                 this prefix can be handle, but it must be only a
                 non-alphabetical character. All prefix in range
                 A-Z a-z could not be handle.
     functions = list of functions to apply to each dataset
-                #eg. [trustvariance,trustaverage...]
+                #e.g. [trustvariance,trustaverage...]
     range = tuple with at first the initial date, and at end the
                 final date #ex. ('2000-01-01','2008-01-01')
     
@@ -99,19 +99,17 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
         #try to find the functions cached
         for i in xrange(len(functions)):
-            if functions[i].__name__=='<lambda>':
-                print 'warning: only a lambda function is correctly managed'
-                calcfunctions.append(functions[i])
+            assert functions[i].__name__!='<lambda>','Lambda function aren\'t supported'
+            
+            cachekey = {'function':functions[i].__name__,'date':date}
+            cache = load(cachekey,path.join(lpath,cachepath))
+            cache = None # debug
+            if cache:
+                resdict[functions[i].__name__] = cache
+                #do not calculate for functions cached
             else:
-                cachekey = {'function':functions[i].__name__,'date':date}
-                cache = load(cachekey,path.join(lpath,cachepath))
-                cache = None # debug
-                if cache:
-                    resdict[functions[i].__name__] = cache
-                    #do not calculate for functions cached
-                else:
-                    calcfunctions.append(functions[i])
-        
+                calcfunctions.append(functions[i])
+
         if not calcfunctions:
             #if is empty
             return resdict
