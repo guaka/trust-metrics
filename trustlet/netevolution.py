@@ -222,6 +222,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
             
             res = function(K,date)
+            
+            assert type(res) is tuple,'name: %s res %s' % (function.__name__,str(res))
             try: #2000-05-25 bug!
                 pass
                 #res = function(K,date)
@@ -459,7 +461,7 @@ def plot_generic(data,data_path='.',title='',comment=''):
 
     example:
 
-    >>> plot_genericevaluation(
+    >>> plot_generic(
             genericevaluation('path/AdvogatoNetwork',networkx.average_clustering ,None),
             '.', title='Average clustering'
             )
@@ -502,7 +504,7 @@ fl[-1][0].__name__='radius-largest-connected-component'
 al(lambda G,d:(d,networkx.density(G)),plot_generic)
 fl[-1][0].__name__='density'
 
-al(lambda G,d:avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values()),plot_generic)
+al(lambda G,d:(d,avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values())),plot_generic)
 fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
 
 def generate_eval(function):
@@ -511,13 +513,13 @@ def generate_eval(function):
     with get_edge method modified:
     it'll return values instead dictionaries on edges.
     '''
-    def eval(G,d):
+    def eval(G,date):
         assert hasattr(G,'level_map'),'I need level_map!'
 
         G.get_edge_value()
         ret = function(G)
         G.get_edge_dict()
-        return (d,ret)
+        return (date,ret)
 
     return eval
 
@@ -539,7 +541,7 @@ fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
 al(eval,plot_generic)
 fl[-1][0].__name__ = 'closeness_centrality-no-weighted_edges'
 
-eval = generate_eval(lambda G:networkx.closeness_centrality(G,weighted_edges=True).values())
+eval = generate_eval(lambda G:avg(networkx.closeness_centrality(G,weighted_edges=True).values()))
 
 al(eval,plot_generic)
 fl[-1][0].__name__ = 'closeness_centrality-yes-weighted_edges'
@@ -611,67 +613,67 @@ if __name__ == "__main__":
     plot_meandegree( data[4], savepath )
     plot_level_distribution( data[6], savepath )
 
-    plot_genericevaluation(
+    plot_generic(
         data[7],
         savepath, title='diameter',
         comment='eval = nx.diameter(networkx.connected_component_subgraphs'
         '(G.to_undirected())[0])'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[8],
         savepath, title='radius',
         comment='eval = nx.radius(networkx.connected_component_subgraphs'
                 '(G.to_undirected())[0])'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[9],
         savepath, title='density', comment='Function: nx.density'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[10],
         savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=False).values())'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[11],
         savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=True).values())'
         ) 
 
-    plot_genericevaluation(
+    plot_generic(
         data[12],
         savepath, title='betweenness_centrality no-normalized no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                '(G,normalized=False,weighted_edges=False).values())'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[13],
         savepath, title='closeness_centrality no-weighted_edges',
         comment='eval = avg(nx.closeness_centrality'
                 '(G,weighted_edges=False).values())'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[14],
         savepath, title='newman betweenness centrality',
         comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
         )
 
-    plot_genericevaluation(
+    plot_generic(
         data[15],
         savepath, title='number_connected_components',
         comment='eval = nx.number_connected_components(G.to_undirected())'
         )
 
     
-    plot_genericevaluation(
+    plot_generic(
         data[16],
         savepath, title='avg of standard deviation in received trust (in degree=20)',
         comment='''\
