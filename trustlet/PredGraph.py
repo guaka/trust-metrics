@@ -15,7 +15,6 @@ from TrustMetric import *
 import os
 import math
 from random import random
-from bz2 import BZ2File
 import time
 
 from networkx import XDiGraph
@@ -137,6 +136,7 @@ class CalcGraph(Network):
         write_dot(pred_graph, name)
 
         try:
+            from bz2 import BZ2File
             BZ2File( self.filepath+'.bz2' , 'w' ).write( file( name ).read() )
         except:
             os.system( 'bzip2 -z "'+name+'" -c > "'+self.filepath+'.bz2"' )
