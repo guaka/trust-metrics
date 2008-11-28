@@ -24,7 +24,7 @@ def to_c2( dot, c2, key ):
     w = trustlet.Network.WeightedNetwork()
     
     if trustlet.conv.keyOnEdge(key) != 'value':
-        w.level_map = trustlet.Dataset.Advogato._color_map #contains all the possible value except 'value' that is used only in wikinetwork
+        w.level_map = trustlet.Dataset.Advogato._generic_map #contains all the possible value except 'value' that is used only in wikinetwork
         
 
     f = file( dot )
@@ -70,7 +70,7 @@ def to_c2( dot, c2, key ):
         else:
             print "Warning! output may be checked"
 
-    return trustlet.helpers.save(key,w,c2)
+    return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
 
 def from_c2( dot, c2, key ):
     """

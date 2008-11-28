@@ -1425,6 +1425,32 @@ def toNetwork( data , key, net=None ):
 
     return w
 
+def toPynetwork(N):
+    '''
+    Given a Network return c2 network format (i.e. (nodes,edge) )
+    '''
+    nodes = set(N.nodes())
+    edges = []
+
+    for e in N.edges_iter():
+        if e[0] in nodes:
+            nodes.remove(e[0])
+        if e[1] in nodes:
+            nodes.remove(e[1])
+
+        if 'value' in e[2]:
+            v = 'value'
+        elif 'color' in e[2]:
+            v = 'color'
+        elif 'level' in e[2]:
+            v = 'level'
+        else:
+            assert 0,'I don\'t know this Network'
+
+        edges.append( (e[0],e[1],e[2][v]) )
+
+    return (list(nodes),edges)
+
 def md5file(filename):
     f = file(filename)
     a = md5.new()
