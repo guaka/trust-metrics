@@ -1111,7 +1111,6 @@ def safe_merge(path):
     files = filter(f,os.listdir(path))
 
     for file in files:
-        print 'DEBUG',file
         file = os.path.join(path,file)
         merge_cache(file,fullpath,ignoreerrors=True)
         os.remove(file)
