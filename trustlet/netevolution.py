@@ -505,15 +505,23 @@ fl[-1][0].__name__='density'
 al(lambda G,d:avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values()),plot_generic)
 fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
 
-def eval(G,d):
-    #assert not hasattr(G,'get_edge_orig'),'This have to no exists'
-    assert hasattr(G,'level_map'),'I need level_map!'
+def generate_eval(function):
+    '''
+    Return a function that calls function(Network)
+    with get_edge method modified:
+    it'll return values instead dictionaries on edges.
+    '''
+    def eval(G,d):
+        assert hasattr(G,'level_map'),'I need level_map!'
 
-    print '_name_lowered' in dir(G),'get_edge_value' in dir(G)
-    G.get_edge_value()
-    ret = avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values())
-    G.get_edge_dict()
-    return ret
+        G.get_edge_value()
+        ret = function(G)
+        G.get_edge_dict()
+        return (d,ret)
+
+    return eval
+
+eval = generate_eval(lambda G:avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values()))
 
 al(eval,plot_generic)
 fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
@@ -523,14 +531,17 @@ al(lambda G,d: (d,avg(
     )),plot_generic)
 fl[-1][0].__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
 
-al(lambda G,d: (d,avg(
-    networkx.closeness_centrality(G,weighted_edges=False).values()
-    )),plot_generic)
+eval = generate_eval(lambda G:avg(networkx.closeness_centrality(G,weighted_edges=False).values()))
+
+al(eval,plot_generic)
+fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
+
+al(eval,plot_generic)
 fl[-1][0].__name__ = 'closeness_centrality-no-weighted_edges'
 
-al(lambda G,d: (d,avg(
-    networkx.closeness_centrality(G,weighted_edges=True).values()
-    )),plot_generic)
+eval = generate_eval(lambda G:networkx.closeness_centrality(G,weighted_edges=True).values())
+
+al(eval,plot_generic)
 fl[-1][0].__name__ = 'closeness_centrality-yes-weighted_edges'
 
 al(lambda G,d: (d,avg(
