@@ -744,16 +744,20 @@ def tempnam():
 def getnp():
     """Return None or the number of processors"""
     try:
-        return len([None for x in file('/proc/cpuinfo').readlines() if x.startswith('processor')])
+        return len([None for x in file('/proc/cpuinfo') if x.startswith('processor')])
     except IOError:
         return None
 
-def splittask(function,input,np=None,verbose=True):
+def splittask(function,input,np=None,showperc=True,notasksout=False):
     """
     create <np> processes with <input>[i] data,
     the result will return in a list.
 
     splittask(function,input) is equivalent to [function(x) for x in input]
+
+    Params:
+      if showperc it will print percentage of tasks done.
+      if notasksout stdout of son will suppressed.
     """
 
     if not np:
@@ -775,11 +779,22 @@ def splittask(function,input,np=None,verbose=True):
         if os.fork()==0:
             #son
             res = []
-            if verbose:
+            if showperc:
                 perc = Progress(len(pinput),1,'Percentage son # %d:'%os.getpid())
+            if notasksout:
+                stdout = sys.stdout
+                devnull = file('/dev/null','w')
+
             for i,data in enumerate(pinput):
+                if notasksout:
+                    #remove standard output
+                    sys.stdout = devnull
+                #exec task
                 res.append(function(data))
-                if verbose:
+                if notasksout:
+                    sys.stdout = stdout
+
+                if showperc:
                     perc(i+1)
             os.write(write,marshal.dumps(res))
             os.close(write)
