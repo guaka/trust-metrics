@@ -103,11 +103,13 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             
             cachekey = {'function':functions[i].__name__,'date':date}
             cache = load(cachekey,path.join(lpath,cachepath))
-            cache = None # debug
+            #cache = None # debug
             if cache:
+                #sys.stderr.write('cache hit\n')
                 resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
             else:
+                #sys.stderr.write('cache fault\n')
                 calcfunctions.append(functions[i])
 
         if not calcfunctions:
@@ -224,7 +226,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             res = function(K,date)
             
             assert type(res) is tuple,'name: %s res %s' % (function.__name__,str(res))
-            try: #2000-05-25 bug!
+            try:
                 pass
                 #res = function(K,date)
             except Exception,e:

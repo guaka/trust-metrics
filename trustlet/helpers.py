@@ -1164,9 +1164,6 @@ def load(key,path='.',fault=None):
             if cache[path].has_key(hashable(key)):
                 #version 3
                 return cache[path][hashable(key)]
-            else:
-                return fault
-        
         try:
             d = pickle.load(GzipFile(path))
         except:
@@ -1475,6 +1472,8 @@ def md5file(filename):
     a.update(f.read())
     f.close()
     return a.digest()
+
+eprint = lambda x: sys.stderr.write(str(x)+'\n')
 
 if __name__=="__main__":
     from trustlet import *
