@@ -748,7 +748,7 @@ def getnp():
     except IOError:
         return None
 
-def splittask(function,input,np=None):
+def splittask(function,input,np=None,verbose=True):
     """
     create <np> processes with <input>[i] data,
     the result will return in a list.
@@ -775,8 +775,12 @@ def splittask(function,input,np=None):
         if os.fork()==0:
             #son
             res = []
-            for data in pinput:
+            if verbose:
+                perc = Progress(len(pinput),1,'Percentage son # %d:'%os.getpid())
+            for i,data in enumerate(pinput):
                 res.append(function(data))
+                if verbose:
+                    perc(i+1)
             os.write(write,marshal.dumps(res))
             os.close(write)
             #sys.exit() # ipython trap this -_-

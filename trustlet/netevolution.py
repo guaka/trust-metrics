@@ -239,7 +239,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 continue
 
             if function.__name__!='<lambda>':
-                if not save({'function':function.__name__,'date':date},res,path.join(lpath,cachepath)):
+                if not safe_save({'function':function.__name__,'date':date},res,path.join(lpath,cachepath)):
                     print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
             resdict[function.__name__] = res
@@ -248,6 +248,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     #map list of result for each dataset in list of result for each function
     data_ordered = splittask(task,dates)
+    safe_merge(path.join(lpath,cachepath))
     #data_ordered = [task(x) for x in dates]
     nd = len( dates )
     nf = len( functions )
