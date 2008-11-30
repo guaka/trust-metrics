@@ -247,6 +247,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
         return resdict
 
     #map list of result for each dataset in list of result for each function
+    safe_merge(path.join(lpath,cachepath))
     data_ordered = splittask(task,dates)
     safe_merge(path.join(lpath,cachepath))
     #data_ordered = [task(x) for x in dates]
