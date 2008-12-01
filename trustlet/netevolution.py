@@ -111,6 +111,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
             else:
+                eprint(str(cache)[:50]) #debug
                 #sys.stderr.write('cache fault\n')
                 calcfunctions.append(functions[i])
 
@@ -476,7 +477,6 @@ def plot_generic(data,data_path='.',title='',comment=''):
     if not data or None in data:
         return None
 
-    print data[0]
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
     if not title:
@@ -589,7 +589,6 @@ if __name__ == "__main__":
     enddate = sys.argv[2] == '-' and '9999-12-31' or sys.argv[2]
     dpath = sys.argv[3]
     savepath = sys.argv[4]
-
     if '-s' in sys.argv[1:-1]:
         i = sys.argv.index('-s')
         step = int(sys.argv[i+1])
