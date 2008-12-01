@@ -104,7 +104,9 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             cachekey = {'function':functions[i].__name__,'date':date}
             cache = load(cachekey,path.join(lpath,cachepath))
             #cache = None # debug
-            if cache:
+            if cache and type(cache) is tuple and isdate(cache[0]):
+                #check on type of data in cache
+
                 #sys.stderr.write('cache hit\n')
                 resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
@@ -288,7 +290,7 @@ def trustaverage( K, d ):
     K = network
     d = date
     """
-    
+
     weight = K.weights_list()
     #try to use some dictionary, because
     #sometimes the key is 'value' and sometimes is 'level'
@@ -474,6 +476,7 @@ def plot_generic(data,data_path='.',title='',comment=''):
     if not data or None in data:
         return None
 
+    print data[0]
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
     if not title:
@@ -610,12 +613,17 @@ if __name__ == "__main__":
     if not data:
         sys.exit(1)
 
-    ta_plot( data[0], savepath )
-    var_plot( data[1], savepath )
-    plot_usersgrown( data[2], savepath )
-    plot_numedges( data[3], savepath )
-    plot_meandegree( data[4], savepath )
-    plot_level_distribution( data[6], savepath )
+    #plot
+    for (function,data_print),d in zip(fl,data):
+        if data_print != plot_generic:
+            data_print(d,savepath)
+
+    #ta_plot( data[0], savepath )
+    #var_plot( data[1], savepath )
+    #plot_usersgrown( data[2], savepath )
+    #plot_numedges( data[3], savepath )
+    #plot_meandegree( data[4], savepath )
+    #plot_level_distribution( data[6], savepath )
 
     plot_generic(
         data[7],
