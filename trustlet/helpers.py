@@ -1131,7 +1131,7 @@ def safe_merge(path):
 
     for file in files:
         file = os.path.join(path,file)
-        merge_cache(file,fullpath,ignoreerrors=True)
+        merge_cache(file,fullpath,ignoreerrors=True,priority=1)
         os.remove(file)
 
 def load(key,path='.',fault=None):
@@ -1205,12 +1205,13 @@ def convert_cache(path1,path2):
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
 
-def merge_cache(path1 , path2 , mpath=None, ignoreerrors=False):
+def merge_cache(path1 , path2 , mpath=None, ignoreerrors=False, priority=2):
     '''
     mpath: new destination file (merged path).
     if mpath is None, *path2* will be used
     if `path1` and `path2` file cache has the same
     key will keep the `path2` value for that key.
+    (To give priority to path1 set priority to 1)
     '''
 
     try:
@@ -1240,7 +1241,11 @@ def merge_cache(path1 , path2 , mpath=None, ignoreerrors=False):
     # Priority: c2
     # if c1 and c2 has the same key will keep the c2
     # value for that key
-    c1.update(c2)
+    if priority==2:
+        c1.update(c2)
+    elif priority==1:
+        c2.update(c1)
+        c1 = c2
 
     if not mpath:
         mpath = path2

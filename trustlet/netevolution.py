@@ -111,7 +111,8 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
             else:
-                eprint(str(cache)[:50]) #debug
+                #eprint(cachekey)
+                #eprint(str(cache)[:50]) #debug
                 #sys.stderr.write('cache fault\n')
                 calcfunctions.append(functions[i])
 
