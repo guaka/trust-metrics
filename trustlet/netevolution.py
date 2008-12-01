@@ -104,7 +104,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             cachekey = {'function':functions[i].__name__,'date':date}
             cache = load(cachekey,path.join(lpath,cachepath))
             #cache = None # debug
-            if cache and type(cache) is tuple and isdate(cache[0]):
+            if cache and type(cache) is tuple and isdate(cache[0]) and cachekey['function']!='number_connected_components':
                 #check on type of data in cache
 
                 #sys.stderr.write('cache hit\n')
@@ -498,21 +498,21 @@ def plot_generic(data,data_path='.',title='',comment=''):
 
 avgcont20 = lambda G,d: (d,avgcontroversiality(G,20))
 avgcont20.__name__ = 'avgcontroversiality-min_in_degree-20'
-al(avgcont20,plot_generic)
+al(avgcont20,plot_generic)#6
 
-al(lambda G,d:(d,networkx.average_clustering(G)),plot_generic)
+al(lambda G,d:(d,networkx.average_clustering(G)),plot_generic)#7
 fl[-1][0].__name__='average_clustering'
 
-al(lambda G,d:(d,networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])),plot_generic)
+al(lambda G,d:(d,networkx.diameter(networkx.connected_component_subgraphs(G.to_undirected())[0])),plot_generic)#8
 fl[-1][0].__name__='diameter-largest-connected-component'
 
-al(lambda G,d:(d,networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])),plot_generic)
+al(lambda G,d:(d,networkx.radius(networkx.connected_component_subgraphs(G.to_undirected())[0])),plot_generic)#9
 fl[-1][0].__name__='radius-largest-connected-component'
 
-al(lambda G,d:(d,networkx.density(G)),plot_generic)
+al(lambda G,d:(d,networkx.density(G)),plot_generic)#10
 fl[-1][0].__name__='density'
 
-al(lambda G,d:(d,avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values())),plot_generic)
+al(lambda G,d:(d,avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=False).values())),plot_generic)#11
 fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-no-weighted_edges'
 
 def generate_eval(function):
@@ -533,34 +533,31 @@ def generate_eval(function):
 
 eval = generate_eval(lambda G:avg(networkx.betweenness_centrality(G,normalized=True,weighted_edges=True).values()))
 
-al(eval,plot_generic)
+al(eval,plot_generic)#12
 fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
 
 al(lambda G,d: (d,avg(
     networkx.betweenness_centrality(G,normalized=False,weighted_edges=False).values()
-    )),plot_generic)
+    )),plot_generic)#13
 fl[-1][0].__name__ = 'betweenness_centrality-no-normalized-no-weighted_edges'
 
 eval = generate_eval(lambda G:avg(networkx.closeness_centrality(G,weighted_edges=False).values()))
 
-al(eval,plot_generic)
-fl[-1][0].__name__ = 'betweenness_centrality-yes-normalized-yes-weighted_edges'
-
-al(eval,plot_generic)
+al(eval,plot_generic)#14
 fl[-1][0].__name__ = 'closeness_centrality-no-weighted_edges'
 
 eval = generate_eval(lambda G:avg(networkx.closeness_centrality(G,weighted_edges=True).values()))
 
-al(eval,plot_generic)
+al(eval,plot_generic)#15
 fl[-1][0].__name__ = 'closeness_centrality-yes-weighted_edges'
 
 al(lambda G,d: (d,avg(
     networkx.newman_betweenness_centrality(G).values()
-    )),plot_generic)
+    )),plot_generic)#16
 fl[-1][0].__name__ = 'newman_betweenness_centrality'
 
 
-al(lambda G,d: (d,networkx.number_connected_components(G.to_undirected())),plot_generic)
+al(lambda G,d: (d,networkx.number_connected_components(G.to_undirected())),plot_generic)#17
 fl[-1][0].__name__ = 'number_connected_components'
 
 if __name__ == "__main__":    
@@ -580,7 +577,7 @@ if __name__ == "__main__":
         print "useful to see the grown of the network in an interval of time"
         print "USAGE: netevolution.py startdate enddate dataset_path save_path [debug_path] [-s step]"
         print "    You can use '-' to skip {start,end}date"
-        print "    step is the min numer of days between a computed network and the next one"
+        print "    step6 is the min numer of days between a computed network and the next one"
         print "OR netevolution.py list"
         print "   Show all function's names"
         sys.exit(1)
@@ -625,68 +622,82 @@ if __name__ == "__main__":
     #plot_meandegree( data[4], savepath )
     #plot_level_distribution( data[6], savepath )
 
+
     plot_generic(
         data[7],
+        savepath, title='adverage clustering',
+        comment='networkx.average_clustering(G)'
+        )
+
+    plot_generic(
+        data[8],
         savepath, title='diameter',
         comment='eval = nx.diameter(networkx.connected_component_subgraphs'
         '(G.to_undirected())[0])'
         )
 
     plot_generic(
-        data[8],
+        data[9],
         savepath, title='radius',
         comment='eval = nx.radius(networkx.connected_component_subgraphs'
                 '(G.to_undirected())[0])'
         )
 
     plot_generic(
-        data[9],
+        data[10],
         savepath, title='density', comment='Function: nx.density'
         )
 
     plot_generic(
-        data[10],
+        data[11],
         savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=False).values())'
         )
 
     plot_generic(
-        data[11],
+        data[12],
         savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=True).values())'
         ) 
 
     plot_generic(
-        data[12],
+        data[13],
         savepath, title='betweenness_centrality no-normalized no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                '(G,normalized=False,weighted_edges=False).values())'
         )
 
     plot_generic(
-        data[13],
+        data[14],
         savepath, title='closeness_centrality no-weighted_edges',
         comment='eval = avg(nx.closeness_centrality'
                 '(G,weighted_edges=False).values())'
         )
 
     plot_generic(
-        data[14],
+        data[15],
+        savepath, title='closeness_centrality yes-weighted_edges',
+        comment='eval = avg(nx.closeness_centrality'
+                '(G,weighted_edges=True).values())'
+        )
+
+    plot_generic(
+        data[16],
         savepath, title='newman betweenness centrality',
         comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
         )
 
     plot_generic(
-        data[15],
+        data[17],
         savepath, title='number_connected_components',
         comment='eval = nx.number_connected_components(G.to_undirected())'
         )
 
     
     plot_generic(
-        data[16],
+        data[6],
         savepath, title='avg of standard deviation in received trust (in degree=20)',
         comment='''\
 cont = [] # controversiality array
