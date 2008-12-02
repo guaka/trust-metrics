@@ -1472,7 +1472,7 @@ def toPynetwork(N):
         elif 'level' in e[2]:
             v = 'level'
         else:
-            assert 0,'I don\'t know this Network'
+            assert 0,'I don\'t know this Network (%s)'%str(e)
 
         edges.append( (e[0],e[1],e[2][v]) )
 
