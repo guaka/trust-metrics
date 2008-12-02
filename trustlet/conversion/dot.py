@@ -94,7 +94,7 @@ def to_c2( dot, c2, key ):
     
     pyn = trustlet.helpers.toPynetwork(w)
 
-    print str(pyn)[:40]
+    print str(pyn)[:40],'...',str(pyn)[-40:]
 
     return trustlet.helpers.save(key,pyn,c2)
 
