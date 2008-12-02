@@ -505,6 +505,8 @@ class WeightedNetwork(Network):
             k = 'color'
         elif 'level' in d:
             k = 'level'
+        elif 'value' in d:
+            k = 'value'
         else:
             assert 0,'no key found '+str(d)
             
