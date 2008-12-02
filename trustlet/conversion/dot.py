@@ -96,6 +96,8 @@ def to_c2( dot, c2, key ):
 
     print str(pyn)[:40]
 
+    exit()
+
     return trustlet.helpers.save(key,pyn,c2)
 
 
