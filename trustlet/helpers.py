@@ -1070,6 +1070,9 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
             gen_key = get_sign
 
         d[gen_key(key)] = data
+        ###
+        debug = file('debug')
+        ###
         pickle.dump(d,GzipFile(path,'w'))
         unlock()
 
@@ -1423,7 +1426,11 @@ def toNetwork( data , key, net=None ):
 
     rname = re.compile( '[^"]+' ) #erase "
 
-    if not (type(data) is tuple and type(data[0]) is list and type(data[1]) is list and type(data[1][0]) is tuple):
+    if not (type(data) is tuple and
+            type(data[0]) is list and
+            type(data[1]) is list and
+            data and
+            type(data[1][0]) is tuple):
         if type(data) in ANetwork:
             return data #if it is just a network i return it simply
         else:
