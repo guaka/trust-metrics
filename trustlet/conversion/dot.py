@@ -5,6 +5,7 @@ and viceversa.
 
 import re
 import trustlet
+from networkx import read_dot
 
 __all__ = ['to_c2','from_c2']
 
