@@ -506,7 +506,7 @@ class WeightedNetwork(Network):
         elif 'level' in d:
             k = 'level'
         else:
-            assert 0,'no key found'
+            assert 0,'no key found '+str(d)
             
         if hasattr(self,'level_map') and self.level_map:
             return self.level_map[d[k]]
