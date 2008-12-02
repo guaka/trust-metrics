@@ -104,7 +104,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
             cachekey = {'function':functions[i].__name__,'date':date}
             cache = load(cachekey,path.join(lpath,cachepath))
             #cache = None # debug
-            if cache and type(cache) is tuple and isdate(cache[0]) and cachekey['function']!='number_connected_components':
+            if cache and type(cache) is tuple and isdate(cache[0]):
                 #check on type of data in cache
 
                 #sys.stderr.write('cache hit\n')
