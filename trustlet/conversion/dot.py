@@ -92,7 +92,11 @@ def to_c2( dot, c2, key ):
 
     print w.edges()[0]
     
-    return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
+    pyn = trustlet.helpers.toPynetwork(w)
+
+    print str(pyn)[:40]
+
+    return trustlet.helpers.save(key,pyn,c2)
 
 
 def from_c2( dot, c2, key ):
