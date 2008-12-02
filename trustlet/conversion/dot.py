@@ -73,7 +73,7 @@ def to_c2_( dot, c2, key ):
     return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
 
 
-def to_c2_( dot, c2, key ):
+def to_c2( dot, c2, key ):
     """
     TEMP
 
