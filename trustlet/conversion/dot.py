@@ -8,7 +8,7 @@ import trustlet
 
 __all__ = ['to_c2','from_c2']
 
-def to_c2( dot, c2, key ):
+def to_c2_( dot, c2, key ):
     """
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
 
@@ -71,6 +71,26 @@ def to_c2( dot, c2, key ):
             print "Warning! output may be checked"
 
     return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
+
+
+def to_c2_( dot, c2, key ):
+    """
+    TEMP
+
+    parse a dot and save a WeightedNetwork in a c2 file with key `key`
+
+    Parameters:
+       dot: path to dot (ex /home/..../graph.dot)
+       c2: path in which save c2 (ex. /home/.../graph.c2)
+       key: key of dictionary in c2 that identify the network
+       (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
+        and {'network':'Wiki','lang':'it','date':'2000-01-01'} for wiki network)
+    """
+    
+    w = read_dot(dot)
+    
+    return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
+
 
 def from_c2( dot, c2, key ):
     """
