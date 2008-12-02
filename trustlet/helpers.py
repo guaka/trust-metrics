@@ -1429,7 +1429,7 @@ def toNetwork( data , key, net=None ):
     if not (type(data) is tuple and
             type(data[0]) is list and
             type(data[1]) is list and
-            data and
+            data[1] and
             type(data[1][0]) is tuple):
         if type(data) in ANetwork:
             return data #if it is just a network i return it simply
