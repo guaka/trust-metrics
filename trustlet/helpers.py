@@ -1020,6 +1020,9 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
     human is not suported in the new format.
     """
 
+    #debug
+    file(path+'.debug.c2','w').write(str(data))
+
     # used by safe_save because it implements this
     if threadsafe:
         def lock():
