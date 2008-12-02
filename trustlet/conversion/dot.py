@@ -89,6 +89,8 @@ def to_c2( dot, c2, key ):
     """
     
     w = read_dot(dot)
+
+    print W.edges()[0]
     
     return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
 
