@@ -1071,7 +1071,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
 
         d[gen_key(key)] = data
         ###
-        debug = file('debug')
+        #debug = file('debug')
         ###
         pickle.dump(d,GzipFile(path,'w'))
         unlock()
