@@ -254,7 +254,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     #map list of result for each dataset in list of result for each function
     safe_merge(path.join(lpath,cachepath))
-    data_ordered = splittask(task,dates,notasksout=True)# debug (np=1)
+    data_ordered = splittask(task,dates,notasksout=False)# debug (np=1)
     safe_merge(path.join(lpath,cachepath))
     nd = len( dates )
     nf = len( functions )
