@@ -623,9 +623,6 @@ if __name__ == "__main__":
     #plot_meandegree( data[4], savepath )
     #plot_level_distribution( data[6], savepath )
 
-    exit()
-
-
     plot_generic(
         data[7],
         savepath, title='adverage clustering',
