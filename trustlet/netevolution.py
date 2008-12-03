@@ -259,7 +259,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
     nd = len( dates )
     nf = len( functions )
 
-    print 'DEBUG',data_ordered
+    #print 'DEBUG',data_ordered
     
     func_ordered = []
     #prepare return value set to empty
