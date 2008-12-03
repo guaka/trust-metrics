@@ -767,6 +767,7 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
 
     result = []
     pipes = []
+    pids = []
 
     if np==1:
         #doesn't create other processes
@@ -776,7 +777,8 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
         read,write = os.pipe()
         pinput = map(lambda x: input[x],xrange(proc,len(input),np))
         #print 'pinput',pinput
-        if os.fork()==0:
+        pid = os.fork()
+        if not pid:
             #son
             res = []
             if showperc:
@@ -803,6 +805,7 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
         else:
             #save pipe
             pipes.append(read)
+            pids.append(pid)
             os.close(write)
 
     #wait responce from sons
@@ -817,6 +820,14 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
     except EOFError:
         print "A son process is dead"
         print "splittask says: it's not my fault!"
+        print "I'm terminating other process ..."
+        for pid in pids:
+            try:
+                os.kill(pid,15) # SIGTERM (SIGKILL = 9)
+            except OSError:
+                # process yet dead
+                pass
+        print "Done."
         exit()
 
     return result
