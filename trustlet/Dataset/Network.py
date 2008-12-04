@@ -498,6 +498,8 @@ class WeightedNetwork(Network):
     def __get_edge_value(self,u,v=None):
         '''
         Don't call this directly (use get_edge_value)
+        It's like get_edge, but return a value instead dict
+        on value
         '''
         d = self.get_edge_orig(u,v)
         

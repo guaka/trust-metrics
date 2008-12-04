@@ -18,7 +18,7 @@ re_alphabetic = re.compile("[A-Za-z]+")
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(load_path,functions,range=None,debug=None):
+def evolutionmap(load_path,functions,range=None,cacheonly=False,debug=None):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -67,7 +67,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
 
     if not dates:
         print "There isn't any network in this path"
-        return None
+        return
 
     if range:
         assert isdate(range[0]) and  isdate(range[1]) and (len(range)<3 or type(range[2]) is int),range
@@ -110,7 +110,7 @@ def evolutionmap(load_path,functions,range=None,debug=None):
                 #sys.stderr.write('cache hit\n')
                 resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
-            else:
+            elif not cacheonly:
                 #eprint(cachekey)
                 #eprint(str(cache)[:50]) #debug
                 #sys.stderr.write('cache fault\n')
@@ -572,13 +572,19 @@ if __name__ == "__main__":
             print '\t%2d'%i,f[0].__name__
         exit()
 
+    if '--cacheonly' in sys.argv:
+        sys.argv.remove('--cacheonly')
+        cacheonly = True
+    else:
+        cacheonly = False
+
     if len(sys.argv) < 5:
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution.py startdate enddate dataset_path save_path [debug_path] [-s step]"
+        print "USAGE: netevolution.py startdate enddate dataset_path save_path [debug_path] [-s step] [--cacheonly]"
         print "    You can use '-' to skip {start,end}date"
-        print "    step6 is the min numer of days between a computed network and the next one"
+        print "    step is the min numer of days between a computed network and the next one"
         print "OR netevolution.py list"
         print "   Show all function's names"
         sys.exit(1)
@@ -606,7 +612,7 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    data = evolutionmap( dpath, [f[0] for f in fl], range ,debugfile )
+    data = evolutionmap( dpath, [f[0] for f in fl], range, cacheinly, debugfile )
     
     if not data:
         sys.exit(1)

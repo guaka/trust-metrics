@@ -1462,6 +1462,8 @@ def toNetwork( data , key, net=None ):
         w.add_node( rname.findall(name)[0] )
 
     for link in edges:
+        print link
+        print w.add_edge.__doc__
         w.add_edge( link[0], link[1], {key:link[2]} )
 
     return w
