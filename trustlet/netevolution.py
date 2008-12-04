@@ -612,7 +612,7 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    data = evolutionmap( dpath, [f[0] for f in fl], range, cacheinly, debugfile )
+    data = evolutionmap( dpath, [f[0] for f in fl], range, cacheonly, debugfile )
     
     if not data:
         sys.exit(1)
