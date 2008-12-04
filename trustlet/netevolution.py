@@ -120,6 +120,8 @@ def evolutionmap(load_path,functions,range=None,cacheonly=False,np=None,debug=No
             #if is empty
             return resdict
 
+        assert 0,'NON puoi passare!!'
+
         # Type Of Network
         ton = ''
         p = lpath
