@@ -18,7 +18,7 @@ re_alphabetic = re.compile("[A-Za-z]+")
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(load_path,functions,range=None,cacheonly=False,np=None,debug=None):
+def evolutionmap(load_path,functions,range=None,cacheonly=False,debug=None):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -119,8 +119,6 @@ def evolutionmap(load_path,functions,range=None,cacheonly=False,np=None,debug=No
         if not calcfunctions:
             #if is empty
             return resdict
-
-        assert 0,'NON puoi passare!!'
 
         # Type Of Network
         ton = ''
@@ -256,7 +254,11 @@ def evolutionmap(load_path,functions,range=None,cacheonly=False,np=None,debug=No
 
     #map list of result for each dataset in list of result for each function
     safe_merge(path.join(lpath,cachepath))
-    data_ordered = splittask(task,dates,notasksout=True,np=np)# debug (np=1)
+    if cacheonly:
+        np = 1
+    else:
+        np = None
+    data_ordered = splittask(task,dates,notasksout=True,np = np )
     safe_merge(path.join(lpath,cachepath))
     nd = len( dates )
     nf = len( functions )
@@ -577,10 +579,8 @@ if __name__ == "__main__":
     if '--cacheonly' in sys.argv:
         sys.argv.remove('--cacheonly')
         cacheonly = True
-        np = 1
     else:
         cacheonly = False
-        np = None
 
     if len(sys.argv) < 5:
         #prog startdate enddate path
