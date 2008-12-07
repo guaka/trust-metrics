@@ -6,10 +6,11 @@ Try:
 
 == Depending packages ==
 
-* NetworkX >=0.37
+* python-setuptools
+* NetworkX <= 0.37
 * scipy
 * graphviz
-* pygraphviz (need [graphviz-dev|graphviz-devel] )
+* pygraphviz >= 0.37 (need [graphviz-dev|graphviz-devel] ) | pydot
 * pyparsing
 * python-gnuplot (not required from r716)
 * python-bz2 (might included in Python) | bzip2
