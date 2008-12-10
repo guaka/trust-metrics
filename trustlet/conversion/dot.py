@@ -20,6 +20,7 @@ def to_c2_( dot, c2, key ):
        (ex. {'network':'Advogato','date':'2000-01-01'} for Advogato-like network
         and {'network':'Wiki','lang':'it','date':'2000-01-01'} for wiki network)
     """
+
     ruser = re.compile( '(\w+)' )
     redges = re.compile( '"?(\w+)"?\s*->\s*(\w+)\s*\[(\w+)="?(\w+)"?\];' )
     w = trustlet.Network.WeightedNetwork()
@@ -76,8 +77,6 @@ def to_c2_( dot, c2, key ):
 
 def to_c2( dot, c2, key ):
     """
-    TEMP
-
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
 
     Parameters:
@@ -90,11 +89,7 @@ def to_c2( dot, c2, key ):
     
     w = read_dot(dot)
 
-    print w.edges()[0]
-    
     pyn = trustlet.helpers.toPynetwork(w)
-
-    print str(pyn)[:40],'...',str(pyn)[-40:]
 
     return trustlet.helpers.save(key,pyn,c2)
 

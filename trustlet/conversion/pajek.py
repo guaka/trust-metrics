@@ -24,14 +24,14 @@ def to_c2( pj, c2, key ):
         w = read_pajek( pj )
     except:
         return False
-
+    """
     #now I had to delete all key 'value' on all edges
     for edge in w.edges_iter():
         try:
             del edge[2]['value']
         except KeyError:
             continue
-
+    """
     return trustlet.helpers.save(key,w,c2)
 
 def from_c2( pj, c2, key, name=None, wikiHistory=True ):
@@ -61,9 +61,9 @@ def from_c2( pj, c2, key, name=None, wikiHistory=True ):
 
     if "lang" in key:
         if wikiHistory:
-            x = trustlet.Dataset.Network.WikiNetwork( date=key['date'], lang=key['lang'] )
+            w = trustlet.Dataset.Network.WikiNetwork( date=key['date'], lang=key['lang'] )
         else:
-            x = trustlet.Dataset.Network.WikiNetwork( date=key['date'], lang=key['lang'], current=True )
+            w = trustlet.Dataset.Network.WikiNetwork( date=key['date'], lang=key['lang'], current=True )
 
         wiki = True
     else:
@@ -103,16 +103,12 @@ def from_c2( pj, c2, key, name=None, wikiHistory=True ):
             
         if name:
             w.name = name
-
+    """
     #now you must add 'value' key on edge, and set it to level_map['value_on_edge'] (useful for pajek?)
     if hasattr( w, "level_map" ) and (w.level_map != None):
         for edge in w.edges(): #I can't use edges_iter because I modify the edge during loop
             w.delete_edge( edge[0], edge[1] )
             
-            if (edge[0].find('\xb0') != -1) or (edge[1].find('\xb0') != -1):
-                print map( lambda x: ((ord(x)<127) and x or '?' ) , edge[0]  )
-                print map( lambda x: ((ord(x)<127) and x or '?' ) , edge[1]  )
-
             edge0 = str( ''.join( map( lambda x: ((ord(x)<127) and x or '?' ) , edge[0]  ) ) ) #avoid Unicode encode Error
             edge1 = str( ''.join( map( lambda x: ((ord(x)<127) and x or '?' ) , edge[1] ) ) )
 
@@ -122,7 +118,7 @@ def from_c2( pj, c2, key, name=None, wikiHistory=True ):
                 keyvalue = 'value'
             #                              keyvalue is a numeric value (useful for pajek)  edgekey is the real value on edge in network (can be a string)
             w.add_edge( edge0, edge1, {keyvalue:w.level_map[edge[2].values()[0]],edgekey:edge[2].values()[0]} )
-            
+    """
     try:
         write_pajek( w, pj )
     except IOError:
