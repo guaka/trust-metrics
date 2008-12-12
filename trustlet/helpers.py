@@ -1032,7 +1032,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
     """
 
     #debug
-    file(path+'.debug','w').write(str(data))
+    #file(path+'.debug','w').write(str(data))
 
     # used by safe_save because it implements this
     if threadsafe:
