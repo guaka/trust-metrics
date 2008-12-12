@@ -529,9 +529,9 @@ def generate_eval(function):
     def eval(G,date):
         assert hasattr(G,'level_map'),'I need level_map!'
 
-        G.values_on_edges = true
+        G.values_on_edges = True
         ret = function(G)
-        G.values_on_edges = false
+        G.values_on_edges = False
         return (date,ret)
 
     return eval
