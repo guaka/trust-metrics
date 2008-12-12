@@ -9,7 +9,7 @@ from networkx import read_dot
 
 __all__ = ['to_c2','from_c2']
 
-def to_c2_( dot, c2, key ):
+def to_c2( dot, c2, key ):
     """
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
 
@@ -75,7 +75,7 @@ def to_c2_( dot, c2, key ):
     return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
 
 
-def to_c2( dot, c2, key ):
+def to_c2_( dot, c2, key ):
     """
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
 
