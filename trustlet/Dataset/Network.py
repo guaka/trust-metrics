@@ -58,7 +58,7 @@ class Network(XDiGraph):
 
         XDiGraph.__init__(self, multiedges = False)
         self.filepath = ''
-        self.values_on_edges = false
+        self.values_on_edges = False
         if make_base_path:
 
             if prefix:
@@ -148,11 +148,14 @@ class Network(XDiGraph):
 
     def set_pool(self):
         '''
-        save memory
+        save memory.
+        *DO NOTHING*
+        Because this is in conflict with pickling :(
         '''
-        self.add_edge_orig = self.add_edge
+        pass
 
-        self.add_edge = self.add_edge_savememory
+        #self.add_edge_orig = self.add_edge
+        #self.add_edge = self.add_edge_savememory
 
 
     def add_edge_savememory(self,u,v=None,e=None):
@@ -169,9 +172,10 @@ class Network(XDiGraph):
 
 
     def connected_components(self):
-        G = self
         if self.is_directed():
-            G = G.to_undirected()
+            G = self.to_undirected()
+        else:
+            G = self
         return component.connected_components(G)
 
     def number_of_connected_components(self):
