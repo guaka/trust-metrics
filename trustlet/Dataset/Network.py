@@ -43,14 +43,10 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, base_path = None, savememory = True, prefix=None):
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
-        savememory:
-           decrease of ~9% time to load graph, and it saves some memory
-           (50MB (on 300MB) in Italian Wiki graph)
-           *but* we can't modify edges after graph creation.
         prefix:
            you can specify a prefix in path for the Network folder if you want
            ex. prefix = '_' --> path = /home/.../datasets/_NetworkName/date/graph.c2
@@ -69,10 +65,6 @@ class Network(XDiGraph):
             self.path = os.path.join(dataset_dir(base_path), classpath)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
-    
-        self.savememory = savememory
-        if savememory:
-            self.set_pool()
 
         if from_graph:
             self.paste_graph(from_graph)
@@ -146,30 +138,13 @@ class Network(XDiGraph):
                 print e.code
                 print "Cannot download dataset, for a complete list of it, go to ", os.path.split( os.path.split( url )[0] )[0]
 
-    def set_pool(self):
-        '''
-        save memory.
-        *DO NOTHING*
-        Because this is in conflict with pickling :(
-        '''
-        pass
-
-        #self.add_edge_orig = self.add_edge
-        #self.add_edge = self.add_edge_savememory
-
-
     def add_edge_savememory(self,u,v=None,e=None):
         '''
         don't call this directly
         '''
-
-        assert hasattr(self,'add_edge_orig')
-
         if not v:
             u,v,e = u
-
-        self.add_edge_orig(u,v,trustlet.helpers.pool(e))
-
+        self.add_edge(u,v,trustlet.helpers.pool(e))
 
     def connected_components(self):
         if self.is_directed():
@@ -371,8 +346,8 @@ class WeightedNetwork(Network):
     * weights can be discrete or continuous
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,savememory = True,prefix=None):
-        Network.__init__(self, base_path=base_path,savememory=savememory,prefix=prefix)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None):
+        Network.__init__(self, base_path=base_path,prefix=prefix)
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
         self._weights = weights
