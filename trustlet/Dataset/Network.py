@@ -104,7 +104,26 @@ class Network(XDiGraph):
             #now I'm sure that this network is in a c2 file
             self.filename = os.path.split(self.filepath)[1]
         
-            self.paste_graph( trustlet.helpers.toNetwork( pydataset, key_dictionary ) ) #copy the graph loaded in self
+            try:
+                net = trustlet.helpers.toNetwork( pydataset, key_dictionary )
+            except IOError:
+                print "Warning! c2 is not consistent! The loading of network is failed"
+                print "Forcing conversion from dot.."
+                try:
+                    val=trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,cachedict)
+                except IOError:
+                    raise IOError( "Error! dot does not exist. download it from trustlet.org and make sure this path exist "+self.dotpath )
+                    
+                if not val:
+                    raise IOError( "Dot file exist but the conversion into c2 failed!" )
+                #now retry
+                try:
+                    net = trustlet.helpers.toNetwork( pydataset, key_dictionary )
+                except IOError:
+                    raise IOError( "the conversion module made a non consistent c2." )
+                
+
+            self.paste_graph( net ) #copy the graph loaded in self
             
         return True
     

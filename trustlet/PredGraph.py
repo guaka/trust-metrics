@@ -45,8 +45,9 @@ class CalcGraph(Network):
         self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
-            self.path = os.path.join(os.path.split(dataset.filepath)[0],
-                                     path_name(TM))
+            path = os.path.join(os.path.split(dataset.filepath)[0], path_name(TM))
+            (home,rel)=relative_path(path,'datasets' )
+            self.path = os.path.join(home,'shared_datasets',rel)
             #not necessary
             #if hasattr(TM,"noneToValue") and TM.noneToValue:
             #    self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)

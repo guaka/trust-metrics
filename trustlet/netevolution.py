@@ -18,19 +18,14 @@ re_alphabetic = re.compile("[A-Za-z]+")
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(load_path,functions,range=None,cacheonly=False,debug=None):
+def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,prefix='_'):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
 
     Parameters:
-    load_path = path in wich the dates of the network are stored
-                #eg. /home/ciropom/datasets/AdvogatoNetwork
-                If loadPath contains a prefix (if you have set
-                prefix parameter in network) e.g. /home/..../___AdvogatoNetwork
-                this prefix can be handle, but it must be only a
-                non-alphabetical character. All prefix in range
-                A-Z a-z could not be handle.
+    networkname = the name of the network (case sensitive)
+                  ex. AdvogatoNetwork
     functions = list of functions to apply to each dataset
                 #e.g. [trustvariance,trustaverage...]
     range = tuple with at first the initial date, and at end the
@@ -41,14 +36,16 @@ def evolutionmap(load_path,functions,range=None,cacheonly=False,debug=None):
                 this list is the return value for each network in
                 range, of the 'i' function passed
     '''
-    cachepath = 'netevolution.c2'
+    #we load network from datasets
+    lpath = os.path.join(os.environ['HOME'],'datasets',networkname)
+    #and cache/predgraph from shared_dataset (an svn on trustlet.org)
+    cachepath = os.path.join( os.environ['HOME'],'shared_datasets',networkname,'netevolution.c2') 
+    
+    #make sure the path exists
+    mkpath(lpath)
+            #avoid c2 file..
+    mkpath( os.path.split(cachepath)[0] )
 
-    #check if the path ends with /
-    if load_path[-1] == path.sep:
-        lpath = load_path[:-1]
-    else:
-        lpath = load_path
-        
     if debug:
         deb = file( debug, 'w' ) #in debug file was stored the last function to be evaluated and on which network
         deb.close()
@@ -61,10 +58,6 @@ def evolutionmap(load_path,functions,range=None,cacheonly=False,debug=None):
                                path.exists(path.join(lpath,date,'graphHistory.c2')) ) ]
         )
     
-    #if not dates:
-    #    dates = [x for x in os.listdir(dpath)
-    #             if isdate(x) and path.exists(path.join(dpath,x,'graphCurrent.c2'))]
-
     if not dates:
         print "There isn't any network in this path"
         return
@@ -168,7 +161,8 @@ def evolutionmap(load_path,functions,range=None,cacheonly=False,debug=None):
             try:
                 K = Networkclass(date=date)
             except IOError:
-                K = Networkclass(date=date,prefix='_')
+                print "Warning! in default path date does not exist! try to use a prefix"
+                K = Networkclass(date=date,prefix=prefix)
                 #try with _ if there isn't in normal path
                 #(because sync does not upload folder with _ prefix)
             
@@ -586,7 +580,7 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution.py startdate enddate dataset_path save_path [debug_path] [-s step] [--cacheonly]"
+        print "USAGE: netevolution.py startdate enddate networkname save_path [debug_path] [-s step] [--cacheonly]"
         print "    You can use '-' to skip {start,end}date"
         print "    step is the min numer of days between a computed network and the next one"
         print "OR netevolution.py list"
@@ -596,7 +590,7 @@ if __name__ == "__main__":
 
     startdate = sys.argv[1] == '-' and '1970-01-01' or sys.argv[1]
     enddate = sys.argv[2] == '-' and '9999-12-31' or sys.argv[2]
-    dpath = sys.argv[3]
+    netname = sys.argv[3]
     savepath = sys.argv[4]
     if '-s' in sys.argv[1:-1]:
         i = sys.argv.index('-s')
@@ -616,7 +610,7 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    data = evolutionmap( dpath, [f[0] for f in fl], range, cacheonly, debugfile )
+    data = evolutionmap( netname, [f[0] for f in fl], range, cacheonly, debugfile )
     
     if not data:
         sys.exit(1)

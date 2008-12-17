@@ -72,7 +72,8 @@ def to_c2( dot, c2, key ):
         else:
             print "Warning! output may be checked"
 
-    return trustlet.helpers.save(key,trustlet.helpers.toPynetwork(w),c2)
+    pynet = trustlet.helpers.toPynetwork(w)
+    return trustlet.helpers.save(key,pynet,c2)
 
 
 def to_c2_( dot, c2, key ):
