@@ -159,7 +159,8 @@ class Network(XDiGraph):
 
     def add_edge_savememory(self,u,v=None,e=None):
         '''
-        don't call this directly
+        like add_edge, but use pool of edges to save memory.
+        You *can't modify* edges added with this method
         '''
         if not v:
             u,v,e = u
