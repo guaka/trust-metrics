@@ -22,7 +22,7 @@ def to_c2( dot, c2, key ):
     """
 
     ruser = re.compile( '(\w+)' )
-    redges = re.compile( '"?(\w+)"?\s*->\s*(\w+)\s*\[(\w+)="?(\w+)"?\];' )
+    redges = re.compile( '"?(\w+)"?\s*->\s*"?(\w+)"?\s*\[(\w+)="?(\w+)"?\];' )
     w = trustlet.Network.WeightedNetwork()
     
     if trustlet.conv.keyOnEdge(key) != 'value':
@@ -72,8 +72,7 @@ def to_c2( dot, c2, key ):
         else:
             print "Warning! output may be checked"
 
-    pynet = trustlet.helpers.toPynetwork(w)
-    return trustlet.helpers.save(key,pynet,c2)
+    return trustlet.helpers.save(key,w,c2)
 
 
 def to_c2_( dot, c2, key ):
@@ -90,9 +89,9 @@ def to_c2_( dot, c2, key ):
     
     w = read_dot(dot)
 
-    pyn = trustlet.helpers.toPynetwork(w)
+    nodes,edges = trustlet.helpers.toPynetwork(w)
 
-    return trustlet.helpers.save(key,pyn,c2)
+    return trustlet.helpers.save(key,(nodes,edges),c2)
 
 
 def from_c2( dot, c2, key ):
