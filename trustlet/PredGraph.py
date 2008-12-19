@@ -59,7 +59,7 @@ class CalcGraph(Network):
             
             #splits path, PGPath is the path to c2 dataset, relative to datasets folder,
             #relpath is the absolutepath to datasets folder
-            self.basePath,relpath = relative_path( self.filepath, 'datasets' )
+            self.basePath,relpath = relative_path( self.filepath, 'shared_datasets' )
 
             self.relpath = relpath #path to dataset relative to svn directory
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( relpath )[0] ) 

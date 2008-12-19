@@ -45,7 +45,7 @@ DIR = 'shared_datasets'
 SVNCO = 'svn co --non-interactive http://www.trustlet.org/trustlet_dataset_svn "%s"'
 SVNUP = 'svn up --non-interactive --username anybody --password a'
 SVNCI = 'svn ci --non-interactive --username anybody --password a -m "automatic commit by %s (sync.py)%s"' % (HOSTNAME,'%s')
-SVNADD = 'svn add --non-interactive "%s"'
+SVNADD = 'svn add "%s"'
 
 CONFLICT =  '''You might added files yet stored on svn.
 You can execute:
