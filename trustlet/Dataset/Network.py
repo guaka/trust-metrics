@@ -548,12 +548,8 @@ class WikiNetwork(WeightedNetwork):
         self._weights_dictionary = None
         self.__upbound = None
         self.__user_map = None
-        self.savememory = savememory
         self.level_map = None #set in __rescale()
 
-        if self.savememory:
-            self.add_edge = lambda e: self.add_edge((e[0],e[1],trustlet.helpers.pool(e[2])))
-        
         # booleans for list of special users
         self.blockedusers = blockedusers
         self.bots = bots
@@ -823,5 +819,5 @@ class WikiNetwork(WeightedNetwork):
 
 if __name__ == "__main__":
     from trustlet import *
-    W = WikiNetwork('fur','2008-06-14',savememory=1)
+    W = WikiNetwork('fur','2008-06-14')
     W.load_distrust()
