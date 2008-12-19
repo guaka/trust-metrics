@@ -114,11 +114,7 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
             return resdict
 
         # Type Of Network
-        ton = ''
-        p = lpath
-        while 'Network' not in ton:
-            p,ton = os.path.split( p ) #wikinetwork/advogatonetwork...
-        
+        ton = networkname
 
         alphabetic = re_alphabetic.search( ton ) #search alphabetic character (delete non A-Za-z prefix)
         ton = ton[alphabetic.start():] #delete first non alphabetic character
@@ -134,7 +130,8 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
                 print "ERROR!: problem in path! is this path correct? "+lpath
             return None
                 
-
+        print ton
+        
         if debug:
             deb = file( debug, 'a' )
             deb.write( "evaluating functions "+str(calcfunctions)+"\non "+ton+" at date "+date+"\n" )

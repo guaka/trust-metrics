@@ -47,11 +47,9 @@ def to_c2( dot, c2, key ):
     del lines[-1]
 
     nlines = len(lines)
-
-    #find all nodes
-    for i in xrange(nlines):
-        user = ruser.search( lines[i] )
-        w.add_node( user.group() )
+    chkuser = 0
+    chkedges = 0
+    lnodes = []
     
     #find all edges
     for j in xrange(nlines):
@@ -60,6 +58,8 @@ def to_c2( dot, c2, key ):
         try:
             edges = res[0]
         except IndexError:
+            #print lines[j]
+            lnodes.append( lines[j] )
             continue
 
         if type(edges) is tuple:
@@ -68,9 +68,22 @@ def to_c2( dot, c2, key ):
             typeNet = edges[2]
             value = edges[3]
 
+            chkedges += 1
             w.add_edge( indegree, outdegree, trustlet.helpers.pool({typeNet:value}) )
         else:
             print "Warning! output may be checked"
+
+    nlnodes = len(lnodes)
+
+    #find all nodes
+    for i in xrange(nlnodes):
+        chkuser += 1
+        user = ruser.search( lnodes[i] )
+        w.add_node( user.group() )
+    
+    if (chkedges+chkuser) != nlines:
+        print "number of edges:"chkedges,"number of users:"chkuser,"number of lines:" nlines
+        print "Warning! user+edges != number of lines of dot"
 
     return trustlet.helpers.save(key,w,c2)
 
