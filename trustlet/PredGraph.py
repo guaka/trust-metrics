@@ -686,8 +686,11 @@ class CalcWikiGraph(CalcGraph):
         self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
-            self.path = os.path.join(os.path.split(dataset.filepath)[0],
-                                     path_name(TM))
+            path = os.path.join(os.path.split(dataset.filepath)[0],
+                                path_name(TM))
+
+            (home,rel)=relative_path(path,'datasets' )
+            self.path = os.path.join(  os.path.split(home)[0]  ,'shared_datasets',rel)
 
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
@@ -696,7 +699,7 @@ class CalcWikiGraph(CalcGraph):
             
             self.__set_filepath() 
                 
-            self.basePath,self.relpath = relative_path( self.filepath, 'datasets' )
+            self.basePath,self.relpath = relative_path( self.filepath, 'shared_datasets' )
 
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( self.relpath )[0] )
             self.filename = os.path.split(self.filepath)[1]
