@@ -534,9 +534,9 @@ class WikiNetwork(WeightedNetwork):
        
     def __init__(self, lang, date, current=False, bots=True, blockedusers=True, base_path = None,
                  dataset = None, force = False,
-                 savememory = False, threshold=1, output=False,prefix=None ):
+                 threshold=1, output=False,prefix=None ):
 
-        WeightedNetwork.__init__(self,base_path=base_path,savememory=savememory,prefix=prefix)
+        WeightedNetwork.__init__(self,base_path=base_path,prefix=prefix)
         
         assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
 
