@@ -82,7 +82,7 @@ def to_c2( dot, c2, key ):
         w.add_node( user.group() )
     
     if (chkedges+chkuser) != nlines:
-        print "number of edges:"chkedges,"number of users:"chkuser,"number of lines:" nlines
+        print "number of edges:",chkedges,"number of users:",chkuser,"number of lines:", nlines
         print "Warning! user+edges != number of lines of dot"
 
     return trustlet.helpers.save(key,w,c2)
