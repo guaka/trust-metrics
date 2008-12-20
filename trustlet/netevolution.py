@@ -27,14 +27,17 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
     networkname = the name of the network (case sensitive)
                   ex. AdvogatoNetwork
     functions = list of functions to apply to each dataset
+                the functions must take two argument:
+                1) graph g (as trustlet.Network or subclasses)
+                2) date in wich the dataset of the graph g, was calculated 
                 #e.g. [trustvariance,trustaverage...]
     range = tuple with at first the initial date, and at end the
                 final date #ex. ('2000-01-01','2008-01-01')
     
-    return a list of list of value where each list of the first
-                list represent a function 'i', and the value in
-                this list is the return value for each network in
-                range, of the 'i' function passed
+    return a list of list of values where each list of the first
+                list represent a function 'i', and the values in
+                this i-list are the i-function returned values for each network in
+                range
     '''
     #we load network from datasets
     lpath = os.path.join(os.environ['HOME'],'datasets',networkname)

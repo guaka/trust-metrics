@@ -68,6 +68,7 @@ class Network(XDiGraph):
 
         if from_graph:
             self.paste_graph(from_graph)
+            
 
     def load_c2(self,cachedict, key_dictionary):
         """
@@ -212,6 +213,7 @@ class Network(XDiGraph):
         
     def info(self):
         """Show information."""
+        from trustlet.netevolution import fl as function_list
         XDiGraph.info(self)
         
         for method, desc in [("std_in_degree", "Std deviation of in-degree:"),
@@ -223,6 +225,17 @@ class Network(XDiGraph):
                              ("connected_components_size2","Connected component size:"),
                              ]:
             self._show_method(method, desc)
+            
+        del function_list[2] #number of edges
+        del function_list[3] #number of nodes
+        del function_list[-1] #number of connected components
+
+        if not (hasattr(self,"date") and self.date):
+            self.date = '1970-01-01'
+
+        for (f,pf) in function_list.__iter__():
+            print f.__name__, ":", f(self,self.date)[1]
+            
         
     def powerlaw_exponent(self):
         return power_exp_cum_deg_hist(self)
