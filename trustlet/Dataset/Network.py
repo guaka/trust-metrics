@@ -572,12 +572,14 @@ class WikiNetwork(WeightedNetwork):
         else:
             self.filename = "graphHistory.c2"
 
+        base,net = trustlet.helpers.relative_path( self.path, 'datasets' )
+        self.path = os.path.join( os.path.split(base)[0], 'shared_datasets', net ) #wiki datasets lies in shared_datasets
         self.path = os.path.join( self.path, lang, date )
         trustlet.helpers.mkpath(self.path)
         
         self.filepath = os.path.join( self.path, self.filename )
 
-        path,relpath = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+        path,relpath = trustlet.helpers.relative_path( self.filepath, 'shared_datasets' )
         #                                  the first value is the name of the file
         self.url = os.path.join( self.url, os.path.split(relpath)[0])
 
