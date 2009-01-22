@@ -24,14 +24,14 @@ def to_c2( pj, c2, key ):
         w = read_pajek( pj )
     except:
         return False
-    """
+
     #now I had to delete all key 'value' on all edges
     for edge in w.edges_iter():
         try:
             del edge[2]['value']
         except KeyError:
             continue
-    """
+
     return trustlet.helpers.save(key,w,c2)
 
 def from_c2( pj, c2, key, name=None, wikiHistory=True ):
