@@ -95,11 +95,16 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
 
         #try to find the functions cached
         for i in xrange(len(functions)):
-            assert functions[i].__name__!='<lambda>','Lambda function aren\'t supported'
+            assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
             
             cachekey = {'function':functions[i].__name__,'date':date}
+            
+            #debug
+            if functions[i].__name__=='level_distribution':
+                calcfunctions.append(functions[i])
+                continue
+
             cache = load(cachekey,path.join(lpath,cachepath))
-            #cache = None # debug
             if cache and type(cache) is tuple and isdate(cache[0]):
                 #check on type of data in cache
 
