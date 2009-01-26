@@ -410,6 +410,8 @@ def level_distribution(K,date):
     #order k from higher to lower values (Master to Observer)
     l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
 
+    assert len(l)==4,l
+
     return ( date, map(lambda x:1.0*x/sum(l),l))
 
 def plot_level_distribution(data,data_path='.'):
