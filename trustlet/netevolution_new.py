@@ -423,6 +423,8 @@ def level_distribution(K,date):
                         K.level_map)))
 
     #order k from higher to lower values (Master to Observer)
+    assert K.level_map,K.level_map
+
     l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
 
     return ( date, map(lambda x:1.0*x/sum(l),l))
