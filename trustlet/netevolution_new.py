@@ -769,6 +769,20 @@ if __name__ == "__main__":
         )
 
     plot_generic(
+        data[19],
+        savepath, title='mean degrees of separation',
+        comment='''nodes = set(networkx.kosaraju_strongly_connected_components(G)[0])
+pathsl = []
+
+for n in nodes:
+    nodes.remove(n)
+    for m in nodes:
+        pathsl.append(len(networkx.shortest_path(G,n,m)))
+    nodes.add(n)
+return (d,avg(pathsl))'''
+        )
+
+    plot_generic(
         data[20],
         savepath, title='number_connected_components (direct graph)',
         comment='eval = len(networkx.kosaraju_strongly_connected_components(G))'
