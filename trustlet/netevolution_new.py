@@ -583,21 +583,31 @@ fl[-1][0].__name__ = 'number_connected_components_undirect'
 al(lambda G,d: (d,1.0*len(G.connected_components()[0])/G.number_of_nodes()),plot_generic)#18
 fl[-1][0].__name__ = 'percentage_of_users_in_main_cc'
 
-al(lambda G,d: (d,0),plot_generic)#19
-fl[-1][0].__name__ = 'degrees_of_separation'
+def degrees_of_separation(G,d):
+    nodes = set(networkx.kosaraju_strongly_connected_components(G)[0])
+    pathsl = []
+
+    for n in nodes:
+        nodes.remove(n)
+        for m in nodes:
+            pathsl.append(len(networkx.shortest_path(G,n,m)))
+        nodes.add(n)
+    return (d,avg(pathsl))
+
+al(degrees_of_separation,plot_generic)#19
 
 al(lambda G,d: (d,len(networkx.kosaraju_strongly_connected_components(G))),plot_generic)#20
 fl[-1][0].__name__ = 'number_connected_components_direct'
 
 #function used for script.. do not use it if you use trustlet as library
 def onlyMaster(e):
-    return e[2].values()[0]=='Master'
+    return 'Master' in e[2].values()
 
 def onlyMasterJourneyer(e):
-    return (e[2].values()[0]=='Master') or (e[2].values()[0]=='Journeyer') 
+    return 'Master' in e[2].values() or 'Journeyer' in e[2].values()
 
 def noObserver(e):
-    return e[2].values()[0]!='Observer'
+    return 'Observer' in e[2].values()
 
 
 if __name__ == "__main__":    
