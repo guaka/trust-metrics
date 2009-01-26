@@ -95,7 +95,12 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
 
         #try to find the functions cached
         for i in xrange(len(functions)):
-            assert functions[i].__name__!='<lambda>','Lambda function aren\'t supported'
+            assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
+
+            # DEBUG!!!
+            if functions[i].__name__=='level_distribution':
+                calcfunctions.append(functions[i])
+                continue
 
             cachekey = {'function':functions[i].__name__,'date':date}
             if cond_on_edge:
@@ -408,7 +413,7 @@ def plot_meandegree(data,data_path='.'):
 al(meandegree,plot_meandegree)
 
 def level_distribution(K,date):
-    """
+    """sa
     see AdvogatoNetwork class
     this code (d = dict(...)) is copyed from there
     """
