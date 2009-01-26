@@ -97,11 +97,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         for i in xrange(len(functions)):
             assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
 
-            # DEBUG!!!
-            if functions[i].__name__=='level_distribution':
-                calcfunctions.append(functions[i])
-                continue
-
             cachekey = {'function':functions[i].__name__,'date':date}
             if cond_on_edge:
                 assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
@@ -424,7 +419,7 @@ def level_distribution(K,date):
     d = dict(filter(lambda x:x[0],
                     map(lambda s: (s,
                                    len([e for e in K.edges_iter()
-                                        if e[2].values()[0] == s])),
+                                        if s in e[2].values())),
                         K.level_map)))
 
     #order k from higher to lower values (Master to Observer)
