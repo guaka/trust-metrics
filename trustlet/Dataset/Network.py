@@ -70,7 +70,7 @@ class Network(XDiGraph):
             self.paste_graph(from_graph)
             
 
-    def load_c2(self,cachedict, key_dictionary):
+    def load_c2(self,cachedict, key_dictionary,cond_on_edge=None):
         """
         load a c2 into this instance of Network.
         
@@ -80,6 +80,12 @@ class Network(XDiGraph):
                       ex: x=network.edges()[0]
                           x[2]
                           >> {key:weight_on_edge}
+        cond_on_edge: function thatk takes a tuple in this form (string0,string1,dict)
+                      string0: the start node
+                      string1: the end node
+                      dict: weight on edge (ex. {'value':1} on WikiNetwork, {'level':'Master'}, {'color':'violet'}.. )
+                      
+                      and return False if the edge had to be discarded, else return True.
         """
         
         if not hasattr(self,"filepath"):
@@ -124,7 +130,7 @@ class Network(XDiGraph):
                     raise IOError( "the conversion module made a non consistent c2." )
                 
 
-            self.paste_graph( net ) #copy the graph loaded in self
+            self.paste_graph( net, cond_on_edge=cond_on_edge ) #copy the graph loaded in self
             
         return True
     
@@ -305,27 +311,32 @@ class Network(XDiGraph):
         graph = trustlet.helpers.cached_read_dot(filepath,force)
         self.paste_graph(graph)
         
-    def paste_graph(self, graph, avoidset=None):
+    def paste_graph(self, graph, avoidset=None,cond_on_edge=None):
         """
         Paste graph into object.
         Parameter:
            graph: the graph
            avoidset: the set object that contains all the nodes leaved out from the copying
         """
+        if not cond_on_edge:
+            cond = lambda e:True # functions that return only true
+        else:
+            cond = cond_on_edge
+
 
         if avoidset:
 
             for node in [x for x in graph.nodes_iter() if x not in avoidset]:
                 self.add_node(node)
 
-            for edge in [x for x in graph.edges_iter() if x[0] not in avoidset and x[1] not in avoidset]:
+            for edge in [x for x in graph.edges_iter() if x[0] not in avoidset and x[1] not in avoidset and cond(x)]:
                 self.add_edge(edge)
 
         else:
             for node in graph.nodes_iter():
                 self.add_node(node)
 
-            for edge in graph.edges_iter():
+            for edge in [x for x in graph.edges() if cond(x)]:
                 self.add_edge(edge)
     
     def _paste_graph(self, graph, avoidset=None):

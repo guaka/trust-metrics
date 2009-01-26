@@ -92,7 +92,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, cond_on_edge=None, comp_threshold = 0, download = False, base_path = '',prefix=None):
 
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -102,7 +102,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         between _color_map and _obs_app_jour_mas_map
         comp_threshold = if this parameter is set, the class evaluate the ditch component
         """
-
+        self.cond_on_edge = cond_on_edge
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
                     self._name_lowered())
@@ -230,7 +230,12 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         
         print "Reading ", filepath
         
-        if not self.load_c2(key,self.key_on_edge): #if I can't be able to read
+        if self.cond_on_edge:
+            w = self.load_c2(key,self.key_on_edge,cond_on_edge=self.cond_on_edge)
+        else:
+            w = self.load_c2(key,self.key_on_edge)
+
+        if not w: #if I can't be able to read
             raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
             
 
