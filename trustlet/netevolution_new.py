@@ -93,6 +93,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         resdict = {} #dict of result
         calcfunctions = []
 
+        #debug
+        calcfunctions.append(degrees_of_separation)
+
         #try to find the functions cached
         for i in xrange(len(functions)):
             assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
