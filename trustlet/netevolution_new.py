@@ -18,7 +18,7 @@ re_alphabetic = re.compile("[A-Za-z]+")
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,prefix='_'):
+def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix='_'):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -95,16 +95,15 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
 
         #try to find the functions cached
         for i in xrange(len(functions)):
-            assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
-            
+            assert functions[i].__name__!='<lambda>','Lambda function aren\'t supported'
+
             cachekey = {'function':functions[i].__name__,'date':date}
-            
-            #debug
-            if functions[i].__name__=='level_distribution':
-                calcfunctions.append(functions[i])
-                continue
+            if cond_on_edge:
+                assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
+                cachekey['cond']=str(cond_on_edge.__name__)
 
             cache = load(cachekey,path.join(lpath,cachepath))
+            #cache = None # debug
             if cache and type(cache) is tuple and isdate(cache[0]):
                 #check on type of data in cache
 
@@ -164,7 +163,7 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
 
             #load network
             try:
-                K = Networkclass(date=date)
+                K = Networkclass(date=date,cond_on_edge=cond_on_edge)
             except IOError:
                 print "Warning! in default path date does not exist! try to use a prefix"
                 K = Networkclass(date=date,prefix=prefix)
@@ -205,6 +204,9 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
                 print "Lang value is not usable, this is the path "+lpath+" exiting"
                 return None
 
+            if cond_on_edge:
+                print "Warning! condition on edge, not implemented in wikinetwork"
+
             K = Network.WikiNetwork( lang=lang, date=date, current=False, output=False )
             #netevolution only with history
         else:
@@ -226,12 +228,8 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
                 print 'Task:',function.__name__,"on date:",date
 
             
-            res = function(K,date)
-            
-            assert type(res) is tuple,'name: %s res %s' % (function.__name__,str(res))
             try:
-                pass
-                #res = function(K,date)
+                res = function(K,date)
             except Exception,e:
                 if debug:
                     deb = file( debug, 'a' )
@@ -243,8 +241,15 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
                     print e
                 continue
 
+            assert type(res) is tuple,'name: %s res %s' % (function.__name__,str(res))
+
             if function.__name__!='<lambda>':
-                if not safe_save({'function':function.__name__,'date':date},res,path.join(lpath,cachepath)):
+                cachekey = {'function':function.__name__,'date':date}
+                if cond_on_edge:
+                    assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
+                    cachekey['cond']=str(cond_on_edge.__name__)
+
+                if not safe_save(cachekey,res,path.join(lpath,cachepath)):
                     print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
             resdict[function.__name__] = res
@@ -272,6 +277,7 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
     if debug:
         deb = file( debug, 'a' )
         deb.write( "computation of functions finished! filling the return value\n" )
+        deb.write( "data_ordered:\n"+str(data_ordered)+"\n" )
         deb.close()
 
     #fill the return value
@@ -281,7 +287,10 @@ def evolutionmap(networkname,functions,range=None,cacheonly=False,debug=None,pre
                 if data_ordered[di].has_key( functions[fi].__name__ ):
                     func_ordered[fi].append( data_ordered[di][ functions[fi].__name__ ] )
             else:
-                print 'Warning: data_ordered[di] not defined'
+                if debug:
+                    deb = file(debug,'a')
+                    deb.write('Warning: data_ordered[di] not defined\n')
+                    deb.close()
 
     return func_ordered
 
@@ -410,22 +419,13 @@ def level_distribution(K,date):
     d = dict(filter(lambda x:x[0],
                     map(lambda s: (s,
                                    len([e for e in K.edges_iter()
-                                        if s in e[2].values()])),
+                                        if e[2].values()[0] == s])),
                         K.level_map)))
-  
 
     #order k from higher to lower values (Master to Observer)
-<<<<<<< .mine
-    assert K.level_map,K.level_map
-=======
-    assert K.level_map,K.level_map
-    assert len(l)==4,l
->>>>>>> .r1093
     l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
 
-    assert len(l)==4,l
-
-    return ( date, map(lambda x:1.0*x/sum(l),l)) # percentage
+    return ( date, map(lambda x:1.0*x/sum(l),l))
 
 def plot_level_distribution(data,data_path='.'):
 
@@ -440,7 +440,11 @@ def plot_level_distribution(data,data_path='.'):
     f_data = [[],[],[],[]]
     for t in data:
         for i,l in enumerate(f_data):
-            l.append((t[0],t[1][i]))
+            try:
+                l.append((t[0],t[1][i]))
+            except IndexError:
+                continue
+
     r = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0])
     prettyplot(f_data,path.join(data_path,'level distribution (%s %s)'%r),
                title='Level distribution',
@@ -560,7 +564,7 @@ eval = generate_eval(lambda G:avg(networkx.closeness_centrality(G,weighted_edges
 al(eval,plot_generic)#14
 fl[-1][0].__name__ = 'closeness_centrality-no-weighted_edges'
 
-eval = generate_eval(lambda G:avg(networkx.closeness_centrality(G,weighted_edges=True).values()))
+eval = generate_eval(lambda G:avg( networkx.closeness_centrality(G,weighted_edges=True).values() ) )
 
 al(eval,plot_generic)#15
 fl[-1][0].__name__ = 'closeness_centrality-yes-weighted_edges'
@@ -583,6 +587,17 @@ fl[-1][0].__name__ = 'degrees_of_separation'
 al(lambda G,d: (d,len(networkx.kosaraju_strongly_connected_components(G))),plot_generic)#20
 fl[-1][0].__name__ = 'number_connected_components_direct'
 
+#function used for script.. do not use it if you use trustlet as library
+def onlyMaster(e):
+    return e[2].values()[0]=='Master'
+
+def onlyMasterJourneyer(e):
+    return (e[2].values()[0]=='Master') or (e[2].values()[0]=='Journeyer') 
+
+def noObserver(e):
+    return e[2].values()[0]!='Observer'
+
+
 if __name__ == "__main__":    
     import sys,os
 
@@ -604,9 +619,14 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution.py startdate enddate networkname save_path [debug_path] [-s step] [--cacheonly]"
+        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-d debug_path]"
         print "    You can use '-' to skip {start,end}date"
         print "    step is the min numer of days between a computed network and the next one"
+        print "    -m: only master edges (work only with advogato-like network)"
+        print "    -mj: only master and journeyer edges (work only with advogato-like network)"
+        print "    -mja: master and journeyer and apprentice edges (work only with advogato-like network)"
+        print "    if you omit this command the computation will use all edges"
+        print "    debug_path: path to a file filled with debug informations"
         print "OR netevolution.py list"
         print "   Show all function's names"
         sys.exit(1)
@@ -624,17 +644,29 @@ if __name__ == "__main__":
     else:
         step = 0
 
+    cond_on_edge = None
+
+    if '-m' in sys.argv:
+        cond_on_edge = onlyMaster
+
+    if '-mj' in sys.argv:
+        cond_on_edge = onlyMasterJourneyer
+    
+    
+    if '-mja' in sys.argv:
+        cond_on_edge = noObserver
+
     
     range = (startdate,enddate,step)
 
-    if sys.argv[5:]:
-        debugfile = sys.argv[5]
+    if '-d' in sys.argv:
+        debugfile = sys.argv[sys.argv.index('-d')+1]
     else:
         debugfile = None
 
     mkpath(savepath)
 
-    data = evolutionmap( netname, [f[0] for f in fl], range, cacheonly, debugfile )
+    data = evolutionmap( netname, [f[0] for f in fl], cond_on_edge, range, cacheonly, debugfile )
     
     if not data:
         sys.exit(1)
