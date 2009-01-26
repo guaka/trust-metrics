@@ -445,6 +445,7 @@ def plot_level_distribution(data,data_path='.'):
             try:
                 l.append((t[0],t[1][i]))
             except IndexError:
+                print 'Warning: level_distribution skip',t[0]
                 continue
 
     r = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0])
