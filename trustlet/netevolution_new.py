@@ -663,6 +663,7 @@ if __name__ == "__main__":
 
     if '-d' in sys.argv:
         debugfile = sys.argv[sys.argv.index('-d')+1]
+        mkpath(os.path.split(debugfile)[0])
     else:
         debugfile = None
 
