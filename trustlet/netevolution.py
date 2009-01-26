@@ -452,7 +452,7 @@ def avgcontroversiality(K,min_in_degree=10):
             continue
 
         cont.append(
-            numpy.std([K.level_map[x[2].values()[0]] for x in in_edges])
+            numpy.std([K.level_map[x[2].values()[0]] for x in in_edges if x[2].keys()[0] == 'value']) # avoid distrust edges
             # We get the first value because the key is sometimes
             # 'value' and sometimes 'level'
         )

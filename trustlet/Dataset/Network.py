@@ -211,10 +211,17 @@ class Network(XDiGraph):
             desc = method
         print desc, getattr(self, method)()
         
-    def info(self):
-        """Show information."""
-        from trustlet.netevolution import fl as function_list
+    def quick_info(self):
         XDiGraph.info(self)
+
+    def info(self):
+        """
+        Show information.
+        NB: using this method after load_distrust, can produce different results,
+            because of the additional distrust_edges inserted in the the network by load_distrust.
+        """
+        from trustlet.netevolution import fl as function_list
+        self.quick_info()
         
         for method, desc in [("std_in_degree", "Std deviation of in-degree:"),
                              ("std_out_degree", "Std deviation of out-degree:"),
@@ -520,11 +527,16 @@ class WeightedNetwork(Network):
                 k = 'level'
             elif 'value' in d:
                 k = 'value'
+            elif 'distrust' in d:
+                k = 'distrust'
             else:
                 assert 0,'no key found '+str(d)
 
             if hasattr(self,'level_map') and self.level_map:
-                return self.level_map[d[k]]
+                try:
+                    return self.level_map[d[k]] # distrust is not in level_map... :(
+                except KeyError:
+                    return d[k]
             else:
                 return d[k]
 
