@@ -679,13 +679,6 @@ if __name__ == "__main__":
         if data_print != plot_generic:
             data_print(d,savepath)
 
-    #ta_plot( data[0], savepath )
-    #var_plot( data[1], savepath )
-    #plot_usersgrown( data[2], savepath )
-    #plot_numedges( data[3], savepath )
-    #plot_meandegree( data[4], savepath )
-    #plot_level_distribution( data[6], savepath )
-
     plot_generic(
         data[7],
         savepath, title='adverage clustering',
@@ -764,17 +757,6 @@ if __name__ == "__main__":
         savepath, title='percentage of users in main connected component',
         comment='eval = len(G.connected_components()[0]) / G.number_of_nodes()'
         )
-
-
-   # - dividere i vari livelli
-   # networkx.kosaraju_strongly_connected_components
-   # - grafi diretti e indiretti
-   #plot_generic(
-   #     data[19],
-   #     savepath, title='degrees of separation',
-   #     comment=''
-   #     )
-
 
     plot_generic(
         data[20],
