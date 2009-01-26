@@ -410,14 +410,18 @@ def level_distribution(K,date):
     d = dict(filter(lambda x:x[0],
                     map(lambda s: (s,
                                    len([e for e in K.edges_iter()
-                                        if e[2].values()[0] == s])),
+                                        if s in e[2].values()])),
                         K.level_map)))
+  
+
     #order k from higher to lower values (Master to Observer)
+    assert K.level_map,K.level_map
+    assert len(l)==4,l
     l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
 
     assert len(l)==4,l
 
-    return ( date, map(lambda x:1.0*x/sum(l),l))
+    return ( date, map(lambda x:1.0*x/sum(l),l)) # percentage
 
 def plot_level_distribution(data,data_path='.'):
 
