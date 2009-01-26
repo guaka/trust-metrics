@@ -415,8 +415,12 @@ def level_distribution(K,date):
   
 
     #order k from higher to lower values (Master to Observer)
+<<<<<<< .mine
+    assert K.level_map,K.level_map
+=======
     assert K.level_map,K.level_map
     assert len(l)==4,l
+>>>>>>> .r1093
     l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
 
     assert len(l)==4,l
