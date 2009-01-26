@@ -419,7 +419,7 @@ def level_distribution(K,date):
     d = dict(filter(lambda x:x[0],
                     map(lambda s: (s,
                                    len([e for e in K.edges_iter()
-                                        if s in e[2].values()]),
+                                        if s in e[2].values()])),
                         K.level_map)))
 
     #order k from higher to lower values (Master to Observer)
