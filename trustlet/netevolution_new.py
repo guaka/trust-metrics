@@ -92,6 +92,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
     def task(date):
         resdict = {} #dict of result
         calcfunctions = []
+        recompute = set(['level_distribution'])
 
         #try to find the functions cached
         for i in xrange(len(functions)):
@@ -108,7 +109,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 #check on type of data in cache
 
                 #sys.stderr.write('cache hit\n')
-                if functions[i].__name__=='level_distribution':
+                if functions[i].__name__ in recompute:
                     calcfunctions.append(functions[i])
                 else:
                     resdict[functions[i].__name__] = cache
