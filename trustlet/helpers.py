@@ -761,9 +761,12 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
     """
 
     if not np:
-        np = getnp()
-        if not np:
-            np = 4
+        if sys.environ.has_key('NP'):
+            np = int(sys.environ['NP'])
+        else:
+            np = getnp()
+            if not np:
+                np = 2
 
     result = []
     pipes = []
