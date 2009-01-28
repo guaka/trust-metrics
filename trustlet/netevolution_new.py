@@ -93,9 +93,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         resdict = {} #dict of result
         calcfunctions = []
 
-        #debug
-        calcfunctions.append(degrees_of_separation)
-
         #try to find the functions cached
         for i in xrange(len(functions)):
             assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
@@ -111,7 +108,10 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 #check on type of data in cache
 
                 #sys.stderr.write('cache hit\n')
-                resdict[functions[i].__name__] = cache
+                if functions[i].__name__=='level_distribution':
+                    calcfunctions.append(functions[i])
+                else:
+                    resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
             elif not cacheonly:
                 #eprint(cachekey)
@@ -230,9 +230,10 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
             if function.__name__!='<lambda>':
                 print 'Task:',function.__name__,"on date:",date
 
-            
+            res = function(K,date)
             try:
-                res = function(K,date)
+                pass
+                #res = function(K,date)
             except Exception,e:
                 if debug:
                     deb = file( debug, 'a' )
@@ -327,7 +328,7 @@ def ta_plot(ta, dpath, filename="trustAverage"):
                          '>>> trustAverage( fromdate, todate, dpath, noObserver=False )'
             ]
                 )
-al(trustaverage,ta_plot)
+al(trustaverage,ta_plot)#0
 
     
 def trustvariance( K, d ):
@@ -350,7 +351,7 @@ def var_plot(var, dpath, filename="trustVariance"):
                 comment=['Network: Advogato',
                          '>>> trustAverage( fromdate, todate, dpath, noObserver=False )']
                 )
-al(trustvariance,var_plot)
+al(trustvariance,var_plot)#1
 
 def usersgrown(K,date):
         '''
@@ -372,7 +373,7 @@ def plot_usersgrown(data,data_path='.'):
                showlines=True,
                comment='Network: Advogato'
                )
-al(usersgrown,plot_usersgrown)
+al(usersgrown,plot_usersgrown)#2
 
 def numedges(K,date):
     '''
@@ -394,7 +395,7 @@ def plot_numedges(data,dpath='.'):
                showlines=True,
                comment=['Network: Advogato','>>> plot_numedges(numedges(...))']
                )
-al(numedges,plot_numedges)
+al(numedges,plot_numedges)#3
 
 def meandegree(K,date):
     return ( date,K.avg_degree() )
@@ -408,10 +409,10 @@ def plot_meandegree(data,data_path='.'):
                comment=['Network: Advogato','>>> plot_meandegree(meandegree(...))']
                )
 
-al(meandegree,plot_meandegree)
+al(meandegree,plot_meandegree)#4
 
 def level_distribution(K,date):
-    """sa
+    """
     see AdvogatoNetwork class
     this code (d = dict(...)) is copyed from there
     """
@@ -429,7 +430,11 @@ def level_distribution(K,date):
     assert K.level_map,K.level_map
 
     l = [d[k] for k,v in sorted(K.level_map.items(),lambda x,y: cmp(y[1],x[1])) if k and d[k]]
-
+    #temp: doesn't' work if: e.g. [0, a, b, c] -> becomes [a, b, c, 0]
+    if len(l)<4:
+        l += [0]*4
+        l = l[:4]
+    assert len(l)==4,l
     return ( date, map(lambda x:1.0*x/sum(l),l))
 
 def plot_level_distribution(data,data_path='.'):
@@ -461,7 +466,7 @@ def plot_level_distribution(data,data_path='.'):
                comment=['Network: Advogato',
                         '>>> plot_level_distribution(level_distribution(...))']
                )
-al(level_distribution,plot_level_distribution)
+al(level_distribution,plot_level_distribution)#5
 
 def avgcontroversiality(K,min_in_degree=10):
     '''
