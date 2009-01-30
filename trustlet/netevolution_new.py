@@ -92,7 +92,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
     def task(date):
         resdict = {} #dict of result
         calcfunctions = []
-        recompute = set(['level_distribution'])
+        recompute = set(['level_distribution','degrees_of_separation'])
 
         #try to find the functions cached
         for i in xrange(len(functions)):
