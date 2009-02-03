@@ -761,8 +761,8 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
     """
 
     if not np:
-        if sys.environ.has_key('NP'):
-            np = int(sys.environ['NP'])
+        if os.environ.has_key('NP'):
+            np = int(os.environ['NP'])
         else:
             np = getnp()
             if not np:
@@ -1132,7 +1132,7 @@ def safe_save(key,data,path):
     
     return save(key,data,path,threadsafe=False)
 
-def safe_merge(path):
+def safe_merge(path,delete=True):
     '''
     merge files created by safe_save into the original c2 (path)
     '''
@@ -1152,7 +1152,8 @@ def safe_merge(path):
     for file in files:
         file = os.path.join(path,file)
         merge_cache(file,fullpath,ignoreerrors=True,priority=1)
-        os.remove(file)
+        if delete:
+            os.remove(file)
 
 def load(key,path='.',fault=None):
     """
