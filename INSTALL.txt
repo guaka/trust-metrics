@@ -68,3 +68,19 @@ Uncomment universe stuff in /etc/apt/sources.list
   # now do the pydot thing
   easy_install numpy
 
+== Script install == 
+
+If you want to install script utilities in you /usr/bin directory,
+you must enter in 'scripts', and in 'trustlet' folder and type only 'make'.
+
+If you type make in scripts folder will be installed those script:
+
+wikixml2graph
+sync_trustlet
+syncrm_trustlet
+lsc2
+dot2c2
+
+if you type make in trustlet folder will be installed this script:
+
+netevolution

@@ -495,6 +495,10 @@ class WeightedNetwork(Network):
         return node_controversy_list
         
     def show_reciprocity_matrix(self):
+        """ show table with reciprocity, does not work with wikinetwork """
+        if self.__class__.__name__ == 'WikiNetwork':
+            raise Exception( "Not implemented" )
+
         if self.has_discrete_weights:
             recp_mtx = self.reciprocity_matrix()
             tbl = Table([12] + [12] * len(self.weights()))
