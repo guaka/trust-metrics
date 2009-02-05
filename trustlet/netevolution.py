@@ -92,7 +92,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
     def task(date):
         resdict = {} #dict of result
         calcfunctions = []
-        recompute = set(['level_distribution'])
+        recompute = set()
 
         #try to find the functions cached
         for i in xrange(len(functions)):
@@ -646,7 +646,9 @@ if __name__ == "__main__":
         print "useful to see the grown of the network in an interval of time"
         print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-d debug_path]"
         print "    You can use '-' to skip {start,end}date"
-        print "    step is the min numer of days between a computed network and the next one"
+        print "    networkname: the name of the folder in ~/datasets/ that contains the network ex. AdvogatoNetwork"
+        print "    savepath: the path in which this script save the .gnuplot and the .png files"
+        print "    -s: step is the min numer of days between a computed network and the next one"
         print "    -m: only master edges (work only with advogato-like network)"
         print "    -mj: only master and journeyer edges (work only with advogato-like network)"
         print "    -mja: master and journeyer and apprentice edges (work only with advogato-like network)"
