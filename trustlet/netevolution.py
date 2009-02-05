@@ -367,7 +367,7 @@ def plot_usersgrown(data,data_path='.'):
     '''
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
-    prettyplot(data,path.join(data_path,'usersgrown (%s %s)'%(fromdate,todate)),
+    prettyplot(data,path.join(data_path,'usersgrown_(%s_%s)'%(fromdate,todate)),
                title='Users Grown',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of users',
@@ -389,7 +389,7 @@ def plot_numedges(data,dpath='.'):
     '''
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
-    prettyplot(data,path.join(dpath,'numedges (%s %s)'%(fromdate,todate)),
+    prettyplot(data,path.join(dpath,'numedges_(%s_%s)'%(fromdate,todate)),
                title='Number of edges',
                xlabel='date [s] (from %s to %s)'%(fromdate,todate),
                ylabel='n. of edges',
@@ -405,7 +405,7 @@ def meandegree(K,date):
 def plot_meandegree(data,data_path='.'):
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
-    prettyplot(data, path.join( data_path,'meandegree (%s %s)'%(fromdate,todate) ),
+    prettyplot(data, path.join( data_path,'meandegree_(%s_%s)'%(fromdate,todate) ),
                showlines=True,
                comment=['Network: Advogato','>>> plot_meandegree(meandegree(...))']
                )
@@ -458,7 +458,7 @@ def plot_level_distribution(data,data_path='.'):
                 continue
 
     r = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0])
-    prettyplot(f_data,path.join(data_path,'level distribution (%s %s)'%r),
+    prettyplot(f_data,path.join(data_path,'level_distribution_(%s_%s)'%r),
                title='Level distribution',
                xlabel='dates (from %s to %s)'%r,
                ylabel='percentage of edges',
@@ -514,7 +514,7 @@ def plot_generic(data,data_path='.',title='',comment=''):
         title = 'Untitled'
     prettyplot(
         data,
-        path.join(data_path,'%s (%s %s)'%(title,fromdate,todate)),
+        path.join(data_path,'%s_(%s_%s)'%(title,fromdate,todate)),
         title=title,
         showlines=True,
         comment=comment,
