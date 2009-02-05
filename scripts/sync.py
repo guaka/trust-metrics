@@ -22,9 +22,11 @@ sync.py [basepath] [other options]
  - path can be a dir or a file
 
 Options:
-   --no-update: no svn update. ¡¡¡ Dangerous option !!!
-   --no-upload: no upload generated files
+   --no-update:  no svn update. ¡¡¡ Dangerous option !!!
+   --no-upload:  no upload generated files
    --verbose | -v
+
+Is *dangeous* executes sync while someone uses cache.
 '''
 
 import os
@@ -35,7 +37,7 @@ import re
 import time
 from socket import gethostname
 
-from trustlet.helpers import merge_cache,mkpath,md5file,relative_path
+from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge
 
 HOME = os.environ['HOME']
 HOSTNAME = gethostname()
@@ -61,7 +63,7 @@ def svnadd(p):
 
 def svnaddpath(p):
     
-    assert path.abspath(p)!='/',p
+    assert path.abspath(p)!=os.path.sep,p
 
     if path.isdir(path.join(p,'.svn')):
         return True
@@ -183,13 +185,9 @@ def merge(svn,datasets,upload=True):
         if '.svn' in dirpath:
             continue
 
-        # Seems that in dirnames there are some filenames and viceversa.
-        test = (dirnames,filenames)
         names = dirnames + filenames
         dirnames = [x for x in names if path.isdir(path.join(dirpath,x))]
         filenames = [x for x in names if path.isfile(path.join(dirpath,x))]
-        assert (dirnames,filenames)==test,'Seems that in dirnames there are some filenames and viceversa.'
-        #
 
         destbasepath = dirpath.replace(svn,datasets)
         
@@ -249,9 +247,19 @@ def merge(svn,datasets,upload=True):
                 print 'Directory %s will not uploaded' % path.split(dirpath)[1]
                 continue
 
+            # merge locally c2 files ( name.\d+.c2 into name.c2 )
+
+            for filename in filenames:
+                srcpath = path.join(dirpath,filename)
+                if srcpath.endswith('.c2') and path.exists(srcpath):
+                    #print 'Merge:',srcpath
+                    safe_merge(srcpath)
+
             for filename in filenames:
 
                 srcpath = path.join(dirpath,filename)
+                if not path.exists(srcpath):
+                    continue #merging c2 can erase files
                 dstpath = path.join(destbasepath,filename)
                 # relative path, without HOME/(.)datasets
                 rpath = relative_path(srcpath,DIR)[1]
