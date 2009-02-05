@@ -609,7 +609,7 @@ al(degrees_of_separation,plot_generic)#19
 al(lambda G,d: (d,len(networkx.kosaraju_strongly_connected_components(G))),plot_generic)#20
 fl[-1][0].__name__ = 'number_connected_components_direct'
 
-al(lambda G,d: (d, G.link_reciprocity() ))#21
+al(lambda G,d: (d, G.link_reciprocity() ),plot_generic )#21
 fl[-1][0].__name__='link_reciprocity %'
 
 #function used for script.. do not use it if you use trustlet as library
