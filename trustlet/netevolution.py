@@ -610,7 +610,14 @@ al(lambda G,d: (d,len(networkx.kosaraju_strongly_connected_components(G))),plot_
 fl[-1][0].__name__ = 'number_connected_components_direct'
 
 al(lambda G,d: (d, G.link_reciprocity() ),plot_generic )#21
-fl[-1][0].__name__='link_reciprocity %'
+fl[-1][0].__name__='link_reciprocity_perc'
+
+
+al(
+    lambda G,d: (d,1.0*len(networkx.kosaraju_strongly_connected_components(G)[0])/G.number_of_nodes()),
+    plot_generic)#22
+fl[-1][0].__name__ = 'percentage_of_users_in_main_strongly_cc'
+
 
 #function used for script.. do not use it if you use trustlet as library
 def onlyMaster(e):
