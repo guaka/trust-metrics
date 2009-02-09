@@ -54,6 +54,7 @@ class Network(XDiGraph):
 
         XDiGraph.__init__(self, multiedges = False)
         self.filepath = ''
+        self.filename = ''
         self.values_on_edges = False
         if make_base_path:
 
@@ -133,6 +134,13 @@ class Network(XDiGraph):
             self.paste_graph( net, cond_on_edge=cond_on_edge ) #copy the graph loaded in self
             
         return True
+
+    def _name(self):
+        """
+        return name of the network
+        """
+        name = self._name_lowered()
+        return name[0].upper()+name[1:] #up only first letter
     
     def _name_lowered(self):
         """Helper for url."""
@@ -519,17 +527,26 @@ class WeightedNetwork(Network):
                 return e
             else:
                 return e.values()[0]
+            
+        data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, self.filepath, fault=False)
         
+        if data:                # if data is not false
+            return data
+
         if self.has_discrete_weights:
             table = {}
             for v in self.weights().keys():
-                line = []
+                line = {}
                 for w in self.weights().keys():
-                    line.append(sum([value_on_edge(self.get_edge(e[1], e[0])) == w
+                    line[w] = sum([value_on_edge(self.get_edge(e[1], e[0])) == w
                                      for e in self.edges_iter()
                                      if (self.has_edge(e[1], e[0]) and 
-                                         value_on_edge(e[2]) == v)]))
+                                         value_on_edge(e[2]) == v)])
                 table[v] = line
+
+            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, self.filepath ):
+                print "Warning! save of cache failed"
+
             return table
         else:
             raise Exception( "Not implemented" )

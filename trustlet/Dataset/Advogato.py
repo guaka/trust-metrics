@@ -144,13 +144,6 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         if comp_threshold:
             self.ditch_components(comp_threshold)
 
-    def _name(self):
-        """
-        return Advogato, or Squeakfoundation, or Kaitiaki..
-        """
-        name = self._name_lowered()
-        return name[0].upper()+name[1:] #up only first letter
-
     def trust_on_edge(self, edge):
         """Trust level on edge."""
         return self.level_map[edge[2].values()[0]]  # ['level']]
@@ -165,7 +158,6 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
     def level_distribution(self):
         return filter(lambda x:x[0],map(lambda s: (s, len([e for e in self.edges_iter()
                                       if e[2].values()[0] == s])), self.level_map.keys()))
-        
 
     def __convert(self):
         """

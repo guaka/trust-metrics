@@ -475,6 +475,7 @@ def plot_level_distribution(data,data_path='.'):
                comment=['Network: Advogato',
                         '>>> plot_level_distribution(level_distribution(...))']
                )
+
 al(level_distribution,plot_level_distribution)#5
 
 def avgcontroversiality(K,min_in_degree=10):
@@ -640,6 +641,54 @@ al(
     plot_generic)#23
 fl[-1][0].__name__ = 'percentage_of_users_in_main_strongly_cc'
 
+
+def plot_reciprocity_on_level_distribution(data,data_path='.'):
+    # from [(d,{'level1':{'level1':value,'level2':value...},'level2':{....}....})]
+    # to [ [(d,val_for_level1), (d,val_for_level2), ....], [(d1:val_for_level1), ... ]
+    
+    trustlet.helpers.mkpath( path.join(data_path,'reciprocity_level_distribution') )
+
+    ll = [] #list relative to one level (Advogato..etc)
+    lv = sorted( list(data[0][1]) ) #list of keys
+    lvlen = len(lv)
+
+    dmin,dmax = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0]) #range of date
+    r = (dmin,dmax)
+
+    for i in xrange(lvlen): #set lenght of list equal to number of level
+        ll.append([])
+
+    for graph in lv:            # select at which level you would refer
+        
+        if not graph: #skip empty value
+            continue
+
+        for date,values in data:        # foreach key in main dictionary
+            for i,kod in enumerate(lv): # foreach KeyOnDictionary (internal dictionary)
+                try:
+                    ll[i].append((date,values[graph][kod])) 
+                except:
+                    print 'Warning: reciprocity_level_distribution skip how many ', graph, "reciprocate with", kod
+                    continue
+
+        # print graph
+        prettyplot(ll,path.join(data_path,'reciprocity_level_distribution','reciprocity_on_%s_(%s_%s)'%(graph,dmin,dmax)),
+                   title='Reciprocity for level %s'%graph,
+                   xlabel='dates (from %s to %s)'%r,
+                   ylabel='number of reciprocation for each level',
+                   legend=lv,
+                   showlines=True,
+                   comment=['Network: Advogato',
+                            '>>> plot_reciprocity_on_level_distribution(G.reciprocity_matrix(...))']
+                   )
+        #clean up lists
+        for i in xrange(lvlen):
+            ll[i] = []
+    
+
+al(
+    lambda G,d: (d, G.reciprocity_matrix()), plot_reciprocity_on_level_distribution )
+fl[-1][0].__name__ = 'reciprocity_on_level_distribution'
 
 #function used for script.. do not use it if you use trustlet as library
 def onlyMaster(e):

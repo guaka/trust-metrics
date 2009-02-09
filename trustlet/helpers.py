@@ -1032,6 +1032,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
     If path ends with '.c2' (cache version 2) 
     data will save in the new format (less files).
     human is not suported in the new format.
+    return: true in case of success, false in other cases
     """
 
     #debug
