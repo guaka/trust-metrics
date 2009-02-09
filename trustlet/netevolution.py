@@ -189,8 +189,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
             if K.number_of_nodes() == 0 or K.number_of_edges() == 0:
                 if debug:
                     deb = file( debug, 'a' )
-                    deb.write( "WARNING!: the network "+ton+" at date "+date+" may be wrong! check it\n" )
+                    deb.write( "ERROR!: the network "+ton+" at date "+date+" may be wrong! check it\n" )
                     deb.close()
+                assert 0, "ERROR!: the network "+ton+" at date "+date+" may be wrong! check it\n"
 
         elif path.exists( path.join(lpath,date,'graphHistory.c2') ):
             #load network
@@ -421,11 +422,15 @@ def level_distribution(K,date):
     # we use values()[0] instead of the key of dict because sometimes
     # the key is 'value' and sometimes it's 'level'
     # *need to fix this*
+    # d is the number of times that each level appear in K.edges
     d = dict(filter(lambda x:x[0],
                     map(lambda s: (s,
                                    len([e for e in K.edges_iter()
                                         if s in e[2].values()])),
-                        K.level_map)))
+                        K.level_map
+                        )
+                    )
+             )
 
     #order k from higher to lower values (Master to Observer)
     assert K.level_map,K.level_map
@@ -435,7 +440,10 @@ def level_distribution(K,date):
     if len(l)<4:
         l += [0]*4
         l = l[:4]
+
     assert len(l)==4,l
+    assert sum(l)!=0,l
+
     return ( date, map(lambda x:1.0*x/sum(l),l))
 
 def plot_level_distribution(data,data_path='.'):
