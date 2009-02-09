@@ -267,7 +267,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         np = 1
     else:
         np = None
-    data_ordered = splittask(task,dates,notasksout=True,np = np )
+    data_ordered = splittask(task,dates,notasksout=False,np = np )
     safe_merge(path.join(lpath,cachepath))
     nd = len( dates )
     nf = len( functions )
@@ -612,10 +612,24 @@ fl[-1][0].__name__ = 'number_connected_components_direct'
 al(lambda G,d: (d, G.link_reciprocity() ),plot_generic )#21
 fl[-1][0].__name__='link_reciprocity_perc'
 
+def degrees_of_separation_undirected(G,d):
+    K = G.to_undirected()
+    nodes = set( networkx.strongly_connected_components(K)[0] )
+    pathsl = []
+
+    for n in nodes:
+        nodes.remove(n)
+        for m in nodes:
+            pathsl.append(len(networkx.shortest_path(K,n,m)))
+        nodes.add(n)
+
+    return (d,avg(pathsl))
+
+al(degrees_of_separation_undirected, plot_generic) #22
 
 al(
     lambda G,d: (d,1.0*len(networkx.kosaraju_strongly_connected_components(G)[0])/G.number_of_nodes()),
-    plot_generic)#22
+    plot_generic)#23
 fl[-1][0].__name__ = 'percentage_of_users_in_main_strongly_cc'
 
 
@@ -713,7 +727,7 @@ if __name__ == "__main__":
 
     plot_generic(
         data[7],
-        savepath, title='adverage clustering',
+        savepath, title='average_clustering',
         comment='networkx.average_clustering(G)'
         )
 
@@ -738,61 +752,61 @@ if __name__ == "__main__":
 
     plot_generic(
         data[11],
-        savepath, title='betweenness_centrality yes-normalized no-weighted_edges',
+        savepath, title='betweenness_centrality_yes-normalized_no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=False).values())'
         )
 
     plot_generic(
         data[12],
-        savepath, title='betweenness_centrality yes-normalized yes-weighted_edges',
+        savepath, title='betweenness_centrality_yes-normalized_yes-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                 '(G,normalized=True,weighted_edges=True).values())'
         ) 
 
     plot_generic(
         data[13],
-        savepath, title='betweenness_centrality no-normalized no-weighted_edges',
+        savepath, title='betweenness_centrality_no-normalized_no-weighted_edges',
         comment='eval = avg(nx.betweenness_centrality'
                '(G,normalized=False,weighted_edges=False).values())'
         )
 
     plot_generic(
         data[14],
-        savepath, title='closeness_centrality no-weighted_edges',
+        savepath, title='closeness_centrality_no-weighted_edges',
         comment='eval = avg(nx.closeness_centrality'
                 '(G,weighted_edges=False).values())'
         )
 
     plot_generic(
         data[15],
-        savepath, title='closeness_centrality yes-weighted_edges',
+        savepath, title='closeness_centrality_yes-weighted_edges',
         comment='eval = avg(nx.closeness_centrality'
                 '(G,weighted_edges=True).values())'
         )
 
     plot_generic(
         data[16],
-        savepath, title='newman betweenness centrality',
+        savepath, title='newman_betweenness_centrality',
         comment='eval = avg(networkx.newman_betweenness_centrality(G).values())'
         )
 
     plot_generic(
         data[17],
-        savepath, title='number_connected_components (undirect graph)',
+        savepath, title='number_connected_components_(undirect_graph)',
         comment='eval = nx.number_connected_components(G.to_undirected())'
         )
 
 
     plot_generic(
         data[18],
-        savepath, title='percentage of users in main connected component',
+        savepath, title='percentage_of_users_in_main_connected_component',
         comment='eval = len(G.connected_components()[0]) / G.number_of_nodes()'
         )
 
     plot_generic(
         data[19],
-        savepath, title='mean degrees of separation',
+        savepath, title='mean_degrees_of_separation',
         comment='''nodes = set(networkx.kosaraju_strongly_connected_components(G)[0])
 pathsl = []
 
@@ -806,14 +820,14 @@ return (d,avg(pathsl))'''
 
     plot_generic(
         data[20],
-        savepath, title='number_connected_components (direct graph)',
+        savepath, title='number_connected_components_(direct_graph)',
         comment='eval = len(networkx.kosaraju_strongly_connected_components(G))'
         )
 
 
     plot_generic(
         data[6],
-        savepath, title='avg of standard deviation in received trust (in degree=20)',
+        savepath, title='avg_of_standard_deviation_in_received_trust_(in_degree=20)',
         comment='''\
 cont = [] # controversiality array
 
@@ -834,6 +848,34 @@ return avg(cont)'''
 
     plot_generic(
         data[21],
-        savepath, title='link reciprocity in percentage',
+        savepath, title='link_reciprocity_in_percentage',
         comment="eval = G.link_reciprocity()"
+        )
+
+    plot_generic(
+        data[22],
+        savepath, title='degrees_of_separations_undirected',
+        comment=
+        """ 
+G = G.to_undirected()
+nodes = set(networkx.strongly_connected_components(G)[0])
+pathsl = []
+
+for n in nodes:
+    nodes.remove(n)
+    for m in nodes:
+        pathsl.append(len(networkx.shortest_path(G,n,m)))
+    nodes.add(n)
+return (d,avg(pathsl))"""
+        )
+
+
+    plot_generic(
+        data[23],
+        savepath, title='percentage_of_users_in_main_strongly_cc',
+        comment="""
+al(
+    lambda G,d: (d,1.0*len(networkx.kosaraju_strongly_connected_components(G)[0])/G.number_of_nodes()),
+    plot_generic)
+"""
         )

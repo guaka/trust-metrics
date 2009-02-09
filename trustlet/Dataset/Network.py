@@ -336,8 +336,13 @@ class Network(XDiGraph):
             for node in graph.nodes_iter():
                 self.add_node(node)
 
-            for edge in [x for x in graph.edges() if cond(x)]:
-                self.add_edge(edge)
+            for edge in graph.edges_iter():
+                # if the conditions is not statisfied, the nodes will be added (because if not, the graph is different from the original)
+                if not cond(edge):  
+                    self.add_node(edge[0])
+                    self.add_node(edge[1])
+                else:
+                    self.add_edge(edge) # if we add an edge the nodes will be automatically added
     
     def _paste_graph(self, graph, avoidset=None):
         """Deprecated."""
