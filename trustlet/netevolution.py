@@ -37,7 +37,8 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
     return a list of list of values where each list of the first
                 list represent a function 'i', and the values in
                 this i-list are the i-function returned values for each network in
-                range
+                range.
+                or None in case of error.
     '''
     #we load network from datasets
     lpath = os.path.join(os.environ['HOME'],'datasets',networkname)
@@ -86,13 +87,15 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
 
     if len(dates)==1:
         print 'There is a network'
-    else:
+    elif len(dates) > 1:
         print 'There are %d networks' % len(dates)
+    else:
+        print "There are no network. Exiting"
+        return None
 
     def task(date):
         resdict = {} #dict of result
         calcfunctions = []
-        recompute = set()
 
         #try to find the functions cached
         for i in xrange(len(functions)):
@@ -107,12 +110,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
             #cache = None # debug
             if cache and type(cache) is tuple and isdate(cache[0]):
                 #check on type of data in cache
-
-                #sys.stderr.write('cache hit\n')
-                if functions[i].__name__ in recompute:
-                    calcfunctions.append(functions[i])
-                else:
-                    resdict[functions[i].__name__] = cache
+                resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
             elif not cacheonly:
                 #eprint(cachekey)
@@ -140,8 +138,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
             else:
                 print "ERROR!: problem in path! is this path correct? "+lpath
             return None
-                
-        print ton
         
         if debug:
             deb = file( debug, 'a' )
@@ -174,8 +170,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 #try with _ if there isn't in normal path
                 #(because sync does not upload folder with _ prefix)
             
-            print 'K is a %s' % K.__class__.__name__
-    
             if not K:
                 if debug:
                     deb = file( debug, 'a' )
@@ -229,13 +223,8 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 deb.write( "processing "+date+"\non function "+function.__name__+"\n" )
                 deb.close()
 
-            if function.__name__!='<lambda>':
-                print 'Task:',function.__name__,"on date:",date
-
-            res = function(K,date)
             try:
-                pass
-                #res = function(K,date)
+                res = function(K,date)
             except Exception,e:
                 if debug:
                     deb = file( debug, 'a' )
@@ -653,7 +642,6 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
     lvlen = len(lv)
 
     dmin,dmax = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0]) #range of date
-    r = (dmin,dmax)
 
     for i in xrange(lvlen): #set lenght of list equal to number of level
         ll.append([])
@@ -665,18 +653,25 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
 
         for date,values in data:        # foreach key in main dictionary
             for i,kod in enumerate(lv): # foreach KeyOnDictionary (internal dictionary)
-                try:
+                if values[graph][kod] != 0: 
+                    #if values is 0, the key could be unused in network..
+                    # in every case, the value '0' is not significative.
                     ll[i].append((date,values[graph][kod])) 
-                except:
-                    print 'Warning: reciprocity_level_distribution skip how many ', graph, "reciprocate with", kod
-                    continue
+                    
+        rlv = [] # real list of significative value
+
+        for i in xrange(lvlen): #delete all graphic that is always 0 from legend
+            if ll[i]:
+                rlv.append( x ) 
+            else:
+                del ll[i]
 
         # print graph
         prettyplot(ll,path.join(data_path,'reciprocity_level_distribution','reciprocity_on_%s_(%s_%s)'%(graph,dmin,dmax)),
                    title='Reciprocity for level %s'%graph,
-                   xlabel='dates (from %s to %s)'%r,
+                   xlabel='dates (from %s to %s)'%(dmin,dmax),
                    ylabel='number of reciprocation for each level',
-                   legend=lv,
+                   legend=rlv,
                    showlines=True,
                    comment=['Network: Advogato',
                             '>>> plot_reciprocity_on_level_distribution(G.reciprocity_matrix(...))']
