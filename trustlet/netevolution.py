@@ -257,7 +257,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         np = 1
     else:
         np = None
-    data_ordered = splittask(task,dates,notasksout=False,np = np )
+    data_ordered = splittask(task,dates,notasksout=True,np = np )
     safe_merge(path.join(lpath,cachepath))
     nd = len( dates )
     nf = len( functions )
@@ -430,7 +430,7 @@ def level_distribution(K,date):
         l += [0]*4
         l = l[:4]
 
-    assert len(l)==4,l
+    #assert len(l)==4,l
     assert sum(l)!=0,l
 
     return ( date, map(lambda x:1.0*x/sum(l),l))
@@ -653,25 +653,14 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
 
         for date,values in data:        # foreach key in main dictionary
             for i,kod in enumerate(lv): # foreach KeyOnDictionary (internal dictionary)
-                if values[graph][kod] != 0: 
-                    #if values is 0, the key could be unused in network..
-                    # in every case, the value '0' is not significative.
-                    ll[i].append((date,values[graph][kod])) 
+                ll[i].append((date,values[graph][kod])) 
                     
-        rlv = [] # real list of significative value
-
-        for i in xrange(lvlen): #delete all graphic that is always 0 from legend
-            if ll[i]:
-                rlv.append( x ) 
-            else:
-                del ll[i]
-
         # print graph
         prettyplot(ll,path.join(data_path,'reciprocity_level_distribution','reciprocity_on_%s_(%s_%s)'%(graph,dmin,dmax)),
                    title='Reciprocity for level %s'%graph,
                    xlabel='dates (from %s to %s)'%(dmin,dmax),
                    ylabel='number of reciprocation for each level',
-                   legend=rlv,
+                   legend=lv,
                    showlines=True,
                    comment=['Network: Advogato',
                             '>>> plot_reciprocity_on_level_distribution(G.reciprocity_matrix(...))']

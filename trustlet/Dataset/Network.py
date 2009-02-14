@@ -10,7 +10,7 @@ Each network supported has it's own class to wrap it.
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
 import trustlet
-
+import sys
 import networkx
 
 import os
@@ -234,6 +234,27 @@ class Network(XDiGraph):
         NB: using this method after load_distrust, can produce different results,
             because of the additional distrust_edges inserted in the the network by load_distrust.
         """
+        #cache enabled only if c2
+        if self.filepath.endswith( '.c2' ):
+            # cache
+            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, self.filepath, fault=False)
+            
+            if data:  # if data is not false
+                print data
+                return None
+
+            stdout = sys.stdout
+        
+            # turn down warning
+            stderr = sys.stderr
+            sys.stderr = file( '/dev/null', 'w' )
+            tmpnam = os.tmpnam()
+            sys.stderr = stderr
+            
+            tmpfile = file( tmpnam, 'w' ) #set temporary buffer
+        
+            sys.stdout = tmpfile #save all output in a temporary file
+
         from trustlet.netevolution import fl as function_list
         self.quick_info()
         
@@ -257,6 +278,25 @@ class Network(XDiGraph):
         for (f,pf) in function_list.__iter__():
             print f.__name__, ":", f(self,self.date)[1]
             
+        #cache enabled only if c2
+        if self.filepath.endswith( '.c2' ):
+            
+            sys.stdout = stdout #restore stdout
+            tmpfile.close() #flush buffer
+
+            buffer = ''
+            for line in file( tmpnam ).readlines():
+                buffer += line
+                
+            print buffer
+            print self.filepath
+
+            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, self.filepath ):
+                print "Warning! save of cache failed"
+
+        return None
+
+
         
     def powerlaw_exponent(self):
         return power_exp_cum_deg_hist(self)
@@ -527,12 +567,13 @@ class WeightedNetwork(Network):
                 return e
             else:
                 return e.values()[0]
-            
-        data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, self.filepath, fault=False)
         
-        if data:                # if data is not false
-            return data
-
+        if self.filepath.endswith( '.c2' ):
+            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, self.filepath, fault=False)
+        
+            if data:                # if data is not false
+                return data
+               
         if self.has_discrete_weights:
             table = {}
             for v in self.weights().keys():
@@ -544,8 +585,9 @@ class WeightedNetwork(Network):
                                          value_on_edge(e[2]) == v)])
                 table[v] = line
 
-            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, self.filepath ):
-                print "Warning! save of cache failed"
+            if self.filepath.endswith( '.c2' ):
+                if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, self.filepath ):
+                    print "Warning! save of cache failed"
 
             return table
         else:
