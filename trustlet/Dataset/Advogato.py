@@ -189,7 +189,9 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
                           "set 'download' parameter to True" % self.dotpath)
         else:
             if only_if_needed and (not os.path.exists(self.filepath)):
+                
                 self.download_file(self.url, self.dotfile)
+                
                 self.fix_graphdot()
                 self.__convert()
                     

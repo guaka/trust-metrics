@@ -168,9 +168,8 @@ class Network(XDiGraph):
                 f.write(asock.read())
                 f.close()
                 asock.close()
-            except urllib2.HTTPError, e:
-                print e.code
-                print "Cannot download dataset, for a complete list of it, go to ", os.path.split( os.path.split( url )[0] )[0]
+            except urllib2.HTTPError:
+                raise IOError( "Cannot download dataset, for a complete list of it, go to "+os.path.split( os.path.split( url )[0] )[0] )
 
     def add_edge_savememory(self,u,v=None,e=None):
         '''
@@ -234,26 +233,35 @@ class Network(XDiGraph):
         NB: using this method after load_distrust, can produce different results,
             because of the additional distrust_edges inserted in the the network by load_distrust.
         """
+        
         #cache enabled only if c2
-        if self.filepath.endswith( '.c2' ):
-            # cache
-            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, self.filepath, fault=False)
-            
-            if data:  # if data is not false
-                print data
-                return None
+        tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+        if tp:
+            path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+        else:
+            raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
+        
+        if not self.filepath.endswith( '.c2' ):
+            path += '.c2'
 
-            stdout = sys.stdout
-        
-            # turn down warning
-            stderr = sys.stderr
-            sys.stderr = file( '/dev/null', 'w' )
-            tmpnam = os.tmpnam()
-            sys.stderr = stderr
+        # cache
+        data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, path, fault=False)
             
-            tmpfile = file( tmpnam, 'w' ) #set temporary buffer
+        if data:  # if data is not false
+            print data
+            return None
         
-            sys.stdout = tmpfile #save all output in a temporary file
+        stdout = sys.stdout
+        
+        # turn down warning
+        stderr = sys.stderr
+        sys.stderr = file( '/dev/null', 'w' )
+        tmpnam = os.tmpnam()
+        sys.stderr = stderr
+            
+        tmpfile = file( tmpnam, 'w' ) #set temporary buffer
+        
+        sys.stdout = tmpfile #save all output in a temporary file
 
         from trustlet.netevolution import fl as function_list
         self.quick_info()
@@ -277,26 +285,20 @@ class Network(XDiGraph):
 
         for (f,pf) in function_list.__iter__():
             print f.__name__, ":", f(self,self.date)[1]
-            
-        #cache enabled only if c2
-        if self.filepath.endswith( '.c2' ):
-            
-            sys.stdout = stdout #restore stdout
-            tmpfile.close() #flush buffer
-
-            buffer = ''
-            for line in file( tmpnam ).readlines():
-                buffer += line
                 
-            print buffer
-            print self.filepath
+        sys.stdout = stdout #restore stdout
+        tmpfile.close() #flush buffer
+        
+        buffer = ''
+        for line in file( tmpnam ).readlines():
+            buffer += line
+            
+        print buffer
 
-            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, self.filepath ):
-                print "Warning! save of cache failed"
-
+        if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, path ):
+            print "Warning! save of cache failed"
+        
         return None
-
-
         
     def powerlaw_exponent(self):
         return power_exp_cum_deg_hist(self)
@@ -558,7 +560,7 @@ class WeightedNetwork(Network):
             tbl.printHdr(['reciprocity'] + self.weights().keys())
             tbl.printSep()
             for k, v in recp_mtx.items():
-                tbl.printRow([k] + v)
+                tbl.printRow([k] + [v[key] for key in list(v)])
 
     def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""
@@ -568,11 +570,19 @@ class WeightedNetwork(Network):
             else:
                 return e.values()[0]
         
-        if self.filepath.endswith( '.c2' ):
-            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, self.filepath, fault=False)
+        tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+        if tp:
+            path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+        else:
+            raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         
-            if data:                # if data is not false
-                return data
+        if not self.filepath.endswith( '.c2' ):
+            path += '.c2'
+    
+        data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
+        
+        if data:                # if data is not false
+            return data
                
         if self.has_discrete_weights:
             table = {}
@@ -585,9 +595,8 @@ class WeightedNetwork(Network):
                                          value_on_edge(e[2]) == v)])
                 table[v] = line
 
-            if self.filepath.endswith( '.c2' ):
-                if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, self.filepath ):
-                    print "Warning! save of cache failed"
+            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):
+                print "Warning! save of cache failed"
 
             return table
         else:
@@ -792,28 +801,6 @@ class WikiNetwork(WeightedNetwork):
         This value is used to rescale the edges in range 0..1
         """
         return self.__upbound
-
-    def set_map(self, map ):
-        """
-        set the rescale method
-        Parameter:
-        map: a function (NOT lambda) that take an integer 
-             and rescale it in range 0..1
-             this result is used as weight on edge, in order to 
-             calculate the predgraph
-        """
-        if not hasattr( map, '__name__' ):
-            print "are you sure this is a function?"
-            return None
-
-        if map.__name__ == '<lambda>':
-            print "Cannot save a lambda functions!! use a unique name for this function"
-            print "(because this name is saved as key for the predgraph calculated on this istance of network)"
-            return None
-
-        self.__user_map = map;
-
-        return None
 
 
     def map(self, value):

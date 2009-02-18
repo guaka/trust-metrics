@@ -1318,6 +1318,10 @@ def relative_path( path, folder ):
     In: relative_path( '/home/ciropom/Scrivania' , 'ciropom' )
     Out: ('/home/ciropom','Scrivania/')
     """
+    
+    if path.find( folder ) == -1:
+        return None #folder does not exists in path
+
     toadd = ''; relpathlist = [] ; relpath = ''
 
     while( path and os.path.split( path )[1] != folder ):

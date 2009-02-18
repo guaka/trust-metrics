@@ -134,6 +134,8 @@ class CalcGraph(Network):
         
         name = tempnam()
         
+        print pred_graph.edges()[0]
+
         write_dot(pred_graph, name)
 
         try:
@@ -529,7 +531,7 @@ class PredGraph(CalcGraph):
                 if cnt == 0:
                     save( diz,
                           None,
-                          os.path.join(self.path,'predgraphcontrov.c2')
+                          os.path.join(self.path,'cache.c2')
                           )
 
                     return None
@@ -541,7 +543,7 @@ class PredGraph(CalcGraph):
                 #saving calculated values
                 ret = save( diz,
                             (sum,cnt,rmse,pw,cov),
-                            os.path.join(self.path,'predgraphcontrov.c2')
+                            os.path.join(self.path,'cache.c2')
                             )
                 
 
