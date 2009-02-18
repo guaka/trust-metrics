@@ -10,7 +10,7 @@ Try:
 * NetworkX <= 0.37
 * scipy
 * graphviz
-* pygraphviz >= 0.37 (need [graphviz-dev|graphviz-devel] ) | pydot
+* pygraphviz >= 0.37 (need [graphviz-dev|graphviz-devel] ) | pydot (it is better to install pygraphviz, because pydot has some bug..)
 * pyparsing
 * python-gnuplot (not required from r716)
 * python-bz2 (might included in Python) | bzip2
