@@ -240,7 +240,7 @@ class Robots_netNetwork(AdvogatoNetwork):
     """
     url = "http://robots.net/person/graph.dot"
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None, cond_on_edge=None):
         
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -254,8 +254,9 @@ class Robots_netNetwork(AdvogatoNetwork):
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
                     self._name_lowered())
-
+        self.cond_on_edge = cond_on_edge
         
+
         if not date:
             date = datetime.datetime.now().strftime("%Y-%m-%d")
             self.url += '-graph-latest.dot'
@@ -294,7 +295,7 @@ class Robots_netNetwork(AdvogatoNetwork):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
         print 'Fixing graph.dot'
         
-        l_names = open(self.filepath, 'r').readlines()
+        l_names = open(self.dotpath, 'r').readlines()
         re_space = re.compile('(\w) (\w)')
         l_names_spacefix = map(lambda s:
                                re_space.sub(r'\1___\2', s).replace(".", "dot"),
@@ -302,11 +303,11 @@ class Robots_netNetwork(AdvogatoNetwork):
 
         pfix = re.compile(' ([\w\-_]+)')
         fixed_lines = map(lambda s: pfix.sub(r' "\1"', s), l_names_spacefix)
-        import pprint
-        pprint.pprint (fixed_lines)
+        #import pprint
+        #pprint.pprint (fixed_lines)
 
-        open(self.filepath + 'test', 'w').writelines(fixed_lines)
-        return self.filepath + 'test'
+        open(self.dotpath + 'test', 'w').writelines(fixed_lines)
+        return self.dotpath + 'test'
 
 class SqueakfoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
