@@ -113,8 +113,9 @@ print "If you would partecipate in development of trustlet, and you"
 print "wouldn't edit file in your installation dir, you can use links.py in scripts/ folder"
 """
 
-print "REMEMBER! In order to use trustlet on dataset (at page www.trustlet.org/trustlet_dataset_svn/"
-print "You must use sync.py in scripts folder"
+print "REMEMBER! In order to use trustlet on dataset (at page www.trustlet.org/datasets/)"
+print "You must use sync.py in scripts folder that syncronzie your local repository (in ~/shared_datasets folder)"
+print "If you run cached functions, you must share it with all world by launching sync script in scripts folder"
 
 # It's not very clear how to deal with package dependencies in setup.py
 

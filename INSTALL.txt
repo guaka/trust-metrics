@@ -3,14 +3,16 @@ Try:
 
   python setup.py install
 
+IMPORTANT: see script install sections
 
 == Depending packages ==
 
-* python-setuptools
-* NetworkX <= 0.37
+* python-setuptools and python-devel (in order to run setup.py install)
+* NetworkX <= 0.37 (download it from http://networkx.lanl.gov/ if you haven't it in your repository)
 * scipy
 * graphviz
-* pygraphviz >= 0.37 (need [graphviz-dev|graphviz-devel] ) | pydot (it is better to install pygraphviz, because pydot has some bug..)
+* pygraphviz >= 0.37 (download it from http://networkx.lanl.gov/download/pygraphviz/) 
+                     (need [graphviz-dev|graphviz-devel] ) | pydot (it is better to install pygraphviz, because pydot has some bug..)
 * pyparsing
 * python-gnuplot (not required from r716)
 * python-bz2 (might included in Python) | bzip2
