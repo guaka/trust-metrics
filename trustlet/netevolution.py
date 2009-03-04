@@ -95,8 +95,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
 
     def task(date):
         resdict = {} #dict of result
-        calcfunctions = []
+        calcfunctions = functions #tochange!!!!
 
+        """
         #try to find the functions cached
         for i in xrange(len(functions)):
             assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
@@ -121,7 +122,8 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         if not calcfunctions:
             #if is empty
             return resdict
-
+            """
+            
         # Type Of Network
         ton = networkname
 
