@@ -560,10 +560,11 @@ class WeightedNetwork(Network):
         if self.has_discrete_weights:
             recp_mtx = self.reciprocity_matrix()
             tbl = Table([12] + [12] * len(self.weights()))
-            tbl.printHdr(['reciprocity'] + self.weights().keys())
+            listKeys = self.weights().keys() #keys are saved in order to keep the order
+            tbl.printHdr(['reciprocity'] + listKeys)
             tbl.printSep()
-            for k, v in recp_mtx.items():
-                tbl.printRow([k] + [v[key] for key in list(v)])
+            for k in listKeys:
+                tbl.printRow([k] + [recp_mtx[k][x] for x in listKeys]) #take the keys in the same order as previous call of .keys()
 
     def reciprocity_matrix(self):
         """Generate a reciprocity table (which is actually a dict)."""

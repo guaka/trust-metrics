@@ -635,6 +635,7 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
     # from [(d,{'level1':{'level1':value,'level2':value...},'level2':{....}....})]
     # to [ [(d,val_for_level1), (d,val_for_level2), ....], [(d1:val_for_level1), ... ]
     
+    #split this set of graphics from other graphics
     trustlet.helpers.mkpath( path.join(data_path,'reciprocity_level_distribution') )
 
     ll = [] #list relative to one level (Advogato..etc)

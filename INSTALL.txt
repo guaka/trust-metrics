@@ -17,6 +17,7 @@ IMPORTANT: see script install sections
 * python-gnuplot (not required from r716)
 * python-bz2 (might included in Python) | bzip2
 * pynetconv (included in svn repo, or in relase >= 0.1 )
+* subversion ONLY IF you would like to use the syncronization script
 
 === scipy ===
 
@@ -78,8 +79,8 @@ you must enter in 'scripts', and in 'trustlet' folder and type only 'make'.
 If you type make in scripts folder will be installed those script:
 
 wikixml2graph
-sync_trustlet
-syncrm_trustlet
+sync_trustlet (use subversion)
+syncrm_trustlet (use subversion)
 lsc2
 dot2c2
 
