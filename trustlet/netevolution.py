@@ -95,9 +95,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
 
     def task(date):
         resdict = {} #dict of result
-        calcfunctions = functions #tochange!!!!
+        calcfunctions = []
 
-        """
+        
         #try to find the functions cached
         for i in xrange(len(functions)):
             assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
@@ -122,7 +122,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         if not calcfunctions:
             #if is empty
             return resdict
-            """
+    
             
         # Type Of Network
         ton = networkname
@@ -600,14 +600,14 @@ def degrees_of_separation(G,d):
     for n in nodes:
         nodes.remove(n)
         for m in nodes:
-            pathsl.append(len(networkx.shortest_path(G,n,m)))
+            pathsl.append( networkx.shortest_path_length(G,n,m) )
         nodes.add(n)
     return (d,avg(pathsl))
 
 al(degrees_of_separation,plot_generic)#19
 
-al(lambda G,d: (d,len(networkx.kosaraju_strongly_connected_components(G))),plot_generic)#20
-fl[-1][0].__name__ = 'number_connected_components_direct'
+al(lambda G,d: (d,networkx.number_strongly_connected_components(G) ), plot_generic)#20
+fl[-1][0].__name__ = 'number_strongly_connected_components_direct'
 
 al(lambda G,d: (d, G.link_reciprocity() ),plot_generic )#21
 fl[-1][0].__name__='link_reciprocity_perc'
@@ -620,7 +620,7 @@ def degrees_of_separation_undirected(G,d):
     for n in nodes:
         nodes.remove(n)
         for m in nodes:
-            pathsl.append(len(networkx.shortest_path(K,n,m)))
+            pathsl.append( networkx.shortest_path_length(K,n,m) )
         nodes.add(n)
 
     return (d,avg(pathsl))
@@ -674,8 +674,28 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
     
 
 al(
-    lambda G,d: (d, G.reciprocity_matrix()), plot_reciprocity_on_level_distribution )
+    lambda G,d: (d, G.reciprocity_matrix()), plot_reciprocity_on_level_distribution ) 
 fl[-1][0].__name__ = 'reciprocity_on_level_distribution'
+
+
+def degrees_of_separation_undirected_not_strongly_connected(G,d):
+    K = G.to_undirected()
+    nodes = set( networkx.connected_components(K)[0] )
+    pathsl = []
+
+    for n in nodes:
+        nodes.remove(n)
+        for m in nodes:
+            try:
+                pathsl.append( networkx.shortest_path_length(K,n,m) )
+            except NetworkXError: #there is no shortest path, skip.
+                continue 
+        nodes.add(n)
+
+    return (d,avg(pathsl))
+
+al(degrees_of_separation_undirected_not_strongly_connected, plot_generic) #24
+
 
 #function used for script.. do not use it if you use trustlet as library
 def onlyMaster(e):
@@ -921,5 +941,28 @@ return (d,avg(pathsl))"""
 al(
     lambda G,d: (d,1.0*len(networkx.kosaraju_strongly_connected_components(G)[0])/G.number_of_nodes()),
     plot_generic)
+"""
+        )
+
+    plot_generic(
+        data[24],
+        savepath, title='degrees_of_separation_undirected_not_strongly_connected',
+        comment=
+        """
+    K = G.to_undirected()
+    nodes = set( networkx.connected_components(K)[0] )
+    pathsl = []
+
+    for n in nodes:
+        nodes.remove(n)
+        for m in nodes:
+            try:
+                pathsl.append( networkx.shortest_path_length(K,n,m) )
+            except NetworkXError: #there is no shortest path, skip.
+                continue 
+        nodes.add(n)
+
+    return (d,avg(pathsl))
+
 """
         )
