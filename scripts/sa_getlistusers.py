@@ -8,6 +8,8 @@ import urllib
 import cPickle as pickle
 from gzip import GzipFile
 
+from sa_cache import save,load
+
 
 # set User-Agent (Wikipedia doesn't give special pages to Python :@ )
 class URLopener(urllib.FancyURLopener):
@@ -47,10 +49,10 @@ i18n = {
     'fr' : ('Discussion Utilisateur', 'Utilisateur', 'Bot')
 }
 
-def save(*l,**ll):
-    return None
-def load(*l,**ll):
-    return None
+#def save(*l,**ll):
+#    return None
+#def load(*l,**ll):
+#    return None
 
 LIGHTLOG = True
 def getpage(url):
