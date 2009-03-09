@@ -578,12 +578,18 @@ class WeightedNetwork(Network):
         
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
 
-        tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
-        if tp:
-            path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
-        else:
-            raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
+        try:
+            tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+
+            if tp:
+                path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+            else:
+                raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         
+        except Exception: #this means that this is a network in shared_datasets
+            path = self.filepath
+            
+
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
     
@@ -597,14 +603,13 @@ class WeightedNetwork(Network):
             table = {}
             for v in self.weights().keys():
                 #table[v] = {}
-                #line = {}
-                line = []
-
+                line = {}
+                
                 for w in self.weights().keys():
-                    line[w] = 1.0 * sum([value_on_edge(self.get_edge(e[1], e[0])) == w
-                                     for e in self.edges_iter()
-                                     if (self.has_edge(e[1], e[0]) and 
-                                         value_on_edge(e[2]) == v)]) / self.number_of_edges()
+                    line[w] = 1.0 * sum([value_on_edge(self.get_edge(e1, e0)) == w
+                                         for e0,e1,e2 in self.edges_iter()
+                                         if (self.has_edge(e1, e0) and 
+                                             value_on_edge(e2) == v)]) / self.number_of_edges()
                 table[v] = line
 
             if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):

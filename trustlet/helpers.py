@@ -1318,13 +1318,16 @@ def relative_path( path, folder ):
     In: relative_path( '/home/ciropom/Scrivania' , 'ciropom' )
     Out: ('/home/ciropom','Scrivania/')
     """
-    
+    ROOT = '/'
+
     if path.find( folder ) == -1:
         return None #folder does not exists in path
 
     toadd = ''; relpathlist = [] ; relpath = ''
 
     while( path and os.path.split( path )[1] != folder ):
+        if path == ROOT:
+            raise Exception("The folder "+folder+" is not in the path "+path+"\n")
         path,toadd = os.path.split( path )
         relpathlist.append( toadd )
 

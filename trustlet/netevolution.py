@@ -12,13 +12,13 @@ import os,time,re
 import os.path as path
 import scipy
 
-re_alphabetic = re.compile("[A-Za-z]+")
+re_alphabetic = re.compile("[A-Za-z_]+")
 
 # functions list
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix='_', force=False):
+def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix='+', force=False):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -26,6 +26,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
     Parameters:
     networkname = the name of the network (case sensitive)
                   ex. AdvogatoNetwork
+                  if the network is a WikiNetwork as networkname you must
+                  set WikiNetwork/lang where lang is the lang of network
+                  ex. WikiNetwork/it
     functions = list of functions to apply to each dataset
                 the functions must take two argument:
                 1) graph g (as trustlet.Network or subclasses)
@@ -34,7 +37,8 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
     range = tuple with at first the initial date, and at end the
                 final date #ex. ('2000-01-01','2008-01-01')
     force = don't load from cache previously calculated data
-    
+    prefix = it cannot be a '_' for technical reason.
+
     return a list of list of values where each list of the first
                 list represent a function 'i', and the values in
                 this i-list are the i-function returned values for each network in
@@ -42,7 +46,11 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 or None in case of error.
     '''
     #we load network from datasets
-    lpath = os.path.join(os.environ['HOME'],'datasets',networkname)
+    if 'Wiki' not in networkname:
+        lpath = os.path.join(os.environ['HOME'],'datasets',networkname)
+    else:
+        lpath = os.path.join(os.environ['HOME'],'shared_datasets',networkname)
+        
     #and cache/predgraph from shared_dataset (an svn on trustlet.org)
     cachepath = os.path.join( os.environ['HOME'],'shared_datasets',networkname,'netevolution.c2') 
     
@@ -133,7 +141,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         ton = networkname
 
         alphabetic = re_alphabetic.search( ton ) #search alphabetic character (delete non A-Za-z prefix)
-        ton = ton[alphabetic.start():] #delete first non alphabetic character
+        ton = ton[alphabetic.start():alphabetic.end()] #delete non alphabetic character
         
         try:
             ton = re_alphabetic.findall( ton )[0] # _ added to support robots_net network
@@ -142,8 +150,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 deb = file( debug, 'a' )
                 deb.write( "ERROR!: problem in path! is this path correct? "+lpath+"\n" )
                 deb.close()
-            else:
-                print "ERROR!: problem in path! is this path correct? "+lpath
             return None
         
         if debug:
@@ -777,6 +783,8 @@ if __name__ == "__main__":
     
         if '-mja' in sys.argv:
             cond_on_edge = noObserver
+    else:
+        sys.stderr.write( "Warning! -m, -mj and -mja options are not avaiable for this network\n" )
 
     
     range = (startdate,enddate,step)
