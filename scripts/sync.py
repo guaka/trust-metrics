@@ -41,6 +41,7 @@ from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge
 
 HOME = os.environ['HOME']
 HOSTNAME = gethostname()
+PREFIX = '+'
 CURDIR = os.getcwd()
 HIDDENDIR = '.shared_datasets'
 DIR = 'shared_datasets'
@@ -215,7 +216,7 @@ def merge(svn,datasets,upload=True):
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
-            elif filename[0]!='_' and not re_svnconflict.match(filename) and not filename.endswith('.mine'):
+            elif filename[0]!=PREFIX and not re_svnconflict.match(filename) and not filename.endswith('.mine'):
                 #adding
                 print 'adding file',rpath
                 added += 1
@@ -242,7 +243,7 @@ def merge(svn,datasets,upload=True):
         for dirpath,dirnames,filenames in os.walk(datasets):
             destbasepath = dirpath.replace(datasets,svn)
 
-            if path.sep+'_' in dirpath:
+            if path.sep+PREFIX in dirpath:
                 # not upload dirs _*
                 print 'Directory %s will not uploaded' % path.split(dirpath)[1]
                 continue
@@ -265,7 +266,7 @@ def merge(svn,datasets,upload=True):
                 rpath = relative_path(srcpath,DIR)[1]
                 #print '>>> File:',rpath
             
-                if filename.startswith('_') or re_svnconflict.match(filename) \
+                if filename.startswith(PREFIX) or re_svnconflict.match(filename) \
                         or filename.endswith('.mine') or filename.endswith('~'):
                     # not upload files _*, svn file and backup files
                     print 'File %s will not uploaded' % rpath
