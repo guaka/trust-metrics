@@ -240,7 +240,8 @@ class Robots_netNetwork(AdvogatoNetwork):
     """
     url = "http://robots.net/person/graph.dot"
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None, cond_on_edge=None):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None, 
+                 cond_on_edge=None):
         
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -313,8 +314,13 @@ class SqueakfoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
-    def __init__(self, download = False, date=None, base_path=None,prefix=None):
-        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date=date, base_path=base_path,prefix=prefix)
+    def __init__(self, download = False, date=None, base_path=None,prefix=None, cond_on_edge=None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, 
+                                 download = download, 
+                                 date=date, 
+                                 base_path=base_path,
+                                 prefix=prefix,
+                                 cond_on_edge=cond_on_edge)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -330,8 +336,13 @@ class KaitiakiNetwork(SqueakfoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self, date = None, download=False, base_path = None,prefix=None):
-        AdvogatoNetwork.__init__(self, weights = _color_map, download = download, date = date, base_path = base_path,prefix=prefix )
+    def __init__(self, date = None, download=False, cond_on_edge=None, base_path = None,prefix=None):
+        AdvogatoNetwork.__init__(self, weights = _color_map, 
+                                 download = download, 
+                                 date = date, 
+                                 base_path = base_path,
+                                 prefix=prefix,
+                                 cond_on_edge=cond_on_edge)
 
 
 if __name__ == "__main__":

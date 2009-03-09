@@ -566,8 +566,8 @@ class WeightedNetwork(Network):
             for k in listKeys:
                 tbl.printRow([k] + [recp_mtx[k][x] for x in listKeys]) #take the keys in the same order as previous call of .keys()
 
-    def reciprocity_matrix(self):
-        """Generate a reciprocity table (which is actually a dict)."""
+    def reciprocity_matrix(self,force=False):
+        """Generate a reciprocity table (which is actually a dict) with percentage of edges (and not number of edges)."""
         def value_on_edge(e):
             if type(e) in (int, float):
                 return e
@@ -576,6 +576,8 @@ class WeightedNetwork(Network):
                     print 'I might wrong value on edge'
                 return e.values()[0]
         
+        assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
+
         tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
         if tp:
             path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
@@ -585,11 +587,12 @@ class WeightedNetwork(Network):
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
     
-        data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
+        if not force:
+            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
         
-        if data: # if data is not false
-            return data
-               
+            if data:                # if data is not false
+                return data
+                       
         if self.has_discrete_weights:
             table = {}
             for v in self.weights().keys():
@@ -598,11 +601,10 @@ class WeightedNetwork(Network):
                 line = []
 
                 for w in self.weights().keys():
-                    #table[v]
-                    line.append(sum([value_on_edge(self.get_edge(e[1], e[0])) == w
+                    line[w] = 1.0 * sum([value_on_edge(self.get_edge(e[1], e[0])) == w
                                      for e in self.edges_iter()
                                      if (self.has_edge(e[1], e[0]) and 
-                                         value_on_edge(e[2]) == v)]))
+                                         value_on_edge(e[2]) == v)]) / self.number_of_edges()
                 table[v] = line
 
             if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):

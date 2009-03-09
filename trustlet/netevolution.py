@@ -18,7 +18,7 @@ re_alphabetic = re.compile("[A-Za-z]+")
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix='_'):
+def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix='_', force=False):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -33,6 +33,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 #e.g. [trustvariance,trustaverage...]
     range = tuple with at first the initial date, and at end the
                 final date #ex. ('2000-01-01','2008-01-01')
+    force = don't load from cache previously calculated data
     
     return a list of list of values where each list of the first
                 list represent a function 'i', and the values in
@@ -98,31 +99,35 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         calcfunctions = []
 
         
+        if not force:
         #try to find the functions cached
-        for i in xrange(len(functions)):
-            assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
+            for i in xrange(len(functions)):
+                assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
 
-            cachekey = {'function':functions[i].__name__,'date':date}
-            if cond_on_edge:
-                assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
-                cachekey['cond']=str(cond_on_edge.__name__)
+                cachekey = {'function':functions[i].__name__,'date':date}
+                if cond_on_edge:
+                    assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
+                    cachekey['cond']=str(cond_on_edge.__name__)
 
-            cache = load(cachekey,path.join(lpath,cachepath))
-            #cache = None # debug
-            if cache and type(cache) is tuple and isdate(cache[0]):
-                #check on type of data in cache
-                resdict[functions[i].__name__] = cache
+                cache = load(cachekey,path.join(lpath,cachepath))
+                #cache = None # debug
+                if cache and type(cache) is tuple and isdate(cache[0]):
+                    #check on type of data in cache
+                    resdict[functions[i].__name__] = cache
                 #do not calculate for functions cached
-            elif not cacheonly:
-                #eprint(cachekey)
-                #eprint(str(cache)[:50]) #debug
-                #sys.stderr.write('cache fault\n')
-                calcfunctions.append(functions[i])
+                elif not cacheonly:
+                    #eprint(cachekey)
+                    #eprint(str(cache)[:50]) #debug
+                    #sys.stderr.write('cache fault\n')
+                    calcfunctions.append(functions[i])
 
-        if not calcfunctions:
-            #if is empty
-            return resdict
-    
+            if not calcfunctions:
+                #if is empty
+                return resdict
+        #if force
+        else:
+            calcfunctions = functions #calc all
+
             
         # Type Of Network
         ton = networkname
@@ -215,8 +220,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 deb = file( debug, 'a' )
                 deb.write( "ERROR!: Cannot be able to load network! (date="+date+") on network "+ton+"\n" )
                 deb.close()
-            else:
-                print "Cannot be able to load network! (date="+date+") on network "+ton
             return None
 
         for function in calcfunctions: #foreach functions that must be calculated on this network
@@ -233,9 +236,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                     deb.write( "ERROR!: Error applying "+function.__name__+" to the network "+date+"! Exiting\n" )
                     deb.write(str(e)+'\n')
                     deb.close()
-                else:
-                    print "Error applying "+function.__name__+" to the network "+date+"! Exiting"
-                    print e
                 continue
 
             assert type(res) is tuple,'name: %s res %s' % (function.__name__,str(res))
@@ -673,8 +673,8 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
             ll[i] = []
     
 
-al(
-    lambda G,d: (d, G.reciprocity_matrix()), plot_reciprocity_on_level_distribution ) 
+al(                                      #to change!!!!!
+    lambda G,d: (d, G.reciprocity_matrix(force=False)), plot_reciprocity_on_level_distribution ) 
 fl[-1][0].__name__ = 'reciprocity_on_level_distribution'
 
 
@@ -694,7 +694,7 @@ def degrees_of_separation_undirected_not_strongly_connected(G,d):
 
     return (d,avg(pathsl))
 
-al(degrees_of_separation_undirected_not_strongly_connected, plot_generic) #24
+al(degrees_of_separation_undirected_not_strongly_connected, plot_generic) #25
 
 
 #function used for script.. do not use it if you use trustlet as library
@@ -729,7 +729,7 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-d debug_path]"
+        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-f] [-d debug_path]"
         print "    You can use '-' to skip {start,end}date"
         print "    networkname: the name of the folder in ~/datasets/ that contains the network ex. AdvogatoNetwork"
         print "    savepath: the path in which this script save the .gnuplot and the .png files"
@@ -737,13 +737,17 @@ if __name__ == "__main__":
         print "    -m: only master edges (work only with advogato-like network)"
         print "    -mj: only master and journeyer edges (work only with advogato-like network)"
         print "    -mja: master and journeyer and apprentice edges (work only with advogato-like network)"
+        print "    -f: force to forget cache"
         print "    if you omit this command the computation will use all edges"
         print "    debug_path: path to a file filled with debug informations"
         print "OR netevolution.py list"
         print "   Show all function's names"
         sys.exit(1)
 
+    #types of network for whose we cannot use the -m, -mj or -mja options.
+    colored_edges = set(['KaitiakiNetwork','SqueakfoundationNetwork']) 
 
+    #parsing command line options
     startdate = sys.argv[1] == '-' and '1970-01-01' or sys.argv[1]
     enddate = sys.argv[2] == '-' and '9999-12-31' or sys.argv[2]
     netname = sys.argv[3]
@@ -756,17 +760,23 @@ if __name__ == "__main__":
     else:
         step = 0
 
+    force = False
+
+    if '-f' in sys.argv:
+        force = True
+
     cond_on_edge = None
-
-    if '-m' in sys.argv:
-        cond_on_edge = onlyMaster
-
-    if '-mj' in sys.argv:
-        cond_on_edge = onlyMasterJourneyer
     
+    #we support condition on edges only for AdvogatoNetwork-like networks that use _obs_app_jour_mas_map
+    if netname not in colored_edges:
+        if '-m' in sys.argv:
+            cond_on_edge = onlyMaster
+
+        if '-mj' in sys.argv:
+            cond_on_edge = onlyMasterJourneyer
     
-    if '-mja' in sys.argv:
-        cond_on_edge = noObserver
+        if '-mja' in sys.argv:
+            cond_on_edge = noObserver
 
     
     range = (startdate,enddate,step)
@@ -779,7 +789,7 @@ if __name__ == "__main__":
 
     mkpath(savepath)
 
-    data = evolutionmap( netname, [f[0] for f in fl], cond_on_edge, range, cacheonly, debugfile )
+    data = evolutionmap( netname, [f[0] for f in fl], cond_on_edge, range, cacheonly, debugfile, force=force )
     
     if not data:
         sys.exit(1)
@@ -945,7 +955,7 @@ al(
         )
 
     plot_generic(
-        data[24],
+        data[25],
         savepath, title='degrees_of_separation_undirected_not_strongly_connected',
         comment=
         """
