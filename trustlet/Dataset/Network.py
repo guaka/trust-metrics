@@ -572,6 +572,8 @@ class WeightedNetwork(Network):
             if type(e) in (int, float):
                 return e
             else:
+                if len(e)>1:
+                    print 'I might wrong value on edge'
                 return e.values()[0]
         
         tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
@@ -585,18 +587,22 @@ class WeightedNetwork(Network):
     
         data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
         
-        if data:                # if data is not false
+        if data: # if data is not false
             return data
                
         if self.has_discrete_weights:
             table = {}
             for v in self.weights().keys():
-                line = {}
+                #table[v] = {}
+                #line = {}
+                line = []
+
                 for w in self.weights().keys():
-                    line[w] = sum([value_on_edge(self.get_edge(e[1], e[0])) == w
+                    #table[v]
+                    line.append(sum([value_on_edge(self.get_edge(e[1], e[0])) == w
                                      for e in self.edges_iter()
                                      if (self.has_edge(e[1], e[0]) and 
-                                         value_on_edge(e[2]) == v)])
+                                         value_on_edge(e[2]) == v)]))
                 table[v] = line
 
             if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):
