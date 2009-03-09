@@ -21,20 +21,14 @@ def main():
     savepath = path.join(os.environ['HOME'],'.wikixml2graph')
     mkpath(savepath)
 
-    dsave = []
+    name = '%.4d-%.2d-%.2d' % tuple(time.gmtime()[:3])
 
     for lang in langs:
         print lang
         users,bots,busers = get_list_users(lang,force=True)
         print len(users),len(bots),len(busers)
 
-        dsave.append((lang,users,bots,busers))
-
-    name = '%.4d-%.2d-%.2d' % tuple(time.gmtime()[:3])
-
-    f = GzipFile(name,'w')
-    pickle.dump(dsave,f)
-    f.close()
+        assert save({'lang':lang},(users,bots,busers),path.join(savepath,name))
         
 i18n = {
     'vec':('Discussion utente','Utente','Bot'),
