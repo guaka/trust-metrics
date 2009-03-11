@@ -15,6 +15,7 @@ IMPORTANT: see script install sections
                      (need [graphviz-dev|graphviz-devel] ) | pydot (it is better to install pygraphviz, because pydot has some bug..)
 * pyparsing
 * python-gnuplot (not required from r716)
+* gnuplot (optional)
 * python-bz2 (might included in Python) | bzip2
 * pynetconv (included in svn repo, or in relase >= 0.1 )
 * subversion ONLY IF you would like to use the syncronization script

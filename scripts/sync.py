@@ -10,7 +10,7 @@ Then merge them with the local version of them.
  - Only c2 file are mergerd. If a regular file yet exists on client it won't updated.
 Finally *all* changes will be committed.
  - Backup files (ends with ~) will not uploaded.
- - Files and directory that begin with _ will not uploaded too.
+ - Files and directory that begin with + will not uploaded too.
 
 main directory dataset: <basepath>/datasets
 svn hidden directory: <basepath>/.datasets
@@ -244,7 +244,7 @@ def merge(svn,datasets,upload=True):
             destbasepath = dirpath.replace(datasets,svn)
 
             if path.sep+PREFIX in dirpath:
-                # not upload dirs _*
+                # not upload dirs +*
                 print 'Directory %s will not uploaded' % path.split(dirpath)[1]
                 continue
 

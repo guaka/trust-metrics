@@ -14,7 +14,7 @@ import time
 import marshal
 #cache
 import re
-import md5
+from hashlib import md5
 import cPickle as pickle
 from gzip import GzipFile
 from socket import gethostname
@@ -999,7 +999,7 @@ def get_sign(key,mdfive=True):
     for k in listkeys:
         s+=str(k)+'='+str(key[k])+','
     if mdfive:
-        return md5.new(s[:-1]).hexdigest()
+        return md5(s[:-1]).hexdigest()
     else:
         return s[:-1]
 
