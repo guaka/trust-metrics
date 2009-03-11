@@ -1156,7 +1156,7 @@ def safe_merge(path,delete=True):
         if delete:
             os.remove(file)
 
-def load(key,path='.',fault=None):
+def load(key,path='.',fault=None,cachedcache=False):
     """
     Cache.
     Loads data stored by save.
@@ -1164,6 +1164,7 @@ def load(key,path='.',fault=None):
     """
 
     if os.path.isdir(path):
+        # version 1
         try:
             data = pickle.load(file(os.path.join(path,get_sign(key))))
         except:
@@ -1175,7 +1176,7 @@ def load(key,path='.',fault=None):
             globals()['cachedcache'] = {}
         cache = globals()['cachedcache']
 
-        if cache.has_key(path):
+        if cache.has_key(path) and cachedcache:
             #print 'found',path
             try:
                 if cache[path].has_key(get_sign(key)):
@@ -1227,36 +1228,36 @@ def convert_cache(path1,path2):
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
 
-def merge_cache(path1 , path2 , mpath=None, ignoreerrors=False, priority=2):
+def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
     '''
     mpath: new destination file (merged path).
-    if mpath is None, *path2* will be used
-    if `path1` and `path2` file cache has the same
-    key will keep the `path2` value for that key.
-    (To give priority to path1 set priority to 1)
+    if mpath is None, *dstpath* will be used
+    if `srcpath` and `dstpath` file cache has the same
+    key will keep the `dstpath` value for that key.
+    (To give priority to srcpath set priority to 1)
     '''
 
     try:
-        f1 = GzipFile(path1)
+        f1 = GzipFile(srcpath)
         c1 = pickle.load(f1)
         f1.close()
     except IOError:
         if ignoreerrors:
             c1 = {}
         else:
-            print 'File %s corrupted' % path1
+            print 'File %s corrupted' % srcpath
             return
     
     
     try:
-        f2 = GzipFile(path2)
+        f2 = GzipFile(dstpath)
         c2 = pickle.load(f2)
         f2.close()
     except IOError:
         if ignoreerrors:
             c2 = {}
         else:
-            print 'File %s corrupted' % path2
+            print 'File %s corrupted' % dstpath
             return
     
 
@@ -1270,7 +1271,7 @@ def merge_cache(path1 , path2 , mpath=None, ignoreerrors=False, priority=2):
         c1 = c2
 
     if not mpath:
-        mpath = path2
+        mpath = dstpath
     
     f = GzipFile(mpath ,'w')
     pickle.dump(c1,f)

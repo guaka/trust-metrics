@@ -123,7 +123,7 @@ def main():
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
                 # foreach file saves relative path
-                to_remove += [path.join(dirpath,x) for x in files]
+                to_remove += [path.join(dirpath,x) for x in files if not x.endswith('.c2')] #never remove c2 files
 
         #timestamp update
         tstampup = int(time.time())
@@ -138,6 +138,7 @@ def main():
                                                  if mtime(path.join(dirpath,x))<tstampup]))
 
         #print to_remove
+        # remove file from dataset path
         for f in to_remove:
             f = f.replace(hiddenpath,datasetspath)
             if path.isfile(f):
@@ -205,6 +206,7 @@ def merge(svn,datasets,upload=True):
             #print '<<< File:',rpath
             
             if path.isfile(dstpath):
+                # yet exists in destination
                 if not diff(srcpath,dstpath):
                     # file modified
                     if filename.endswith('.c2'):
