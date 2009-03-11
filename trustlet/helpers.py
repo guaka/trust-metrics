@@ -1239,11 +1239,11 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
 
     try:
         f1 = GzipFile(srcpath)
-        c1 = pickle.load(f1)
+        s = pickle.load(f1)
         f1.close()
     except IOError:
         if ignoreerrors:
-            c1 = {}
+            s = {}
         else:
             print 'File %s corrupted' % srcpath
             return
@@ -1251,11 +1251,11 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
     
     try:
         f2 = GzipFile(dstpath)
-        c2 = pickle.load(f2)
+        d = pickle.load(f2)
         f2.close()
     except IOError:
         if ignoreerrors:
-            c2 = {}
+            d = {}
         else:
             print 'File %s corrupted' % dstpath
             return
@@ -1264,18 +1264,24 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
     # Priority: c2
     # if c1 and c2 has the same key will keep the c2
     # value for that key
-    if priority==2:
-        c1.update(c2)
-    elif priority==1:
-        c2.update(c1)
-        c1 = c2
+    if priority==1:
+        s,d = d,s
 
-    if not mpath:
-        mpath = dstpath
+    modified = False
+    for k,v in s.iteritems():
+        if not d.has_key(k) or d[k]!=s[k]:
+            modified = True
+            d[k] = s[k]
+
+    # Write file onfy if needed
+    if modified:
+
+        if not mpath:
+            mpath = dstpath
     
-    f = GzipFile(mpath ,'w')
-    pickle.dump(c1,f)
-    f.close()
+        f = GzipFile(mpath ,'w')
+        pickle.dump(d,f)
+        f.close()
 
 
 def read_c2(path):

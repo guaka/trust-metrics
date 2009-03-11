@@ -123,7 +123,7 @@ def main():
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
                 # foreach file saves relative path
-                to_remove += [path.join(dirpath,x) for x in files if not x.endswith('.c2')] #never remove c2 files
+                to_remove += [path.join(dirpath,x) for x in files]
 
         #timestamp update
         tstampup = int(time.time())
