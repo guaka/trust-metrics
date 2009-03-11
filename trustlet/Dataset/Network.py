@@ -56,6 +56,7 @@ class Network(XDiGraph):
         self.filepath = ''
         self.filename = ''
         self.values_on_edges = False
+        self.name = 'generic_network'
         if make_base_path:
 
             if prefix:
@@ -70,6 +71,24 @@ class Network(XDiGraph):
         if from_graph:
             self.paste_graph(from_graph)
             
+
+    def save_c2(self,cachedict, key_dictionary ):
+        """
+        see load_c2 function. The parameter are the same.
+        """
+        if not hasattr(self,"filepath"):
+            print "Error: filepath is not defined!"
+            return False
+        
+        test_edge = self.edges()[0]
+        
+        if type(test_edge[2]) is dict:
+            return trustlet.helpers.save(cachedict,
+                                         self,
+                                         #([str(x) for x in self.nodes_iter()],[(str(x[0]),str(x[1]),x[2][key_dictionary]) for x in self.edges_iter()]), 
+                                         self.filepath)
+        else:
+            return trustlet.helpers.save(cachedict, (self.nodes(),self.edges()), self.filepath)
 
     def load_c2(self,cachedict, key_dictionary,cond_on_edge=None):
         """
@@ -121,7 +140,9 @@ class Network(XDiGraph):
                     val=trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,cachedict)
                 except IOError:
                     raise IOError( "Error! dot does not exist. download it from trustlet.org and make sure this path exist "+self.dotpath )
-                    
+                except AttributeError:
+                    raise AttributeError( "Error! dotpath or filepath is not set" )
+
                 if not val:
                     raise IOError( "Dot file exist but the conversion into c2 failed!" )
                 #now retry
@@ -129,10 +150,12 @@ class Network(XDiGraph):
                     net = trustlet.helpers.toNetwork( pydataset, key_dictionary )
                 except IOError:
                     raise IOError( "the conversion module made a non consistent c2." )
-                
+               
 
             self.paste_graph( net, cond_on_edge=cond_on_edge ) #copy the graph loaded in self
-            
+        else:
+            return False
+
         return True
 
     def _name(self):
@@ -457,6 +480,7 @@ class WeightedNetwork(Network):
     
     def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None):
         Network.__init__(self, base_path=base_path,prefix=prefix)
+        self.name= 'generic_weighted_network'
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
         self._weights = weights

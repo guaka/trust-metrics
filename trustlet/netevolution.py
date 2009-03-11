@@ -44,6 +44,11 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 this i-list are the i-function returned values for each network in
                 range.
                 or None in case of error.
+                
+    NB: in order to use netevolution on a generic dataset, you must have your dataset saved in a c2,
+        with key {'network':''}, use WeightedNetwork, or Network, and set as value on edge 
+        a dictionary with {'level':value}
+                
     '''
     #we load network from datasets
     if 'Wiki' not in networkname:
@@ -160,7 +165,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         if ton != 'WikiNetwork':
             dotpath = path.join(lpath,date,'graph.dot')
             c2path = dotpath[:-3]+'c2'
-    
+            # I have to load network
+            net_set = False
+
             #test what type of network I had to use
             try:
                 Networkclass = getattr( Advogato , ton )
@@ -170,28 +177,46 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 except AttributeError:
                     if debug:
                         deb = file( debug, 'a' )
-                        deb.write( "ERROR!: this type of network("+ton+") is not defined in trustlet.Dataset module\n" )
+                        deb.write( "WARNING!: this type of network("+ton+") is not defined in trustlet.Dataset module\n" )
                         deb.close()
-                    return None
+                    # I suppose it is a unstandard derivation from class weightednetwork
+                    K = trustlet.Dataset.Network.WeightedNetwork()
+                    K.filepath = c2path
+                    #try to find the name of the network, to use as key in c2
+                    n = networkname # I suppose that the name of the network is at sx (because all our networks follows this rule)
+                    if 'Network' in n:
+                        part = n[:n.index('Network')]
+                    if 'Weighted' in n:
+                        n = n[:n.index('Weighted')]
+                    #in order to use netevolution on a generic dataset, you must have as network name '', 
+                    #use WeightedNetwork, or Network, and set as value on edge a dictionary with {'level':value}
+                    if not K.load_c2( {'network':n.lower()}, "level", cond_on_edge ): 
+                        print "Error! I'm not able to read your network.."
+                        print "in order to use netevolution on a generic dataset, you must have your dataset saved in a c2,"
+                        print "with key {'network':''}, use WeightedNetwork, or Network, and set as value on edge" 
+                        print "a dictionary with {'level':value}"
+                        return None
 
-            #load network
-            try:
-                K = Networkclass(date=date,cond_on_edge=cond_on_edge)
-            except IOError:
-                print "Warning! in default path date does not exist! try to use a prefix"
-                K = Networkclass(date=date,prefix=prefix)
-                #try with _ if there isn't in normal path
-                #(because sync does not upload folder with _ prefix)
+                    #skip network load
+                    net_set = True
+                    
+            #load network if the network is not just set
+            if not net_set:
+                try:
+                    K = Networkclass(date=date,cond_on_edge=cond_on_edge)
+                except IOError:
+                    print "Warning! in default path date does not exist! try to use a prefix"
+                    K = Networkclass(date=date,prefix=prefix,cond_on_edge=cond_on_edge)
+                    #try with _ if there isn't in normal path
+                    #(because sync does not upload folder with _ prefix)
             
-            if not K:
-                if debug:
-                    deb = file( debug, 'a' )
-                    deb.write( "ERROR!: cannot be able to load c2 on "+ton+" at date "+date+"\n" )
-                    deb.close()
-                else:
-                    print "Error! can't load network",ton,"on date",date
-                
-                return None
+                    if not K:
+                        if debug:
+                            deb = file( debug, 'a' )
+                            deb.write( "ERROR!: cannot be able to load c2 on "+ton+" at date "+date+"\n" )
+                            deb.close()
+                    
+                        return None
             
             if K.number_of_nodes() == 0 or K.number_of_edges() == 0:
                 if debug:
@@ -647,6 +672,9 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
     trustlet.helpers.mkpath( path.join(data_path,'reciprocity_level_distribution') )
 
     ll = [] #list relative to one level (Advogato..etc)
+    if not data:
+        return None
+
     lv = sorted( list(data[0][1]) ) #list of keys
     lvlen = len(lv)
 

@@ -7,6 +7,7 @@ from trustlet.TrustMetric import *
 from trustlet.trustmetrics import *
 from trustlet.Dataset.Network import *
 from trustlet.Dataset.Advogato import *
+from trustlet.Dataset.Dummy import *
 import trustlet
 import os,sys,re
 import datetime
@@ -1438,8 +1439,8 @@ def toNetwork( data , key, net=None ):
     """
     convert a tuple of two list
     (the first that contains the nodes [as string],
-    and the second that contains a tuple formed in this way (nodes1,nodes2,int)
-    where 'int' is the weight on the edge.)
+    and the second that contains a tuple formed in this way (nodes1,nodes2,val)
+    where 'val' is the weight on the edge.)
     The key is a string that represent the key of the dictionary on the edge
 
     parameters:
@@ -1455,6 +1456,8 @@ def toNetwork( data , key, net=None ):
     ANetwork.add( KaitiakiNetwork )
     ANetwork.add( SqueakfoundationNetwork )
     ANetwork.add( Robots_netNetwork )
+    ANetwork.add( DummyWeightedNetwork )
+    ANetwork.add( DummyNetwork )
     ANetwork.add( networkx.xdigraph.XDiGraph )
 
     rname = re.compile( '[^"]+' ) #erase "
@@ -1478,6 +1481,7 @@ def toNetwork( data , key, net=None ):
         w = net
 
     for name in nodes:
+        print name
         w.add_node( rname.findall(name)[0] )
 
     for link in edges:

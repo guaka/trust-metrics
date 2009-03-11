@@ -43,26 +43,26 @@ class DummyWeightedNetwork(WeightedNetwork):
     But with weights on edges, so that it is like a trust network"""
     def __init__(self):
         WeightedNetwork.__init__(self)
-        edges = [(1, 2, 0.1),
-                 (1, 3, 0.6),
-                 (2, 4, 0.8),
-                 (3, 2, 0.9),
-                 (3, 5, 0.7),
-                 (4, 2, 0.6),
-                 (4, 5, 0.4),
-                 (4, 6, 0.3),
-                 (5, 6, 0.6),
-                 (5, 7, 0.2),
-                 (5, 8, 0.6),
-                 (6, 8, 0.1),
-                 (7, 1, 1.0),
-                 (7, 5, 0.1),
-                 (7, 8, 0.1),
-                 (8, 6, 0.2),
-                 (8, 7, 0.8),
+        edges = [(1, 2, "Master"),
+                 (1, 3, "Journeyer"),
+                 (2, 4, "Apprentice"),
+                 (3, 2, "Observer"),
+                 (3, 5, "Observer"),
+                 (4, 2, "Apprentice"),
+                 (4, 5, "Master"),
+                 (4, 6, "Observer"),
+                 (5, 6, "Apprentice"),
+                 (5, 7, "Journeyer"),
+                 (5, 8, "Journeyer"),
+                 (6, 8, "Journeyer"),
+                 (7, 1, "Apprentice"),
+                 (7, 5, "Observer"),
+                 (7, 8, "Master"),
+                 (8, 6, "Apprentice"),
+                 (8, 7, "Journeyer"),
                  ]
         for edge in edges:
-            self.add_edge(edge)    
+            self.add_edge(edge[0], edge[1], {'level':edge[2]})    
         
 
 if __name__ == "__main__":
