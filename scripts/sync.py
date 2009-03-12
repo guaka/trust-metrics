@@ -80,6 +80,15 @@ def main():
         print __doc__
         return
 
+    # set comment
+    if '-c' in sys.argv[1:-1]:
+        i = sys.argv.index('-c')
+        usercomment = sys.argv[i+1]
+        del sys.argv[i+1]
+        del sys.argv[i]
+    else:
+        usercomment = ''
+
     if sys.argv[1:] and sys.argv[1][0]!='-':
         basepath = path.realpath(sys.argv[1])
     else:
@@ -145,7 +154,7 @@ def main():
                 print "I'm removing",relative_path(f,DIR)[1]
                 os.remove(f)
     
-    merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv)
+    merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv,usercomment)
 
     os.chdir(CURDIR)
 
@@ -174,7 +183,7 @@ def diff(f,g):
 mtime = lambda f: int(os.stat(f).st_mtime)
 re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
 
-def merge(svn,datasets,upload=True):
+def merge(svn,datasets,upload=True,usercomment=''):
     '''
     to_remove: files removed from svn (svn directory paths)
     '''
@@ -293,6 +302,9 @@ def merge(svn,datasets,upload=True):
         if updated:
             comment += ' Updated %d files.' % updated
         
+        if usercomment:
+            comment += ' ' + usercomment
+
         if comment and '-v' in sys.argv:
             print 'Commit comment:', comment
         assert not os.system(SVNCI % comment),CONFLICT
