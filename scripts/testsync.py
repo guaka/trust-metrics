@@ -45,7 +45,8 @@ def main():
         if len([x for x in c2 if thishost(x)])==cnt+1:
             print 'Bug! Bug! Bug!'
         
-        randomsleep(5,10)
+        randomsleep(60,120)
+)
 
 def thishost(x):
     '''
