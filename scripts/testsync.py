@@ -46,7 +46,6 @@ def main():
             print 'Bug! Bug! Bug!'
         
         randomsleep(60,120)
-)
 
 def thishost(x):
     '''
