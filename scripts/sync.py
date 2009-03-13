@@ -24,6 +24,7 @@ sync.py [basepath] [other options]
 Options:
    --no-update:  no svn update. ¡¡¡ Dangerous option !!!
    --no-upload:  no upload generated files
+   -c <comment>  add <comment> to commit comment
    --verbose | -v
 
 Is *dangeous* executes sync while someone uses cache.
@@ -52,12 +53,12 @@ SVNADD = 'svn add "%s"'
 
 CONFLICT =  '''You might added files yet stored on svn.
 You can execute:
-cd ~/.datasets
+cd %s
 svn revert `file(s) added`
 mv or rm `file(s) added`
 sync.py
-Now you can readd your file with sync.py
-'''
+Now you can re-add your file with sync.py
+''' % path.join(os.environ['HOME'],HIDDENDIR)
 
 def svnadd(p):
     assert not os.system(SVNADD % p),SVNADD % p
@@ -119,6 +120,7 @@ def main():
     #files removed from svn
     to_remove = []
 
+    #timestamp update
     tstampup = 0
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         os.chdir(HOME)
@@ -150,7 +152,8 @@ def main():
         # remove file from dataset path
         for f in to_remove:
             f = f.replace(hiddenpath,datasetspath)
-            if path.isfile(f):
+            # c2 files are managed by merge
+            if path.isfile(f) and not f.endswith('.c2'):
                 print "I'm removing",relative_path(f,DIR)[1]
                 os.remove(f)
     
@@ -184,9 +187,7 @@ mtime = lambda f: int(os.stat(f).st_mtime)
 re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
 
 def merge(svn,datasets,upload=True,usercomment=''):
-    '''
-    to_remove: files removed from svn (svn directory paths)
-    '''
+    
     added = updated = merged = 0
     updatedc2 = set()
     updatedfiles = set()
