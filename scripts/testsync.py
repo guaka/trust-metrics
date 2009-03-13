@@ -36,11 +36,14 @@ def main():
         
         c2 = read_c2(PATH)
 
-        assert len([x for x in c2 if thishost(x)])==cnt+1,'Bug! Bug! Bug!'
+        assert len([x for x in c2 if thishost(x)])==cnt+1,c2
         
         randomsleep(5,60)
 
 def thishost(x):
+    '''
+    return True if x obj war inserted by this host
+    '''
     for k,v in x:
         if k=='hname':
             return 1
