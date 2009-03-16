@@ -23,7 +23,7 @@ except ImportError:
     print 'Datasets dir:',DIR
 
 HOSTNAME = gethostname()
-SVNRM = 'svn rm "%s"'
+SVNRM = 'svn rm --force "%s"'
 SVNCI = 'svn ci --username anybody --password a -m "auomatic commit by %s (syncrm.py)"' % HOSTNAME
 HOME = os.environ['HOME']
 

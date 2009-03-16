@@ -379,7 +379,7 @@ def trustvariance( K, d ):
     K = network
     d = date
     """
-    return (d,scipy.var(K.weights_list()))
+    return (d,float(scipy.var(K.weights_list())))
 
 def var_plot(var, dpath, filename="trustVariance"):
     
