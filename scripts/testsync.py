@@ -42,7 +42,7 @@ def main():
         print
         print [x for x in c2 if thishost(x)]
 
-        if len([x for x in c2 if thishost(x)])==cnt+1:
+        if len([x for x in c2 if thishost(x)])!=cnt+1:
             print 'Bug! Bug! Bug!'
         
         randomsleep(60,120)
