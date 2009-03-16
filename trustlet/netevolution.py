@@ -196,7 +196,6 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                         print "with key {'network':''}, use WeightedNetwork, or Network, and set as value on edge" 
                         print "a dictionary with {'level':value}"
                         return None
-
                     #skip network load
                     net_set = True
                     
@@ -204,12 +203,19 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
             if not net_set:
                 try:
                     K = Networkclass(date=date,cond_on_edge=cond_on_edge)
+                
+                    if debug:
+                        deb = file( debug, 'a' )
+                        deb.write( "loading network succeded\n" )
+                        if cond_on_edge:
+                            deb.write( "with condition "+cond_on_edge.__name__+"\n" )
+                        deb.close()
+
                 except IOError:
                     print "Warning! in default path date does not exist! try to use a prefix"
                     K = Networkclass(date=date,prefix=prefix,cond_on_edge=cond_on_edge)
                     #try with _ if there isn't in normal path
                     #(because sync does not upload folder with _ prefix)
-            
                     if not K:
                         if debug:
                             deb = file( debug, 'a' )
@@ -217,6 +223,14 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                             deb.close()
                     
                         return None
+                    
+                    if debug:
+                        deb = file( debug, 'a' )
+                        deb.write( "loading network succeded with prefix '"+prefix+"'\n" )
+                        if cond_on_edge:
+                            deb.write( "and condition "+cond_on_edge.__name__+"\n" )
+                        deb.close()
+
             
             if K.number_of_nodes() == 0 or K.number_of_edges() == 0:
                 if debug:
@@ -733,13 +747,13 @@ al(degrees_of_separation_undirected_not_strongly_connected, plot_generic) #25
 
 #function used for script.. do not use it if you use trustlet as library
 def onlyMaster(e):
-    return 'Master' in e[2].values()
+    return 'Master' in e[2].values() or 'violet' in e[2].values()
 
 def onlyMasterJourneyer(e):
-    return 'Master' in e[2].values() or 'Journeyer' in e[2].values()
+    return 'Master' in e[2].values() or 'Journeyer' in e[2].values() or 'violet' in e[2].values() or 'blue' in e[2].values()
 
 def noObserver(e):
-    return 'Observer' in e[2].values()
+    return 'Observer' not in e[2].values() and 'gray' not in e[2].values()
 
 
 if __name__ == "__main__":    
@@ -778,9 +792,7 @@ if __name__ == "__main__":
         print "   Show all function's names"
         sys.exit(1)
 
-    #types of network for whose we cannot use the -m, -mj or -mja options.
-    colored_edges = set(['KaitiakiNetwork','SqueakfoundationNetwork']) 
-
+    
     #parsing command line options
     startdate = sys.argv[1] == '-' and '1970-01-01' or sys.argv[1]
     enddate = sys.argv[2] == '-' and '9999-12-31' or sys.argv[2]
@@ -801,19 +813,14 @@ if __name__ == "__main__":
 
     cond_on_edge = None
     
-    #we support condition on edges only for AdvogatoNetwork-like networks that use _obs_app_jour_mas_map
-    if netname not in colored_edges:
-        if '-m' in sys.argv:
-            cond_on_edge = onlyMaster
+    if '-m' in sys.argv:
+        cond_on_edge = onlyMaster
 
-        if '-mj' in sys.argv:
-            cond_on_edge = onlyMasterJourneyer
+    if '-mj' in sys.argv:
+        cond_on_edge = onlyMasterJourneyer
     
-        if '-mja' in sys.argv:
-            cond_on_edge = noObserver
-    else:
-        sys.stderr.write( "Warning! -m, -mj and -mja options are not avaiable for this network\n" )
-
+    if '-mja' in sys.argv:
+        cond_on_edge = noObserver
     
     range = (startdate,enddate,step)
 
