@@ -51,13 +51,10 @@ SVNUP = 'svn up --non-interactive --username anybody --password a'
 SVNCI = 'svn ci --non-interactive --username anybody --password a -m "automatic commit by %s (sync.py)%s"' % (HOSTNAME,'%s')
 SVNADD = 'svn add "%s"'
 
-CONFLICT =  '''You might added files yet stored on svn.
-You can execute:
-cd %s
-svn revert `file(s) added`
-mv or rm `file(s) added`
-sync.py
-Now you can re-add your file with sync.py
+CONFLICT =  '''You may resolve conflicts in %s dir svn.
+Try svn update, and remove any conflict deleting local files.
+Execute svn resolved <file> for each removed file.
+Now svn commit doesn't upload anything and sync.py may work.
 ''' % path.join(os.environ['HOME'],HIDDENDIR)
 
 def svnadd(p):
