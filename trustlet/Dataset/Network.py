@@ -47,6 +47,7 @@ class Network(XDiGraph):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
+                   ex. home/../datasets
         prefix:
            you can specify a prefix in path for the Network folder if you want
            ex. prefix = '_' --> path = /home/.../datasets/_NetworkName/date/graph.c2
@@ -72,23 +73,18 @@ class Network(XDiGraph):
             self.paste_graph(from_graph)
             
 
-    def save_c2(self,cachedict, key_dictionary ):
+    def save_c2(self,cachedict ):
         """
         see load_c2 function. The parameter are the same.
         """
-        if not hasattr(self,"filepath"):
+        if not hasattr(self,"filepath") or self.filepath=='':
             print "Error: filepath is not defined!"
             return False
         
-        test_edge = self.edges()[0]
+        return trustlet.helpers.save(cachedict,
+                                     self,
+                                     self.filepath)
         
-        if type(test_edge[2]) is dict:
-            return trustlet.helpers.save(cachedict,
-                                         self,
-                                         #([str(x) for x in self.nodes_iter()],[(str(x[0]),str(x[1]),x[2][key_dictionary]) for x in self.edges_iter()]), 
-                                         self.filepath)
-        else:
-            return trustlet.helpers.save(cachedict, (self.nodes(),self.edges()), self.filepath)
 
     def load_c2(self,cachedict, key_dictionary,cond_on_edge=None):
         """
@@ -100,7 +96,7 @@ class Network(XDiGraph):
                       ex: x=network.edges()[0]
                           x[2]
                           >> {key:weight_on_edge}
-        cond_on_edge: function thatk takes a tuple in this form (string0,string1,dict)
+        cond_on_edge: function that takes a tuple in this form (string0,string1,dict)
                       string0: the start node
                       string1: the end node
                       dict: weight on edge (ex. {'value':1} on WikiNetwork, {'level':'Master'}, {'color':'violet'}.. )
@@ -108,7 +104,7 @@ class Network(XDiGraph):
                       and return False if the edge had to be discarded, else return True.
         """
         
-        if not hasattr(self,"filepath"):
+        if not hasattr(self,"filepath") or self.filepath == '':
             print "Error: filepath is not defined!"
             return False
 
@@ -250,11 +246,13 @@ class Network(XDiGraph):
     def quick_info(self):
         XDiGraph.info(self)
 
-    def info(self):
+    def info(self,cachedict=None):
         """
         Show information.
         NB: using this method after load_distrust, can produce different results,
             because of the additional distrust_edges inserted in the the network by load_distrust.
+        
+        cachedict: if you use a non-standard network, you had to set cachedict    
         """
         
         #cache enabled only if c2
@@ -264,11 +262,20 @@ class Network(XDiGraph):
         else:
             raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         
+        if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
+            path = self.filepath #with no standard network, cannot upload info
+            if not cachedict: #if cachedict not set
+                raise Exception("For non-standard dataset, you must set the cachedict parameter")
+
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
 
         # cache
-        data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, path, fault=False)
+        if cachedict:
+            cachedict['function'] = 'info'
+            data = trustlet.helpers.load( cachedict, path, fault=False)
+        else:
+            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, path, fault=False)
             
         if data:  # if data is not false
             print data
@@ -297,7 +304,11 @@ class Network(XDiGraph):
                              ("number_of_connected_components","Number of connected components:"),
                              ("connected_components_size2","Connected component size:"),
                              ]:
-            self._show_method(method, desc)
+            try:
+                self._show_method(method, desc)
+            except:
+                print "Warning!",desc,"not calculated (probably because your network has no date)"
+                continue
             
         del function_list[2] #number of edges
         del function_list[3] #number of nodes
@@ -318,8 +329,12 @@ class Network(XDiGraph):
             
         print buffer
 
-        if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, path ):
-            print "Warning! save of cache failed"
+        if not cachedict:
+            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, path ):
+                print "Warning! save of cache failed"
+        else:
+            if not trustlet.helpers.save( cachedict, buffer, path ):
+                print "Warning! save of cache failed"
         
         return None
         
@@ -420,6 +435,10 @@ class Network(XDiGraph):
                 else:
                     self.add_edge(edge) # if we add an edge the nodes will be automatically added
     
+        if hasattr(graph,"level_map") and graph.level_map!={}:
+            self.level_map = graph.level_map #override level_map
+
+
     def _paste_graph(self, graph, avoidset=None):
         """Deprecated."""
         self.paste_graph(graph, avoidset)
@@ -472,14 +491,19 @@ class Network(XDiGraph):
     
 
 class WeightedNetwork(Network):
-    """A weighted network.
+    """
+    A weighted network.
 
-    Things to arrange:
-    * weights can be discrete or continuous
+    base_path: the path to put dataset directory
+                   ex. home/../datasets
+    prefix:
+       you can specify a prefix in path for the Network folder if you want
+       ex. prefix = '_' --> path = /home/.../datasets/_NetworkName/date/graph.c2
+    from_graph = the dataset that you would load. (in a networkx class) 
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None):
-        Network.__init__(self, base_path=base_path,prefix=prefix)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath=None):
+        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph)
         self.name= 'generic_weighted_network'
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
@@ -490,19 +514,32 @@ class WeightedNetwork(Network):
         if not hasattr(self,'level_map'):
             self.level_map = {}
 
+        if filepath:
+            self.filepath = filepath
+
+
     def trust_on_edge(self, edge):
         """
         SHOULD BE: weight_on_edge
         """
-        return edge[2]
+
+        if type(edge[2]) is dict and hasattr(self,"level_map") and self.level_map!={}:
+            return self.level_map[edge[2].values()[0]]
+        elif hasattr(self,"level_map") and self.level_map!={}:
+            return self.level_map[edge[2]]
+        else:
+            return edge[2]
+            
+
 
     def weights_list(self):
         """
         Return a list with the weights of all edges
         """
-        if hasattr(self, "_weights") and self._weights_list:
+        if hasattr(self, "_weights_list") and self._weights_list:
             ws = self._weights_list
         else:
+            self.weights() #create self._weights if there isn't
             ws = []
             for n in self.edges_iter():
                 x = n[2].values()[0]
@@ -533,15 +570,10 @@ class WeightedNetwork(Network):
                     elif type(x) is tuple:
                         ws[x[0]] = x[1]
             
-            self._weights_dictionary = ws
+            self._weights_dictionary = self._weights = ws
         
         return ws
     
-
-    def info(self):
-
-        Network.info(self)
-
     def min_weight(self):
         """Minimum weight."""
         return min(self.weights())
@@ -576,13 +608,13 @@ class WeightedNetwork(Network):
         node_controversy_list.reverse()
         return node_controversy_list
         
-    def show_reciprocity_matrix(self):
+    def show_reciprocity_matrix(self,cachedict=None):
         """ show table with reciprocity, does not work with wikinetwork """
         if self.__class__.__name__ == 'WikiNetwork':
             raise Exception( "Not implemented" )
 
         if self.has_discrete_weights:
-            recp_mtx = self.reciprocity_matrix()
+            recp_mtx = self.reciprocity_matrix(cachedict=cachedict)
             tbl = Table([12] + [12] * len(self.weights()))
             listKeys = self.weights().keys() #keys are saved in order to keep the order
             tbl.printHdr(['reciprocity'] + listKeys)
@@ -590,7 +622,7 @@ class WeightedNetwork(Network):
             for k in listKeys:
                 tbl.printRow([k] + [recp_mtx[k][x] for x in listKeys]) #take the keys in the same order as previous call of .keys()
 
-    def reciprocity_matrix(self,force=False):
+    def reciprocity_matrix(self,force=False,cachedict=None):
         """Generate a reciprocity table (which is actually a dict) with percentage of edges (and not number of edges)."""
         def value_on_edge(e):
             if type(e) in (int, float):
@@ -602,23 +634,32 @@ class WeightedNetwork(Network):
         
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
 
-        try:
-            tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
-
-            if tp:
-                path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
-            else:
-                raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         
-        except Exception: #this means that this is a network in shared_datasets
+        if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
+            if not cachedict:
+                raise Exception("cachedict parameter must be set for generic network")
             path = self.filepath
-            
+        else:
+            try:
+                tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
 
+                if tp:
+                    path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+                else:
+                    raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
+        
+            except Exception: #this means that this is a network in shared_datasets
+                path = self.filepath
+            
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
     
         if not force:
-            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
+            if not cachedict:
+                data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
+            else:
+                cachedict['function']='reciprocity_matrix'
+                data = trustlet.helpers.load( cachedict, path, fault=False)
         
             if data:                # if data is not false
                 return data
@@ -636,8 +677,12 @@ class WeightedNetwork(Network):
                                              value_on_edge(e2) == v)]) / self.number_of_edges()
                 table[v] = line
 
-            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):
-                print "Warning! save of cache failed"
+            if not cachedict:
+                if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):
+                    print "Warning! save of cache failed"
+            else:
+                if not trustlet.helpers.save( cachedict, table, path ):
+                    print "Warning! save of cache failed"
 
             return table
         else:

@@ -6,6 +6,15 @@ Some very simple networks for testing.
 
 from Network import Network, WeightedNetwork
 
+_dummy_map = {
+    'Observer': 0.4,
+    'Apprentice': 0.6,
+    'Journeyer': 0.8,
+    'Master': 1.0,
+    '' : 0.0
+    }
+
+
 class DummyNetwork(Network):
     """A dummy dataset used for testing purposes, actually the dataset
     with 8 nodes discussed in
@@ -63,6 +72,8 @@ class DummyWeightedNetwork(WeightedNetwork):
                  ]
         for edge in edges:
             self.add_edge(edge[0], edge[1], {'level':edge[2]})    
+
+        self.level_map = _dummy_map
         
 
 if __name__ == "__main__":

@@ -304,7 +304,8 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         np = 1
     else:
         np = None
-    data_ordered = splittask(task,dates,notasksout=True,np = np )
+    data_ordered = splittask(task,dates,notasksout=False,np = np )
+    
     safe_merge(path.join(lpath,cachepath))
     nd = len( dates )
     nf = len( functions )
