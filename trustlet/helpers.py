@@ -1021,7 +1021,7 @@ def hashable(x):
             tupleslist.append( (k,v) )
         return frozenset(tupleslist)
 
-    raise TypeError,"I don't know this type"
+    raise TypeError,"I don't know this type "+str(type(x))
 
 def save(key,data,path='.',human=False,version=3,threadsafe=True):
     """
@@ -1318,24 +1318,28 @@ def cached_read_dot(filepath,force=False):
 
     return cache[filepath]
 
-def relative_path( path, folder ):
+def relative_path( path, folder, debug=False ):
     """
     split a path relatively to the passed folder
+    debug: print some informations
     es.
-    
+
     In: relative_path( '/home/ciropom/Scrivania' , 'ciropom' )
     Out: ('/home/ciropom','Scrivania/')
     """
     ROOT = '/'
 
-    if path.find( folder ) == -1:
+    if path.find( "/"+folder ) == -1:
         return None #folder does not exists in path
 
     toadd = ''; relpathlist = [] ; relpath = ''
 
     while( path and os.path.split( path )[1] != folder ):
         if path == ROOT:
-            raise Exception("The folder "+folder+" is not in the path "+path+"\n")
+            if debug:
+                print "The folder "+folder+" is not in the path "+path
+            return None
+    
         path,toadd = os.path.split( path )
         relpathlist.append( toadd )
 
@@ -1435,7 +1439,7 @@ def svn_update(path,user='anybody',passwd='a'):
     os.chdir(curdir)
     return res
 
-def toNetwork( data , key, net=None ):
+def toNetwork( data , key=None, net=None ):
     """
     convert a tuple of two list
     (the first that contains the nodes [as string],
@@ -1484,8 +1488,12 @@ def toNetwork( data , key, net=None ):
         print name
         w.add_node( rname.findall(name)[0] )
 
-    for link in edges:
-        w.add_edge( link[0], link[1], {key:link[2]} )
+    if key:
+        for link in edges:
+            w.add_edge( link[0], link[1], {key:link[2]} )
+    else:
+        for link in edges:
+            w.add_edge( link[0], link[1], link[2] )
 
     return w
 

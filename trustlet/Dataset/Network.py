@@ -43,7 +43,7 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None):
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None, cachedict=None, filepath = ''):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
@@ -54,9 +54,14 @@ class Network(XDiGraph):
         '''
 
         XDiGraph.__init__(self, multiedges = False)
-        self.filepath = ''
+        self.filepath = filepath
         self.filename = ''
         self.values_on_edges = False
+        if cachedict:
+            self._cachedict = cachedict
+        else:
+            self._cachedict = None
+
         self.name = 'generic_network'
         if make_base_path:
 
@@ -71,9 +76,13 @@ class Network(XDiGraph):
 
         if from_graph:
             self.paste_graph(from_graph)
+        else:
+            #direct load of c2 files
+            if filepath and self._cachedict: #cachedict not set.. check!!
+                self.load_c2(self._cachedict) 
             
 
-    def save_c2(self,cachedict ):
+    def save_c2(self,cachedict=None ):
         """
         see load_c2 function. The parameter are the same.
         """
@@ -81,12 +90,20 @@ class Network(XDiGraph):
             print "Error: filepath is not defined!"
             return False
         
-        return trustlet.helpers.save(cachedict,
-                                     self,
-                                     self.filepath)
+        if cachedict:
+            return trustlet.helpers.save(cachedict,
+                                         self,
+                                         self.filepath)
+        elif self.get_keyOnDataset():
+            return trustlet.helpers.save(self.get_keyOnDataset(),
+                                         self,
+                                         self.filepath)
+        else:
+            return False
         
 
-    def load_c2(self,cachedict, key_dictionary,cond_on_edge=None):
+
+    def load_c2(self,cachedict=None, key_dictionary=None, cond_on_edge=None):
         """
         load a c2 into this instance of Network.
         
@@ -108,12 +125,19 @@ class Network(XDiGraph):
             print "Error: filepath is not defined!"
             return False
 
-        pydataset = trustlet.helpers.load(cachedict, self.filepath)
+        if cachedict:
+            cachekey = cachedict
+        elif self.get_keyOnDataset():
+            cachekey = self.get_keyOnDataset()
+        else:
+            return False
+        
+        pydataset = trustlet.helpers.load(cachekey, self.filepath)
         
         if not pydataset and cachedict.has_key('threshold'):
             # retry without thresold
             del cachedict['threshold']
-            pydataset = trustlet.helpers.load(cachedict, self.filepath)
+            pydataset = trustlet.helpers.load(cachekey, self.filepath)
             
             if not pydataset:
                 return False
@@ -133,7 +157,7 @@ class Network(XDiGraph):
                 print "Warning! c2 is not consistent! The loading of network is failed"
                 print "Forcing conversion from dot.."
                 try:
-                    val=trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,cachedict)
+                    val=trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,cachekey)
                 except IOError:
                     raise IOError( "Error! dot does not exist. download it from trustlet.org and make sure this path exist "+self.dotpath )
                 except AttributeError:
@@ -246,40 +270,53 @@ class Network(XDiGraph):
     def quick_info(self):
         XDiGraph.info(self)
 
-    def info(self,cachedict=None):
+    def info(self,cachedict=None,force=False):
         """
         Show information.
         NB: using this method after load_distrust, can produce different results,
             because of the additional distrust_edges inserted in the the network by load_distrust.
         
-        cachedict: if you use a non-standard network, you had to set cachedict    
+        cachedict: if you use a non-standard network, you had to set cachedict (or set it at init-time)    
         """
         
+        if self.number_of_edges() == 0:
+            XDiGraph.info(self)
+            return None
+
         #cache enabled only if c2
-        tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
-        if tp:
-            path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+        if self.__class__.__name__ != "WikiNetwork":
+            tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+            if tp:
+                path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+            else:
+                raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         else:
-            raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
-        
+            path = self.filepath
+
         if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
-            path = self.filepath #with no standard network, cannot upload info
-            if not cachedict: #if cachedict not set
+            path = self.filepath #with non standard network, cannot upload info
+            if not cachedict and not self.get_keyOnDataset(): #if cachedict not set
                 raise Exception("For non-standard dataset, you must set the cachedict parameter")
 
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
 
-        # cache
         if cachedict:
-            cachedict['function'] = 'info'
-            data = trustlet.helpers.load( cachedict, path, fault=False)
+            cachekey = cachedict
         else:
-            data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, path, fault=False)
+            cachekey = self.get_keyOnDataset()    
+
+        if not force:
+            # cache
+            if cachedict or self.get_keyOnDataset():
+                cachekey['function'] = 'info'
+                data = trustlet.helpers.load( cachekey, path, fault=False)
+            else:
+                data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, path, fault=False)
             
-        if data:  # if data is not false
-            print data
-            return None
+            if data:  # if data is not false
+                print data
+                return None
         
         stdout = sys.stdout
         
@@ -329,11 +366,11 @@ class Network(XDiGraph):
             
         print buffer
 
-        if not cachedict:
+        if not cachedict and not self.get_keyOnDataset():
             if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, path ):
                 print "Warning! save of cache failed"
         else:
-            if not trustlet.helpers.save( cachedict, buffer, path ):
+            if not trustlet.helpers.save( cachekey, buffer, path ):
                 print "Warning! save of cache failed"
         
         return None
@@ -502,8 +539,8 @@ class WeightedNetwork(Network):
     from_graph = the dataset that you would load. (in a networkx class) 
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath=None):
-        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath='', cachedict=None):
+        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=filepath)
         self.name= 'generic_weighted_network'
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
@@ -512,11 +549,10 @@ class WeightedNetwork(Network):
         self._weights_dictionary = None
         #self.level_map = None #this *erase* leve_map
         if not hasattr(self,'level_map'):
-            self.level_map = {}
+            self.level_map = {}        
 
-        if filepath:
-            self.filepath = filepath
-
+    def get_keyOnDataset(self):
+        return self._cachedict
 
     def trust_on_edge(self, edge):
         """
@@ -636,30 +672,33 @@ class WeightedNetwork(Network):
 
         
         if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
-            if not cachedict:
+            if not cachedict and not self.get_keyOnDataset():
                 raise Exception("cachedict parameter must be set for generic network")
             path = self.filepath
-        else:
-            try:
-                tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
+        elif self.__class__.__name__ != "WikiNetwork":
+            tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
 
-                if tp:
-                    path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
-                else:
-                    raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
-        
-            except Exception: #this means that this is a network in shared_datasets
-                path = self.filepath
+            if tp:
+                path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
+            else:
+                raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
+        else:
+            path = self.filepath
             
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
     
+        if cachedict:
+            cachekey = cachedict
+        else:
+            cachekey = self.get_keyOnDataset()
+                
         if not force:
             if not cachedict:
                 data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
             else:
-                cachedict['function']='reciprocity_matrix'
-                data = trustlet.helpers.load( cachedict, path, fault=False)
+                cachekey['function']='reciprocity_matrix'
+                data = trustlet.helpers.load( cachekey, path, fault=False)
         
             if data:                # if data is not false
                 return data
@@ -677,11 +716,11 @@ class WeightedNetwork(Network):
                                              value_on_edge(e2) == v)]) / self.number_of_edges()
                 table[v] = line
 
-            if not cachedict:
+            if not cachedict and not self.get_keyOnDataset():
                 if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):
                     print "Warning! save of cache failed"
             else:
-                if not trustlet.helpers.save( cachedict, table, path ):
+                if not trustlet.helpers.save( cachekey, table, path ):
                     print "Warning! save of cache failed"
 
             return table

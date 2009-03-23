@@ -423,7 +423,7 @@ class PredGraph(CalcGraph):
                                indegree=10, round_weight=True
                                ):
         """
-        This function save a graph with
+        This function calculate the data for a graph with
         x axis: level of controversiality (max value = maxc)
         y axis: an error measure (MAE or other)
         parameter:
@@ -492,6 +492,8 @@ class PredGraph(CalcGraph):
                                     os.path.join(self.path, cachename ),
                                     fault=False
                                     )
+            else:
+                abs = False
 
             #if the result is cached
             if abs != False:
@@ -519,7 +521,7 @@ class PredGraph(CalcGraph):
                     if  pred <= 1.0 and pred >= 0.4:
                         abserr = math.fabs( e[weight]['orig'] - pred )
                         sum += abserr
-                        rmse += numpy.power(abserr , 2)
+                        rmse += float(numpy.power(abserr , 2))
                         cnt +=1
 
                         if abserr != 0:
@@ -536,7 +538,7 @@ class PredGraph(CalcGraph):
 
                     return None
 
-                rmse = numpy.sqrt(rmse/cnt)
+                rmse = float(numpy.sqrt(rmse/cnt))
                 pw = float(pw)/cnt
                 cov = float(cnt)/covcnt
 
@@ -688,11 +690,13 @@ class CalcWikiGraph(CalcGraph):
         self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
-            path = os.path.join(os.path.split(dataset.filepath)[0],
-                                path_name(TM))
+            self.path = os.path.join(os.path.split(dataset.filepath)[0],
+                                     path_name(TM))
 
-            (home,rel)=relative_path(path,'datasets' )
-            self.path = os.path.join(  os.path.split(home)[0]  ,'shared_datasets',rel)
+            tp=relative_path(self.path,'datasets' )
+            if tp:
+                self.path = os.path.join(  os.path.split(tp[0])[0]  ,'shared_datasets',tp[1])
+
 
             if hasattr(TM,"noneToValue") and TM.noneToValue:
                 self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
@@ -832,8 +836,6 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
             print "I don't know what kind of Network is this...."
             print "I think that you have passed to me a wrong object"
             return
-        
-
         
         CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
 
