@@ -138,14 +138,14 @@ def main():
         #add all svn dir files to to_remove
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
-                # foreach file saves relative path
-                to_remove += [path.join(dirpath,x) for x in files]
+                # foreach file saves relative path ( \{c2} )
+                to_remove += [path.join(dirpath,x) for x in files if not x.endswith('.c2')]
 
         #timestamp update
         tstampup = int(time.time())
         assert not os.system(SVNUP),'Update failied. '+CONFLICT
 
-        to_remove = set(to_remove)
+        to_remove = set(to_remove) # non only files to remove, also c2 to merge
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
                 # remove from to_remove files yet in datasets dir only if
@@ -158,8 +158,8 @@ def main():
         for f in to_remove:
             f = f.replace(hiddenpath,datasetspath)
             # c2 files are managed by merge
-            if path.isfile(f) and not f.endswith('.c2'):
-                print "I'm removing",relative_path(f,DIR)[1]
+            if path.isfile(f):
+                print "I'm removing",relative_path(f,DIR)[1] # ¡¡¡ it might a lost update, non c2 files only !!!
                 os.remove(f)
     
     merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv,usercomment)
@@ -199,12 +199,14 @@ def merge(svn,datasets,upload=True,usercomment=''):
         if '.svn' in dirpath:
             continue
 
+        # O_O ehm... unuseful
         names = dirnames + filenames
         dirnames = [x for x in names if path.isdir(path.join(dirpath,x))]
         filenames = [x for x in names if path.isfile(path.join(dirpath,x))]
 
         destbasepath = dirpath.replace(svn,datasets)
         
+        # create missing directory
         if not path.isdir(destbasepath):
             assert not path.isfile(destbasepath),destbasepath
             os.mkdir(destbasepath)
