@@ -533,6 +533,12 @@ class WeightedNetwork(Network):
 
     base_path: the path to put dataset directory
                    ex. home/../datasets
+    weights: a dictionary with as key the value on edge, and as value, the integer value of the value on edge
+             ex.
+                {'Apprentice':0.6......}
+    has_discrete_weights: if set to false, this network is used as extension of network Network class (DEPRECATED)
+    filepath: the path to the c2 file in which you would store the data of the graph
+    cachedict: a dictionary used as key for the c2 file. See trustlet.org/wiki/Cache_v2_format
     prefix:
        you can specify a prefix in path for the Network folder if you want
        ex. prefix = '_' --> path = /home/.../datasets/_NetworkName/date/graph.c2
