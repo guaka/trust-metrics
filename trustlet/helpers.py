@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 """Collection of random useful stuff."""
 import math
@@ -1216,7 +1217,10 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
         else:
             gen_key = get_sign
 
-        d[gen_key(key)] = data
+        d[gen_key(key)] = {'dt':data,'ts':time.time()}
+        # dt: data
+        # ts: timestamp
+
         ###
         #debug = file('debug')
         ###
@@ -1285,12 +1289,24 @@ def safe_merge(path,delete=True):
         if delete:
             os.remove(file)
 
-def load(key,path='.',fault=None,cachedcache=False):
+def load(key,path='.',fault=None,cachedcache=False,info=False):
     """
     Cache.
     Loads data stored by save.
     fault is the value returned if key is not stored in cache.
     """
+
+    def onlydata(data):
+        '''
+        If not info it erases metadata
+        '''
+        if info:
+            return data
+        if type(data) is dict and 'dt' in data and 'ts' in data:
+            # i hope that there is ts...
+            return data['dt']
+        else:
+            return data
 
     if os.path.isdir(path):
         # version 1
@@ -1315,7 +1331,7 @@ def load(key,path='.',fault=None,cachedcache=False):
                 pass
             if cache[path].has_key(hashable(key)):
                 #version 3
-                return cache[path][hashable(key)]
+                return onlydata(cache[path][hashable(key)])
         try:
             d = pickle.load(GzipFile(path))
         except:
@@ -1335,7 +1351,7 @@ def load(key,path='.',fault=None,cachedcache=False):
     else:
         return fault
 
-    return data
+    return onlydata(data)
 
 def erase_cachedcache():
     '''
@@ -1357,6 +1373,15 @@ def convert_cache(path1,path2):
         newcache[k] = v
     pickle.dump(newcache,GzipFile(path2,'w'))
 
+def cache_ts(data):
+    '''
+    if there is timestamp in metadata return it, else 0
+    '''
+    if type(data) is dict and 'ts' in data:
+        return data['ts']
+    else:
+        return 0
+
 def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
     '''
     mpath: new destination file (merged path).
@@ -1364,6 +1389,10 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
     if `srcpath` and `dstpath` file cache has the same
     key will keep the `dstpath` value for that key.
     (To give priority to srcpath set priority to 1)
+    
+    ¡¡ EDIT !!
+
+    We will keep newest data, if we know timestamp (old data hasn't it)
     '''
 
     try:
@@ -1398,7 +1427,8 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
 
     modified = False
     for k,v in s.iteritems():
-        if not d.has_key(k) or d[k]!=s[k]:
+        if not d.has_key(k) or s[k]!=d[k] and cache_ts(s[k])>cache_ts(d[k]):
+            # s[k] is newer than d[k]
             modified = True
             d[k] = s[k]
 
