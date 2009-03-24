@@ -13,6 +13,7 @@ import os,sys,re
 import datetime
 import time
 import marshal
+import threading
 #cache
 import re
 from hashlib import md5
@@ -835,6 +836,133 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
         exit()
 
     return result
+
+
+def powersplittask(function,input,np=None,showperc=True,notasksout=False):
+    """
+    create <np> processes with <input>[i] data,
+    the result will return in a list.
+
+    splittask(function,input) is equivalent to [function(x) for x in input]
+
+    Params:
+      if showperc it will print percentage of tasks done.
+      if notasksout stdout of son will suppressed.
+    """
+
+    lock = threading.Lock()
+    tasks = set(range(len(input))) # remain tasks
+
+    if not np:
+        if os.environ.has_key('NP'):
+            np = int(os.environ['NP'])
+        else:
+            np = getnp()
+            if not np:
+                np = 2
+
+    result = []
+    pipes = []
+    controlpipes = []
+    pids = []
+
+
+    class Control(threading.Thread):
+        def __init__(self,ctrlr,ctrlw):
+            threading.Thread.__init__(self)
+            self.ctrlr = ctrlr
+            self.ctrlw = ctrlw
+
+        def run(self):
+            while True:
+                lock.acquire()
+                if len(tasks):
+                    n = tasks.pop()
+                    lock.release()
+                else:
+                    os.close(self.ctrlw) # tasks ends
+                    os.close(self.ctrlr)
+                    lock.release()
+                    break
+
+                assert os.write(self.ctrlw,str(n))
+
+                #wait for something
+                os.read(self.ctrlr,1000)
+
+    if np==1:
+        #doesn't create other processes
+        return [function(x) for x in input]
+
+    for proc in xrange(np):
+        read,write = os.pipe()
+        #pinput = map(lambda x: input[x],xrange(proc,len(input),np))
+
+        # control thread (instead of pinput)
+        ctrl_new_task = os.pipe()
+        ctrl_continue = os.pipe()
+
+        control = Control(ctrl_continue[0],ctrl_new_task[1])
+        control.run()
+
+        #print 'pinput',pinput
+        pid = os.fork()
+        if not pid:
+            #son
+            res = []
+            if notasksout:
+                stdout = sys.stdout
+                devnull = file('/dev/null','w')
+
+            while True:
+                i = os.read(crtlr_new_task[0],1000)
+                if not i:
+                    break
+
+                if notasksout:
+                    #remove standard output
+                    sys.stdout = devnull
+                #exec task
+                res.append(function(input[int(i)]))
+                if notasksout:
+                    sys.stdout = stdout
+
+                assert os.write(ctrl_continue[1],i)
+
+            os.write(write,marshal.dumps(res))
+            os.close(write)
+            #sys.exit() # ipython trap this -_-
+            os._exit(0) # ipython DOESN'T trap this ^_^
+        else:
+            #save pipe
+            pipes.append(read)
+            pids.append(pid)
+            os.close(write)
+
+    #wait responce from sons
+    try:
+        for pipe in pipes:
+            buffer = '_'
+            s = ''
+            while buffer:
+                buffer = os.read(pipe,1000)
+                s += buffer
+            result += marshal.loads(s)
+    except EOFError:
+        print "A son process is dead"
+        print "splittask says: it's not my fault!"
+        print "I'm terminating other process ..."
+        for pid in pids:
+            try:
+                os.kill(pid,15) # SIGTERM (SIGKILL = 9)
+            except OSError:
+                # process yet dead
+                pass
+        print "Done."
+        exit()
+
+    return result
+
 
 """data: output of pred_graph.cont_num_of_edges()"""
 plot_cont_num_of_edges = lambda data,indegree,dirpath='.': \

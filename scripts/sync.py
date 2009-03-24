@@ -51,11 +51,19 @@ SVNUP = 'svn up --non-interactive --username anybody --password a'
 SVNCI = 'svn ci --non-interactive --username anybody --password a -m "automatic commit by %s (sync.py)%s"' % (HOSTNAME,'%s')
 SVNADD = 'svn add "%s"'
 
+REMOVED = 'removed'
+MAX_SIZE_REMOVED = 20
+
 CONFLICT =  '''You may resolve conflicts in %s dir svn.
 Try svn update, and remove any conflict deleting local files.
 Execute svn resolved <file> for each removed file.
 Now svn commit doesn't upload anything and sync.py may work.
 ''' % path.join(os.environ['HOME'],HIDDENDIR)
+
+size = lambda f: os.stat(f).st_size
+mtime = lambda f: int(os.stat(f).st_mtime)
+re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
+
 
 def svnadd(p):
     assert not os.system(SVNADD % p),SVNADD % p
@@ -114,7 +122,7 @@ def main():
     if '--verbose' in sys.argv:
         sys.argv.append('-v')
     
-    #files removed from svn
+    #files updated from svn
     to_remove = []
 
     #timestamp update
@@ -180,9 +188,6 @@ def diff(f,g):
             g.close()
             return True
 
-mtime = lambda f: int(os.stat(f).st_mtime)
-re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
-
 def merge(svn,datasets,upload=True,usercomment=''):
     
     added = updated = merged = 0
@@ -212,6 +217,15 @@ def merge(svn,datasets,upload=True,usercomment=''):
             rpath = relative_path(srcpath,HIDDENDIR)[1]
             #print '<<< File:',rpath
             
+            # Manage removed files
+            if size(srcpath)<=MAX_SIZE_REMOVED:
+                f = file(srcpath)
+                data = f.read().strip()
+                f.close()
+
+                if data==REMOVED:
+                    continue
+
             if path.isfile(dstpath):
                 # yet exists in destination
                 if not diff(srcpath,dstpath):
