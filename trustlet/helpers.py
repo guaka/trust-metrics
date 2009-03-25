@@ -1217,7 +1217,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
         else:
             gen_key = get_sign
 
-        d[gen_key(key)] = {'dt':data,'ts':time.time()}
+        d[gen_key(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
         # dt: data
         # ts: timestamp
 
@@ -1302,7 +1302,7 @@ def load(key,path='.',fault=None,cachedcache=False,info=False):
         '''
         if info:
             return data
-        if type(data) is dict and 'dt' in data and 'ts' in data:
+        if type(data) is dict and 'dt' in data:
             # i hope that there is ts...
             return data['dt']
         else:
