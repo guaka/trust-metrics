@@ -841,6 +841,9 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
 
 def powersplittask(function,input,np=None,showperc=True,notasksout=False):
     """
+
+    DOESN'T WORK YET
+
     create <np> processes with <input>[i] data,
     the result will return in a list.
 
