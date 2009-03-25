@@ -1155,7 +1155,7 @@ def hashable(x):
 
     raise TypeError,"I don't know this type "+str(type(x))
 
-def save(key,data,path='.',human=False,version=3,threadsafe=True):
+def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
@@ -1165,6 +1165,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
     If path ends with '.c2' (cache version 2) 
     data will save in the new format (less files).
     human is not suported in the new format.
+    debug: other info to put into c2 on key. Use read_c2() to get them
     return: true in case of success, false in other cases
     """
 
@@ -1221,8 +1222,14 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True):
             gen_key = get_sign
 
         d[gen_key(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
+
+        if debug:
+            d[gen_key(key)]['db'] = debug
+
         # dt: data
         # ts: timestamp
+        # hn: hostname
+        # db: debug
 
         ###
         #debug = file('debug')

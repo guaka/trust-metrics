@@ -660,7 +660,7 @@ fl[-1][0].__name__='link_reciprocity_perc'
 
 def degrees_of_separation_undirected(G,d):
     K = G.to_undirected()
-    nodes = set( networkx.strongly_connected_components(K)[0] )
+    nodes = set( networkx.strongly_connected_components(K)[0] ) # is the same of connected_components()
     pathsl = []
 
     for n in nodes:
