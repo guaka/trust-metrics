@@ -6,7 +6,7 @@ wrap the network in DOT format.
 Each network supported has it's own class to wrap it.
 """
 
-
+from networkx.readwrite import read_pajek,write_pajek
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
 import trustlet
@@ -81,6 +81,23 @@ class Network(XDiGraph):
             if filepath and self._cachedict: #cachedict not set.. check!!
                 self.load_c2(self._cachedict) 
             
+    def save_pajek(self):
+        """
+        save this network in pajek format in `filepath`.net
+        """
+        if hasattr(self,"filepath") and self.filepath:
+            return write_pajek(self, self.filepath+'.net' )
+        else:
+            return False
+        
+    def read_pajek(self):
+        if hasattr(self,"filepath") and self.filepath:
+            w = read_pajek(self.filepath+'.net')
+
+            self.paste_graph(w,key_to_delete='value')
+            return True
+        else:
+            return False
 
     def save_c2(self,cachedict=None ):
         """
@@ -439,18 +456,23 @@ class Network(XDiGraph):
         graph = trustlet.helpers.cached_read_dot(filepath,force)
         self.paste_graph(graph)
         
-    def paste_graph(self, graph, avoidset=None,cond_on_edge=None):
+    def paste_graph(self, graph, avoidset=None,cond_on_edge=None, key_to_delete=None):
         """
         Paste graph into object.
         Parameter:
            graph: the graph
            avoidset: the set object that contains all the nodes leaved out from the copying
+           key_to_delete: delete specified key in the dictionary on edge, if exist. 
         """
         if not cond_on_edge:
             cond = lambda e:True # functions that return only true
         else:
             cond = cond_on_edge
 
+        if type(graph.edges()[0][2]) is dict and key_to_delete:
+            deletekey = True
+        else:
+            deletekey = False
 
         if avoidset:
 
@@ -458,6 +480,8 @@ class Network(XDiGraph):
                 self.add_node(node)
 
             for edge in [x for x in graph.edges_iter() if x[0] not in avoidset and x[1] not in avoidset and cond(x)]:
+                if deletekey:
+                    del edge[2][key_to_delete]
                 self.add_edge(edge)
 
         else:
@@ -470,6 +494,8 @@ class Network(XDiGraph):
                     self.add_node(edge[0])
                     self.add_node(edge[1])
                 else:
+                    if deletekey:
+                        del edge[2][key_to_delete]
                     self.add_edge(edge) # if we add an edge the nodes will be automatically added
     
         if hasattr(graph,"level_map") and graph.level_map!={}:
