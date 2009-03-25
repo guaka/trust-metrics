@@ -5,6 +5,7 @@ Some very simple networks for testing.
 """
 
 from Network import Network, WeightedNetwork
+import os
 
 _dummy_map = {
     'Observer': 0.4,
@@ -52,6 +53,10 @@ class DummyWeightedNetwork(WeightedNetwork):
     But with weights on edges, so that it is like a trust network"""
     def __init__(self):
         WeightedNetwork.__init__(self)
+
+        self.filepath = os.path.join(os.environ['HOME'],'datasets','DummyNetwork')
+        self.date = '1970-01-01'
+        
         edges = [(1, 2, "Master"),
                  (1, 3, "Journeyer"),
                  (2, 4, "Apprentice"),
