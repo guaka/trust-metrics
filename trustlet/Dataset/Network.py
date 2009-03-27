@@ -85,15 +85,44 @@ class Network(XDiGraph):
     def save_pajek(self):
         """
         save this network in pajek format in `filepath`.net
+        we strongly recomend to use c2 format,
+        because it implements some cache-mechanism
+        and save automatically some important information
+        about network (as level_map).
+        if you use pajek format remember to set your
+        level_map before use some methods (as info or reciprocity_matix for example)
+        and to set parameter force to True, if you had to elaborate a function with
+        this parameter.
         """
         if hasattr(self,"filepath") and self.filepath:
-            return write_pajek(self, self.filepath+'.net' )
+            if self.filepath.endswith( ".net" ):
+                return write_pajek(self, self.filepath )
+            else:
+                return write_pajek(self, self.filepath+'.net' )
         else:
             return False
         
-    def read_pajek(self):
+    def load_pajek(self):
+        """
+        load a graph in a pajek format.
+        we strongly recomend to use c2 format,
+        because it implements some cache-mechanism
+        and save automatically some important information
+        about network (as level_map).
+        if you use pajek format remember to set your
+        level_map before use some methods (as info or reciprocity_matix for example)
+        and to set parameter force to True, if you had to elaborate a function with
+        this parameter.
+        """
+
         if hasattr(self,"filepath") and self.filepath:
-            w = read_pajek(self.filepath+'.net')
+            try:
+                w = read_pajek(self.filepath)
+            except IOError:
+                try:
+                    w = read_pajek(self.filepath+'.net')
+                except IOError:
+                    sys.stderr.write( "error loading network, filepath does not exists\n" )
 
             self.paste_graph(w,key_to_delete='value')
             return True
@@ -312,12 +341,7 @@ class Network(XDiGraph):
             else:
                 raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         else:
-            path = self.filepath
-
-        if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
             path = self.filepath #with non standard network, cannot upload info
-            if not cachedict and not self.get_keyOnDataset(): #if cachedict not set
-                raise Exception("For non-standard dataset, you must set the cachedict parameter")
 
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
@@ -327,10 +351,15 @@ class Network(XDiGraph):
             cachekey['function'] = 'info'
         else:
             cachekey = {'network':self._name(),'date':self.date,'function':'info'}
-            if hasattr(self,"cond_on_edge") and self.cond_on_edge:
-                cachekey['cond_on_edge']=self.cond_on_edge.__name__
             
+        if hasattr(self,"cond_on_edge") and self.cond_on_edge:
+            cachekey['cond_on_edge']=self.cond_on_edge.__name__
+
         if not force:
+            if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
+                if not cachedict and not self.get_keyOnDataset(): #if cachedict not set
+                    raise Exception("For non-standard dataset, you must set the cachedict parameter (or if you wouldn't you had to set force parameter to True)")
+
             # cache
             data = trustlet.helpers.load( cachekey, path, fault=False)
             
@@ -350,7 +379,8 @@ class Network(XDiGraph):
         
         sys.stdout = tmpfile #save all output in a temporary file
 
-        from trustlet.netevolution import fl as function_list
+        from trustlet.netevolution import fl
+        function_list = fl[:] #copy fl
         self.quick_info()
         
         for method, desc in [("std_in_degree", "Std deviation of in-degree:"),
@@ -364,7 +394,7 @@ class Network(XDiGraph):
             try:
                 self._show_method(method, desc)
             except:
-                print "Warning!",desc,"not calculated (probably because your network has no date)"
+                sys.stderr.write( "Warning! "+desc+" not calculated (probably because your network has no level_map)\n" )  
                 continue
             
         del function_list[2] #number of edges
@@ -375,7 +405,13 @@ class Network(XDiGraph):
             self.date = '1970-01-01'
 
         for (f,pf) in function_list.__iter__():
-            print f.__name__, ":", f(self,self.date)[1]
+            try:
+                res = f(self,self.date)[1]
+                print f.__name__, ":", res
+            except:
+                sys.stderr.write( "Warning! "+f.__name__+" not calculated (probably because your network has no level_map)\n" )  
+                continue
+            
                 
         sys.stdout = stdout #restore stdout
         tmpfile.close() #flush buffer
@@ -386,8 +422,9 @@ class Network(XDiGraph):
             
         print buffer
 
+        print cachekey, path
         if not trustlet.helpers.save( cachekey, buffer, path ):
-            print "Warning! save of cache failed"
+            sys.stderr.write( "Warning! save of cache failed\n" )
         
         return None
         
@@ -564,6 +601,8 @@ class WeightedNetwork(Network):
     has_discrete_weights: if set to false, this network is used as extension of network Network class (DEPRECATED)
     filepath: the path to the c2 file in which you would store the data of the graph
     cachedict: a dictionary used as key for the c2 file. See trustlet.org/wiki/Cache_v2_format
+               NB: if you don't set cachedict at init-time you can't set it before! and if you 
+                   don't set cachedict parameter you cannot save c2 files.
     prefix:
        you can specify a prefix in path for the Network folder if you want
        ex. prefix = '_' --> path = /home/.../datasets/_NetworkName/date/graph.c2
@@ -607,8 +646,12 @@ class WeightedNetwork(Network):
             self.weights() #create self._weights if there isn't
             ws = []
             for n in self.edges_iter():
-                x = n[2].values()[0]
-                ws.append( self._weights[x] )
+                if type(n[2]) is dict:
+                    x = n[2].values()[0]
+                else:
+                    x = n[2]
+                
+                ws.append( self._weights[str(x)] )
             
             self._weights_list = ws
         
@@ -721,12 +764,7 @@ class WeightedNetwork(Network):
         
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
 
-        
-        if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
-            if not cachedict and not self.get_keyOnDataset():
-                raise Exception("cachedict parameter must be set for generic network")
-            path = self.filepath
-        elif self.__class__.__name__ != "WikiNetwork":
+        if self.__class__.__name__ != "WikiNetwork":
             tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
 
             if tp:
@@ -750,6 +788,12 @@ class WeightedNetwork(Network):
             
         
         if not force:
+            #only if you would to load from c2 cache, you had to be set cachedict
+            if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
+                if not cachedict and not self.get_keyOnDataset():
+                    raise Exception("cachedict parameter must be set for generic network (or if you wouldn't you had to set force parameter to True)")
+                path = self.filepath
+        
             data = trustlet.helpers.load( cachekey, path, fault=False)
             
             if data:                # if data is not false
