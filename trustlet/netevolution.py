@@ -78,7 +78,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         )
     
     if not dates:
-        print "There isn't any network in this path"
+        print "There isn't any network in this path", lpath
         return
 
     if range:
@@ -116,6 +116,9 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         if not force:
         #try to find the functions cached
             for i in xrange(len(functions)):
+                if hasattr(functions[i], "enable") and not functions[i].enable:
+                    continue
+
                 assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
 
                 cachekey = {'function':functions[i].__name__,'date':date}
@@ -371,6 +374,9 @@ def trustaverage( K, d ):
     return (d,averagetrust)
 
 def ta_plot(ta, dpath, filename="trustAverage"):
+    if not ta:
+        return None
+    
     prettyplot( ta, path.join(dpath,filename),
                 title="Trust Average on time", showlines=True,
                 xlabel='date',ylabel='trust average',
@@ -394,7 +400,9 @@ def trustvariance( K, d ):
     return (d,float(scipy.var(K.weights_list())))
 
 def var_plot(var, dpath, filename="trustVariance"):
-    
+    if not var:
+        return None
+
     prettyplot( var, path.join(dpath,filename),
                 title="Trust Variance on time", showlines=True,
                 xlabel='date',ylabel='trust variance',
@@ -414,6 +422,10 @@ def plot_usersgrown(data,data_path='.'):
     data is the output of usersgrown
     >>> plot_usersgrown(usersgrown('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
+    if not data or not any(data):
+        return None
+
+    print data
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data,path.join(data_path,'usersgrown_(%s_%s)'%(fromdate,todate)),
@@ -436,6 +448,9 @@ def plot_numedges(data,dpath='.'):
     '''
     >>> plot_*(*('trustlet/datasets/Advogato',range=('2000-01-01','2003-01-01')))
     '''
+    if not data or not any(data):
+        return None
+
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data,path.join(dpath,'numedges_(%s_%s)'%(fromdate,todate)),
@@ -452,6 +467,9 @@ def meandegree(K,date):
 
 
 def plot_meandegree(data,data_path='.'):
+    if not data or not any(data):
+        return None
+
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data, path.join( data_path,'meandegree_(%s_%s)'%(fromdate,todate) ),
@@ -501,7 +519,7 @@ def plot_level_distribution(data,data_path='.'):
     # to:   [ [(a,b), (a1,b1), ...],[(a,c), (a1,c1), ...], [(a,d), ...], ... ]
     # lists of ['Master','Journeyer','Apprentice','Observer']
 
-    if not data or not data[0] or not data[0][1]:
+    if not data or not data[0] or not data[0][1] or not any(data):
         return None
 
     f_data = [[],[],[],[]]
@@ -562,7 +580,7 @@ def plot_generic(data,data_path='.',title='',comment=''):
             )
     '''
 
-    if not data or None in data:
+    if not data or not any(data):
         return None
 
     fromdate = min(data,key=lambda x:x[0])[0]
@@ -695,12 +713,13 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
     # to [ [(d,val_for_level1), (d,val_for_level2), ....], [(d1:val_for_level1), ... ]
     
     #split this set of graphics from other graphics
+    if not data or not any(data):
+        return None
+    
     trustlet.helpers.mkpath( path.join(data_path,'reciprocity_level_distribution') )
 
     ll = [] #list relative to one level (Advogato..etc)
-    if not data:
-        return None
-
+    
     lv = sorted( list(data[0][1]) ) #list of keys
     lvlen = len(lv)
 
@@ -789,7 +808,7 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-f] [-d debug_path]"
+        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-f] [-d debug_path] [-l comma_separated_list]"
         print "    You can use '-' to skip {start,end}date"
         print "    networkname: the name of the folder in ~/datasets/ that contains the network ex. AdvogatoNetwork"
         print "    savepath: the path in which this script save the .gnuplot and the .png files"
@@ -798,6 +817,9 @@ if __name__ == "__main__":
         print "    -mj: only master and journeyer edges (work only with advogato-like network)"
         print "    -mja: master and journeyer and apprentice edges (work only with advogato-like network)"
         print "    -f: force to forget cache"
+        print "    -l: list of numbers comma-separated, each number identify a function"
+        print "        with this parameter you can specify how functions I had to calculate"
+        print "        for a list of the functions and numeric identifier associated to them type 'netevolution list'"
         print "    if you omit this command the computation will use all edges"
         print "    debug_path: path to a file filled with debug informations"
         print "OR netevolution.py list: that show all the functions computed by netevolution"
@@ -845,18 +867,14 @@ if __name__ == "__main__":
     if '-l' in sys.argv[:-1]:
         #list of functions to compute
         sl = sys.argv[sys.argv.index('-l')+1] #string list (parameter)
-        il = list.split(',') #index list (list of numbers)
+        il = sl.split(',') #index list (list of numbers)
         #tell to evolutionmap that all the functions in il must be calculated, and the others cannot
         for i in xrange(len(fl)):
             if str(i) in il:
-                fl[i].enable = True
+                fl[i][0].enable = True
             else:
-                fl[i].enable = False
-    else:
-        # set that every function must be calculated
-        for i in xrange(len(fl)):
-            fl[i].enable = True
-
+                fl[i][0].enable = False
+    
     mkpath(savepath)
 
     data = evolutionmap( netname, [f[0] for f in fl], cond_on_edge, range, cacheonly, debugfile, force=force )
