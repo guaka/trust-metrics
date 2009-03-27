@@ -292,7 +292,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 if debug:
                     deb = file( debug, 'a' )
                     deb.write( "ERROR!: Error applying "+function.__name__+" to the network "+date+"! Exiting\n" )
-                    deb.write("This is the error: "str(e)+'\n')
+                    deb.write("This is the error: "+str(e)+'\n')
                     deb.close()
                 continue
 
