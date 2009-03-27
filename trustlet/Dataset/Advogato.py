@@ -111,7 +111,6 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
             self.url += '-graph-latest.dot'
         else:
             self.url += '-graph-' + date + '.dot'
-        self.date = date
 
         # it isn't true.. there are only observer etc.
         #if not weights:
@@ -125,7 +124,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated (really?)
-        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix)
+        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -263,8 +262,7 @@ class Robots_netNetwork(AdvogatoNetwork):
             self.url += '-graph-latest.dot'
         else:
             self.url += '-graph-' + date + '.dot'
-        self.date = date
-
+        
         # it isn't true.. there are only observer etc.
         #if not weights:
             # until 2006-05-20 there were colors on the edges
@@ -276,7 +274,7 @@ class Robots_netNetwork(AdvogatoNetwork):
             self.key_on_edge = 'color'
    
         self.level_map = weights #level_map deprecated
-        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix)
+        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):

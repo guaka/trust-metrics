@@ -175,30 +175,39 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 try:
                     Networkclass = getattr( Network , ton )
                 except AttributeError:
-                    if debug:
-                        deb = file( debug, 'a' )
-                        deb.write( "WARNING!: this type of network("+ton+") is not defined in trustlet.Dataset module\n" )
-                        deb.close()
-                    # I suppose it is a unstandard derivation from class weightednetwork
-                    K = trustlet.Dataset.Network.WeightedNetwork()
-                    K.filepath = c2path
-                    #try to find the name of the network, to use as key in c2
-                    n = networkname # I suppose that the name of the network is at sx (because all our networks follows this rule)
-                    if 'Network' in n:
-                        part = n[:n.index('Network')]
-                    if 'Weighted' in n:
-                        n = n[:n.index('Weighted')]
-                    #in order to use netevolution on a generic dataset, you must have as network name '', 
-                    #use WeightedNetwork, or Network, and set as value on edge a dictionary with {'level':value}
-                    if not K.load_c2( {'network':n.lower()}, "level", cond_on_edge ): 
-                        print "Error! I'm not able to read your network.."
-                        print "in order to use netevolution on a generic dataset, you must have your dataset saved in a c2,"
-                        print "with key {'network':''}, use WeightedNetwork, or Network, and set as value on edge" 
-                        print "a dictionary with {'level':value}"
-                        return None
+                    if ton == 'DummyWeightedNetwork':
+                        K = DummyWeightedNetwork()
+                    elif ton == 'DummyNetwork':
+                        K = DummyNetwork()
+                    else:
+                        # I suppose it is a unstandard derivation from class weightednetwork
+                        K = trustlet.Dataset.Network.WeightedNetwork()
+                        K.filepath = c2path
+                        #try to find the name of the network, to use as key in c2
+                        n = networkname # I suppose that the name of the network is at sx (because all our networks follows this rule)
+                        if 'Network' in n:
+                            part = n[:n.index('Network')]
+                        if 'Weighted' in n:
+                            n = n[:n.index('Weighted')]
+                        #in order to use netevolution on a generic dataset, you must have as network name '', 
+                        #use WeightedNetwork, or Network, and set as value on edge a dictionary with {'level':value}
+                        if not K.load_c2( {'network':n.lower()}, "level", cond_on_edge ): 
+                            print "Error! I'm not able to read your network.."
+                            print "in order to use netevolution on a generic dataset, you must have your dataset saved in a c2,"
+                            print "with key {'network':''}, use WeightedNetwork, or Network, and set as value on edge" 
+                            print "a dictionary with {'level':value}"
+                            return None
+                       
                     #skip network load
                     net_set = True
-                    
+                    if debug:
+                        deb = file( debug, 'a' )
+                        deb.write( "WARNING!: this type of network("+ton+") is not standard\n" )
+                        if cond_on_edge:
+                            deb.write( "Warning! your condition on edge will be ignored for this non standard network\n" )
+                        deb.close()
+
+
             #load network if the network is not just set
             if not net_set:
                 try:
@@ -274,18 +283,19 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 deb.close()
 
             try:
-                res = function(K,date)
+                if not hasattr( function, "enable" ) or function.enable:
+                    res = function(K,date)
+                else:
+                    res = None
             except Exception,e:
                 if debug:
                     deb = file( debug, 'a' )
                     deb.write( "ERROR!: Error applying "+function.__name__+" to the network "+date+"! Exiting\n" )
-                    deb.write(str(e)+'\n')
+                    deb.write("This is the error: "str(e)+'\n')
                     deb.close()
                 continue
 
-            assert type(res) is tuple,'name: %s res %s' % (function.__name__,str(res))
-
-            if function.__name__!='<lambda>':
+            if (not hasattr( function, "enable" ) or function.enable) and function.__name__!='<lambda>':
                 cachekey = {'function':function.__name__,'date':date}
                 if cond_on_edge:
                     assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
@@ -304,7 +314,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         np = 1
     else:
         np = None
-    data_ordered = splittask(task,dates,notasksout=False,np = np )
+    data_ordered = splittask(task,dates,notasksout=True,np = np )
     
     safe_merge(path.join(lpath,cachepath))
     nd = len( dates )
@@ -722,8 +732,8 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
             ll[i] = []
     
 
-al(                                      #to change!!!!!
-    lambda G,d: (d, G.reciprocity_matrix(force=False)), plot_reciprocity_on_level_distribution ) 
+al(                                     
+    lambda G,d: (d, G.reciprocity_matrix(force=True)), plot_reciprocity_on_level_distribution ) 
 fl[-1][0].__name__ = 'reciprocity_on_level_distribution'
 
 
@@ -789,7 +799,7 @@ if __name__ == "__main__":
         print "    -f: force to forget cache"
         print "    if you omit this command the computation will use all edges"
         print "    debug_path: path to a file filled with debug informations"
-        print "OR netevolution.py list"
+        print "OR netevolution.py list: that show all the functions computed by netevolution"
         print "   Show all function's names"
         sys.exit(1)
 
@@ -830,6 +840,21 @@ if __name__ == "__main__":
         mkpath(os.path.split(debugfile)[0])
     else:
         debugfile = None
+
+    if '-l' in sys.argv[:-1]:
+        #list of functions to compute
+        sl = sys.argv[sys.argv.index('-l')+1] #string list (parameter)
+        il = list.split(',') #index list (list of numbers)
+        #tell to evolutionmap that all the functions in il must be calculated, and the others cannot
+        for i in xrange(len(fl)):
+            if str(i) in il:
+                fl[i].enable = True
+            else:
+                fl[i].enable = False
+    else:
+        # set that every function must be calculated
+        for i in xrange(len(fl)):
+            fl[i].enable = True
 
     mkpath(savepath)
 

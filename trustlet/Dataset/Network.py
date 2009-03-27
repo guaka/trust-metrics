@@ -43,7 +43,7 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None, cachedict=None, filepath = ''):
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None, cachedict=None, filepath = '', date=None):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
@@ -54,6 +54,7 @@ class Network(XDiGraph):
         '''
 
         XDiGraph.__init__(self, multiedges = False)
+        self.date = date
         self.filepath = filepath
         self.filename = ''
         self.values_on_edges = False
@@ -200,8 +201,11 @@ class Network(XDiGraph):
         return name of the network
         """
         name = self._name_lowered()
-        return name[0].upper()+name[1:] #up only first letter
-    
+        if name:
+            return name[0].upper()+name[1:] #up only first letter
+        else:
+            return name
+        
     def _name_lowered(self):
         """Helper for url."""
         name = self.__class__.__name__.lower()
@@ -301,7 +305,7 @@ class Network(XDiGraph):
             return None
 
         #cache enabled only if c2
-        if self.__class__.__name__ != "WikiNetwork":
+        if self._name() != "Wiki" and self._name() != 'Dummyweighted' and self._name() != 'Dummy' and self._name() and self._name() != 'Weighted': #skip nonstandard net
             tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
             if tp:
                 path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
@@ -318,18 +322,17 @@ class Network(XDiGraph):
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
 
-        if cachedict:
-            cachekey = cachedict
+        if cachedict or self.get_keyOnDataset():
+            cachekey = cachedict or self.get_keyOnDataset()
+            cachekey['function'] = 'info'
         else:
-            cachekey = self.get_keyOnDataset()    
-
+            cachekey = {'network':self._name(),'date':self.date,'function':'info'}
+            if hasattr(self,"cond_on_edge") and self.cond_on_edge:
+                cachekey['cond_on_edge']=self.cond_on_edge.__name__
+            
         if not force:
             # cache
-            if cachedict or self.get_keyOnDataset():
-                cachekey['function'] = 'info'
-                data = trustlet.helpers.load( cachekey, path, fault=False)
-            else:
-                data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'info'}, path, fault=False)
+            data = trustlet.helpers.load( cachekey, path, fault=False)
             
             if data:  # if data is not false
                 print data
@@ -383,12 +386,8 @@ class Network(XDiGraph):
             
         print buffer
 
-        if not cachedict and not self.get_keyOnDataset():
-            if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'info'}, buffer, path ):
-                print "Warning! save of cache failed"
-        else:
-            if not trustlet.helpers.save( cachekey, buffer, path ):
-                print "Warning! save of cache failed"
+        if not trustlet.helpers.save( cachekey, buffer, path ):
+            print "Warning! save of cache failed"
         
         return None
         
@@ -571,8 +570,8 @@ class WeightedNetwork(Network):
     from_graph = the dataset that you would load. (in a networkx class) 
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath='', cachedict=None):
-        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=filepath)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath='', cachedict=None,date=None):
+        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=filepath,date=date)
         self.name= 'generic_weighted_network'
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
@@ -598,8 +597,6 @@ class WeightedNetwork(Network):
         else:
             return edge[2]
             
-
-
     def weights_list(self):
         """
         Return a list with the weights of all edges
@@ -677,21 +674,43 @@ class WeightedNetwork(Network):
         return node_controversy_list
         
     def show_reciprocity_matrix(self,cachedict=None):
-        """ show table with reciprocity, does not work with wikinetwork """
+        """ show a pretty table with reciprocity_matrix() values, does not work with wikinetwork """
         if self.__class__.__name__ == 'WikiNetwork':
             raise Exception( "Not implemented" )
 
         if self.has_discrete_weights:
             recp_mtx = self.reciprocity_matrix(cachedict=cachedict)
-            tbl = Table([12] + [12] * len(self.weights()))
+            tbl = Table( [12] + [12] * (len(self.weights())+1) ) #sum 1 for the nr column
             listKeys = self.weights().keys() #keys are saved in order to keep the order
+            listKeys.append( 'nr' )
             tbl.printHdr(['reciprocity'] + listKeys)
             tbl.printSep()
-            for k in listKeys:
+            for k in self.weights().keys(): #avoid nr..
                 tbl.printRow([k] + [recp_mtx[k][x] for x in listKeys]) #take the keys in the same order as previous call of .keys()
 
     def reciprocity_matrix(self,force=False,cachedict=None):
-        """Generate a reciprocity table (which is actually a dict) with percentage of edges (and not number of edges)."""
+        """
+        Generate a reciprocity table (which is actually a dict) 
+        with percentage of edges (and not number of edges) 
+        scaled on the total number of edges of the considered level.
+        ex.
+        edges:
+        1 -A> 2
+        2 -A> 1
+        2 -A> 3
+        3 -J> 2
+        3 -A> 4
+
+        number_of_edges_that_vote_'A': 4
+        number_of_edges_reciprocated_for_'A'_with_'A': 2
+        number_of_edges_reciprocated_for_'A'_with_'J': 1
+        number_of_edges_non_reciprocated_that_vote_'A': 1
+        
+        so, number_of_edges_reciprocated_for_'A'_with_'A' result 2/4
+        and number_of_edges_reciprocated_for_'A'_with_'J' result 1/4
+        number_of_edges_non_reciprocated_that_vote_'A': 1/4
+        the sum is always 1.
+        """
         def value_on_edge(e):
             if type(e) in (int, float):
                 return e
@@ -703,7 +722,7 @@ class WeightedNetwork(Network):
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
 
         
-        if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
+        if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
             if not cachedict and not self.get_keyOnDataset():
                 raise Exception("cachedict parameter must be set for generic network")
             path = self.filepath
@@ -719,42 +738,58 @@ class WeightedNetwork(Network):
             
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
-    
-        if cachedict:
-            cachekey = cachedict
+            
+        if not cachedict and not self.get_keyOnDataset():
+            cachekey = {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}
+            if hasattr( self, "cond_on_edge" ) and self.cond_on_edge:
+                cachekey['cond_on_edge']=self.cond_on_edge.__name__ 
+                              
         else:
-            cachekey = self.get_keyOnDataset()
-                
-        if not force:
-            if not cachedict:
-                data = trustlet.helpers.load( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, path, fault=False)
-            else:
-                cachekey['function']='reciprocity_matrix'
-                data = trustlet.helpers.load( cachekey, path, fault=False)
+            cachekey = cachedict or self.get_keyOnDataset()
+            cachekey['function']='reciprocity_matrix'
+            
         
+        if not force:
+            data = trustlet.helpers.load( cachekey, path, fault=False)
+            
             if data:                # if data is not false
                 return data
                        
         if self.has_discrete_weights:
             table = {}
+            levels = self.weights().keys()
+            levels.append( 'nr' )#non reciprocated
+
             for v in self.weights().keys():
                 #table[v] = {}
                 line = {}
+                #the number of edges that have voted someone level 'v' (we normalize on this value)
+                normalization = len([e2 for e0,e1,e2 in self.edges_iter() if value_on_edge(e2) == v])
                 
-                for w in self.weights().keys():
-                    line[w] = 1.0 * sum([value_on_edge(self.get_edge(e1, e0)) == w
-                                         for e0,e1,e2 in self.edges_iter()
-                                         if (self.has_edge(e1, e0) and 
-                                             value_on_edge(e2) == v)]) / self.number_of_edges()
+                if normalization == 0:#that means that there are 0 edges with this value.. so we skip them
+                    for w in levels:
+                        line[w] = 0.0
+                    table[v] = line
+                    continue
+
+                for w in levels:
+                    if w != 'nr': #non reciprocated
+                                       #the number of edges that have voted someone level 'v' and has been voted from someone level 'w'
+                        line[w] = 1.0 * sum([value_on_edge(self.get_edge(e1, e0)) == w
+                                             for e0,e1,e2 in self.edges_iter()
+                                             if (self.has_edge(e1, e0) and     
+                                                 value_on_edge(e2) == v)]) / normalization
+                    else:
+                        line[w] = 1.0 * len([e2
+                                             for e0,e1,e2 in self.edges_iter()
+                                             if (not self.has_edge(e1, e0) and #look at 'not' if nr, the edges hadn't to be reciprocated     
+                                                 value_on_edge(e2) == v)]) / normalization
+                    
                 table[v] = line
 
-            if not cachedict and not self.get_keyOnDataset():
-                if not trustlet.helpers.save( {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}, table, path ):
-                    print "Warning! save of cache failed"
-            else:
-                if not trustlet.helpers.save( cachekey, table, path ):
-                    print "Warning! save of cache failed"
-
+            if not trustlet.helpers.save( cachekey, table, path ):
+                print "Warning! save of cache failed"
+            
             return table
         else:
             raise Exception( "Not implemented" )

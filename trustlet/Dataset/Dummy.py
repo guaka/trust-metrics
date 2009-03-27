@@ -22,8 +22,11 @@ class DummyNetwork(Network):
     http://www.ams.org/featurecolumn/archive/pagerank.html"""
 
     advogato_seeds = [1]
-    def __init__(self):
-        Network.__init__(self)
+    def __init__(self, date=None):
+        Network.__init__(self,date=date)
+        if not date:
+            self.date = '1970-01-01'
+
         edges = [(1, 2),
                  (1, 3),
                  (2, 4),
@@ -51,13 +54,16 @@ class DummyWeightedNetwork(WeightedNetwork):
     with 8 nodes discussed in
     http://www.ams.org/featurecolumn/archive/pagerank.html
     But with weights on edges, so that it is like a trust network"""
-    def __init__(self):
-        WeightedNetwork.__init__(self)
+    def __init__(self,date=None):
+        WeightedNetwork.__init__(self,date=date)
+        if not self.date:
+            self.date = '1970-01-01'
 
-        self.filepath = os.path.join(os.environ['HOME'],'datasets','DummyNetwork')
-        self.date = '1970-01-01'
-        
-        edges = [(1, 2, "Master"),
+        self.path = os.path.join(os.environ['HOME'],'datasets','DummyWeightedNetwork')
+        self.filepath = os.path.join( self.path, self.date, 'graph.c2' )
+        self._cachedict = {'network':'Dummy'}
+
+        edges = [(1, 2, "Master"), #17 edges
                  (1, 3, "Journeyer"),
                  (2, 4, "Apprentice"),
                  (3, 2, "Observer"),
