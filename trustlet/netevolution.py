@@ -8,6 +8,7 @@ from trustlet.conversion import dot
 from trustlet.Dataset import Network,Advogato
 from networkx import read_dot
 from pprint import pprint
+import time
 import os,time,re
 import os.path as path
 import scipy
@@ -57,11 +58,11 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         lpath = os.path.join(os.environ['HOME'],'shared_datasets',networkname)
         
     #and cache/predgraph from shared_dataset (an svn on trustlet.org)
-    cachepath = os.path.join( os.environ['HOME'],'shared_datasets',networkname,'netevolution.c2') 
+    cachepath = os.path.join( os.environ['HOME'],'shared_datasets',networkname,'netevolution.c2')
     
     #make sure the path exists
     mkpath(lpath)
-            #avoid c2 file..
+    #avoid c2 file..
     mkpath( os.path.split(cachepath)[0] )
 
     if debug:

@@ -2,15 +2,15 @@
 
 """Collection of random useful stuff."""
 import math
+import sys
 import numpy
-import networkx
 from trustlet.TrustMetric import *
 from trustlet.trustmetrics import *
 from trustlet.Dataset.Network import *
 from trustlet.Dataset.Advogato import *
 from trustlet.Dataset.Dummy import *
 import trustlet
-import os,sys,re
+import os,re
 import datetime
 import time
 import marshal
@@ -1166,6 +1166,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
     data will save in the new format (less files).
     human is not suported in the new format.
     debug: other info to put into c2 on key. Use read_c2() to get them
+        I advise to use a dictionary with description on keys
     return: true in case of success, false in other cases
     """
 
@@ -1304,6 +1305,7 @@ def load(key,path='.',fault=None,cachedcache=False,info=False):
     Cache.
     Loads data stored by save.
     fault is the value returned if key is not stored in cache.
+    If info will return data and metadata (data: load(...)['dt'])
     """
 
     def onlydata(data):
