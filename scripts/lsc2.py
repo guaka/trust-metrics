@@ -19,7 +19,8 @@ sys.stderr = stderr
 def main():
     
     o = optparse.OptionParser(usage='usage: %prog [-r] [file1 [file2] [...]]')
-    o.add_option('-r','--recursive',help='recursive',default=False,action='store_true')
+    o.add_option('-r','--recursive',default=False,action='store_true')
+    o.add_option('-s','--summary',help='don\'t print items, only general info',default=False,action='store_true')
     o.add_option('-l','--short-line',help='trunc each line to 80 chars',default=False,action='store_true')
     o.add_option('-k','--keys',help='show keys',default=False,action='store_true')
     o.add_option('-v','--values',help='show values',default=False,action='store_true')
@@ -63,6 +64,9 @@ def main():
         c2 = read_c2(file)
         #info
         print 'Number of items',len(c2)
+        if opts.summary:
+            continue
+
         for i,(k,v) in enumerate(c2.items()):
             print '~ Item %d ~'%i
             if opts.keys:
