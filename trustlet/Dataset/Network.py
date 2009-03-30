@@ -342,12 +342,14 @@ class Network(XDiGraph):
                 raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         else:
             path = self.filepath #with non standard network, cannot upload info
-
+            if not cachedict and not self.get_keyOnDataset(): #if cachedict not set
+                    raise Exception("For non-standard dataset, you must set the cachedict parameter (or if you wouldn't you had to set force parameter to True)")
+            
         if not self.filepath.endswith( '.c2' ):
             path += '.c2'
 
         if cachedict or self.get_keyOnDataset():
-            cachekey = cachedict or self.get_keyOnDataset()
+            cachekey = ( cachedict != None and cachedict.copy() ) or self.get_keyOnDataset()
             cachekey['function'] = 'info'
         else:
             cachekey = {'network':self._name(),'date':self.date,'function':'info'}
@@ -355,11 +357,7 @@ class Network(XDiGraph):
         if hasattr(self,"cond_on_edge") and self.cond_on_edge:
             cachekey['cond_on_edge']=self.cond_on_edge.__name__
 
-        if not force:
-            if self.__class__.__name__ == 'WeightedNetwork' or self.__class__.__name__ == 'Network':
-                if not cachedict and not self.get_keyOnDataset(): #if cachedict not set
-                    raise Exception("For non-standard dataset, you must set the cachedict parameter (or if you wouldn't you had to set force parameter to True)")
-
+        if not force:    
             # cache
             data = trustlet.helpers.load( cachekey, path, fault=False)
             
@@ -412,7 +410,6 @@ class Network(XDiGraph):
                 sys.stderr.write( "Warning! "+f.__name__+" not calculated (probably because your network has no level_map)\n" )  
                 continue
             
-                
         sys.stdout = stdout #restore stdout
         tmpfile.close() #flush buffer
         
@@ -422,7 +419,10 @@ class Network(XDiGraph):
             
         print buffer
 
-        print cachekey, path
+        if cachekey.has_key("cond_on_edge") and cachekey['cond_on_edge']=='<lambda>':
+            sys.stderr.write( "Warning! cannot save the data about computation, with a lambda condition.\n" )
+            return None
+
         if not trustlet.helpers.save( cachekey, buffer, path ):
             sys.stderr.write( "Warning! save of cache failed\n" )
         
@@ -622,7 +622,7 @@ class WeightedNetwork(Network):
             self.level_map = {}        
 
     def get_keyOnDataset(self):
-        return self._cachedict
+        return self._cachedict.copy()
 
     def trust_on_edge(self, edge):
         """
@@ -783,7 +783,7 @@ class WeightedNetwork(Network):
                 cachekey['cond_on_edge']=self.cond_on_edge.__name__ 
                               
         else:
-            cachekey = cachedict or self.get_keyOnDataset()
+            cachekey = ( cachedict != None and cachedict.copy() ) or self.get_keyOnDataset()
             cachekey['function']='reciprocity_matrix'
             
         
@@ -830,7 +830,7 @@ class WeightedNetwork(Network):
                                                  value_on_edge(e2) == v)]) / normalization
                     
                 table[v] = line
-
+                
             if not trustlet.helpers.save( cachekey, table, path ):
                 print "Warning! save of cache failed"
             
