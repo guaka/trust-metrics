@@ -1116,26 +1116,6 @@ def getfiles(basedir,dir=''):
 # - `key` is a dictionary
 # - `data` can be anything (i hope)
 
-def get_sign(key,mdfive=True):
-    """
-    Cache.
-    Generate an unique key given a dictionary.
-    If mdfive is True it will return an alphanumeric
-    key of 32 chars
-    """
-
-    if not type(key) is dict:
-        raise ValueError,'key have to be a dict'
-    s = ''
-    listkeys = key.keys()
-    listkeys.sort()
-    for k in listkeys:
-        s+=str(k)+'='+str(key[k])+','
-    if mdfive:
-        return md5(s[:-1]).hexdigest()
-    else:
-        return s[:-1]
-
 def hashable(x):
     """
     Cache.
@@ -1215,17 +1195,11 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
             d = pickle.load(GzipFile(path))
         except:
             d = {}
-        #new version
-        if version==3:
-            # yet beta
-            gen_key = hashable
-        else:
-            gen_key = get_sign
 
-        d[gen_key(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
+        d[hashable(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
 
         if debug:
-            d[gen_key(key)]['db'] = debug
+            d[hashable(key)]['db'] = debug
 
         # dt: data
         # ts: timestamp
@@ -1244,25 +1218,6 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
             globals()['cachedcache'] = {}
         cache = globals()['cachedcache']
         cache[path] = d
-    else:
-        #version 1
-        print "WARNING: don't use this cache version!"
-        print "Add .c2 in path"
-        mkpath(path)
-        try:
-            if human:
-                f = file(os.path.join(path,get_sign(key,False)),'w')
-                f.writelines([str(x)[:100]+'='+str(key[x])[:100]+'\n' for x in key])
-                if type(human) is str:
-                    f.write('comment: '+human)
-                f.write('data: '+str(data))
-
-            f = file(os.path.join(path,get_sign(key)),'w')
-            pickle.dump(data,f)
-            f.close()
-        except IOError,pickle.PicklingError: #,TypeError: # I' can't catch TypeError O.o why?
-            print 'picking error'
-            return False
     return True
     
 def safe_save(key,data,path):
@@ -1296,11 +1251,12 @@ def safe_merge(path,delete=True):
 
     for file in files:
         file = os.path.join(path,file)
-        merge_cache(file,fullpath,ignoreerrors=True,priority=1)
+        #merge_cache(file,fullpath,ignoreerrors=True,priority=1)
+        merge_cache([file,fullpath],fullpath) #test!!!!!!!!!!!!!!!
         if delete:
             os.remove(file)
 
-def load(key,path='.',fault=None,cachedcache=False,info=False):
+def load(key,path='.',fault=None,cachedcache=True,info=False):
     """
     Cache.
     Loads data stored by save.
@@ -1308,62 +1264,37 @@ def load(key,path='.',fault=None,cachedcache=False,info=False):
     If info will return data and metadata (data: load(...)['dt'])
     """
 
-    def onlydata(data):
-        '''
-        If not info it erases metadata
-        '''
-        if info:
-            return data
-        if type(data) is dict and 'dt' in data:
-            # i hope that there is ts...
-            return data['dt']
-        else:
-            return data
+    # ¡¡ DEBUG: cachedcache disabled !!
+    cachedcache = False
+    #
 
-    if os.path.isdir(path):
-        # version 1
-        try:
-            data = pickle.load(file(os.path.join(path,get_sign(key))))
-        except:
-            return fault
-    elif os.path.isfile(path):
-        #memory cache
-        if not globals().has_key('cachedcache'):
-            #print 'create cache'
-            globals()['cachedcache'] = {}
-        cache = globals()['cachedcache']
+    getret = info and (lambda x: x) or (lambda x: x['dt'])
 
-        if cache.has_key(path) and cachedcache:
-            #print 'found',path
-            try:
-                if cache[path].has_key(get_sign(key)):
-                    #version 2
-                    return cache[path][get_sign(key)]
-            except ValueError:
-                pass
-            if cache[path].has_key(hashable(key)):
-                #version 3
-                return onlydata(cache[path][hashable(key)])
-        try:
-            d = pickle.load(GzipFile(path))
-        except:
-            return fault
+    #memory cache
+    if not globals().has_key('cachedcache'):
+        #print 'create cache'
+        globals()['cachedcache'] = {}
+    cache = globals()['cachedcache']
+
+    if cache.has_key(path) and cachedcache:
+        # we should check if cachedcache is valid
         
-        if d.has_key(hashable(key)):
-            #version 3
-            data = d[hashable(key)]
-        elif d.has_key(get_sign(key)):
-            #version 2
-            data = d[get_sign(key)]
-        else:
-            return fault
+        if cache[path].has_key(hashable(key)):
+            return getret(cache[path][hashable(key)])
+    try:
+        d = pickle.load(GzipFile(path))
+    except:
+        return fault
 
-        #save in memory cache
-        cache[path] = d
+    if d.has_key(hashable(key)):
+        data = d[hashable(key)]
     else:
         return fault
 
-    return onlydata(data)
+    #save in memory cache
+    cache[path] = d # + timestamp?
+
+    return getret(data)
 
 def erase_cachedcache():
     '''
@@ -1372,29 +1303,42 @@ def erase_cachedcache():
     '''
     globals()['cachedcache'] = {}
 
-def convert_cache(path1,path2):
+def merge_cache(source, target):
     '''
-    from version 1 to 2
-    * this function doesn't work *
-    '''
-    join = os.path.join
-    oldcache = [(x,pickle.load(file(join(path1,x)))) \
-                    for x in os.listdir(path1) if ismd5(x) and os.path.isfile(join(path1,x))]
-    newcache = {}
-    for k,v in oldcache:
-        newcache[k] = v
-    pickle.dump(newcache,GzipFile(path2,'w'))
+    source = [c0,c1,c2,c3,...,cn]
+    
+    Priority:
+      newer items are kept. If timestamp is the same, first are kept
+      c0 > c1 > c2 > ... > cn
+      (Theoric behaviour. This never happen)
 
-def cache_ts(data):
+    source: list of filepath to merge
+    target: filename of output
+
+    If target doesn't also into sorce list, its data will lost.
     '''
-    if there is timestamp in metadata return it, else 0
-    '''
-    if type(data) is dict and 'ts' in data:
-        return data['ts']
+
+    cachel = splittask(read_c2,source+[target],showperc=False,np=1)
+
+    merge = {}
+
+    print cachel[-1]
+
+    for cfile in cachel[:-1]:
+        #print cfile
+        # for each tuple
+        for k,v in cfile.iteritems():
+            #print k,merge.has_key(k)
+            if not k in merge or merge[k]['ts'] < cfile[k]['ts']:
+                merge[k] = v
+    if merge != cachel[-1]:
+        write_c2(target,merge)
+        return True
     else:
-        return 0
+        return False
 
-def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
+
+def merge_cache_old(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
     '''
     mpath: new destination file (merged path).
     if mpath is None, *dstpath* will be used
@@ -1439,7 +1383,7 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
 
     modified = False
     for k,v in s.iteritems():
-        if not d.has_key(k) or s[k]!=d[k] and cache_ts(s[k])>cache_ts(d[k]):
+        if not d.has_key(k) or s[k]!=d[k] and s[k]['ts']>d[k]['ts']:
             # s[k] is newer than d[k]
             modified = True
             d[k] = s[k]
@@ -1457,7 +1401,16 @@ def merge_cache(srcpath , dstpath , mpath=None, ignoreerrors=False, priority=2):
 
 def read_c2(path):
     '''return all cache dictionary'''
-    return pickle.load(GzipFile(path))
+    try:
+        return pickle.load(GzipFile(path))
+    except: #  EOFError,IOError
+        return {}
+
+def write_c2(path,data):
+    '''write a c2 from a dict'''
+    f = GzipFile(path,'w')
+    pickle.dump(data,f)
+    f.close()
 
 def cached_read_dot(filepath,force=False):
     '''
