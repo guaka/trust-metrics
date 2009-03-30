@@ -731,7 +731,7 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
         lval.remove('')
 
     lvallen = len(lval)
-    print lval
+    
     dmin,dmax = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0]) #range of date
 
     for i in xrange(lvallen): #set lenght of list equal to number of level
