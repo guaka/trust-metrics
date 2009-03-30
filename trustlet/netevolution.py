@@ -721,11 +721,20 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
     ll = [] #list relative to one level (Advogato..etc)
     
     lv = sorted( list(data[0][1]) ) #list of keys
-    lvlen = len(lv)
+    lval = sorted( list(data[0][1][lv[0]] ) ) #list of keys on internal dictionary
+    
+    # '' is a workaround
+    if '' in lv:
+        lv.remove('')
 
+    if '' in lval:
+        lval.remove('')
+
+    lvallen = len(lval)
+    print lval
     dmin,dmax = (min(data,key=lambda x:x[0])[0],max(data,key=lambda x:x[0])[0]) #range of date
 
-    for i in xrange(lvlen): #set lenght of list equal to number of level
+    for i in xrange(lvallen): #set lenght of list equal to number of level
         ll.append([])
 
     for graph in lv:            # select at which level you would refer
@@ -734,7 +743,7 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
             continue
 
         for date,values in data:        # foreach key in main dictionary
-            for i,kod in enumerate(lv): # foreach KeyOnDictionary (internal dictionary)
+            for i,kod in enumerate(lval): # foreach KeyOnDictionary (internal dictionary)
                 ll[i].append((date,values[graph][kod])) 
                     
         # print graph
@@ -742,13 +751,13 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
                    title='Reciprocity for level %s'%graph,
                    xlabel='dates (from %s to %s)'%(dmin,dmax),
                    ylabel='number of reciprocation for each level',
-                   legend=lv,
+                   legend=lval,
                    showlines=True,
                    comment=['Network: Advogato',
                             '>>> plot_reciprocity_on_level_distribution(G.reciprocity_matrix(...))']
                    )
         #clean up lists
-        for i in xrange(lvlen):
+        for i in xrange(lvallen):
             ll[i] = []
     
 
