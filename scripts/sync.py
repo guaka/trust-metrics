@@ -172,7 +172,7 @@ def main():
 
 def diff(f,g):
     '''
-    return True if 2 file are equals
+    return True if 2 files are equal
     '''
     if type(f) is str:
         f = file(f)
@@ -191,6 +191,27 @@ def diff(f,g):
             f.close()
             g.close()
             return True
+
+def diffc2(f,g):
+    '''
+    return True if 2 c2 files are equal
+    '''
+    if type(f) is str:
+        f = read_c2(f)
+
+    if type(g) is str:
+        g = read_c2(g)
+
+    assert type(f) is type(g) is dict,type(f)
+
+    if set(f.keys()) != set(g.keys()):
+        return False
+
+    for k in f:
+        if f[k] != g[k]:
+            return False
+
+    return True
 
 def merge(svn,datasets,upload=True,usercomment=''):
     

@@ -1331,9 +1331,11 @@ def merge_cache(source, target):
             if not k in merge or merge[k]['ts'] < cfile[k]['ts']:
                 merge[k] = v
     if merge != cachel[-1]:
+        print 'Merged'
         write_c2(target,merge)
         return True
     else:
+        print 'Not merged'
         return False
 
 
