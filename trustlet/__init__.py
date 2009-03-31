@@ -22,10 +22,9 @@ Using
 # how to use subversion revision number?
 __version__ = '0.1.2' # + "-r" + $Revision: $
 
-
-from Dataset.Advogato import *
 from Dataset.Network import *
 from Dataset.Dummy import *
+from Dataset.Advogato import *
 from TrustMetric import *
 from PredGraph import *
 from netevolution import *

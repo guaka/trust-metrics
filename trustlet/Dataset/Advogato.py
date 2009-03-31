@@ -79,7 +79,7 @@ _obs_app_jour_mas_map = {
     }
 
 
-class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
+class AdvogatoNetwork(trustlet.WeightedNetwork):
     """The Advogato dataset.
 
     http://www.trustlet.org/datasets/advogato/advogato-graph-2007-10-13.dot
@@ -92,7 +92,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, cond_on_edge=None, comp_threshold = 0, download = False, base_path = '',prefix=None):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, cond_on_edge=None, comp_threshold = 0, download = False, base_path = '',prefix=None, from_dot=False):
 
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -124,7 +124,7 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated (really?)
-        trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date)
+        trustlet.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -136,8 +136,8 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         self.dotpath = self.filepath[:-2]+'dot'
         
         #'download' parameter say to the class if download the source dot file or not
-        self.download(only_if_needed = download)
-        self.get_graph()
+        self.download(only_if_needed = download, from_dot=from_dot)
+        self.get_graph(from_dot=from_dot)
 
         # DEPRECATED?
         if comp_threshold:
@@ -158,12 +158,15 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         return filter(lambda x:x[0],map(lambda s: (s, len([e for e in self.edges_iter()
                                       if e[2].values()[0] == s])), self.level_map.keys()))
 
-    def __convert(self):
+    def __convert(self,force=False):
         """
         this function assume that self.filepath was set
         """
         print "dot format detected, converting dot file in c2..."
         
+        if os.path.exists( self.filepath ) and not force:
+            return True #is not necessary to reconvert
+
         #convert dot in c2
         if not trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,{'network':self._name(),'date':self.date}):
             print "Error converting dot into c2 file."
@@ -174,12 +177,15 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         print "Done."
         return True
 
-    def download(self, only_if_needed = False):
+    def download(self, only_if_needed = False, from_dot=False):
         """Download dataset."""
         if os.path.exists(self.filepath):
             return
+        
+        if from_dot and os.path.exists(self.dotpath):
+            return
 
-        if os.path.exists(self.dotpath):
+        if os.path.exists(self.dotpath) and not from_dot:
             self.__convert()
             return
 
@@ -192,6 +198,8 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
                 self.download_file(self.url, self.dotfile)
                 
                 self.fix_graphdot()
+
+            if not from_dot:
                 self.__convert()
                     
 
@@ -212,13 +220,15 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
         writefile.close()
         return self.filepath
 
-    def get_graph(self, filepath = None):
+    def get_graph(self, filepath = None, from_dot=False):
         """Read graph.dot file into object."""
         if not filepath:
             filepath = self.filepath
 
-        #self._read_dot(filepath)
-
+        if from_dot:
+            self._read_dot(self.dotpath)
+            return None
+        
         key = {'network':self._name(),'date':self.date}
         
         print "Reading ", filepath
@@ -229,7 +239,15 @@ class AdvogatoNetwork(trustlet.Dataset.Network.WeightedNetwork):
             w = self.load_c2(key,self.key_on_edge)
 
         if not w: #if I can't be able to read
-            raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
+            self.__convert(force=True)
+            #retry
+            if self.cond_on_edge:
+                w = self.load_c2(key,self.key_on_edge,cond_on_edge=self.cond_on_edge)
+            else:
+                w = self.load_c2(key,self.key_on_edge)
+
+            if not w:
+                raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
             
 
 class Robots_netNetwork(AdvogatoNetwork):
@@ -312,13 +330,14 @@ class SqueakfoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
-    def __init__(self, download = False, date=None, base_path=None,prefix=None, cond_on_edge=None):
+    def __init__(self, download = False, date=None, base_path=None,prefix=None, cond_on_edge=None,from_dot=False):
         AdvogatoNetwork.__init__(self, weights = _color_map, 
                                  download = download, 
                                  date=date, 
                                  base_path=base_path,
                                  prefix=prefix,
-                                 cond_on_edge=cond_on_edge)
+                                 cond_on_edge=cond_on_edge,
+                                 from_dot=from_dot)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -334,13 +353,14 @@ class KaitiakiNetwork(SqueakfoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self, date = None, download=False, cond_on_edge=None, base_path = None,prefix=None):
+    def __init__(self, date = None, download=False, cond_on_edge=None, base_path = None,prefix=None,from_dot=False):
         AdvogatoNetwork.__init__(self, weights = _color_map, 
                                  download = download, 
                                  date = date, 
                                  base_path = base_path,
                                  prefix=prefix,
-                                 cond_on_edge=cond_on_edge)
+                                 cond_on_edge=cond_on_edge,
+                                 from_dot=from_dot)
 
 
 if __name__ == "__main__":

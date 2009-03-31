@@ -622,7 +622,10 @@ class WeightedNetwork(Network):
             self.level_map = {}        
 
     def get_keyOnDataset(self):
-        return self._cachedict.copy()
+        if self._cachedict:
+            return self._cachedict.copy()
+        else:
+            return None
 
     def trust_on_edge(self, edge):
         """
