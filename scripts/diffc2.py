@@ -30,13 +30,21 @@ def main():
     onlyone = len(k1-k2)
     onlytwo = len(k2-k1)
 
-    eq = diff = 0
+    eq =  0
+    diff1 = 0 # one.c2 is newer
+    diff2 = 0 # two.c2 is newer
 
     for k in k1 & k2:
         if one[k] == two[k]:
             eq += 1
+        elif one[k]['ts'] > two[k]['ts']:
+            diff1 += 1
+        elif one[k]['ts'] < two[k]['ts']:
+            diff2 += 1
         else:
-            diff += 1
+            assert 0,'Same timestamp, different data. Improbably'
+
+    diff = diff1 + diff2
 
     if not diff:
         if onlyone and not onlytwo:
@@ -49,6 +57,17 @@ def main():
         
         print '%s > %s' % (sys.argv[f[0]],sys.argv[f[1]])
     else:
+
+        # All different data is newer in `newer` c2 file
+        if not diff2:
+            newer = 1
+        elif not diff2:
+            newer = 2
+        else:
+            newer = 0
+
+        if newer:
+            print 'The newest c2 is',sys.argv[newer]
         print 'Same values:',eq
         print 'Different values:',diff
         print 'Values only in %s:'%sys.argv[1],onlyone

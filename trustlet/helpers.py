@@ -1249,10 +1249,9 @@ def safe_merge(path,delete=True):
 
     files = filter(f,os.listdir(path))
 
+    merge_cache(files+[fullpath],fullpath)
+
     for file in files:
-        file = os.path.join(path,file)
-        #merge_cache(file,fullpath,ignoreerrors=True,priority=1)
-        merge_cache([file,fullpath],fullpath) #test!!!!!!!!!!!!!!!
         if delete:
             os.remove(file)
 
@@ -1322,7 +1321,7 @@ def merge_cache(source, target):
 
     merge = {}
 
-    print cachel[-1]
+    #print cachel[-1]
 
     for cfile in cachel[:-1]:
         #print cfile

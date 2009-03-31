@@ -38,7 +38,11 @@ import re
 import time
 from socket import gethostname
 
+# not show: /usr/lib/python2.6/site-packages/networkx/hybrid.py:16: DeprecationWarning: the sets module is deprecated
+stderr = sys.stderr
+sys.stderr = file('/dev/null','w')
 from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge
+sys.stderr = stderr
 
 HOME = os.environ['HOME']
 HOSTNAME = gethostname()
@@ -237,7 +241,7 @@ def merge(svn,datasets,upload=True,usercomment=''):
                         updatedc2.add(dstpath)
                         merged += 1
                         # priority: dstpath
-                        merge_cache(srcpath,dstpath)
+                        merge_cache([dstpath,srcpath],dstpath)
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
