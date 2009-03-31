@@ -115,15 +115,15 @@ class Network(XDiGraph):
         this parameter.
         """
 
-        if hasattr(self,"filepath") and self.filepath:
-            try:
+        if hasattr(self,"filepath") and self.filepath and os.path.exists(self.filepath):
+            if self.filepath.endswith( '.net' ):
                 w = read_pajek(self.filepath)
-            except IOError:
-                try:
-                    w = read_pajek(self.filepath+'.net')
-                except IOError:
-                    sys.stderr.write( "error loading network, filepath does not exists\n" )
-
+            elif os.path.exists(self.filepath+'.net'):
+                w = read_pajek(self.filepath+'.net')
+            else:
+                sys.stderr.write( "error loading network, filepath does not exists\n" )
+                return False
+                    
             self.paste_graph(w,key_to_delete='value')
             return True
         else:
@@ -181,7 +181,7 @@ class Network(XDiGraph):
         
         pydataset = trustlet.helpers.load(cachekey, self.filepath)
         
-        if not pydataset and cachedict.has_key('threshold'):
+        if not pydataset and cachekey.has_key('threshold'):
             # retry without thresold
             del cachedict['threshold']
             pydataset = trustlet.helpers.load(cachekey, self.filepath)
@@ -645,14 +645,16 @@ class WeightedNetwork(Network):
         else:
             self.weights() #create self._weights if there isn't
             ws = []
-            for n in self.edges_iter():
-                if type(n[2]) is dict:
-                    x = n[2].values()[0]
-                else:
-                    x = n[2]
+    
+            if self._weights:
+                for n in self.edges_iter():
+                    if type(n[2]) is dict:
+                        x = n[2].values()[0]
+                    else:
+                        x = n[2]
                 
-                ws.append( self._weights[str(x)] )
-            
+                    ws.append( self._weights[str(x)] )
+                    
             self._weights_list = ws
         
         return ws
@@ -660,6 +662,7 @@ class WeightedNetwork(Network):
     def weights(self):
         """
         Return a dictionary with the weights of all edges
+        if it return an empty dictionary you probably has not set level_map.
         """
 
         if hasattr(self, "_weights_dictionary") and self._weights_dictionary:
@@ -673,11 +676,11 @@ class WeightedNetwork(Network):
                 if type(x) is float or type(x) is int:
                     ws[str(x)] = x
                 else:
-                    if hasattr( x, 'keys' ) and hasattr( self, 'level_map' ):
+                    if hasattr( x, 'keys' ) and hasattr( self, 'level_map' ) and self.level_map:
                         ws[x.values()[0]] = self.level_map[ x.values()[0] ]
                     elif type(x) is tuple:
                         ws[x[0]] = x[1]
-            
+                    
             self._weights_dictionary = self._weights = ws
         
         return ws
@@ -773,32 +776,38 @@ class WeightedNetwork(Network):
                 raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         else:
             path = self.filepath
-            
-        if not self.filepath.endswith( '.c2' ):
-            path += '.c2'
-            
+                
         if not cachedict and not self.get_keyOnDataset():
-            cachekey = {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}
+            if self._name() and self.date:
+                cachekey = {'network':self._name(),'date':self.date,'function':'reciprocity_matrix'}
+            else:
+                raise Exception("Error! cachedict not set, and no 'date' attribute on network\n")
+
             if hasattr( self, "cond_on_edge" ) and self.cond_on_edge:
                 cachekey['cond_on_edge']=self.cond_on_edge.__name__ 
                               
         else:
             cachekey = ( cachedict != None and cachedict.copy() ) or self.get_keyOnDataset()
             cachekey['function']='reciprocity_matrix'
-            
-        
+
+        if not path.endswith( '.c2' ): #force file to be a c2
+            path += '.c2'
+
         if not force:
             #only if you would to load from c2 cache, you had to be set cachedict
             if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
                 if not cachedict and not self.get_keyOnDataset():
                     raise Exception("cachedict parameter must be set for generic network (or if you wouldn't you had to set force parameter to True)")
                 path = self.filepath
-        
+                    
+            if not path.endswith( '.c2' ): #force file to be a c2
+                path += '.c2'
+
             data = trustlet.helpers.load( cachekey, path, fault=False)
             
             if data:                # if data is not false
                 return data
-                       
+            
         if self.has_discrete_weights:
             table = {}
             levels = self.weights().keys()
@@ -831,8 +840,9 @@ class WeightedNetwork(Network):
                     
                 table[v] = line
                 
+            print cachekey, path
             if not trustlet.helpers.save( cachekey, table, path ):
-                print "Warning! save of cache failed"
+                sys.stderr.write( "Warning! save of cache failed\n" )
             
             return table
         else:
@@ -1007,10 +1017,10 @@ class WikiNetwork(WeightedNetwork):
             ws = []
             for n in self.edges_iter():
                         
-                #try:
-                x = self.map( float(n[2]['value']) )
-                #except:
-                #    raise "Cannot read dataset. The edges was malformed.\nThis is a malformed edge:", n
+                try:
+                    x = self.map( float(n[2]['value']) )
+                except:
+                    raise "Cannot read dataset. The edges was malformed.\nThis is a malformed edge:", n
                     
                 if lendict == 0:
                     ws_dict[int(n[2]['value'])] = x
