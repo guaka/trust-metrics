@@ -259,10 +259,11 @@ def merge(svn,datasets,upload=True,usercomment=''):
                     # file modified
                     if filename.endswith('.c2'):
                         print 'merging client and server version of %s' % rpath
-                        updatedc2.add(dstpath)
                         merged += 1
                         # priority: dstpath
-                        merge_cache([dstpath,srcpath],dstpath)
+                        if merge_cache([dstpath,srcpath],dstpath):
+                            # add file only if it is really different
+                            updatedc2.add(dstpath)
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
