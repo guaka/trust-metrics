@@ -213,6 +213,19 @@ def diffc2(f,g):
 
     return True
 
+def removed(path):
+    '''Manage removed files'''
+    if size(path)<=MAX_SIZE_REMOVED:
+        print 'Small file'
+        f = file(srcpath)
+        data = f.read().strip()
+        f.close()
+        
+        if data==REMOVED:
+            return True
+        
+    return False
+
 def merge(svn,datasets,upload=True,usercomment=''):
     
     added = updated = merged = 0
@@ -249,16 +262,10 @@ def merge(svn,datasets,upload=True,usercomment=''):
 
                 #print dstpath
                 # Manage removed files
-                if size(srcpath)<=MAX_SIZE_REMOVED:
-                    print 'Small file'
-                    f = file(srcpath)
-                    data = f.read().strip()
-                    f.close()
-
-                    if data==REMOVED:
-                        print 'I\'m removing',dstpath
-                        path.remove(dstpath)
-                        continue
+                if removed(srcpath):
+                    print 'I\'m removing',dstpath
+                    path.remove(dstpath)
+                    continue
 
                 if not diff(srcpath,dstpath):
                     # file modified
@@ -280,7 +287,7 @@ def merge(svn,datasets,upload=True,usercomment=''):
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
-            elif filename[0]!=PREFIX and not re_svnconflict.match(filename) and not filename.endswith('.mine'):
+            elif filename[0]!=PREFIX and not re_svnconflict.match(filename) and not filename.endswith('.mine') and not removed(srcpath):
                 #adding
                 print 'adding file',rpath
                 added += 1
