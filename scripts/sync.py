@@ -41,7 +41,7 @@ from socket import gethostname
 # not show: /usr/lib/python2.6/site-packages/networkx/hybrid.py:16: DeprecationWarning: the sets module is deprecated
 stderr = sys.stderr
 sys.stderr = file('/dev/null','w')
-from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge
+from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge,read_c2
 sys.stderr = stderr
 
 HOME = os.environ['HOME']
@@ -224,10 +224,10 @@ def merge(svn,datasets,upload=True,usercomment=''):
         if '.svn' in dirpath:
             continue
 
-        # O_O ehm... unuseful
-        names = dirnames + filenames
-        dirnames = [x for x in names if path.isdir(path.join(dirpath,x))]
-        filenames = [x for x in names if path.isfile(path.join(dirpath,x))]
+        # ehm... unuseful
+        #names = dirnames + filenames
+        #dirnames = [x for x in names if path.isdir(path.join(dirpath,x))]
+        #filenames = [x for x in names if path.isfile(path.join(dirpath,x))]
 
         destbasepath = dirpath.replace(svn,datasets)
         
@@ -244,26 +244,39 @@ def merge(svn,datasets,upload=True,usercomment=''):
             rpath = relative_path(srcpath,HIDDENDIR)[1]
             #print '<<< File:',rpath
             
-            # Manage removed files
-            if size(srcpath)<=MAX_SIZE_REMOVED:
-                f = file(srcpath)
-                data = f.read().strip()
-                f.close()
-
-                if data==REMOVED:
-                    continue
-
             if path.isfile(dstpath):
                 # yet exists in destination
+
+                #print dstpath
+                # Manage removed files
+                if size(srcpath)<=MAX_SIZE_REMOVED:
+                    print 'Small file'
+                    f = file(srcpath)
+                    data = f.read().strip()
+                    f.close()
+
+                    if data==REMOVED:
+                        print 'I\'m removing',dstpath
+                        path.remove(dstpath)
+                        continue
+
                 if not diff(srcpath,dstpath):
                     # file modified
+                    #print '#>',srcpath
+                    #print '##>',dstpath
                     if filename.endswith('.c2'):
                         print 'merging client and server version of %s' % rpath
                         merged += 1
                         # priority: dstpath
-                        if merge_cache([dstpath,srcpath],dstpath):
-                            # add file only if it is really different
-                            updatedc2.add(dstpath)
+                        merge_cache([dstpath,srcpath],dstpath)
+                        updatedc2.add(dstpath) # save that dstpath is to update
+
+                        if diffc2(srcpath,dstpath):
+                            # the content is equal, but file are different.
+                            # we'll keep the server version
+                            # this is useful to avoid ping pong of the same c2
+                            #print 'Copy'
+                            shutil.copy(srcpath,dstpath)
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
@@ -335,6 +348,9 @@ def merge(svn,datasets,upload=True,usercomment=''):
                     print 'updating file',rpath
                     updated += 1
                     shutil.copy(srcpath,dstpath)
+                #print  '<',srcpath,srcpath in updatedc2
+
+        #print updatedc2
 
         comment = ''
         if added:

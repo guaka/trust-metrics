@@ -1135,7 +1135,7 @@ def hashable(x):
 
     raise TypeError,"I don't know this type "+str(type(x))
 
-def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
+def save(key,data,path='.',human=False,version=3,threadsafe=True,meta=None):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
@@ -1145,7 +1145,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
     If path ends with '.c2' (cache version 2) 
     data will save in the new format (less files).
     human is not suported in the new format.
-    debug: other info to put into c2 on key. Use read_c2() to get them
+    meta: other info to put into c2 on key. Use read_c2() to get them
         I advise to use a dictionary with description on keys
     return: true in case of success, false in other cases
     """
@@ -1198,13 +1198,13 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,debug=None):
 
         d[hashable(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
 
-        if debug:
-            d[hashable(key)]['db'] = debug
+        if meta:
+            d[hashable(key)]['mt'] = meta
 
         # dt: data
         # ts: timestamp
         # hn: hostname
-        # db: debug
+        # mt: meta
 
         ###
         #debug = file('debug')
@@ -1331,11 +1331,11 @@ def merge_cache(source, target):
             if not k in merge or merge[k]['ts'] < cfile[k]['ts']:
                 merge[k] = v
     if merge != cachel[-1]:
-        print 'Merged'
+        #print 'Merged'
         write_c2(target,merge)
         return True
     else:
-        print 'Not merged'
+        #print 'Not merged'
         return False
 
 
