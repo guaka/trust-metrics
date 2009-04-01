@@ -7,6 +7,7 @@ install:
 	install sync.py $(INSTALLDIR)/sync_trustlet
 	install syncrm.py $(INSTALLDIR)/syncrm_trustlet
 	install lsc2.py $(INSTALLDIR)/lsc2
+	install diffc2.py $(INSTALLDIR)/diffc2
 	install dot2c2.py $(INSTALLDIR)/dot2c2
 love:
 	@echo Sorry but I hadn\'t hardware for this, okay?
