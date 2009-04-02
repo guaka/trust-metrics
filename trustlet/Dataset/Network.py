@@ -43,7 +43,7 @@ class Network(XDiGraph):
     see https://networkx.lanl.gov/reference/networkx/networkx.xgraph.XDiGraph-class.html
     """
     
-    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None, cachedict=None, filepath = '', date=None):
+    def __init__(self, from_graph = None, make_base_path = True, base_path = None, prefix=None, cachedict=None, filepath = '', date=None, silent=False):
         '''
         Create directory for class name if needed
         base_path: the path to put dataset directory
@@ -54,6 +54,7 @@ class Network(XDiGraph):
         '''
 
         XDiGraph.__init__(self, multiedges = False)
+        self.silent = silent
         self.date = date
         self.filepath = filepath
         self.filename = ''
@@ -134,7 +135,7 @@ class Network(XDiGraph):
         see load_c2 function. The parameter are the same.
         """
         if not hasattr(self,"filepath") or self.filepath=='':
-            print "Error: filepath is not defined!"
+            sys.stderr.write( "Error: filepath is not defined!\n" )
             return False
         
         if cachedict:
@@ -169,7 +170,7 @@ class Network(XDiGraph):
         """
         
         if not hasattr(self,"filepath") or self.filepath == '':
-            print "Error: filepath is not defined!"
+            sys.stderr.write( "Error: filepath is not defined!\n" )
             return False
 
         if cachedict:
@@ -201,8 +202,9 @@ class Network(XDiGraph):
             try:
                 net = trustlet.helpers.toNetwork( pydataset, key_dictionary )
             except IOError:
-                print "Warning! c2 is not consistent! The loading of network is failed"
-                print "Forcing conversion from dot.."
+                if not self.silent:
+                    print "Warning! c2 is not consistent! The loading of network is failed"
+                    print "Forcing conversion from dot.."
                 try:
                     val=trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,cachekey)
                 except IOError:
@@ -245,7 +247,8 @@ class Network(XDiGraph):
     def download_file(self, url, filename):
         '''Download url to filename into the right path '''
         filepath = os.path.join(self.path, filename)
-        print "Downloading %s to %s " % (url, filepath)
+        if not self.silent:
+            print "Downloading %s to %s " % (url, filepath)
 
         import urllib2
         try:
@@ -486,11 +489,15 @@ class Network(XDiGraph):
 
     def _read_dot(self, filepath,force=False):
         """Read file."""
-        print "Reading", filepath
+        if not self.silent:
+            print "Reading", filepath
         #import networkx
         #graph = networkx.read_dot(filepath)
         graph = trustlet.helpers.cached_read_dot(filepath,force)
-        self.paste_graph(graph,cond_on_edge=self.cond_on_edge)
+        if hasattr( self, "cond_on_edge" ):
+            self.paste_graph(graph,cond_on_edge=self.cond_on_edge)
+        else:
+            self.paste_graph(graph)
         
     def paste_graph(self, graph, avoidset=None,cond_on_edge=None, key_to_delete=None):
         """
@@ -609,8 +616,8 @@ class WeightedNetwork(Network):
     from_graph = the dataset that you would load. (in a networkx class) 
     """
     
-    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath='', cachedict=None,date=None):
-        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=filepath,date=date)
+    def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath='', cachedict=None,date=None,silent=False):
+        Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=filepath,date=date,silent=silent)
         self.name= 'generic_weighted_network'
         self.has_discrete_weights = has_discrete_weights
         self.is_weighted = True
@@ -765,7 +772,7 @@ class WeightedNetwork(Network):
                 return e
             else:
                 if len(e)>1:
-                    print 'I might wrong value on edge'
+                    sys.stderr.write( 'I might wrong value on edge\n' )
                 return e.values()[0]
         
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
@@ -843,7 +850,6 @@ class WeightedNetwork(Network):
                     
                 table[v] = line
                 
-            print cachekey, path
             if not trustlet.helpers.save( cachekey, table, path ):
                 sys.stderr.write( "Warning! save of cache failed\n" )
             
@@ -896,9 +902,9 @@ class WikiNetwork(WeightedNetwork):
        
     def __init__(self, lang, date, current=False, bots=True, blockedusers=True, base_path = None,
                  dataset = None, force = False,
-                 threshold=1, output=False,prefix=None ):
+                 threshold=1, output=False,prefix=None, silent=False ):
 
-        WeightedNetwork.__init__(self,base_path=base_path,prefix=prefix)
+        WeightedNetwork.__init__(self,base_path=base_path,prefix=prefix,silent=silent)
         
         assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
 
@@ -939,7 +945,8 @@ class WikiNetwork(WeightedNetwork):
 
     def load_c2(self):
         #load from cache
-        print "Reading ", self.filepath
+        if not self.silent:
+            print "Reading ", self.filepath
         cachedict = {'network':'Wiki','lang':str(self.lang),'date':str(self.date)}
         if self.threshold > 1:
             cachedict['threshold'] = self.threshold
@@ -997,7 +1004,7 @@ class WikiNetwork(WeightedNetwork):
         else:
             if os.path.exists( self.filepath ):
                 print "Warning! the c2 file does not contain the dataset.."
-                print "the key used were: ", cachedict
+                print "the key used is: ", cachedict
             return False
 
         return True
@@ -1131,14 +1138,16 @@ class WikiNetwork(WeightedNetwork):
                                     title='Frequency weights histogram',
                                     #log='xy',
                                     histogram=True)
-        print 'Graph saved in',self.path
+        if not self.silent:
+            print 'Graph saved in',self.path
 
     def load_distrust(self):
         filepath = os.path.join(self.path,'graphDistrust.c2')
 
         pynet = trustlet.helpers.load({'network':'DistrustWiki','lang':self.lang,'date':self.date}, filepath)
         if not pynet:
-            print "Distrust graph doesn't exist"
+            if not self.silent:
+                print "Distrust graph doesn't exist"
             return
 
         nodes,edges = pynet

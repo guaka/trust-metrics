@@ -77,8 +77,9 @@ class CalcGraph(Network):
             self._prepare()
             if hasattr(self.TM, 'rescale') and self.TM.rescale:
                 self._rescale()
-        
-        print "Init took", hms(time.time() - self.start_time)
+
+        if not self.dataset.silent:
+            print "Init took", hms(time.time() - self.start_time)
         
     def get_name(self):
         """Override get_name."""
@@ -91,7 +92,8 @@ class CalcGraph(Network):
         """
         loading c2 is not possible for predgraph
         """
-        print "Warning! You can't load a c2 into a predgraph" 
+        if not self.dataset.silent:
+            print "Warning! You can't load a c2 into a predgraph" 
         return None
 
     def _rescale(self):
@@ -126,15 +128,17 @@ class CalcGraph(Network):
 
     def _write_pred_graph_dot(self, pred_graph):
         """Write PredGraph.dot."""
-        print "Writing", self.filepath,
-        print "-", len(pred_graph.nodes()),
-        print "nodes", len(pred_graph.edges()), "edges"
+        if not self.dataset.silent:
+            print "Writing", self.filepath,
+            print "-", len(pred_graph.nodes()),
+            print "nodes", len(pred_graph.edges()), "edges"
         
         import os
         
         name = tempnam()
-        
-        print pred_graph.edges()[0]
+
+        if not self.dataset.silent:
+            print pred_graph.edges()[0]
 
         write_dot(pred_graph, name)
 
@@ -184,8 +188,10 @@ class CalcGraph(Network):
         # print edge, predicted_trust
         avg_t = (time.time() - self.start_time) / count
         eta = avg_t * (len(self.dataset.edges()) - count)
-        print '#', int(count),'calculated at', time.asctime() , "avg time:", 
-        print avg_t, "ETA", est_datetime_arr(eta), moreinfo
+
+        if not self.dataset.silent:
+            print '#', int(count),'calculated at', time.asctime() , "avg time:", 
+            print avg_t, "ETA", est_datetime_arr(eta), moreinfo
         
 
 
@@ -201,17 +207,19 @@ class PredGraph(CalcGraph):
         
         
         if not hasattr( TM , "dataset" ):
-            print 'Are you sure that TM is a TM?'
+            if not self.dataset.silent:
+                print 'Are you sure that TM is a TM?'
             raise AttributeError
 
         self.leave_one_out = leave_one_out
 
         #attribute tipically of WikiNetwork... I can do it better
         if hasattr( TM.dataset, "lang" ) and hasattr( TM.dataset, "bots" ):
-            print "I cannot be able to create this prediction network!"
-            print "I suppose that this is a Wikipedia Network.."
-            print "In order to create a Wikipedia prediction graph,"
-            print "you must use the WikiPredGraph class"
+            if not self.dataset.silent:
+                print "I cannot be able to create this prediction network!"
+                print "I suppose that this is a Wikipedia Network.."
+                print "In order to create a Wikipedia prediction graph,"
+                print "you must use the WikiPredGraph class"
             
             return None
 
@@ -222,7 +230,8 @@ class PredGraph(CalcGraph):
             
     def _generate(self):
         """Generate the prediction graph."""
-        print "Generating", self.filepath
+        if not self.dataset.silent:
+            print "Generating", self.filepath
         pg = self._predict_existing()
         self._paste_graph(pg)
         return pg
@@ -266,8 +275,8 @@ class PredGraph(CalcGraph):
                 self.add_edge(e[0], e[1], x)
             self.orig_trust = self._trust_array('orig')
         else:
-            print "#edges in dataset != #edges in predgraph!"
-            print "actual ratio: ", ratio
+            sys.stderr.write( "#edges in dataset != #edges in predgraph!\n" )
+            sys.stderr.write( "actual ratio: "+ratio+'\n' )
             for e in self.edges_iter():
                 x = dict(self.get_edge(e[0], e[1]))
                 # for some reason the upper line (which is neater) 
@@ -550,10 +559,11 @@ class PredGraph(CalcGraph):
                 
 
                 if not ret:
-                    print "Warning! i cannot be able to save this computation, check the permission"
-                    print "for this path: "+os.path.join( self.path,"cache" )
+                    sys.stderr.write( "Warning! i cannot be able to save this computation, check the permission\n" )
+                    sys.stderr.write( "for this path: "+os.path.join( self.path,"cache" )+'\n' )
                         
-                print "Errors evaluated for %f controversiality" % max
+                if not self.dataset.silent:
+                    print "Errors evaluated for %f controversiality" % max
 
             
             return (max, float(sum)/cnt, rmse, pw, cov, cnt)
@@ -561,7 +571,7 @@ class PredGraph(CalcGraph):
 
         cachename = ['cache.c2','predgraphcontrov.c2']
 
-        ls = splittask( eval, r )
+        ls = splittask( eval, r, showperc=not self.dataset.silent )
 
         if toe == None:
             return ls
@@ -636,7 +646,7 @@ class PredGraph(CalcGraph):
             if cache.has_key(str(cont)):
                 return cont,cache[str(cont)]
             return cont,len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
-        res = splittask(func,values)
+        res = splittask(func,values, showperc=not self.dataset.silent)
         #save cache
         for x in res:
             cache[str(x[0])] = x[1]
@@ -663,7 +673,7 @@ class PredGraph(CalcGraph):
                 len(self.edges_cond(and_cond( apprentice, cont_cond ))), \
                 len(self.edges_cond(and_cond( observer, cont_cond )))
 
-        res = splittask(func,values)
+        res = splittask(func,values, showperc=not self.dataset.silent)
         assert len(values) == len(res)
         #save cache
         for x in res:
@@ -714,7 +724,7 @@ class CalcWikiGraph(CalcGraph):
                 #if in cache file doesn't exist the dataset with the right keys
                 #create it and save it
                 if not self._readCache(self.filepath):
-                    print "I can't find dataset with threshold %d and bots set to" % self.dataset.threshold, self.dataset.bots
+                    sys.stderr.write( "I can't find dataset with threshold "+self.dataset.threshold+" and bots set to"+self.dataset.bots+"\n" )
                     graph = self._generate()
                     self._writeCache(graph)
                 
@@ -727,7 +737,8 @@ class CalcWikiGraph(CalcGraph):
             if hasattr(self.TM, 'rescale') and self.TM.rescale:
                 self._rescale()
 
-        print "Init took", hms(time.time() - self.start_time)
+        if not self.dataset.silent:
+            print "Init took", hms(time.time() - self.start_time)
 
 
     #override filepath
@@ -749,8 +760,9 @@ class CalcWikiGraph(CalcGraph):
         """
         read cache file
         """
-
-        print "Reading ", filepath
+        
+        if not self.dataset.silent:
+            print "Reading ", filepath
         path,file = os.path.split( filepath )
         path,tm = os.path.split( path )
         path,date = os.path.split( path )
@@ -791,12 +803,14 @@ class CalcWikiGraph(CalcGraph):
 
     def _writeCache(self,pred_graph):
         """Write PredGraph.c2"""
-        print "Writing", self.filepath,
-        print "-", len(pred_graph.nodes()),
-        print "nodes", len(pred_graph.edges()), "edges"
+        
+        if not self.dataset.silent:
+            print "Writing", self.filepath,
+            print "-", len(pred_graph.nodes()),
+            print "nodes", len(pred_graph.edges()), "edges"
         
         if self.filepath[-3:] != '.c2':
-            print "Error!, the filepath is not a c2 file! exiting"
+            sys.stderr.write( "Error!, the filepath is not a c2 file! exiting\n" )
             exit()
         
         cachedict = {'lang':self.dataset.lang,'date':self.dataset.date}
@@ -821,7 +835,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
     def __init__(self, TM, leave_one_out = True, recreate = False, predict_ratio = 1.0):
         
         if not hasattr( TM, "dataset" ):
-            print 'Are you sure that TM is a TM?'
+            sys.stderr.write( 'Are you sure that TM is a TM?\n' )
             raise AttributeError
         
         if hasattr( TM.dataset, "url" ):

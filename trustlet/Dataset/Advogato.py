@@ -92,7 +92,7 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
     # seeds for global advogato TM
     advogato_seeds = ['raph', 'federico', 'miguel', 'alan']
 
-    def __init__(self, date = None, weights = _obs_app_jour_mas_map, cond_on_edge=None, comp_threshold = 0, download = False, base_path = '',prefix=None, from_dot=False):
+    def __init__(self, date = None, weights = _obs_app_jour_mas_map, cond_on_edge=None, comp_threshold = 0, download = False, base_path = '',prefix=None, from_dot=False, silent = False):
 
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -102,6 +102,7 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
         between _color_map and _obs_app_jour_mas_map
         comp_threshold = if this parameter is set, the class evaluate the ditch component
         """
+
         self.cond_on_edge = cond_on_edge
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
@@ -124,7 +125,7 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
            #weights = _obs_app_jour_mas_map
 
         self.level_map = weights #level_map deprecated (really?)
-        trustlet.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date)
+        trustlet.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date, silent=silent)
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -162,19 +163,21 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
         """
         this function assume that self.filepath was set
         """
-        print "dot format detected, converting dot file in c2..."
+        if not self.silent:
+            print "dot format detected, converting dot file in c2..."
         
         if os.path.exists( self.filepath ) and not force:
             return True #is not necessary to reconvert
 
         #convert dot in c2
         if not trustlet.conversion.dot.to_c2(self.dotpath,self.filepath,{'network':self._name(),'date':self.date}):
-            print "Error converting dot into c2 file."
+            sys.stderr.write( "Error converting dot into c2 file.\n" )
             return False
         #delete dot
         #os.remove( self.dotpath )
-        
-        print "Done."
+        if not self.silent:
+            print "Done."
+
         return True
 
     def download(self, only_if_needed = False, from_dot=False):
@@ -208,7 +211,9 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
         Fix syntax of graph.dot (8bit -> blah doesn't work!)
         Put nodes names into `"`
         """
-        print 'Fixing graph.dot'
+        if not self.silent:
+            print 'Fixing graph.dot'
+        
         graph_file = open(self.dotpath, 'r')
         l_names = graph_file.readlines()
         graph_file.close()
@@ -231,7 +236,8 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
         
         key = {'network':self._name(),'date':self.date}
         
-        print "Reading ", filepath
+        if not self.silent:
+            print "Reading ", filepath
         
         if self.cond_on_edge:
             w = self.load_c2(key,self.key_on_edge,cond_on_edge=self.cond_on_edge)
@@ -242,7 +248,6 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
             self.__convert(force=True)
             #retry
             if self.cond_on_edge:
-                print "qwe"
                 w = self.load_c2(key,self.key_on_edge,cond_on_edge=self.cond_on_edge)
             else:
                 w = self.load_c2(key,self.key_on_edge)
@@ -259,7 +264,7 @@ class Robots_netNetwork(AdvogatoNetwork):
     url = "http://robots.net/person/graph.dot"
 
     def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None, 
-                 cond_on_edge=None, from_dot=False):
+                 cond_on_edge=None, from_dot=False,silent=False):
         
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -270,6 +275,7 @@ class Robots_netNetwork(AdvogatoNetwork):
         comp_threshold = if this parameter is set, the class evaluate the ditch component
         """
 
+        self.silent = silent
         self.url = ('http://www.trustlet.org/datasets/' +
                     self._name_lowered() + '/' +
                     self._name_lowered())
@@ -311,7 +317,8 @@ class Robots_netNetwork(AdvogatoNetwork):
 
     def fix_graphdot(self):
         """Fix syntax of graph.dot (8bit -> blah doesn't work!)"""
-        print 'Fixing graph.dot'
+        if not self.silent:
+            print 'Fixing graph.dot'
         
         l_names = open(self.dotpath, 'r').readlines()
         re_space = re.compile('(\w) (\w)')
@@ -331,14 +338,15 @@ class SqueakfoundationNetwork(AdvogatoNetwork):
     """Squeak Foundation dataset"""
     url = "http://people.squeakfoundation.org/person/graph.dot"
 
-    def __init__(self, download = False, date=None, base_path=None,prefix=None, cond_on_edge=None,from_dot=False):
+    def __init__(self, download = False, date=None, base_path=None,prefix=None, cond_on_edge=None,from_dot=False,silent=False):
         AdvogatoNetwork.__init__(self, weights = _color_map, 
                                  download = download, 
                                  date=date, 
                                  base_path=base_path,
                                  prefix=prefix,
                                  cond_on_edge=cond_on_edge,
-                                 from_dot=from_dot)
+                                 from_dot=from_dot,
+                                 silent=silent)
 
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
@@ -354,14 +362,15 @@ class KaitiakiNetwork(SqueakfoundationNetwork):
     url = "http://www.kaitiaki.org.nz/virgule/person/graph.dot"
     advogato_seeds = ['susan', 'lucyt']
 
-    def __init__(self, date = None, download=False, cond_on_edge=None, base_path = None,prefix=None,from_dot=False):
+    def __init__(self, date = None, download=False, cond_on_edge=None, base_path = None,prefix=None,from_dot=False, silent=False):
         AdvogatoNetwork.__init__(self, weights = _color_map, 
                                  download = download, 
                                  date = date, 
                                  base_path = base_path,
                                  prefix=prefix,
                                  cond_on_edge=cond_on_edge,
-                                 from_dot=from_dot)
+                                 from_dot=from_dot,
+                                 silent=silent)
 
 
 if __name__ == "__main__":
