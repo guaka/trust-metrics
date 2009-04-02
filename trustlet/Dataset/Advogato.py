@@ -253,7 +253,11 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
                 w = self.load_c2(key,self.key_on_edge)
 
             if not w:
-                raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
+                if not from_dot:
+                    print 'c2 not found, i try to read dot'
+                    self.get_graph(filepath,True)
+                else:
+                    raise IOError( "Error while loading network! the c2 doesn't exist in path "+self.filepath+" or does not contain this key "+str(key)  )
             
 
 class Robots_netNetwork(AdvogatoNetwork):

@@ -1266,11 +1266,18 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
     If info will return data and metadata (data: load(...)['dt'])
     """
 
+    #print '                   ',path
+    #return fault
+
     # ¡¡ DEBUG: cachedcache disabled !!
     cachedcache = False
     #
 
-    getret = info and (lambda x: x) or (lambda x: x['dt'])
+    def onlydata(x):
+        assert x.has_key('dt'),'Old cache. Remove it and run script.'
+        return x['dt']
+
+    getret = info and (lambda x: x) or onlydata
 
     #memory cache
     if not globals().has_key('cachedcache'):
@@ -1295,7 +1302,8 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
 
     #save in memory cache
     cache[path] = d # + timestamp?
-
+    #print '*****************************',type(data)
+    #return None
     return getret(data)
 
 def erase_cachedcache():

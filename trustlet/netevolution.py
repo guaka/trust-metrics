@@ -19,7 +19,7 @@ re_alphabetic = re.compile("[A-Za-z_]+")
 fl = []
 al = lambda f,pf: fl.append((f,pf)) #function, print function
 
-def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix='+', force=False):
+def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=False,debug=None,prefix=None, force=False):
     '''
     apply functions to each network in range range.
     If you want use cache `function` cannot be lambda functions.
@@ -817,7 +817,7 @@ if __name__ == "__main__":
         #prog startdate enddate path
         print "This script generate so many graphics with gnuplot (and generate .gnuplot file"
         print "useful to see the grown of the network in an interval of time"
-        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-f] [-d debug_path] [-l comma_separated_list]"
+        print "USAGE: netevolution.py startdate enddate networkname save_path [-s step] [--cacheonly] [-m|-mj|-mja] [-f] [-d debug_path] [-l comma_separated_list] [-p prefix]"
         print "    You can use '-' to skip {start,end}date"
         print "    networkname: the name of the folder in ~/datasets/ that contains the network ex. AdvogatoNetwork"
         print "    savepath: the path in which this script save the .gnuplot and the .png files"
@@ -853,29 +853,37 @@ if __name__ == "__main__":
 
     if '-f' in sys.argv:
         force = True
+        del sys.argv[sys.argv.index('-f')]
 
     cond_on_edge = None
     
     if '-m' in sys.argv:
         cond_on_edge = onlyMaster
+        del sys.argv[sys.argv.index('-m')]
 
     if '-mj' in sys.argv:
         cond_on_edge = onlyMasterJourneyer
+        del sys.argv[sys.argv.index('-mj')]
     
     if '-mja' in sys.argv:
         cond_on_edge = noObserver
+        del sys.argv[sys.argv.index('-mja')]
     
     range = (startdate,enddate,step)
 
     if '-d' in sys.argv:
         debugfile = sys.argv[sys.argv.index('-d')+1]
         mkpath(os.path.split(debugfile)[0])
+        del sys.argv[sys.argv.index('-d')+1]
+        del sys.argv[sys.argv.index('-d')]
     else:
         debugfile = None
 
     if '-l' in sys.argv[:-1]:
         #list of functions to compute
         sl = sys.argv[sys.argv.index('-l')+1] #string list (parameter)
+        del sys.argv[sys.argv.index('-l')+1]
+        del sys.argv[sys.argv.index('-l')]
         il = sl.split(',') #index list (list of numbers)
         #tell to evolutionmap that all the functions in il must be calculated, and the others cannot
         for i in xrange(len(fl)):
@@ -883,10 +891,15 @@ if __name__ == "__main__":
                 fl[i][0].enable = True
             else:
                 fl[i][0].enable = False
+
+    if '-p' in sys.argv[:-1]:
+        prefix = sys.argv[sys.argv.index('-p')+1]
+    else:
+        prefix = None
     
     mkpath(savepath)
 
-    data = evolutionmap( netname, [f[0] for f in fl], cond_on_edge, range, cacheonly, debugfile, force=force )
+    data = evolutionmap( netname, [f[0] for f in fl], cond_on_edge, range, cacheonly, debugfile, prefix, force=force )
     
     if not data:
         sys.exit(1)
