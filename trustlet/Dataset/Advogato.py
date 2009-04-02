@@ -259,7 +259,7 @@ class Robots_netNetwork(AdvogatoNetwork):
     url = "http://robots.net/person/graph.dot"
 
     def __init__(self, date = None, weights = _obs_app_jour_mas_map, comp_threshold = 0, download = False, base_path = '',prefix=None, 
-                 cond_on_edge=None):
+                 cond_on_edge=None, from_dot=False):
         
         """
         e.g. A = Advogato(date = '2007-12-21')
@@ -301,8 +301,8 @@ class Robots_netNetwork(AdvogatoNetwork):
         self.dotpath = os.path.join(self.path, self.dotfile)
         self.filepath = self.dotpath[:-3]+'c2'
         #'download' parameter say to the class if download the source dot file or not
-        self.download(only_if_needed = download)
-        self.get_graph()
+        self.download(only_if_needed = download,from_dot=from_dot)
+        self.get_graph(from_dot=from_dot)
             
         # DEPRECATED?
         if comp_threshold:
