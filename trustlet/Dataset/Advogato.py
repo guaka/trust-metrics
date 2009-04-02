@@ -242,6 +242,7 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
             self.__convert(force=True)
             #retry
             if self.cond_on_edge:
+                print "qwe"
                 w = self.load_c2(key,self.key_on_edge,cond_on_edge=self.cond_on_edge)
             else:
                 w = self.load_c2(key,self.key_on_edge)

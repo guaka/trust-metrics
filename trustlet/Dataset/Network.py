@@ -490,7 +490,7 @@ class Network(XDiGraph):
         #import networkx
         #graph = networkx.read_dot(filepath)
         graph = trustlet.helpers.cached_read_dot(filepath,force)
-        self.paste_graph(graph)
+        self.paste_graph(graph,cond_on_edge=self.cond_on_edge)
         
     def paste_graph(self, graph, avoidset=None,cond_on_edge=None, key_to_delete=None):
         """

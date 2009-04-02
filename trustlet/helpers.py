@@ -1247,12 +1247,16 @@ def safe_merge(path,delete=True):
     #             get name.                   get pid.c2
     f = lambda x: x.startswith(name[:-2]) and repid.match(x[len(name)-2:])
 
-    files = filter(f,os.listdir(path))
+    files = [os.path.join(path,x) for x in filter(f,os.listdir(path))]
+    #added by ciropom to fix a bug.. you don't store in "files" the path, but only the file name
 
-    merge_cache(files+[fullpath],fullpath)
+    merge_cache(files,fullpath)
+    #merge_cache(files+[fullpath],fullpath)
+
 
     for file in files:
         if delete:
+            print file
             os.remove(file)
 
 def load(key,path='.',fault=None,cachedcache=True,info=False):
@@ -1316,7 +1320,6 @@ def merge_cache(source, target):
 
     If target doesn't also into sorce list, its data will lost.
     '''
-
     cachel = splittask(read_c2,source+[target],showperc=False,np=1)
 
     merge = {}
@@ -1330,6 +1333,7 @@ def merge_cache(source, target):
             #print k,merge.has_key(k)
             if not k in merge or merge[k]['ts'] < cfile[k]['ts']:
                 merge[k] = v
+
     if merge != cachel[-1]:
         #print 'Merged'
         write_c2(target,merge)
