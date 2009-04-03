@@ -3,10 +3,10 @@
 
 '''
 USAGE:
-   ./wikixml2graph.py xml_file [--current]
-      [base_path]
+   ./wikixml2graph.py xml_file [base_path]
+      [--current]
       [--distrust] [--threshold value|-t value] [--no-lists]
-          Default base_path = home dir
+          Default base_path = home-dir/shared_datasets
           If --current isn't set, it'll use history xml
           If xml_file is no-graph will insert only lists of users in .c2
           distrust: force distrust graph creation (input file must be pages-meta-history)
@@ -80,7 +80,7 @@ def main():
             base_path = argv[2]
         else:
             assert os.environ.has_key('HOME')
-            base_path = os.environ['HOME']
+            base_path = os.path.join(os.environ['HOME'],'shared_datasets')
 
         path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
         mkpath(path)

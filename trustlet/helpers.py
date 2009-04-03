@@ -1274,8 +1274,11 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
     #
 
     def onlydata(x):
-        assert x.has_key('dt'),'Old cache. Remove it and run script.'
-        return x['dt']
+        if x.has_key('dt'):
+            return x['dt']
+
+        print 'Warning: old cache format'
+        return x
 
     getret = info and (lambda x: x) or onlydata
 
