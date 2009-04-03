@@ -50,7 +50,9 @@ def to_c2( dot, c2, key ):
     chkuser = 0
     chkedges = 0
     lnodes = []
-    
+    #dict is unashable so I must convert dict in tuple
+    wedges = []
+
     #find all edges
     for j in xrange(nlines):
         res = redges.findall( lines[j] )
@@ -70,6 +72,8 @@ def to_c2( dot, c2, key ):
 
             chkedges += 1
             w.add_edge( indegree, outdegree, trustlet.helpers.pool({typeNet:value}) )
+            #only used for checking
+            wedges.append( (indegree,outdegree,(typeNet,value)) )
         else:
             print "Warning! output may be checked"
 
@@ -85,6 +89,31 @@ def to_c2( dot, c2, key ):
         print "number of edges:",chkedges,"number of users:",chkuser,"number of lines:", nlines
         print "Warning! user+edges != number of lines of dot"
 
+    #this is only a check. it slow down the algorithm but maitain the correctness
+        
+    #check if the dataset is the same as the dataset read with read_dot
+    #this check is necessary because we cannot save directly the dataset readed from read_dot for 
+    #a pygraphviz bug
+    dot = read_dot(dot)
+
+    dotnodes = set( dot.nodes() )
+    wnodes = set( w.nodes() )
+    #make a set of dotedges
+    dotedges = set( [(n1,n2,(k,v[k])) for n1,n2,v in dot.edges() for k in v if n1 != n2] )
+    #make a set of wedges
+    wedges = set( wedges )
+
+    # delete the difference between read_dot result and this algorithm (for edges)
+    for e in wedges.difference( dotedges ):
+        w.delete_edge(e)
+
+    # delete the difference between read_dot result and this algorithm (for edges)
+    for n in wnodes.difference( dotnodes ):
+        w.delete_node(n)
+
+    assert len(dotedges) == w.number_of_edges(), "Error! number of edges different from the dot"
+    assert dot.number_of_nodes() == w.number_of_nodes(), "Error! number of nodes different from the dot"
+    
     return trustlet.helpers.save(key,w,c2)
 
 

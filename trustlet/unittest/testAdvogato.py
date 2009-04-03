@@ -5,13 +5,17 @@ test all trustlet
 
 import unittest
 import os
+import sys
 
 import trustlet
 
-
-class TestAdvogato(unittest.TestCase):
-    def __init__(self,methodName='RunTest'):
-        unittest.TestCase.__init__(self,methodName=methodName)
+singlethon = False
+class LoadAdvogato:
+    def __init__(self):
+        if singlethon:
+            return singlethon
+        
+        singlethon = self
         #my code of init
         self.basepath = basepath = os.path.join(os.environ['HOME'],"datasets" )
         self.setInstances = {} #set of {networkname:{dot:networkinstance,c2:networkinstance} }
@@ -39,7 +43,43 @@ class TestAdvogato(unittest.TestCase):
             self.setInstances[netname] = {}
             self.setInstances[netname]['c2'] =  net( date=data )
             self.setInstances[netname]['dot'] = net( date=data, from_dot=True ) 
-        
+
+
+class TestAdvogato(unittest.TestCase):
+    
+    def setUp(self):
+        sys.setrecursionlimit(1000)
+        #my code of init
+        self.basepath = basepath = os.path.join(os.environ['HOME'],"datasets" )
+        self.setInstances = {} #set of {networkname:{dot:networkinstance,c2:networkinstance} }
+
+        #list of network to test
+        networks = [trustlet.AdvogatoNetwork, trustlet.KaitiakiNetwork, trustlet.SqueakfoundationNetwork, trustlet.Robots_netNetwork]
+
+        for net in networks:
+            netname = net.__name__
+            found = False
+            data = None
+
+            #find an avaiable network
+            for tmpdata in os.listdir( os.path.join( basepath , net.__name__) ):
+                tmpath = os.path.join( basepath , net.__name__ , tmpdata  )
+                #skip non present network
+                if not os.path.exists( tmpath ):
+                    continue
+                
+                if os.path.exists( os.path.join( tmpath, "graph.dot" ) ):
+                    data = tmpdata
+                    found = True
+                    break
+
+            if not found:
+                continue # if for a network I don't found any network, skip it
+
+            self.setInstances[netname] = {}
+            self.setInstances[netname]['c2'] =  net( date=data, silent=True )
+            self.setInstances[netname]['dot'] = net( date=data, from_dot=True, silent=True ) 
+
         
     def testReciprocity(self):
         print "" #skip a line
@@ -113,6 +153,10 @@ class TestAdvogato(unittest.TestCase):
             self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
 
             lt = p.graphcontroversiality(cond=trustlet.onlyMaster)
+            
+            self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
+            
+            lt = p.graphcontroversiality(toe='mae')
             
             self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
 
