@@ -40,6 +40,7 @@ class CalcGraph(Network):
 
         self.TM = TM
         self.dataset = dataset = TM.dataset
+        self.silent = self.dataset.silent
         self.predict_ratio = predict_ratio
         
         self.start_time = time.time()
@@ -574,7 +575,7 @@ class PredGraph(CalcGraph):
         ls = splittask( eval, r, showperc=not self.dataset.silent )
 
         if toe == None:
-            return ls
+            return [x for x in ls if x]
         else:
             #take a tuple and a index, and return a tuple with first value and the value n index
             select = lambda tp,s: (tp[0],tp[s])

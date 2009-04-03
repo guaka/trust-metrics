@@ -146,19 +146,19 @@ class TestAdvogato(unittest.TestCase):
             #test graphcontroversiality
             lt = p.graphcontroversiality()
             
-            self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
+            self.assert_( not any( [el != None and not type(el) is tuple for el in lt] ) )
 
             lt = p.graphcontroversiality(indegree=1)
             
-            self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
+            self.assert_( not any( [el != None and not type(el) is tuple for el in lt] ) )
 
             lt = p.graphcontroversiality(cond=trustlet.onlyMaster)
             
-            self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
+            self.assert_( not any( [el != None and not type(el) is tuple for el in lt] ) )
             
             lt = p.graphcontroversiality(toe='mae')
             
-            self.assert_( any( [el == None or type(el) is tuple for el in lt] ) )
+            self.assert_( not any( [el != None and not type(el) is tuple for el in lt] ) )
 
             
 
