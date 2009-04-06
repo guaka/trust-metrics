@@ -771,6 +771,8 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
             if not np:
                 np = 2
 
+    np = min(np,len(input))
+
     result = []
     pipes = []
     pids = []
@@ -1268,10 +1270,6 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
 
     #print '                   ',path
     #return fault
-
-    # ¡¡ DEBUG: cachedcache disabled !!
-    cachedcache = False
-    #
 
     def onlydata(x):
         if x.has_key('dt'):
