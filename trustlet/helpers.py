@@ -824,7 +824,7 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
             while buffer:
                 buffer = os.read(pipe,1000)
                 s += buffer
-            result += marshal.loads(s)
+            result.append(marshal.loads(s))
     except EOFError:
         print "A son process is dead"
         print "splittask says: it's not my fault!"
@@ -838,8 +838,14 @@ def splittask(function,input,np=None,showperc=True,notasksout=False):
         print "Done."
         exit()
 
-    return result
+    flatres = []
+    while any(result):
+        for l in result:
+            if l:
+                flatres.append(l[0])
+                del l[0]
 
+    return flatres
 
 def powersplittask(function,input,np=None,showperc=True,notasksout=False):
     """

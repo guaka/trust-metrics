@@ -18,7 +18,7 @@ path = lambda x: '/tmp/testcache/%d.c2'%x
 class TestCache(unittest.TestCase):
     
     def setUp(self):
-        if 'testcache' in os.listdir('/tmp'):
+        if os.path.exists('/tmp/testcache'):
             self.tearDown()
         os.mkdir('/tmp/testcache')
         
@@ -42,6 +42,9 @@ class TestCache(unittest.TestCase):
             self.assertEqual(load(k,p,cachedcache=True),load(k,p,cachedcache=False),v)
 
     def test_cachedcache(self):
+        self.test_cache(True)
+
+    def test_cache(self,cachedcache=False):
         '''
         test concurrency with cachedcache
         '''
@@ -49,7 +52,7 @@ class TestCache(unittest.TestCase):
         r,w = os.pipe()
         rr,ww = os.pipe()
 
-        N = 10
+        N = 100
         p = path(0)
         k = ('K is The Key',ord('K'))
 
@@ -64,13 +67,13 @@ class TestCache(unittest.TestCase):
 
             for c in xrange(N):
                 
-                v = load(k+(c,),p,cachedcache=False)
+                v = load(k+(c,),p,cachedcache=cachedcache)
                 
                 #print c
                 if v != c:
                     self.assert_(save(k+(c,),c,p))
                     computed.add(c)
-                    time.sleep(random.random()*3+2) # 2 - 4
+                    time.sleep(0.01)
                 else:
                     continue
             
