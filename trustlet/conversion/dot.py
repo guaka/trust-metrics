@@ -12,6 +12,7 @@ __all__ = ['to_c2','from_c2']
 def to_c2( dot, c2, key ):
     """
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
+    NB: work only with dot with Advogato._generic_map edges
 
     Parameters:
        dot: path to dot (ex /home/..../graph.dot)
@@ -49,6 +50,7 @@ def to_c2( dot, c2, key ):
     nlines = len(lines)
     chkuser = 0
     chkedges = 0
+    chkself = 0
     lnodes = []
     #dict is unashable so I must convert dict in tuple
     wedges = []
@@ -67,12 +69,17 @@ def to_c2( dot, c2, key ):
         if type(edges) is tuple:
             indegree = edges[0]
             outdegree = edges[1]
+            #skip self edges
+            if indegree == outdegree:
+                chkself += 1 
+                continue
+
             typeNet = edges[2]
             value = edges[3]
 
             chkedges += 1
             w.add_edge( indegree, outdegree, trustlet.helpers.pool({typeNet:value}) )
-            #only used for checking
+            #only used for checkingfr
             wedges.append( (indegree,outdegree,(typeNet,value)) )
         else:
             print "Warning! output may be checked"
@@ -81,13 +88,15 @@ def to_c2( dot, c2, key ):
 
     #find all nodes
     for i in xrange(nlnodes):
-        chkuser += 1
         user = ruser.search( lnodes[i] )
+        if not user:
+            continue
         w.add_node( user.group() )
-    
-    if (chkedges+chkuser) != nlines:
-        print "number of edges:",chkedges,"number of users:",chkuser,"number of lines:", nlines
-        print "Warning! user+edges != number of lines of dot"
+        chkuser += 1
+
+    if (chkedges+chkuser+chkself) != nlines:
+        print "number of edges:",chkedges,"number of self edges:",chkself,"number of users:",chkuser,"number of lines:", nlines
+        print "Warning! user+edges+self != number of lines of dot"
 
     #this is only a check. it slow down the algorithm but maitain the correctness
         
@@ -95,13 +104,17 @@ def to_c2( dot, c2, key ):
     #this check is necessary because we cannot save directly the dataset readed from read_dot for 
     #a pygraphviz bug
     dot = read_dot(dot)
-
+    
     dotnodes = set( dot.nodes() )
     wnodes = set( w.nodes() )
     #make a set of dotedges
     dotedges = set( [(n1,n2,(k,v[k])) for n1,n2,v in dot.edges() for k in v if n1 != n2] )
     #make a set of wedges
     wedges = set( wedges )
+
+    print len(dotedges), w.number_of_edges()
+    print dot.number_of_nodes(), w.number_of_nodes()
+    
 
     # delete the difference between read_dot result and this algorithm (for edges)
     for e in wedges.difference( dotedges ):

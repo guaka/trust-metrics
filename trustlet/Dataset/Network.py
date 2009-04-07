@@ -7,6 +7,7 @@ Each network supported has it's own class to wrap it.
 """
 
 from networkx.readwrite import read_pajek,write_pajek
+from networkx import read_dot,write_dot
 from trustlet.Table import Table
 from trustlet.powerlaw import power_exp_cum_deg_hist
 import trustlet
@@ -129,6 +130,40 @@ class Network(XDiGraph):
             return True
         else:
             return False
+
+    def load_dot(self):
+        """
+        load a graph in a dot format
+        """
+
+        if hasattr(self,"filepath") and self.filepath and os.path.exists(self.filepath):
+            if self.filepath.endswith( '.dot' ):
+                w = read_dot(self.filepath)
+            elif os.path.exists(self.filepath+'.dot'):
+                w = read_dot(self.filepath+'.dot')
+            else:
+                sys.stderr.write( "error loading network, filepath does not exists\n" )
+                return False
+                    
+            self.paste_graph(w)
+            return True
+        else:
+            return False
+
+    
+    def save_dot(self):
+        """
+        save this graph in dot format (in self.filepath)
+        """
+        if hasattr(self,"filepath") and self.filepath:
+            if self.filepath.endswith( ".dot" ):
+                return write_dot(self, self.filepath )
+            else:
+                return write_dot(self, self.filepath+'.dot' )
+        else:
+            return False
+        
+
 
     def save_c2(self,cachedict=None ):
         """
