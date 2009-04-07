@@ -5,7 +5,6 @@ install:
 
 	install wikixml2graph.py $(INSTALLDIR)/wikixml2graph
 	install sync.py $(INSTALLDIR)/sync_trustlet
-	install syncrm.py $(INSTALLDIR)/syncrm_trustlet
 	install lsc2.py $(INSTALLDIR)/lsc2
 	install diffc2.py $(INSTALLDIR)/diffc2
 	install dot2c2.py $(INSTALLDIR)/dot2c2
