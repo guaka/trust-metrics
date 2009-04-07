@@ -380,7 +380,7 @@ class Network(XDiGraph):
                 raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
         else:
             path = self.filepath #with non standard network, cannot upload info
-            if not cachedict and not self.get_keyOnDataset(): #if cachedict not set
+            if self._name() != 'Wiki' and not cachedict and not self.get_keyOnDataset(): #if cachedict not set
                     raise Exception("For non-standard dataset, you must set the cachedict parameter (or if you wouldn't you had to set force parameter to True)")
             
         if not self.filepath.endswith( '.c2' ):
