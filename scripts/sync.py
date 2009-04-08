@@ -237,11 +237,6 @@ def merge(svn,datasets,upload=True,usercomment=''):
         if '.svn' in dirpath:
             continue
 
-        # ehm... unuseful
-        #names = dirnames + filenames
-        #dirnames = [x for x in names if path.isdir(path.join(dirpath,x))]
-        #filenames = [x for x in names if path.isfile(path.join(dirpath,x))]
-
         destbasepath = dirpath.replace(svn,datasets)
         
         # create missing directory
@@ -272,11 +267,8 @@ def merge(svn,datasets,upload=True,usercomment=''):
                     #print '#>',srcpath
                     #print '##>',dstpath
                     if filename.endswith('.c2'):
-                        print 'merging client and server version of %s' % rpath
-                        merged += 1
                         # priority: dstpath
                         merge_cache([dstpath,srcpath],dstpath)
-                        updatedc2.add(dstpath) # save that dstpath is to update
 
                         if diffc2(srcpath,dstpath):
                             # the content is equal, but file are different.
@@ -284,6 +276,11 @@ def merge(svn,datasets,upload=True,usercomment=''):
                             # this is useful to avoid ping pong of the same c2
                             #print 'Copy'
                             shutil.copy(srcpath,dstpath)
+                        else:
+                            print 'merging client and server version of %s' % rpath
+                            merged += 1
+                            updatedc2.add(dstpath) # save that dstpath is to update
+
                     else:
                         print 'file %s differs from client to server. The client version will be kept.' % rpath
                         updatedfiles.add(dstpath)
