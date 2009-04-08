@@ -208,7 +208,7 @@ def diffc2(f,g):
         return False
 
     for k in f:
-        if f[k] != g[k]:
+        if f[k]['ts'] != g[k]['ts']:
             return False
 
     return True
