@@ -13,6 +13,7 @@ def to_c2( dot, c2, key ):
     """
     parse a dot and save a WeightedNetwork in a c2 file with key `key`
     NB: work only with dot with Advogato._generic_map edges
+        doesn't work with predgraph dot
 
     Parameters:
        dot: path to dot (ex /home/..../graph.dot)
@@ -112,10 +113,6 @@ def to_c2( dot, c2, key ):
     #make a set of wedges
     wedges = set( wedges )
 
-    print len(dotedges), w.number_of_edges()
-    print dot.number_of_nodes(), w.number_of_nodes()
-    
-
     # delete the difference between read_dot result and this algorithm (for edges)
     for e in wedges.difference( dotedges ):
         w.delete_edge(e)
@@ -124,8 +121,8 @@ def to_c2( dot, c2, key ):
     for n in wnodes.difference( dotnodes ):
         w.delete_node(n)
 
-    assert len(dotedges) == w.number_of_edges(), "Error! number of edges different from the dot"
-    assert dot.number_of_nodes() == w.number_of_nodes(), "Error! number of nodes different from the dot"
+    assert len(dotedges) == w.number_of_edges(), "Error! number of edges different from the dot (dot:"+len(dotedges)+",c2:"+w.number_of_edges()+")"
+    assert dot.number_of_nodes() == w.number_of_nodes(), "Error! number of nodes different from the dot (dot:"+dot.number_of_nodes()+",c2:"+w.number_of_nodes()+")"
     
     return trustlet.helpers.save(key,w,c2)
 

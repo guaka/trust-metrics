@@ -6,7 +6,7 @@ Prediction graph
 Analysis of trust metrics through predicting edges.
 
 """
-
+import trustlet.conversion.dot as dot
 from Dataset.Network import Network,WikiNetwork
 from Dataset.Advogato import AdvogatoNetwork
 from helpers import *
@@ -36,13 +36,13 @@ class CalcGraph(Network):
         """Create object from dataset using TM as trustmetric.
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
-        Network.__init__(self, make_base_path = False)
+        Network.__init__(self, make_base_path = False,silent=TM.dataset.silent)
 
         self.TM = TM
         self.dataset = dataset = TM.dataset
-        self.silent = self.dataset.silent
         self.predict_ratio = predict_ratio
-        
+        self._cachedict = {'network':'Pred'+TM.dataset._name(), 'date':TM.dataset.date}
+
         self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
@@ -53,10 +53,8 @@ class CalcGraph(Network):
             #if hasattr(TM,"noneToValue") and TM.noneToValue:
             #    self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             mkpath(self.path)
-            
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + '.dot')
-    
             
             #splits path, PGPath is the path to c2 dataset, relative to datasets folder,
             #relpath is the absolutepath to datasets folder
@@ -66,10 +64,8 @@ class CalcGraph(Network):
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( relpath )[0] ) 
             self.filename = os.path.split(self.filepath)[1]
 
-            
             if not recreate and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.bz2')):
                 self._read_dot(self.filepath)
-                
             else:
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
@@ -82,6 +78,43 @@ class CalcGraph(Network):
         if not self.dataset.silent:
             print "Init took", hms(time.time() - self.start_time)
         
+    def _read_predgraph(self):
+        """
+        development method, doesn't use it
+        """
+        #assume that filepath is the c2 and dotpath is the dot
+        if not self.silent:
+            print "Reading", self.filepath
+
+        if os.path.exists(self.filepath):
+            self.load_c2()
+            return None
+
+        if not self.get_keyOnDataset():
+            raise IOError("Key on dataset not defined! Cannot find c2 and cannot convert from dot")
+                    
+        if os.path.exists(self.dotpath):
+            dot.to_c2(self.dotpath,self.filepath,self.get_keyOnDataset())
+            self.load_c2()
+            return None
+
+        if os.path.exists(self.dotpath+'.bz2'):
+            from trustlet.helpers import tempnam
+            tmppath = tempnam()
+            f = file(tmppath,'w')
+            try:
+                from bz2 import BZ2File
+                f.write(BZ2File(self.dotpath+'.bz2').read())
+                f.close()
+            except ImportError:
+                os.system('bzcat "%s" > "%s"' % (self.dotpath,tmppath))
+    
+            dot.to_c2(tmppath,self.filepath,self.get_keyOnDataset())
+            self.load_c2()
+            return None
+
+
+            
     def get_name(self):
         """Override get_name."""
         name = self.__class__.__name__
@@ -93,7 +126,7 @@ class CalcGraph(Network):
         """
         loading c2 is not possible for predgraph
         """
-        if not self.dataset.silent:
+        if not self.silent:
             print "Warning! You can't load a c2 into a predgraph" 
         return None
 
@@ -129,7 +162,7 @@ class CalcGraph(Network):
 
     def _write_pred_graph_dot(self, pred_graph):
         """Write PredGraph.dot."""
-        if not self.dataset.silent:
+        if not self.silent:
             print "Writing", self.filepath,
             print "-", len(pred_graph.nodes()),
             print "nodes", len(pred_graph.edges()), "edges"
@@ -138,7 +171,7 @@ class CalcGraph(Network):
         
         name = tempnam()
 
-        if not self.dataset.silent:
+        if not self.silent:
             print pred_graph.edges()[0]
 
         write_dot(pred_graph, name)
@@ -190,11 +223,10 @@ class CalcGraph(Network):
         avg_t = (time.time() - self.start_time) / count
         eta = avg_t * (len(self.dataset.edges()) - count)
 
-        if not self.dataset.silent:
+        if not self.silent:
             print '#', int(count),'calculated at', time.asctime() , "avg time:", 
             print avg_t, "ETA", est_datetime_arr(eta), moreinfo
         
-
 
 class PredGraph(CalcGraph):
     """Prediction graph, it contains a trust network with the original
@@ -208,15 +240,16 @@ class PredGraph(CalcGraph):
         
         
         if not hasattr( TM , "dataset" ):
-            if not self.dataset.silent:
+            if not TM.dataset.silent:
                 print 'Are you sure that TM is a TM?'
             raise AttributeError
 
         self.leave_one_out = leave_one_out
+        self.dataset = TM.dataset
 
         #attribute tipically of WikiNetwork... I can do it better
         if hasattr( TM.dataset, "lang" ) and hasattr( TM.dataset, "bots" ):
-            if not self.dataset.silent:
+            if not TM.dataset.silent:
                 print "I cannot be able to create this prediction network!"
                 print "I suppose that this is a Wikipedia Network.."
                 print "In order to create a Wikipedia prediction graph,"
@@ -228,10 +261,10 @@ class PredGraph(CalcGraph):
                            recreate = recreate,
                            predict_ratio = predict_ratio)
         
-            
+    
     def _generate(self):
         """Generate the prediction graph."""
-        if not self.dataset.silent:
+        if not self.silent:
             print "Generating", self.filepath
         pg = self._predict_existing()
         self._paste_graph(pg)
@@ -563,7 +596,7 @@ class PredGraph(CalcGraph):
                     sys.stderr.write( "Warning! i cannot be able to save this computation, check the permission\n" )
                     sys.stderr.write( "for this path: "+os.path.join( self.path,"cache" )+'\n' )
                         
-                if not self.dataset.silent:
+                if not self.silent:
                     print "Errors evaluated for %f controversiality" % max
 
             
@@ -572,7 +605,7 @@ class PredGraph(CalcGraph):
 
         cachename = ['cache.c2','predgraphcontrov.c2']
 
-        ls = splittask( eval, r, showperc=not self.dataset.silent )
+        ls = splittask( eval, r, showperc=not self.silent )
 
         if toe == None:
             return [x for x in ls if x]
@@ -647,7 +680,7 @@ class PredGraph(CalcGraph):
             if cache.has_key(str(cont)):
                 return cont,cache[str(cont)]
             return cont,len(self.edges_cond(edge_to_controversial_node(number=number,controversy=cont)))
-        res = splittask(func,values, showperc=not self.dataset.silent)
+        res = splittask(func,values, showperc=not self.silent)
         #save cache
         for x in res:
             cache[str(x[0])] = x[1]
@@ -674,7 +707,7 @@ class PredGraph(CalcGraph):
                 len(self.edges_cond(and_cond( apprentice, cont_cond ))), \
                 len(self.edges_cond(and_cond( observer, cont_cond )))
 
-        res = splittask(func,values, showperc=not self.dataset.silent)
+        res = splittask(func,values, showperc=not self.silent)
         assert len(values) == len(res)
         #save cache
         for x in res:
@@ -692,12 +725,13 @@ class CalcWikiGraph(CalcGraph):
         picked for prediction.
         NB: The save format for wiki, is different from the save format
             for Advogato, and other datasets"""
-        Network.__init__(self, make_base_path = False)
+        Network.__init__(self, make_base_path = False,silent=TM.dataset.silent)
 
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
-        
+        self._cachedict = {'network':'Pred'+self.dataset._name(),'date':self.dataset.date,'lang':self.dataset.lang}
+
         self.start_time = time.time()
         
         if hasattr(dataset, "filepath"):
@@ -738,7 +772,7 @@ class CalcWikiGraph(CalcGraph):
             if hasattr(self.TM, 'rescale') and self.TM.rescale:
                 self._rescale()
 
-        if not self.dataset.silent:
+        if not self.silent:
             print "Init took", hms(time.time() - self.start_time)
 
 
@@ -762,7 +796,7 @@ class CalcWikiGraph(CalcGraph):
         read cache file
         """
         
-        if not self.dataset.silent:
+        if not self.silent:
             print "Reading ", filepath
         path,file = os.path.split( filepath )
         path,tm = os.path.split( path )
@@ -805,7 +839,7 @@ class CalcWikiGraph(CalcGraph):
     def _writeCache(self,pred_graph):
         """Write PredGraph.c2"""
         
-        if not self.dataset.silent:
+        if not self.silent:
             print "Writing", self.filepath,
             print "-", len(pred_graph.nodes()),
             print "nodes", len(pred_graph.edges()), "edges"
@@ -838,7 +872,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
         if not hasattr( TM, "dataset" ):
             sys.stderr.write( 'Are you sure that TM is a TM?\n' )
             raise AttributeError
-        
+
         if hasattr( TM.dataset, "url" ):
             if TM.dataset.url.find( 'advogato' ) != -1:
                 print "I cannot be able to create this prediction network!"
@@ -851,6 +885,8 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
             print "I don't know what kind of Network is this...."
             print "I think that you have passed to me a wrong object"
             return
+        
+        self.dataset = TM.dataset
         
         CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
 

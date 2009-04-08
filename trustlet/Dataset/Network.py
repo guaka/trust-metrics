@@ -83,6 +83,13 @@ class Network(XDiGraph):
             #direct load of c2 files
             if filepath and self._cachedict: #cachedict not set.. check!!
                 self.load_c2(self._cachedict) 
+
+    
+    def get_keyOnDataset(self):
+        if self._cachedict:
+            return self._cachedict.copy()
+        else:
+            return None
             
     def save_pajek(self):
         """
@@ -173,14 +180,19 @@ class Network(XDiGraph):
             sys.stderr.write( "Error: filepath is not defined!\n" )
             return False
         
+        if not self.filepath.endswith('.c2'):
+            filepath = self.filepath+'.c2'
+        else:
+            filepath = self.filepath
+
         if cachedict:
             return trustlet.helpers.save(cachedict,
                                          self,
-                                         self.filepath)
+                                         filepath)
         elif self.get_keyOnDataset():
             return trustlet.helpers.save(self.get_keyOnDataset(),
                                          self,
-                                         self.filepath)
+                                         filepath)
         else:
             return False
         
@@ -391,7 +403,9 @@ class Network(XDiGraph):
             cachekey['function'] = 'info'
         else:
             cachekey = {'network':self._name(),'date':self.date,'function':'info'}
-            
+            if self._name() == 'Wiki':
+                cachekey['lang'] = self.lang
+
         if hasattr(self,"cond_on_edge") and self.cond_on_edge:
             cachekey['cond_on_edge']=self.cond_on_edge.__name__
 
@@ -428,6 +442,7 @@ class Network(XDiGraph):
                              ("connected_components_size2","Connected component size:"),
                              ]:
             try:
+                sys.stderr.write( "Evaluating "+desc+"\n" )
                 self._show_method(method, desc)
             except:
                 sys.stderr.write( "Warning! "+desc+" not calculated (probably because your network has no level_map)\n" )  
@@ -442,6 +457,7 @@ class Network(XDiGraph):
 
         for (f,pf) in function_list.__iter__():
             try:
+                sys.stderr.write( "Evaluating "+f.__name__+"\n" )
                 res = f(self,self.date)[1]
                 print f.__name__, ":", res
             except:
@@ -662,12 +678,6 @@ class WeightedNetwork(Network):
         #self.level_map = None #this *erase* leve_map
         if not hasattr(self,'level_map'):
             self.level_map = {}        
-
-    def get_keyOnDataset(self):
-        if self._cachedict:
-            return self._cachedict.copy()
-        else:
-            return None
 
     def trust_on_edge(self, edge):
         """
