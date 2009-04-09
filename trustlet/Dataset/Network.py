@@ -945,7 +945,7 @@ class WikiNetwork(WeightedNetwork):
     NB: if you would know what kind of network are hosted on www.trustlet.org invoke getNetworkList() from trustlet.helpers
     """
        
-    def __init__(self, lang, date, current=False, bots=True, blockedusers=True, base_path = None,
+    def __init__(self, lang, date, current=False, bots=False, blockedusers=False, base_path = None,
                  dataset = None, force = False,
                  threshold=1, output=False,prefix=None, silent=False ):
 
@@ -1022,6 +1022,8 @@ class WikiNetwork(WeightedNetwork):
             if not self.bots:
                 cachedict['list'] = 'bots'
                 botset = trustlet.helpers.load(cachedict, self.filepath )
+                if not botset:
+                    self.bots = True
                 self.botset = botset #save botset for future use
             else:
                 self.botset = None
@@ -1029,6 +1031,8 @@ class WikiNetwork(WeightedNetwork):
             if not self.blockedusers:
                 cachedict['list'] = 'blockedusers'
                 blockedset = trustlet.helpers.load(cachedict, self.filepath )
+                if not blockedset:
+                    self.blockedusers = True
                 self.blockedset = blockedset #save blockset for future use
             else:
                 self.blockedset = None

@@ -73,22 +73,30 @@ class TestWiki(unittest.TestCase):
             self.assert_( not any( [el != None and not type(el) is tuple for el in lt] ) )
             
     def testLevelMap(self):
+        print ""
         for netname in self.setInstances:
             print "Testing", netname
             net = self.setInstances[netname]
             self.assert_( net.level_map )
     
-
     def testMap(self):
-        from random import random
+        print ""
+        
+        for netname in self.setInstances:
+            print "Testing", netname
+            net = self.setInstances[netname]
+            for i in xrange(100):
+                self.assert_( (net.map(i) <= 1.0) and (net.map(i) >= 0.0) )
+    
+    def testBotsBlockedUsers(self):
+        print ""
 
         for netname in self.setInstances:
             print "Testing", netname
             net = self.setInstances[netname]
-            for i in [int(random()*10) for i in xrange(5)]+[int(random()*100) for i in xrange(5)]:
-                self.assert_( net.map(i) <= 1.0 and net.map(i) >= 0.0 )
-    
-
+            
+            self.assert_( not ( bool(net.botset) ^ (not net.bots) ) and not ( bool(net.blockedset) ^ (not net.blockedusers) ) ) 
+                
 
 
 if __name__ == '__main__':
