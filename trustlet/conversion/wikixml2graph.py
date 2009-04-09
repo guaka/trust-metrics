@@ -15,6 +15,7 @@ import sys
 import os,re,time
 import urllib
 from gzip import GzipFile
+from bz2 import BZ2File
 
 # set User-Agent (Wikipedia doesn't give special pages to Python :@ )
 class URLopener(urllib.FancyURLopener):
@@ -75,6 +76,15 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
     date = '-'.join([res.group(x) for x in xrange(1,4)])
 
     assert isdate(date)
+
+    # Support compressed file
+    if type(src) is str:
+        if src.endswith('.gz'):
+            verbose = False
+            src = GzipFile(src)
+        elif src.endswith('.bz2'):
+            src = BZ2File(src)
+            verbose = False
 
     mkpath(os.path.split(dst)[0])
 
