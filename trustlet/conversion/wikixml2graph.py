@@ -15,7 +15,10 @@ import sys
 import os,re,time
 import urllib
 from gzip import GzipFile
-from bz2 import BZ2File
+try:
+    from bz2 import BZ2File
+except ImportError:
+    bz2 = None
 
 # set User-Agent (Wikipedia doesn't give special pages to Python :@ )
 class URLopener(urllib.FancyURLopener):
@@ -82,7 +85,7 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
         if src.endswith('.gz'):
             verbose = False
             src = GzipFile(src)
-        elif src.endswith('.bz2'):
+        elif bz2 and src.endswith('.bz2'):
             src = BZ2File(src)
             verbose = False
 
