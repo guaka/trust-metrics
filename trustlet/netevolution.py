@@ -763,8 +763,7 @@ def plot_reciprocity_on_level_distribution(data,data_path='.'):
             ll[i] = []
     
 
-al(                                     
-    lambda G,d: (d, G.reciprocity_matrix(force=True)), plot_reciprocity_on_level_distribution ) 
+al(lambda G,d: (d, G.reciprocity_matrix(force=True)), plot_reciprocity_on_level_distribution) #24
 fl[-1][0].__name__ = 'reciprocity_on_level_distribution'
 
 

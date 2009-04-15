@@ -499,8 +499,9 @@ class Network(XDiGraph):
     def link_reciprocity(self):
         """Calculate the reciprocity of the edges (without paying attention 
         to the value on the edges."""
-        if self.number_of_edges() == 0:
-            raise Error("There are 0 edges! Check the consistence of this dataset")
+        if not self.number_of_edges():
+            print 'warning: There are 0 edges! Check the consistence of this dataset'
+            return 0.0
 
         return 1.0 * sum([self.has_successor(e[1], e[0]) 
                           for e in self.edges_iter()]) / self.number_of_edges()
