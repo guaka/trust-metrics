@@ -41,6 +41,10 @@ class TestCache(unittest.TestCase):
         for k,v in data:
             self.assertEqual(load(k,p,cachedcache=True),load(k,p,cachedcache=False),v)
 
+
+    #def test_cachedcache(self):
+    #    pass
+
     def test_cachedcache(self):
         self.test_cache(True)
 
@@ -61,6 +65,10 @@ class TestCache(unittest.TestCase):
             if master:
                 os.write(w,'.')
 
+            # wrong data to confuse load with cachedcache
+            for c in xrange(N):
+                save(k+(c,),'>'*c,p)
+
             computed = set()
 
             self.assert_(os.read(r,1)=='.')
@@ -68,12 +76,12 @@ class TestCache(unittest.TestCase):
             for c in xrange(N):
                 
                 v = load(k+(c,),p,cachedcache=cachedcache)
-                
+
                 #print c
                 if v != c:
                     self.assert_(save(k+(c,),c,p))
                     computed.add(c)
-                    time.sleep(0.01)
+                    time.sleep(1.01)
                 else:
                     continue
             

@@ -30,6 +30,8 @@ except:
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
 avg = lambda l: 1.0*sum(l)/len(l)
+mtime = lambda f: int(os.stat(f).st_mtime)
+
 
 def getTrustMetrics( net, trivial=False, advogato=True, allAdvogato=None):
     """
@@ -1225,7 +1227,7 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,meta=None):
             #print 'create cache'
             globals()['cachedcache'] = {}
         cache = globals()['cachedcache']
-        cache[path] = d
+        cache[path] = (mtime(path),d)
     return True
     
 def safe_save(key,data,path):
@@ -1278,7 +1280,7 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
     #return fault
 
     def onlydata(x):
-        if x.has_key('dt'):
+        if hasattr(x,'has_key') and x.has_key('dt'):
             return x['dt']
 
         print 'Warning: old cache format'
@@ -1292,11 +1294,16 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
         globals()['cachedcache'] = {}
     cache = globals()['cachedcache']
 
-    if cache.has_key(path) and cachedcache:
-        # we should check if cachedcache is valid
-        
-        if cache[path].has_key(hashable(key)):
-            return getret(cache[path][hashable(key)])
+
+    if cache.has_key(path) and cachedcache and mtime(path) == cache[path][0]:
+        # check if cachedcache is valid -> mtime()...
+
+        if cache[path][1].has_key(hashable(key)):
+            #xprint 'DEBUG: cachedcache hit'
+            return getret(cache[path][1][hashable(key)])
+
+    #if cachedcache: print 'DEBUG: cachedcache fault'
+
     try:
         d = pickle.load(GzipFile(path))
     except:
@@ -1308,7 +1315,7 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
         return fault
 
     #save in memory cache
-    cache[path] = d # + timestamp?
+    cache[path] = (mtime(path),d) # (mtime,data)
     #print '*****************************',type(data)
     #return None
     return getret(data)

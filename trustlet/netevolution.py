@@ -677,6 +677,8 @@ def degrees_of_separation(G,d):
         for m in nodes:
             pathsl.append( networkx.shortest_path_length(G,n,m) )
         nodes.add(n)
+        #print n,m,pathsl[-1]
+    #return pathsl
     return (d,avg(pathsl))
 
 al(degrees_of_separation,plot_generic)#19
