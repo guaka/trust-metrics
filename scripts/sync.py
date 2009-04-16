@@ -217,7 +217,7 @@ def removed(path):
     '''Manage removed files'''
     if size(path)<=MAX_SIZE_REMOVED:
         print 'Small file'
-        f = file(srcpath)
+        f = file(path)
         data = f.read().strip()
         f.close()
         
@@ -259,7 +259,7 @@ def merge(svn,datasets,upload=True,usercomment=''):
                 # Manage removed files
                 if removed(srcpath):
                     print 'I\'m removing',dstpath
-                    path.remove(dstpath)
+                    os.remove(dstpath)
                     continue
 
                 if not diff(srcpath,dstpath):
