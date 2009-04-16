@@ -1259,6 +1259,9 @@ def safe_merge(path,delete=True):
 
     files = [os.path.join(path,x) for x in filter(f,os.listdir(path))]
     #added by ciropom to fix a bug.. you don't store in "files" the path, but only the file name
+    
+    if not files:
+        return
 
     merge_cache(files+[fullpath],fullpath)
 

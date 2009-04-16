@@ -309,6 +309,7 @@ def merge(svn,datasets,upload=True,usercomment=''):
 
         #copy *new* files and updated c2 to upload dir (svn)
         for dirpath,dirnames,filenames in os.walk(datasets):
+            #print '>>',dirpath
             destbasepath = dirpath.replace(datasets,svn)
 
             if path.sep+PREFIX in dirpath:
