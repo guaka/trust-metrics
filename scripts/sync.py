@@ -216,7 +216,7 @@ def diffc2(f,g):
 def removed(path):
     '''Manage removed files'''
     if size(path)<=MAX_SIZE_REMOVED:
-        print 'Small file'
+        #print 'Small file'
         f = file(path)
         data = f.read().strip()
         f.close()
@@ -266,7 +266,7 @@ def merge(svn,datasets,upload=True,usercomment=''):
                     # file modified
                     #print '#>',srcpath
                     #print '##>',dstpath
-                    if filename.endswith('.c2'):
+                    if filename.endswith('.c2') and not removed(dstpath):
                         # priority: dstpath
                         merge_cache([dstpath,srcpath],dstpath)
 
