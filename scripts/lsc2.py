@@ -13,7 +13,7 @@ import optparse
 # not show: /usr/lib/python2.6/site-packages/networkx/hybrid.py:16: DeprecationWarning: the sets module is deprecated
 stderr = sys.stderr
 sys.stderr = file('/dev/null','w')
-from trustlet.helpers import getfiles,read_c2
+from trustlet.helpers import getfiles,read_c2,prettyplot
 sys.stderr = stderr
 
 def main():
@@ -25,6 +25,7 @@ def main():
     o.add_option('-k','--keys',help='show keys',default=False,action='store_true')
     o.add_option('-v','--values',help='show values',default=False,action='store_true')
     o.add_option('-i','--info',help='show timestamps, hostnames, ...',default=False,action='store_true')
+    o.add_option('-g','--graph',help='plot graph with the timestamps of stored values',default=False,action='store_true')
     o.add_option('-d','--debug',help='show debug info',default=False,action='store_true')
     o.add_option('-a','--all',help='enable all info',default=False,action='store_true')
 
@@ -67,6 +68,8 @@ def main():
         if opts.summary:
             continue
 
+        plot = {} #plot graph
+
         for i,(k,v) in enumerate(c2.items()):
             print '~ Item %d ~'%i
             if opts.keys:
@@ -85,11 +88,22 @@ def main():
                     print 'Hostname:',v['hn']
                 else:
                     print 'No hostname'
+            if opts.graph and 'ts' in v:
+                date = '%.4d-%.2d-%.2d'%time.gmtime(v['ts'])[:3]
+                plot.setdefault(date,0)
+                plot[date] += 1
+
             if opts.debug:
                 if type(v) is dict and 'db' in v:
                     print line(' '+str(db))
                 else:
                     print 'No debug info'
+
+        if opts.graph:
+            fname = file
+            if fname.endswith('.c2'):
+                fname = fname[:-3]
+            prettyplot(list(plot.iteritems()),fname,showlines=True)
 
 if __name__=="__main__":
     main()
