@@ -29,6 +29,11 @@ def main():
     o.add_option('-d','--debug',help='show debug info',default=False,action='store_true')
     o.add_option('-a','--all',help='enable all info',default=False,action='store_true')
 
+    o.add_option('-H',False,help='filter on hostname',dest='hname')
+    o.add_option('-D',False,help='show only last # days',dest='ndays')
+    o.add_option('-S',False,help='show only if string is in key or value field (might slow)',dest='search')
+    o.add_option('-K',False,help='show only if string is in key field',dest='key')
+
     opts, files = o.parse_args()
 
     # enable all
@@ -71,6 +76,24 @@ def main():
         plot = {} #plot graph
 
         for i,(k,v) in enumerate(c2.items()):
+
+            # filter
+
+            if type(v) is dict:
+                if opts.hname and 'hn' in v and v['hn']!=opts.hname:
+                    continue
+
+                if opts.ndays and 'ts' in v and time.time()-v['ts']>int(opts.ndays)*24*60*60:
+                    continue
+
+                if opts.key and opts.key not in str(k):
+                    continue
+
+                if opts.search and opts.search not in str(k) and opts.search not in str(v):
+                    continue
+
+            #
+
             print '~ Item %d ~'%i
             if opts.keys:
                 print line('Key: '+str(k))
