@@ -1344,7 +1344,7 @@ def merge_cache(source, target):
 
     If target doesn't also into sorce list, its data will lost.
     '''
-    cachel = splittask(read_c2,source+[target],showperc=False,np=1)
+    cachel = splittask(read_c2,source+[target],showperc=False)
 
     merge = {}
 
