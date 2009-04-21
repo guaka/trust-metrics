@@ -24,9 +24,10 @@ def main():
     o.add_option('-l','--short-line',help='trunc each line to 80 chars',default=False,action='store_true')
     o.add_option('-k','--keys',help='show keys',default=False,action='store_true')
     o.add_option('-v','--values',help='show values',default=False,action='store_true')
+    o.add_option('-w','--raw',help='show raw values',default=False,action='store_true')
     o.add_option('-i','--info',help='show timestamps, hostnames, ...',default=False,action='store_true')
     o.add_option('-g','--graph',help='plot graph with the timestamps of stored values',default=False,action='store_true')
-    o.add_option('-d','--debug',help='show debug info',default=False,action='store_true')
+    o.add_option('-m','--meta',help='show metadata',default=False,action='store_true')
     o.add_option('-a','--all',help='enable all info',default=False,action='store_true')
 
     o.add_option('-H',False,help='filter on hostname',dest='hname')
@@ -38,7 +39,7 @@ def main():
 
     # enable all
     if opts.all:
-        opts.keys = opts.values = opts.info = opts.debug = True
+        opts.keys = opts.values = opts.info = opts.meta = True
 
     # if no options is setted, enable keys
     if not any(opts.__dict__.values()):
@@ -102,6 +103,8 @@ def main():
                     print line('Value: '+str(v['dt']))
                 else:
                     print line(str(v))
+            if opts.raw:
+                print line('Raw Value: '+str(v))
             if opts.info and type(v) is dict:
                 if 'ts' in v:
                     print 'Timestamp:',time.ctime(v['ts'])
@@ -116,9 +119,9 @@ def main():
                 plot.setdefault(date,0)
                 plot[date] += 1
 
-            if opts.debug:
-                if type(v) is dict and 'db' in v:
-                    print line(' '+str(db))
+            if opts.meta:
+                if type(v) is dict and 'mt' in v:
+                    print line(' '+str(v['mt']))
                 else:
                     print 'No debug info'
 

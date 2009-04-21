@@ -1145,16 +1145,11 @@ def hashable(x):
 
     raise TypeError,"I don't know this type "+str(type(x))
 
-def save(key,data,path='.',human=False,version=3,threadsafe=True,meta=None):
+def save(key,data,path,threadsafe=True,version=False,meta=None):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
-    If human=True it will save another file in plain text for human beings.
-    DEPRECATED: You can set *time* (integer, in seconds) to indicate the
-    time of computation.
-    If path ends with '.c2' (cache version 2) 
-    data will save in the new format (less files).
-    human is not suported in the new format.
+    version: store the version of code that has generated data.
     meta: other info to put into c2 on key. Use read_c2() to get them
         I advise to use a dictionary with description on keys
     return: true in case of success, false in other cases
@@ -1197,37 +1192,42 @@ def save(key,data,path='.',human=False,version=3,threadsafe=True,meta=None):
         def unlock():
             pass
 
-    if path.endswith('.c2'):
-        mkpath(os.path.split(path)[0])
-        lock()
-        try:
-            # I can't use cachedcache because data might be obsolete.
-            d = pickle.load(GzipFile(path))
-        except:
-            d = {}
+    # check if stored value is newer
+    if version is not False:
+        c = load(key,path,info=True)
+        if type(c) is dict and c.has_key('vr') and c['vr']>version:
+            return True
 
-        d[hashable(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
+    mkpath(os.path.split(path)[0])
+    lock()
+    d = pickle.load(GzipFile(path))
 
-        if meta:
-            d[hashable(key)]['mt'] = meta
+    d[hashable(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
 
-        # dt: data
-        # ts: timestamp
-        # hn: hostname
-        # mt: meta
+    if meta:
+        d[hashable(key)]['mt'] = meta
 
-        ###
-        #debug = file('debug')
-        ###
-        pickle.dump(d,GzipFile(path,'w'))
-        unlock()
+    if version is not False:
+        d[hashable(key)]['vr'] = version
 
-        #memory cache
-        if not globals().has_key('cachedcache'):
-            #print 'create cache'
-            globals()['cachedcache'] = {}
-        cache = globals()['cachedcache']
-        cache[path] = (mtime(path),d)
+    # dt: data
+    # ts: timestamp
+    # hn: hostname
+    # mt: meta
+    # vr: version
+
+    ###
+    #debug = file('debug')
+    ###
+    pickle.dump(d,GzipFile(path,'w'))
+    unlock()
+
+    #memory cache
+    if not globals().has_key('cachedcache'):
+        #print 'create cache'
+        globals()['cachedcache'] = {}
+    cache = globals()['cachedcache']
+    cache[path] = (mtime(path),d)
     return True
     
 def safe_save(key,data,path):
@@ -1271,7 +1271,7 @@ def safe_merge(path,delete=True):
             print file
             os.remove(file)
 
-def load(key,path='.',fault=None,cachedcache=True,info=False):
+def load(key,path,fault=None,cachedcache=True,info=False,version=False):
     """
     Cache.
     Loads data stored by save.
@@ -1291,6 +1291,16 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
 
     getret = info and (lambda x: x) or onlydata
 
+
+    def checkversion(x):
+        if version is False:
+            return getret(x)
+
+        if not hasattr(x,'has_key') or not x.has_key('vr') or x['vr']!=version:
+            return fault
+        else:
+            return getret(x)
+
     #memory cache
     if not globals().has_key('cachedcache'):
         #print 'create cache'
@@ -1303,7 +1313,7 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
 
         if cache[path][1].has_key(hashable(key)):
             #xprint 'DEBUG: cachedcache hit'
-            return getret(cache[path][1][hashable(key)])
+            return checkversion(cache[path][1][hashable(key)])
 
     #if cachedcache: print 'DEBUG: cachedcache fault'
 
@@ -1321,7 +1331,7 @@ def load(key,path='.',fault=None,cachedcache=True,info=False):
     cache[path] = (mtime(path),d) # (mtime,data)
     #print '*****************************',type(data)
     #return None
-    return getret(data)
+    return checkversion(data)
 
 def erase_cachedcache():
     '''

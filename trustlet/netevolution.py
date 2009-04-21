@@ -473,6 +473,9 @@ def plot_meandegree(data,data_path='.'):
     fromdate = min(data,key=lambda x:x[0])[0]
     todate = max(data,key=lambda x:x[0])[0]
     prettyplot(data, path.join( data_path,'meandegree_(%s_%s)'%(fromdate,todate) ),
+               title='Average degree',
+               xlabel='date',
+               ylabel='n. of edges for each node',
                showlines=True,
                comment=['Network: Advogato','>>> plot_meandegree(meandegree(...))']
                )
