@@ -119,6 +119,10 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                 if hasattr(functions[i], "enable") and not functions[i].enable:
                     continue
 
+                # version of code that ganerated load value
+                if not hasattr(functions[i], "version"):
+                    functions[i].version = False
+
                 assert functions[i].__name__!='<lambda>','Lambda functions aren\'t supported'
 
                 cachekey = {'function':functions[i].__name__,'date':date}
@@ -126,7 +130,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                     assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
                     cachekey['cond']=str(cond_on_edge.__name__)
 
-                cache = load(cachekey,path.join(lpath,cachepath))
+                cache = load(cachekey,path.join(lpath,cachepath),version=functions[i].version)
                 #cache = None # debug
                 if cache and type(cache) is tuple and isdate(cache[0]):
                     #check on type of data in cache
@@ -299,13 +303,18 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                     deb.close()
                 continue
 
-            if (not hasattr( function, "enable" ) or function.enable) and function.__name__!='<lambda>':
+            if (not hasattr(function, "enable") or function.enable) and function.__name__!='<lambda>':
                 cachekey = {'function':function.__name__,'date':date}
                 if cond_on_edge:
                     assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
                     cachekey['cond']=str(cond_on_edge.__name__)
 
-                if not safe_save(cachekey,res,path.join(lpath,cachepath)):
+                #save version of code
+                if hasattr(function,'version'):
+                    version = function.version
+                else:
+                    version = False
+                if not safe_save(cachekey,res,path.join(lpath,cachepath),version=version):
                     print "Warning! I cannot be able to save cache for function",function.__name__,"on date",date
             
             resdict[function.__name__] = res

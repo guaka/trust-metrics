@@ -1193,14 +1193,21 @@ def save(key,data,path,threadsafe=True,version=False,meta=None):
             pass
 
     # check if stored value is newer
+    #print '?????????????',version
     if version is not False:
         c = load(key,path,info=True)
+        #print c,key,path
         if type(c) is dict and c.has_key('vr') and c['vr']>version:
+            #print 'not saved.'
             return True
 
     mkpath(os.path.split(path)[0])
     lock()
-    d = pickle.load(GzipFile(path))
+    try:
+        # workaround?
+        d = pickle.load(GzipFile(path))
+    except IOError:
+        d = {}
 
     d[hashable(key)] = {'dt':data,'ts':time.time(),'hn':gethostname()}
 
@@ -1230,7 +1237,7 @@ def save(key,data,path,threadsafe=True,version=False,meta=None):
     cache[path] = (mtime(path),d)
     return True
     
-def safe_save(key,data,path):
+def safe_save(key,data,path,*args,**argd):
     '''
     safe_save() is thread-safe version of save()
     Only version 3 is supported.
@@ -1240,7 +1247,7 @@ def safe_save(key,data,path):
     
     path = path[:-2] + str(os.getpid()) + '.c2'
     
-    return save(key,data,path,threadsafe=False)
+    return save(key,data,path,threadsafe=False,*args,**argd)
 
 def safe_merge(path,delete=True):
     '''
@@ -1345,7 +1352,7 @@ def merge_cache(source, target):
     source = [c0,c1,c2,c3,...,cn]
     
     Priority:
-      newer items are kept. If timestamp is the same, first are kept
+      highter version or newer items are kept. If version and timestamp is the same, first are kept
       c0 > c1 > c2 > ... > cn
       (Theoric behaviour. This never happen)
 
@@ -1365,8 +1372,26 @@ def merge_cache(source, target):
         # for each tuple
         for k,v in cfile.iteritems():
             #print k,merge.has_key(k)
-            if not k in merge or merge[k]['ts'] < cfile[k]['ts']:
+            if not k in merge:
                 merge[k] = v
+            else:
+                if 'vr' in merge[k] and 'vr' not in cfile[k]:
+                    continue
+
+                if 'vr' not in merge[k] and 'vr' in cfile[k]:
+                    merge[k] = v
+                    continue
+
+                if 'vr' in merge[k] and 'vr' in cfile[k]:
+                    if merge[k]['vr']<cfile[k]['vr']:
+                        merge[k] = v
+                        continue
+
+                    if merge[k]['vr']>cfile[k]['vr']:
+                        continue
+                
+                if merge[k]['ts'] < cfile[k]['ts']:
+                    merge[k] = v
 
     if merge != cachel[-1]:
         #print 'Merged'
