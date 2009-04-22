@@ -47,18 +47,28 @@ class CalcGraph(Network):
         
         if hasattr(dataset, "filepath"):
             path = os.path.join(os.path.split(dataset.filepath)[0], path_name(TM))
-            (home,rel)=relative_path(path,'datasets' )
-            self.path = os.path.join(  os.path.split(home)[0]  ,'shared_datasets',rel)
+            
+            if dataset._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
+                self.path = path
+            else:
+                (home,rel)=relative_path(path,'datasets' )
+                self.path = os.path.join(  os.path.split(home)[0]  ,'shared_datasets',rel)
+
             #not necessary
             #if hasattr(TM,"noneToValue") and TM.noneToValue:
             #    self.path = os.path.join(self.path,'noneTo'+TM.defaultPredict)
             mkpath(self.path)
             self.filepath = os.path.join(self.path, 
                                          get_name(self) + '.dot')
-            
+        
             #splits path, PGPath is the path to c2 dataset, relative to datasets folder,
             #relpath is the absolutepath to datasets folder
-            self.basePath,relpath = relative_path( self.filepath, 'shared_datasets' )
+            if 'shared_datasets' in self.filepath:
+                self.basePath,relpath = relative_path( self.filepath, 'shared_datasets' )
+            elif 'datasets' in self.filepath:
+                self.basePath,relpath = relative_path( self.filepath, 'datasets' )
+            else:
+                raise Exception("Malformed path ("+self.filepath+")! it must contain 'datasets' or 'shared_datasets' folder")
 
             self.relpath = relpath #path to dataset relative to svn directory
             self.url = os.path.join( 'http://www.trustlet.org/trustlet_dataset_svn/', os.path.split( relpath )[0] ) 
@@ -246,6 +256,8 @@ class PredGraph(CalcGraph):
 
         self.leave_one_out = leave_one_out
         self.dataset = TM.dataset
+        if self.dataset.number_of_edges() == 0:
+            raise Exception("Has no sense to make a predgraph of a dataset with no relationships")
 
         #attribute tipically of WikiNetwork... I can do it better
         if hasattr( TM.dataset, "lang" ) and hasattr( TM.dataset, "bots" ):
@@ -293,6 +305,7 @@ class PredGraph(CalcGraph):
         Prepare. Data
         (e.g. add orig value to every edge)
         """
+        
         ratio = 1.0 * self.number_of_edges() / self.dataset.number_of_edges()
         
         # if True:  # check if self has orig
@@ -887,7 +900,10 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
             return
         
         self.dataset = TM.dataset
-        
+        if self.dataset.number_of_edges() == 0:
+            raise Error("Has no sense to make a predgraph of a dataset with no relationships")
+
+
         CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
 
         self.leave_one_out = leave_one_out

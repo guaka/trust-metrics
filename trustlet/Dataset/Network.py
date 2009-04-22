@@ -57,7 +57,6 @@ class Network(XDiGraph):
         XDiGraph.__init__(self, multiedges = False)
         self.silent = silent
         self.date = date
-        self.filepath = filepath
         self.filename = ''
         self.values_on_edges = False
         if cachedict:
@@ -76,6 +75,19 @@ class Network(XDiGraph):
             self.path = os.path.join(dataset_dir(base_path), classpath)
             if not os.path.exists(self.path):
                 os.mkdir(self.path)
+
+        if filepath:
+            self.filepath = filepath
+            self.filename = os.path.split(self.filepath)[1]
+        else:
+            if prefix:
+                classpath = prefix+self.__class__.__name__
+            else:
+                classpath = self.__class__.__name__
+
+            self.filepath = os.path.join(dataset_dir(base_path), classpath, 'graph')
+            self.filename = 'graph'
+        
 
         if from_graph:
             self.paste_graph(from_graph)
@@ -204,6 +216,7 @@ class Network(XDiGraph):
         
         Parameters:
         cachedict: dictionary that is unique key for c2 network that you would load
+                  nb. this parameter must be set, if you haven't set the cachedict parameter at init-time
         key_dictionary: string value used as key for the weight dictionary
                       ex: x=network.edges()[0]
                           x[2]
@@ -227,6 +240,9 @@ class Network(XDiGraph):
         else:
             return False
         
+        if not self.filepath.endswith('.c2'):
+            self.filepath += '.c2'
+
         pydataset = trustlet.helpers.load(cachekey, self.filepath)
         
         if not pydataset and cachekey.has_key('threshold'):
@@ -241,7 +257,7 @@ class Network(XDiGraph):
             if threshold > 1:
                 edges = filter( lambda x: x[2] >= threshold, pydataset[1] )
                 pydataset = (pydataset[0],edges)
-            
+
         if pydataset:
             #now I'm sure that this network is in a c2 file
             self.filename = os.path.split(self.filepath)[1]
@@ -564,7 +580,7 @@ class Network(XDiGraph):
         else:
             cond = cond_on_edge
 
-        if type(graph.edges()[0][2]) is dict and key_to_delete:
+        if graph.number_of_edges() and type(graph.edges()[0][2]) is dict and key_to_delete:
             deletekey = True
         else:
             deletekey = False
@@ -747,6 +763,8 @@ class WeightedNetwork(Network):
 
     def max_weight(self):
         """Maximum weight."""
+        if type(self.weights()) is dict:
+            return [weight for weight in self.weights() if self.weights()[weight] == max(self.weights().values())]
         return max(self.weights())
 
     def node_controversiality(self, node):
@@ -823,13 +841,20 @@ class WeightedNetwork(Network):
         
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
 
-        if self.__class__.__name__ != "WikiNetwork":
+        #only if you would to load from c2 cache, you had to be set cachedict
+        if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
+            if not cachedict and not self.get_keyOnDataset():
+                raise Exception("cachedict parameter must be set for generic network (or if you wouldn't you had to set force parameter to True)")
+            path = self.filepath
+        
+        elif self.__class__.__name__ != "WikiNetwork":
             tp = trustlet.helpers.relative_path( self.filepath, 'datasets' )
 
             if tp:
                 path = os.path.join( os.path.split(tp[0])[0], 'shared_datasets', tp[1] )
             else:
                 raise IOError("Malformed path of dataset! it must contain 'datasets' folder")
+            
         else:
             path = self.filepath
                 
@@ -849,16 +874,7 @@ class WeightedNetwork(Network):
         if not path.endswith( '.c2' ): #force file to be a c2
             path += '.c2'
 
-        if not force:
-            #only if you would to load from c2 cache, you had to be set cachedict
-            if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
-                if not cachedict and not self.get_keyOnDataset():
-                    raise Exception("cachedict parameter must be set for generic network (or if you wouldn't you had to set force parameter to True)")
-                path = self.filepath
-                    
-            if not path.endswith( '.c2' ): #force file to be a c2
-                path += '.c2'
-
+        if not force:        
             data = trustlet.helpers.load( cachekey, path, fault=False)
             
             if data:                # if data is not false
