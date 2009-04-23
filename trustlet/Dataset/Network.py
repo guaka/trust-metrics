@@ -85,7 +85,7 @@ class Network(XDiGraph):
             else:
                 classpath = self.__class__.__name__
 
-            self.filepath = os.path.join(dataset_dir(base_path), classpath, 'graph')
+            self.filepath = os.path.realpath( os.path.join(dataset_dir(base_path), classpath, self.date == None and '.' or self.date   , 'graph' ) )
             self.filename = 'graph'
         
 
@@ -93,7 +93,7 @@ class Network(XDiGraph):
             self.paste_graph(from_graph)
         else:
             #direct load of c2 files
-            if filepath and self._cachedict: #cachedict not set.. check!!
+            if self._cachedict: 
                 self.load_c2(self._cachedict) 
 
     
@@ -708,14 +708,14 @@ class WeightedNetwork(Network):
         else:
             return edge[2]
             
-    def weights_list(self):
+    def weights_list(self,force=False):
         """
         Return a list with the weights of all edges
         """
-        if hasattr(self, "_weights_list") and self._weights_list:
+        if hasattr(self, "_weights_list") and self._weights_list and not force:
             ws = self._weights_list
         else:
-            self.weights() #create self._weights if there isn't
+            self.weights(force=True) #create self._weights if there isn't
             ws = []
     
             if self._weights:
@@ -731,15 +731,15 @@ class WeightedNetwork(Network):
         
         return ws
     
-    def weights(self):
+    def weights(self,force=False):
         """
         Return a dictionary with the weights of all edges
         if it return an empty dictionary you probably has not set level_map.
         """
 
-        if hasattr(self, "_weights_dictionary") and self._weights_dictionary:
+        if hasattr(self, "_weights_dictionary") and self._weights_dictionary and not force:
             ws = self._weights_dictionary
-        elif hasattr( self, "_weights" ) and self._weights:
+        elif hasattr( self, "_weights" ) and self._weights and not force:
             ws = self._weights
         else:
             ws = {}
@@ -834,10 +834,13 @@ class WeightedNetwork(Network):
         def value_on_edge(e):
             if type(e) in (int, float):
                 return e
-            else:
+            elif type(e) is dict:
                 if len(e)>1:
                     sys.stderr.write( 'I might wrong value on edge\n' )
                 return e.values()[0]
+            else:
+                raise Exception( 'Unknown value on edge' )
+                
         
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
 
@@ -882,14 +885,13 @@ class WeightedNetwork(Network):
             
         if self.has_discrete_weights:
             table = {}
-            levels = self.weights().keys()
+            levels = self.weights(force=True).keys() #if some other edge has been added, we had to take care about that
             levels.append( 'nr' )#non reciprocated
 
             for v in self.weights().keys():
-                #table[v] = {}
                 line = {}
                 #the number of edges that have voted someone level 'v' (we normalize on this value)
-                normalization = len([e2 for e0,e1,e2 in self.edges_iter() if value_on_edge(e2) == v])
+                normalization = len([e2 for e0,e1,e2 in self.edges_iter() if str(value_on_edge(e2)) == v])
                 
                 if normalization == 0:#that means that there are 0 edges with this value.. so we skip them
                     for w in levels:
@@ -900,15 +902,15 @@ class WeightedNetwork(Network):
                 for w in levels:
                     if w != 'nr': #non reciprocated
                                        #the number of edges that have voted someone level 'v' and has been voted from someone level 'w'
-                        line[w] = 1.0 * sum([value_on_edge(self.get_edge(e1, e0)) == w
+                        line[w] = 1.0 * sum([str(value_on_edge(self.get_edge(e1, e0))) == w
                                              for e0,e1,e2 in self.edges_iter()
                                              if (self.has_edge(e1, e0) and     
-                                                 value_on_edge(e2) == v)]) / normalization
+                                                 str(value_on_edge(e2)) == v)]) / normalization
                     else:
                         line[w] = 1.0 * len([e2
                                              for e0,e1,e2 in self.edges_iter()
                                              if (not self.has_edge(e1, e0) and #look at 'not' if nr, the edges hadn't to be reciprocated     
-                                                 value_on_edge(e2) == v)]) / normalization
+                                                 str(value_on_edge(e2)) == v)]) / normalization
                     
                 table[v] = line
                 

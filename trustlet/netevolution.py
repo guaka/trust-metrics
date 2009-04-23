@@ -56,9 +56,12 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         lpath = os.path.join(os.environ['HOME'],'datasets',networkname)
     else:
         lpath = os.path.join(os.environ['HOME'],'shared_datasets',networkname)
-        
+     
     #and cache/predgraph from shared_dataset (an svn on trustlet.org)
-    cachepath = os.path.join( os.environ['HOME'],'shared_datasets',networkname,'netevolution.c2')
+    if networkname == 'WeightedNetwork' or networkname == 'Network':
+        cachepath = os.path.join( lpath,'netevolution.c2' )
+    else:
+        cachepath = os.path.join( os.environ['HOME'],'shared_datasets',networkname,'netevolution.c2')
     
     #make sure the path exists
     mkpath(lpath)
@@ -130,7 +133,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                     assert cond_on_edge.__name__!='<lambda>','Lambda function is not suppoeted for condition on edges'
                     cachekey['cond']=str(cond_on_edge.__name__)
 
-                cache = load(cachekey,path.join(lpath,cachepath),version=functions[i].version)
+                cache = load(cachekey,cachepath,version=functions[i].version)
                 #cache = None # debug
                 if cache and type(cache) is tuple and isdate(cache[0]):
                     #check on type of data in cache
@@ -173,8 +176,36 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
         if ton != 'WikiNetwork':
             dotpath = path.join(lpath,date,'graph.dot')
             c2path = dotpath[:-3]+'c2'
-            # I have to load network
-            net_set = False
+            
+            if ton == 'DummyWeightedNetwork':
+                K = DummyWeightedNetwork()        
+            elif ton == 'DummyNetwork':
+                K = DummyNetwork()
+            elif ton == 'WeightedNetwork':
+                # I suppose it is a unstandard derivation from class weightednetwork
+                #try to find the name of the network, to use as key in c2
+                raw_c2 = trustlet.helpers.read_c2( c2path )
+                
+                for froz in raw_c2.keys():
+                    for key,value in froz:
+                        if key=='network':
+                            K = trustlet.Dataset.Network.WeightedNetwork(cachedict={key:value})
+                            break
+                
+                if 'K' not in locals():
+                    sys.stderr.write( "Error! no network key in this c2\n" )
+                    return None
+
+                K.filepath = c2path
+                
+                #in order to use netevolution on a generic dataset, you must have as network name '', 
+                #use WeightedNetwork, or Network, and set as value on edge a dictionary with {'level':value}
+                if not K.load_c2( cond_on_edge=cond_on_edge ): 
+                    sys.stderr.write( "Error! I'm not able to read your network..\n" )
+                    sys.stderr.write( "in order to use netevolution on a generic dataset, you must have your dataset saved in a c2\n" )
+                    sys.stderr.write( "and located in this path: "+path.join(lpath,date)+"\n" )
+                    return None
+                    
 
             #test what type of network I had to use
             try:
@@ -182,42 +213,14 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
             except AttributeError:
                 try:
                     Networkclass = getattr( Network , ton )
-                except AttributeError:
-                    if ton == 'DummyWeightedNetwork':
-                        K = DummyWeightedNetwork()
-                    elif ton == 'DummyNetwork':
-                        K = DummyNetwork()
-                    else:
-                        # I suppose it is a unstandard derivation from class weightednetwork
-                        K = trustlet.Dataset.Network.WeightedNetwork()
-                        K.filepath = c2path
-                        #try to find the name of the network, to use as key in c2
-                        n = networkname # I suppose that the name of the network is at sx (because all our networks follows this rule)
-                        if 'Network' in n:
-                            part = n[:n.index('Network')]
-                        if 'Weighted' in n:
-                            n = n[:n.index('Weighted')]
-                        #in order to use netevolution on a generic dataset, you must have as network name '', 
-                        #use WeightedNetwork, or Network, and set as value on edge a dictionary with {'level':value}
-                        if not K.load_c2( {'network':n.lower()}, "level", cond_on_edge ): 
-                            print "Error! I'm not able to read your network.."
-                            print "in order to use netevolution on a generic dataset, you must have your dataset saved in a c2,"
-                            print "with key {'network':''}, use WeightedNetwork, or Network, and set as value on edge" 
-                            print "a dictionary with {'level':value}"
-                            return None
-                       
-                    #skip network load
-                    net_set = True
+                except AttributeError:   
                     if debug:
                         deb = file( debug, 'a' )
                         deb.write( "WARNING!: this type of network("+ton+") is not standard\n" )
-                        if cond_on_edge:
-                            deb.write( "Warning! your condition on edge will be ignored for this non standard network\n" )
                         deb.close()
-
-
+    
             #load network if the network is not just set
-            if not net_set:
+            if 'K' not in locals(): 
                 try:
                     K = Networkclass(date=date,cond_on_edge=cond_on_edge)
                 
@@ -256,6 +259,7 @@ def evolutionmap(networkname,functions,cond_on_edge=None,range=None,cacheonly=Fa
                     deb.close()
                 assert 0, "ERROR!: the network "+ton+" at date "+date+" may be wrong! check it\n"
 
+        #if ton == wikinetwork
         elif path.exists( path.join(lpath,date,'graphHistory.c2') ):
             #load network
             try:
