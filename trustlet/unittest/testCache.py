@@ -44,8 +44,8 @@ class TestCache(unittest.TestCase):
 
     def test_store_version(self):
 
-        NKEYS = 1
-        VARFORK = 300
+        NKEYS = 5
+        VARFORK = 3000
         VR = 5
         data = {}
         version = {}
@@ -166,7 +166,7 @@ class TestCache(unittest.TestCase):
             self.assert_(k in data)
             self.assertEqual(data[k],v['dt'])
 
-    def test_merge_version(self):
+    def _test_merge_version(self):
 
         NVALUES = 30
         NKEYS = 7
