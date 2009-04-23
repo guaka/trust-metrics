@@ -34,6 +34,7 @@ class TestCache(unittest.TestCase):
         # save
         for k in xrange(NKEYS):
             v = random.random()
+
             self.assert_(save(k,v,p))
             data.add((k,v))
         
@@ -41,14 +42,44 @@ class TestCache(unittest.TestCase):
         for k,v in data:
             self.assertEqual(load(k,p,cachedcache=True),load(k,p,cachedcache=False),v)
 
+    def test_store_version(self):
+
+        NKEYS = 1
+        VARFORK = 300
+        VR = 5
+        data = {}
+        version = {}
+        p = path(0)
+
+        # save
+        for k in xrange(NKEYS):
+            for i in xrange(VARFORK):
+                v = random.random()
+                vr = random.randint(-1,VR)
+                if vr==-1:
+                    vr = False
+
+                #print k,v,vr
+                self.assert_(save(k,v,p,vr))
+
+                if vr is False:
+                    vr = -1
+
+                if k not in data or version[k]<=vr:
+                    data[k] = v
+                    version[k] = vr
+        # load
+        for k,v in data.iteritems():
+            self.assertEqual(load(k,p,cachedcache=True),v)
+
 
     #def test_cachedcache(self):
     #    pass
 
-    def test_cachedcache(self):
+    def _test_cachedcache(self):
         self.test_cache(True)
 
-    def test_cache(self,cachedcache=False):
+    def _test_cache(self,cachedcache=False):
         '''
         test concurrency with cachedcache
         '''
@@ -56,7 +87,7 @@ class TestCache(unittest.TestCase):
         r,w = os.pipe()
         rr,ww = os.pipe()
 
-        N = 100
+        N = 30
         p = path(0)
         k = ('K is The Key',ord('K'))
 
@@ -135,7 +166,50 @@ class TestCache(unittest.TestCase):
             self.assert_(k in data)
             self.assertEqual(data[k],v['dt'])
 
+    def test_merge_version(self):
+
+        NVALUES = 30
+        NKEYS = 7
+        NC2 = 3
+        VR = 5
+
+        data = {}
+        version = {}
+        pp = set()
+
+        for i in xrange(NVALUES):
+            k = random.randint(0,NKEYS)
+            v = random.random()*(k or 1)
+            p = path(random.randint(0,NC2))
+            vr = random.randint(-1,VR)
+            if vr==-1:
+                vr = False
+            pp.add(p)
+            if not k:
+                print k,v,p,vr
+            self.assert_(save(k,v,p))
+
+            if vr is False:
+                vr = -1
+
+            if k not in data or version[k]<=vr:
+                data[k] = v
+                version[k] = vr
+
+        pp = list(pp)
+
+        out = pp[random.randint(0,NC2)]
+
+        merge_cache(pp,out)
+
+        c2 = read_c2(out)
+
+        for k,v in c2.iteritems():
+            self.assert_(k in data)
+            self.assertEqual(data[k],v['dt'])
+
+
 if __name__ == '__main__':
     #unittest.main()
     suite = unittest.TestLoader().loadTestsFromTestCase(TestCache)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.TextTestRunner(verbosity=3).run(suite)

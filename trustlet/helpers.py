@@ -1145,7 +1145,7 @@ def hashable(x):
 
     raise TypeError,"I don't know this type "+str(type(x))
 
-def save(key,data,path,threadsafe=True,version=False,meta=None):
+def save(key,data,path,version=False,threadsafe=True,meta=None):
     """
     Cache.
     It stores some *data*  identified by *key* into a file in *path*.
@@ -1278,7 +1278,7 @@ def safe_merge(path,delete=True):
             print file
             os.remove(file)
 
-def load(key,path,fault=None,cachedcache=True,info=False,version=False):
+def load(key,path,version=False,fault=None,cachedcache=True,info=False):
     """
     Cache.
     Loads data stored by save.
@@ -1315,7 +1315,7 @@ def load(key,path,fault=None,cachedcache=True,info=False,version=False):
     cache = globals()['cachedcache']
 
 
-    if cache.has_key(path) and cachedcache and mtime(path) == cache[path][0]:
+    if os.path.exists(path) and cache.has_key(path) and cachedcache and mtime(path) == cache[path][0]:
         # check if cachedcache is valid -> mtime()...
 
         if cache[path][1].has_key(hashable(key)):
