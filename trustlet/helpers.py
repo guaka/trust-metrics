@@ -1193,13 +1193,14 @@ def save(key,data,path,version=False,threadsafe=True,meta=None):
             pass
 
     # check if stored value is newer
-    #print '?????????????',version
-    if version is not False:
-        c = load(key,path,info=True)
-        #print c,key,path
-        if type(c) is dict and c.has_key('vr') and c['vr']>version:
-            #print 'not saved.'
-            return True
+    intversion = version is False and -1 or version
+
+    c = load(key,path,info=True)
+    #print c,key,path
+
+    if type(c) is dict and 'vr' in c and c['vr']>intversion:
+        #print 'not saved.'
+        return True
 
     mkpath(os.path.split(path)[0])
     lock()

@@ -25,7 +25,7 @@ class TestCache(unittest.TestCase):
     def tearDown(self):
         assert 0==os.system('rm -rf /tmp/testcache')
 
-    def test_store(self):
+    def _test_store(self):
 
         NKEYS = 100
         data = set()
@@ -40,12 +40,13 @@ class TestCache(unittest.TestCase):
         
         # load
         for k,v in data:
-            self.assertEqual(load(k,p,cachedcache=True),load(k,p,cachedcache=False),v)
+            self.assertEqual(load(k,p,cachedcache=True),v)
+            self.assertEqual(load(k,p,cachedcache=False),v)
 
-    def test_store_version(self):
+    def _test_store_version(self):
 
         NKEYS = 5
-        VARFORK = 3000
+        VARFORK = 1000
         VR = 5
         data = {}
         version = {}
@@ -55,31 +56,25 @@ class TestCache(unittest.TestCase):
         for k in xrange(NKEYS):
             for i in xrange(VARFORK):
                 v = random.random()
-                vr = random.randint(-1,VR)
+                vr_ = vr = random.randint(-1,VR)
                 if vr==-1:
-                    vr = False
+                    vr_ = False
 
-                #print k,v,vr
-                self.assert_(save(k,v,p,vr))
+                self.assert_(save(k,v,p,vr_))
 
-                if vr is False:
-                    vr = -1
-
-                if k not in data or version[k]<=vr:
-                    data[k] = v
-                    version[k] = vr
+                data.setdefault(k,{})[vr] = v
         # load
         for k,v in data.iteritems():
-            self.assertEqual(load(k,p,cachedcache=True),v)
+            #print k,v[max(v.keys())],max(v.keys())
+            vv = load(k,p,cachedcache=True)
+            self.assertEqual(
+                vv,v[max(v.keys())],(vv,v)
+                )
 
+    def _test_concurrency_cachedcache(self):
+        self.test_concurrency(True)
 
-    #def test_cachedcache(self):
-    #    pass
-
-    def _test_cachedcache(self):
-        self.test_cache(True)
-
-    def _test_cache(self,cachedcache=False):
+    def _test_concurrency(self,cachedcache=False):
         '''
         test concurrency with cachedcache
         '''
@@ -136,7 +131,7 @@ class TestCache(unittest.TestCase):
         self.assertEquals(computed[0] & computed[1],set())
         self.assertEquals(len(computed[0] | computed[1]),N)
 
-    def test_merge(self):
+    def _test_merge(self):
 
         NVALUES = 100
         NKEYS = 30
@@ -166,7 +161,7 @@ class TestCache(unittest.TestCase):
             self.assert_(k in data)
             self.assertEqual(data[k],v['dt'])
 
-    def _test_merge_version(self):
+    def test_merge_version(self):
 
         NVALUES = 30
         NKEYS = 7
