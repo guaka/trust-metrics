@@ -25,7 +25,7 @@ class TestCache(unittest.TestCase):
     def tearDown(self):
         assert 0==os.system('rm -rf /tmp/testcache')
 
-    def _test_store(self):
+    def test_store(self):
 
         NKEYS = 100
         data = set()
@@ -43,7 +43,7 @@ class TestCache(unittest.TestCase):
             self.assertEqual(load(k,p,cachedcache=True),v)
             self.assertEqual(load(k,p,cachedcache=False),v)
 
-    def _test_store_version(self):
+    def test_store_version(self):
 
         NKEYS = 5
         VARFORK = 1000
@@ -71,10 +71,10 @@ class TestCache(unittest.TestCase):
                 vv,v[max(v.keys())],(vv,v)
                 )
 
-    def _test_concurrency_cachedcache(self):
+    def test_concurrency_cachedcache(self):
         self.test_concurrency(True)
 
-    def _test_concurrency(self,cachedcache=False):
+    def test_concurrency(self,cachedcache=False):
         '''
         test concurrency with cachedcache
         '''
@@ -131,7 +131,7 @@ class TestCache(unittest.TestCase):
         self.assertEquals(computed[0] & computed[1],set())
         self.assertEquals(len(computed[0] | computed[1]),N)
 
-    def _test_merge(self):
+    def test_merge(self):
 
         NVALUES = 100
         NKEYS = 30
@@ -163,9 +163,9 @@ class TestCache(unittest.TestCase):
 
     def test_merge_version(self):
 
-        NVALUES = 30
-        NKEYS = 7
-        NC2 = 3
+        NVALUES = 3000
+        NKEYS = 3
+        NC2 = 5
         VR = 5
 
         data = {}
@@ -176,13 +176,11 @@ class TestCache(unittest.TestCase):
             k = random.randint(0,NKEYS)
             v = random.random()*(k or 1)
             p = path(random.randint(0,NC2))
-            vr = random.randint(-1,VR)
-            if vr==-1:
-                vr = False
+            vr = random.choice([False]+range(VR))
             pp.add(p)
-            if not k:
-                print k,v,p,vr
-            self.assert_(save(k,v,p))
+            #if not k or k:
+            #    print k,v,p,vr
+            self.assert_(save(k,v,p,version=vr))
 
             if vr is False:
                 vr = -1
@@ -201,7 +199,7 @@ class TestCache(unittest.TestCase):
 
         for k,v in c2.iteritems():
             self.assert_(k in data)
-            self.assertEqual(data[k],v['dt'])
+            self.assertEqual(data[k],v['dt'],(k,'vr' in v and v['vr']))
 
 
 if __name__ == '__main__':

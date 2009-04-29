@@ -1367,7 +1367,7 @@ def merge_cache(source, target):
 
     merge = {}
 
-    #print cachel[-1]
+    #print cachel
 
     for cfile in cachel[:-1]:
         #print cfile
@@ -1376,7 +1376,11 @@ def merge_cache(source, target):
             #print k,merge.has_key(k)
             if not k in merge:
                 merge[k] = v
-            else:
+            else:                
+                #vr_merge = 'vr' not in merge[k] and -1 or merge[k]['vr']
+                #vr_cfile = 'vr' not in cfile[k] and -1 or cfile[k]['vr']
+                #print k,vr_merge,vr_cfile
+
                 if 'vr' in merge[k] and 'vr' not in cfile[k]:
                     continue
 
