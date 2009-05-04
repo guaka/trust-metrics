@@ -89,6 +89,8 @@ def main():
 
         wikixml2graph(xml,output,t,distrust,threshold,downloadlists,True)
 
+        print 'Output file:',output
+
     else:
         print __doc__
 

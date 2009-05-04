@@ -11,14 +11,21 @@ from trustlet.Dataset.Network import Network,WeightedNetwork
 from trustlet.helpers import *
 from networkx import write_dot
 from string import index, split
+import md5
 import sys
 import os,re,time
 import urllib
 from gzip import GzipFile
 try:
     from bz2 import BZ2File
+    BZ2 = True
 except ImportError:
-    bz2 = None
+    BZ2 = False
+
+if os.system('which 7za &> /dev/null')==0:
+    SevenzipFile = lambda name: os.popen('7za x "%s" -so 2> /dev/null' % name)
+else:
+    SevenzipFile = None
 
 # set User-Agent (Wikipedia doesn't give special pages to Python :@ )
 class URLopener(urllib.FancyURLopener):
@@ -85,11 +92,19 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
         if src.endswith('.gz'):
             verbose = False
             src = GzipFile(src)
-        elif bz2 and src.endswith('.bz2'):
+        elif BZ2 and src.endswith('.bz2'):
             src = BZ2File(src)
             verbose = False
+        elif src.endswith('.7z'):
+            if SevenzipFile:
+                src = SevenzipFile(src)
+            else:
+                print 'Install p7zip'
+                exit(1)
 
     mkpath(os.path.split(dst)[0])
+
+    
 
     ch = WikiContentHandler(lang,xmlsize=size,
                             inputfilename=filename,

@@ -306,6 +306,9 @@ def prettyplot( data, path, **args):
     """
 
     assert not path.endswith('.png')
+
+    mkpath(os.path.split(path)[0])
+
     if args.has_key('istogram'):
         print '*** histogram, not istogram ;) ***'
         args['histogram'] = args['istogram']
