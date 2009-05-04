@@ -96,6 +96,7 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
             src = BZ2File(src)
             verbose = False
         elif src.endswith('.7z'):
+            verbose = False
             if SevenzipFile:
                 src = SevenzipFile(src)
             else:
