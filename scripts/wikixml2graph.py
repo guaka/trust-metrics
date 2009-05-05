@@ -82,7 +82,7 @@ def main():
             assert os.environ.has_key('HOME')
             base_path = os.path.join(os.environ['HOME'],'shared_datasets')
 
-        path = os.path.join(base_path,'datasets','WikiNetwork',lang,date)
+        path = os.path.join(base_path,'WikiNetwork',lang,date)
         mkpath(path)
 
         output = os.path.join(path,outputname+'.c2')

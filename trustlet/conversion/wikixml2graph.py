@@ -155,7 +155,7 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
         return
 
     users,bots,blockedusers = get_list_users(lang,
-                                             os.path.join(os.environ['HOME'],'datasets','WikiNetwork'))
+                                             os.path.join(os.environ['HOME'],'shared_datasets','WikiNetwork'))
 
     assert save({'lang':lang,'list':'bots'},bots,dst)
     assert save({'lang':lang,'list':'blockedusers'},blockedusers,dst)
@@ -564,8 +564,6 @@ def getRevertGraph( PageList ):
                     continue
             
                 G.add_edge( x[user], history[i][user], val+1 )
-        
-
     return G
 
 def getCollaborators( rawWikiText, lang ):

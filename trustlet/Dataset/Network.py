@@ -1150,7 +1150,7 @@ class WikiNetwork(WeightedNetwork):
         take the _weights field and rescale the value
         """
         #read upbound
-        upbound = trustlet.helpers.load({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE})
+        upbound = trustlet.helpers.load({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE}, self.filepath)
         
         if upbound:
             self.__upbound = upbound
@@ -1209,7 +1209,16 @@ class WikiNetwork(WeightedNetwork):
         if not self.silent:
             print 'Graph saved in',self.path
 
-    def load_distrust(self):
+    def load_distrust(self,onlyLoad=False):
+        """
+        This function load the DistrustGraph.c2 if it exist.
+        If onlyload is false, the graph is used to correct
+        the trust edges present in the network. 
+        Else, it will be loaded and added in the network 
+        as edges with as weights a dictionary with 'distrust' as key, 
+        and a distrust value between 0 and 1.
+        """
+
         filepath = os.path.join(self.path,'graphDistrust.c2')
 
         pynet = trustlet.helpers.load({'network':'DistrustWiki','lang':self.lang,'date':self.date}, filepath)
@@ -1220,21 +1229,44 @@ class WikiNetwork(WeightedNetwork):
 
         nodes,edges = pynet
 
-        for n in nodes:
-            self.add_node(n)
+        if onlyLoad:
+            #unuseful, the nodes is already present in the network
+            #for n in nodes:
+            #    self.add_node(n)
 
-        for e in edges:
-            self.add_node(e[0])
-            self.add_node(e[1])
-            
-            try:
-                weight = self.get_edge(e[0],e[1])
-            except networkx.NetworkXError:
-                weight = {}
+            for e in edges:
+                self.add_node(e[0])
+                self.add_node(e[1])
+                
+                try:
+                    weight = self.get_edge(e[0],e[1])
+                except networkx.NetworkXError:
+                    weight = {}
 
-            weight['distrust'] = e[2]
+                weight['distrust'] = e[2]
+                
+                self.add_edge(e[0],e[1],weight)
 
-            self.add_edge(e[0],e[1],weight)
+        else:
+            #distrust edge
+            for de in edges:
+                try:
+                    #trust edge
+                    te = self.get_edge(de[0],de[1])
+                except networkx.NetworkXError:
+                    #if the edge do not exist, is good
+                    #because it means that there isn't a trust edge for this distrust edge
+                    continue
+                
+                #check!! this algorithm has sense? another algorithm?
+
+                #if the distrust value is higher than trust value, than distrust win
+                #we have to correct the network.
+                if de[2] > te['value']:
+                    self.delete_edge(de[0],de[1])
+                
+                
+
 
 if __name__ == "__main__":
     from trustlet import *
