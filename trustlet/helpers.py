@@ -13,7 +13,7 @@ import trustlet
 import os,re
 import datetime
 import time
-import marshal
+import cPickle as marshal
 import threading
 #cache
 import re
