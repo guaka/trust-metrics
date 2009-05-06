@@ -11,7 +11,7 @@ from trustlet.Dataset.Network import Network,WeightedNetwork
 from trustlet.helpers import *
 from networkx import write_dot
 from string import index, split
-import md5
+import hashlib
 import sys
 import os,re,time
 import urllib
@@ -358,7 +358,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             #distrust only
             if self.lusername:
                 #print 'DEBUG',self.lusername #,md5.new(self.ltext.encode('utf-8')).hexdigest()
-                self.dpages[-1].append((md5.new(self.ltext.encode('utf-8')).digest(),self.lusername))
+                self.dpages[-1].append((hashlib.md5(self.ltext.encode('utf-8')).digest(),self.lusername))
 
     def characters(self,contents):
         if self.read == u'username':

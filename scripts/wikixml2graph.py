@@ -63,33 +63,46 @@ def main():
     else:
         downloadlists = True
 
+    # ¡¡ DOESN'T WORK !!
+    downloadlists = False
+
     if len(argv[1:]):
 
-        xml = argv[1]
-        filename = os.path.split(xml)[1] #rm dir
-        size = os.stat(xml).st_size
+        #split files names
+        files = argv[1].split(',')
 
-        # lang, date
-        s = os.path.split(xml)[1]
-        lang = s[:s.index('wiki')]
-        res = re.search('wiki-(\d{4})(\d{2})(\d{2})-',s)
-        date = '-'.join([res.group(x) for x in xrange(1,4)])
-        assert isdate(date)
+        params = []
 
-        if argv[2:]:
-            base_path = argv[2]
-        else:
-            assert os.environ.has_key('HOME')
-            base_path = os.path.join(os.environ['HOME'],'shared_datasets')
+        print 'Output file(s):'
 
-        path = os.path.join(base_path,'WikiNetwork',lang,date)
-        mkpath(path)
+        for xml in files:
 
-        output = os.path.join(path,outputname+'.c2')
+            filename = os.path.split(xml)[1] #rm dir
+            size = os.stat(xml).st_size
 
-        wikixml2graph(xml,output,t,distrust,threshold,downloadlists,True)
+            # lang, date
+            s = os.path.split(xml)[1]
+            lang = s[:s.index('wiki')]
+            res = re.search('wiki-(\d{4})(\d{2})(\d{2})-',s)
+            date = '-'.join([res.group(x) for x in xrange(1,4)])
+            assert isdate(date)
 
-        print 'Output file:',output
+            if argv[2:]:
+                base_path = argv[2]
+            else:
+                assert os.environ.has_key('HOME')
+                base_path = os.path.join(os.environ['HOME'],'shared_datasets')
+
+            path = os.path.join(base_path,'WikiNetwork',lang,date)
+            mkpath(path)
+
+            output = os.path.join(path,outputname+'.c2')
+
+            params.append((xml,output,t,distrust,threshold,downloadlists,True))
+
+            print output
+
+        splittask(lambda x: wikixml2graph(*x),params)
 
     else:
         print __doc__
