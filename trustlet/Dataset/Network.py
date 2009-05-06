@@ -1143,7 +1143,11 @@ class WikiNetwork(WeightedNetwork):
         else:
             if self.__upbound == 1:
                 raise Exception,  "In this network the "+str(UPBOUNDPERCENTAGE)+"% of the users has less than 1 as weight on edges, this network has no meaning" 
+            
+        try:
             return log( value , 3 ) / log( self.__upbound , 3 )
+        except ValueError:
+            return 1.0 #workaround
 
     def __rescale(self):
         """
@@ -1161,6 +1165,8 @@ class WikiNetwork(WeightedNetwork):
             maximum = float(wslen) * 5 / 100
             self.__upbound = s[wslen - int(maximum)]
             
+        trustlet.helpers.save({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE},self.__upbound,self.filepath)
+
         return self.weights_list()
 
 

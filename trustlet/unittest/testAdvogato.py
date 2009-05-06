@@ -76,13 +76,14 @@ class TestAdvogato(unittest.TestCase):
             if not found:
                 continue # if for a network I don't found any network, skip it
 
-            self.setInstances[netname] = {}
-            self.setInstances[netname]['c2'] =  net( date=data, silent=True )
-            self.setInstances[netname]['dot'] = net( date=data, from_dot=True, silent=True ) 
+            self.setInstances[netname+'_'+data] = {}
+            self.setInstances[netname+'_'+data]['c2'] =  net( date=data, silent=True )
+            self.setInstances[netname+'_'+data]['dot'] = net( date=data, from_dot=True, silent=True ) 
 
         
     def testReciprocity(self):
         print "" #skip a line
+        CIRCA = 10**(-15)
         
         for netname in self.setInstances:
             print "Testing", netname
@@ -93,8 +94,11 @@ class TestAdvogato(unittest.TestCase):
             self.assert_( type(val) is dict ) #must be a dict
             for level in val:
                 level_tot = sum([val[level][key] for key in val[level]]) #this must be 1 or 0 
-                self.assert_( level_tot == 1.0 or level_tot == 0.0 ) #check that the sum of value in dictionary is 1 or 0
-
+                if not (( level_tot < 0.0+CIRCA and level_tot > 0.0-CIRCA ) or ( level_tot < 1.0+CIRCA and level_tot > 1.0-CIRCA )):
+                    print "level:",level,"1.0-level_tot:",1.0-level_tot
+                #check that the sum of value in dictionary is 1 or 0
+                self.assert_( ( level_tot < 0.0+CIRCA and level_tot > 0.0-CIRCA ) or ( level_tot < 1.0+CIRCA and level_tot > 1.0-CIRCA ) ) 
+    
     def testDotEqualC2(self):
         print ""
         
