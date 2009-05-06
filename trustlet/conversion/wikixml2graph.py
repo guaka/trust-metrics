@@ -426,7 +426,6 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.network = Network()
         self.edges = []
         self.nodes = []
-
         
         if inputfilename:
             assert 'current' in inputfilename
@@ -448,14 +447,23 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
+
             collaborators = getCollaborators(self.ltext,self.lang)
             if collaborators:
                 self.nodes.append(self.lusername)
                 for u,n in collaborators:
                     if n>=self.threshold:
+
+                        try:
+                            edge = self.network.get_edge(node(u),node(self.lusername))
+                            n += int(edge['value'])
+                        except NetworkXError:
+                            pass
+
                         self.network.add_node(node(u))
                         self.network.add_edge(node(u),node(self.lusername),pool({'value':str(n)}))
-                        self.edges.append( (u,self.lusername,n) )
+                        self.edges.append( (u,self.lusername,n) )                        
+
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
@@ -579,8 +587,9 @@ def getCollaborators( rawWikiText, lang ):
 
     resname = []
 
-    exit = 0; start = 0
+    start = 0
     search = '[['+i18n[lang][1]+":"
+    searchEn = '[['+i18n['en'][1]+":"
     io = len(search)
 
     while True:
@@ -588,7 +597,14 @@ def getCollaborators( rawWikiText, lang ):
         try:
             iu = index( rawWikiText, search, start ) #index of username
         except ValueError:
-            break
+            if search == searchEn:
+                break
+            
+            # now search for English signatures
+            search = searchEn
+            start = 0
+            io = len(search)
+            continue
             
         #begin of the username
         start = iu + io
