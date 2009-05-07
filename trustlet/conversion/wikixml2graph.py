@@ -102,6 +102,7 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
                 print 'install bz2'
                 exit(1)
 
+            src = src[:-3] # cut the last three chars
             deleteafter = True
 
         elif src.endswith('.7z'):
