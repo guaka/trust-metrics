@@ -98,7 +98,7 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
             src = BZ2File(src)
             verbose = False
         elif not BZ2 and src.endswith('.bz2'):
-            if os.system( "bunzip2 -q -k "+src ):
+            if os.system( "bunzip2 -q -k -f "+src ):
                 print 'install bz2'
                 exit(1)
 
