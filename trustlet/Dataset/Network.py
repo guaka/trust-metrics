@@ -841,9 +841,8 @@ class WeightedNetwork(Network):
             else:
                 raise Exception( 'Unknown value on edge' )
                 
-        
         assert self.number_of_edges() != 0, "This function has no sense if in the network there aren't edges"
-
+        #setting path
         #only if you would to load from c2 cache, you had to be set cachedict
         if self._name() == 'Weighted' or self._name() == '' or self._name() == 'Dummy' or self._name() =='Dummyweighted':
             if not cachedict and not self.get_keyOnDataset():
@@ -882,17 +881,17 @@ class WeightedNetwork(Network):
             
             if data:                # if data is not false
                 return data
-            
+
         if self.has_discrete_weights:
             table = {}
             levels = self.weights(force=True).keys() #if some other edge has been added, we had to take care about that
             levels.append( 'nr' )#non reciprocated
-
-            for v in self.weights().keys():
+            
+            for v in self.weights().iterkeys():
                 line = {}
                 #the number of edges that have voted someone level 'v' (we normalize on this value)
-                normalization = len([e2 for e0,e1,e2 in self.edges_iter() if str(value_on_edge(e2)) == v])
-                
+                normalization = len([e2 for e0,e1,e2 in self.edges_iter() if str(value_on_edge(e2)) == str(v)])
+
                 if normalization == 0:#that means that there are 0 edges with this value.. so we skip them
                     for w in levels:
                         line[w] = 0.0
@@ -902,15 +901,15 @@ class WeightedNetwork(Network):
                 for w in levels:
                     if w != 'nr': #non reciprocated
                                        #the number of edges that have voted someone level 'v' and has been voted from someone level 'w'
-                        line[w] = 1.0 * sum([str(value_on_edge(self.get_edge(e1, e0))) == w
+                        line[w] = 1.0 * sum([str(value_on_edge(self.get_edge(e1, e0))) == str(w)
                                              for e0,e1,e2 in self.edges_iter()
                                              if (self.has_edge(e1, e0) and     
-                                                 str(value_on_edge(e2)) == v)]) / normalization
+                                                 str(value_on_edge(e2)) == str(v))]) / normalization
                     else:
                         line[w] = 1.0 * len([e2
                                              for e0,e1,e2 in self.edges_iter()
                                              if (not self.has_edge(e1, e0) and #look at 'not' if nr, the edges hadn't to be reciprocated     
-                                                 str(value_on_edge(e2)) == v)]) / normalization
+                                                 str(value_on_edge(e2)) == str(v))]) / normalization
                     
                 table[v] = line
                 
@@ -1002,7 +1001,7 @@ class WikiNetwork(WeightedNetwork):
         #                                  the first value is the name of the file
         self.url = os.path.join( self.url, os.path.split(relpath)[0])
 
-        assert self.load_c2(), 'There isn\'t anything here!'
+        assert self.load_c2(), 'There isn\'t anything here! ('+self.filepath+')'
 
         self.__rescale()
 

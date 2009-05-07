@@ -51,6 +51,7 @@ def getpage(url):
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
 
+#the right translation for "Discussion User" in the language in key
 i18n = {
     'vec':('Discussion utente','Utente','Bot'),
     'nap':('Discussioni utente','Utente','Bot'),
@@ -87,6 +88,7 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
 
     assert isdate(date)
 
+    deleteafter = False
     # Support compressed file
     if type(src) is str:
         if src.endswith('.gz'):
@@ -95,6 +97,13 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
         elif BZ2 and src.endswith('.bz2'):
             src = BZ2File(src)
             verbose = False
+        elif not BZ2 and src.endswith('.bz2'):
+            if os.system( "bunzip2 -q -k "+src ):
+                print 'install bz2'
+                exit(1)
+
+            deleteafter = True
+
         elif src.endswith('.7z'):
             verbose = False
             if SevenzipFile:
@@ -106,7 +115,6 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
     mkpath(os.path.split(dst)[0])
 
     
-
     ch = WikiContentHandler(lang,xmlsize=size,
                             inputfilename=filename,
                             forcedistrust=distrust,
@@ -114,6 +122,10 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
                             verbose=verbose)
 
     sax.parse(src,ch)
+    #check!
+    if deleteafter:
+        os.remove( src )
+    
 
     pynet = del_ips(ch.getPyNetwork())
 
