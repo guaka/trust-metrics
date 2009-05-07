@@ -99,7 +99,10 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
             verbose = False
         elif not BZ2 and src.endswith('.bz2'):
             if os.system( "bunzip2 -q -k -f "+src ):
-                print 'install bz2'
+                print 'an error has occourred! possible reason:'
+                print '1. install bz2'
+                print '2. no space left on device (in order to decompress your bzip)'
+                print 'NB: consider install python-bz2'
                 exit(1)
 
             src = src[:-3] # cut the last three chars
