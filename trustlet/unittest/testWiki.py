@@ -17,6 +17,8 @@ class TestWiki(unittest.TestCase):
         self.setInstances = {} #set of {networkname:{dot:networkinstance,c2:networkinstance} }
 
         for netname in os.listdir( os.path.join(self.basepath,"WikiNetwork")):
+            if netname.endswith('.c2'):
+                continue #this is not a directory
             found = False
             data = None
 

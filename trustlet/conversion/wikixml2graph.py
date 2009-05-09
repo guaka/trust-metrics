@@ -130,9 +130,8 @@ def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbos
     if deleteafter:
         os.remove( src )
     
-
     pynet = del_ips(ch.getPyNetwork())
-
+    
     cachedict = {'network':'Wiki','lang':lang,'date':date}
     if threshold>1:
         cachedict['threshold'] = threshold
@@ -278,7 +277,14 @@ def get_list_users(lang,cachepath=None,force=False,verbose=False):
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
-
+    # startElement: is called when a tag begin, and give as parameter the name and the attributes of the tag
+    # endElement: is called when a tag end, and give as parameter the name of the tag
+    #characters: is called between start and end of a tag. as parameter will be given the data between tag
+    #getNetwork: return a Network with the data calculated
+    #getPyNetwork: return a tuple with two list:
+    #              1. list of string that represent the nodes
+    #              2. list of tuple that represent the edges (who_edit,who_receive_edit,numbers_of_edit_of_who_edit)
+    
     def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0,verbose=False):
         sax.handler.ContentHandler.__init__(self)
 
@@ -293,7 +299,9 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         self.read = False
         self.validdisc = False # valid discussion
 
+        # list of tuple (owner_of_talk_page,dict(key=user,value=n_of_times_that_user_edit_page))
         self.pages = []
+        #set of all users
         self.allusers = set()
         self.distrust = False
         self.threshold = threshold
@@ -314,9 +322,11 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         
         #disable loading of contents
         if name == u'username':
+            #set what I'm reading in order to check in endelement
             self.read = u'username'
             self.lusername = u''
         elif name == u'title':
+            #set what I'm reading in order to check in endelement
             self.read = u'title'
             self.ltitle = u''
 
@@ -339,7 +349,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
         if name == u'username':
             if self.validdisc:
-
+                #the users who have edited the last page
                 d = self.pages[-1][1]
                 if self.lusername != self.pages[-1][0]:
                     #remove edges: userX -> userX
@@ -347,20 +357,23 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                         d[self.lusername] += 1
                     else:
                         d[self.lusername] = 1
+                        
         elif name == u'title':
-
+            
             ### 'Discussion utente:Paolo-da-skio'
             ### 'Discussion utente:Paolo-da-skio/Subpage'
             title = self.ltitle.partition('/')[0].partition(':')
-            if title[:2] == (i18n[self.lang][0], ':') and title[2]:
-                #assert '/' not in title[2]
+
+            if (title[:2] == (i18n[self.lang][0], ':') or title[:2] == (i18n['en'][0], ':') )  and title[2]:
+                # if the tag is <title> it means that this is the begin of a new talk page
                 self.pages.append( (title[2],{}) ) # ( user, dict_edit )
                 self.validdisc = True
+                
             else:
                 self.validdisc = False
             
-            # True if is a talk page or user page
-            if title[0] in (i18n[self.lang][1],i18n[self.lang][0]) and title[1]==':' and title[2]:
+            # True if is a talk page or user page                 add talk and user page in english
+            if title[0] in (i18n[self.lang][1],i18n[self.lang][0],i18n['en'][0],i18n['en'][1]) and title[1]==':' and title[2]:
                 self.allusers.add(title[2])
 
         elif name == u'page' and self.validdisc:
@@ -379,8 +392,10 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
     def characters(self,contents):
         if self.read == u'username':
             self.lusername += contents.strip()
+
         elif self.read == u'title':
             self.ltitle += contents.strip()
+
         elif self.distrust and self.read == u'text':
             self.ltext += contents
 
@@ -395,12 +410,15 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         W = Network()
         
         for user,authors in self.pages:
+            
             W.add_node(node(user))
             for a,num_edit in authors.iteritems():
                 # add node
                 W.add_node(node(a))
                 #add edges
-                W.add_edge(node(user),node(a),pool({'value':str(num_edit)}))
+                # add edge from 'a' who have done the edit
+                # a 'user' who receive the edit
+                W.add_edge(node(a),node(user),pool({'value':str(num_edit)}))
                 
         return W
 
@@ -413,7 +431,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             if not authors:
                 nodes.append(user)
             for a,num_edit in authors.iteritems():
-                edges.append( (user,a,num_edit) )
+                edges.append( (a,user,num_edit) )
                 
         return (nodes,edges)
 
@@ -424,9 +442,17 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
+    # startElement: is called when a tag begin, and give as parameter the name and the attributes of the tag
+    # endElement: is called when a tag end, and give as parameter the name of the tag
+    #characters: is called between start and end of a tag. as parameter will be given the data between tag
+    #getNetwork: return a Network with the data calculated
+    #getPyNetwork: return a tuple with two list:
+    #              1. list of string that represent the nodes
+    #              2. list of tuple that represent the edges (who_edit,who_receive_edit,numbers_of_edit_of_who_edit)
+
     def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0,verbose=False):
         sax.handler.ContentHandler.__init__(self)
-
+        #lang of wikipedia network
         self.lang = lang
         self.read = False
         self.validdisc = False # valid discussion
@@ -438,7 +464,10 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.verbose = verbose
         
         self.allusers = set()
-
+        
+        #this three parameters contains the Network,
+        #the first as XDiGraph
+        #the second/third as list of tuple
         self.network = Network()
         self.edges = []
         self.nodes = []
@@ -463,11 +492,13 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
-
+            
+            #see documentation of getCollaborators
             collaborators = getCollaborators(self.ltext,self.lang)
             if collaborators:
                 self.nodes.append(self.lusername)
                 for u,n in collaborators:
+                    #only if the number of edit is higher than the threshold
                     if n>=self.threshold:
 
                         try:
@@ -494,6 +525,8 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
                 self.allusers.add(title[2])
 
     def characters(self,contents):
+        #fill the value
+
         if self.read == u'username':
             self.lusername += contents.strip()
         elif self.read == u'title':
@@ -501,6 +534,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         elif self.read == u'text':
             self.ltext += contents.strip()
 
+        #print an approximation of the percentage of computation
         if self.xmlsize and self.verbose:
             self.count += len(contents)
             perc = 100*self.count/self.xmlsize
