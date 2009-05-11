@@ -22,19 +22,14 @@ def main():
     p = optparse.OptionParser(usage="usage: %prog [options] files")
 
     p.add_option("-b", "--base-path", help='Output directory')
-    p.add_option("-c", "--current", help='Input file is current xml', action='store_true', default=False)
     p.add_option("-d", "--distrust", help='Compute also distrust graph (input have to be pages-meta-hisory xml)', action='store_true', default=False)
     p.add_option("-t", "--threshold", help='remove edge if weight is less then value', default=0, dest='value')
     p.add_option("-l", "--lists", help='download list of users from wikipedia.org', action='store_true', default=False)
 
     opts, files = p.parse_args()
 
-    if opts.current:
-        t = 'c'
-        outputname = 'graphCurrent'
-    else:
-        t = 'h'
-        outputname = 'graphHistory'
+    outputname = 'graphCurrent'
+    outputname = 'graphHistory'
 
     if files:
 
@@ -63,7 +58,7 @@ def main():
 
             output = os.path.join(path,outputname+'.c2')
 
-            params.append((xml,output,t,opts.distrust,opts.value,opts.lists,True))
+            params.append((xml,output,opts.distrust,opts.value,opts.lists,True))
 
             print output
 

@@ -65,18 +65,21 @@ i18n = {
     'fr' : ('Discussion Utilisateur', 'Utilisateur', 'Bot')
 }
 
-def wikixml2graph(src,dst,t,distrust=False,threshold=0,downloadlists=True,verbose=False):
+def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=False):
     '''
     t -> h | c (history or current)
     '''
 
     assert dst.endswith('.c2')
+    srcname = os.path.split(src)[1]
 
-    if t == 'c':
+    if 'current' in srcname:
         WikiContentHandler = WikiCurrentContentHandler
         
-    elif t == 'h':
+    elif 'history' in srcname:
         WikiContentHandler = WikiHistoryContentHandler
+    else:
+        raise Error("I cannot understand the type of network (current or history?)")
 
     filename = os.path.split(src)[1] #rm dir
     size = os.stat(src).st_size
