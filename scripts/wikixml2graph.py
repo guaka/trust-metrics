@@ -28,9 +28,6 @@ def main():
 
     opts, files = p.parse_args()
 
-    outputname = 'graphCurrent'
-    outputname = 'graphHistory'
-
     if files:
 
         params = []
@@ -55,6 +52,14 @@ def main():
 
             path = os.path.join(opts.base_path,'WikiNetwork',lang,date)
             mkpath(path)
+
+            if 'current' in filename:
+                outputname = 'graphCurrent'
+            elif 'history' in filename:
+                outputname = 'graphHistory'
+            else:
+                raise Error("I cannot be able to understand the type of the network (current or history)")
+
 
             output = os.path.join(path,outputname+'.c2')
 
