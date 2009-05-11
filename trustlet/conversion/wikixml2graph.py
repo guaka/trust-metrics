@@ -142,8 +142,12 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
     # x^th percentile
     edges = pynet[1]
     edges.sort(lambda x,y: cmp(x[2],y[2]))
-    perc90 = edges[len(edges)*9/10][2]
-    perc95 = edges[len(edges)*95/100][2]
+    try:
+        perc90 = edges[len(edges)*9/10][2]
+        perc95 = edges[len(edges)*95/100][2]
+    except IndexError:
+        print "90th percentile:", edges[len(edges)*9/10]
+        print "95th percentile:", edges[len(edges)*95/100]
     #print [x[2] for x in edges[len(edges)*95/100:]]
 
     assert save(cachedict,pynet,dst)
