@@ -62,7 +62,8 @@ i18n = {
     'simple':('User talk','User','Bot'),
     'la': ('Disputatio Usoris','Usor','automaton'),
     'de': ('Benutzer Diskussion', 'Benutzer', 'Bot'),
-    'fr' : ('Discussion Utilisateur', 'Utilisateur', 'Bot')
+    'fr' : ('Discussion Utilisateur', 'Utilisateur', 'Bot'),
+    'es' : ('Usuario Discusión', 'Usuario', 'Bot'), # check Bot!
 }
 
 def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=False):
