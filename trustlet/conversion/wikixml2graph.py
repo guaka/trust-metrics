@@ -146,8 +146,9 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
         perc90 = edges[len(edges)*9/10][2]
         perc95 = edges[len(edges)*95/100][2]
     except IndexError:
-        print "90th percentile:", edges[len(edges)*9/10]
-        print "95th percentile:", edges[len(edges)*95/100]
+        print "90th percentile:", len(edges), len(edges)*9/10
+        print "95th percentile:", len(edges), len(edges)*95/100
+        raise Exception("")
     #print [x[2] for x in edges[len(edges)*95/100:]]
 
     assert save(cachedict,pynet,dst)
