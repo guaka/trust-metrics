@@ -115,6 +115,7 @@ class Download(threading.Thread):
 
             self.lock.acquire()
             url = self.list.pop()
+            count = len(self.list)
             if not self.list:
                 self.download.clear()
             self.lock.release()
@@ -128,7 +129,7 @@ class Download(threading.Thread):
                 print 'File yet downloaded'
                 continue
 
-            print 'Download:',name
+            print 'Download: %s (%d)'%(name,count)
             
             i = urllib2.urlopen(url)
             o = file(os.path.join(self.dir,name),'w')
