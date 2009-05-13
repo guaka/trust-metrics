@@ -10,7 +10,7 @@ import urllib2
 # http://download.wikimedia.org/eswiki/20090504/eswiki-20090504-pages-meta-current.xml.bz2
 # http://download.wikimedia.org/furwiki/20090508/furwiki-20090508-pages-meta-history.xml.7z
 
-# test: ./getwikixml.py fur -r 2009-05-08:2009-05-09
+# test: ./getwikixml.py fur -r 2009-05-08:2009-05-09 -d
 
 TYPES = set(['pages-meta-current.xml.bz2','pages-meta-history.xml.7z'])
 
@@ -24,6 +24,7 @@ def main():
     o.add_option('-r','--range',help='Set range: yyyy-mm-dd:yyyy-mm-dd')
     o.add_option('-d','--download',help='download now wiki dumps',default=False,action='store_true')
     o.add_option('-o','--directory',help='set download directory')
+    o.add_option('-c','--cache',help='cache url request',dest='urlcachefile')
     opts, langs = o.parse_args()
     
     if opts.range:
@@ -53,6 +54,9 @@ def main():
     f.write('# Langs: '+', '.join(langs)+'\n')
     f.write('# Range: %s:%s\n'%tuple([r.isoformat() for r in range]))
 
+    if opts.urlcachefile:
+        incache,notincache = urlcacheload(opts.urlcachefile)
+
     for lang in langs:
 
         i = 0
@@ -65,18 +69,29 @@ def main():
 
                 url = 'http://download.wikimedia.org/%swiki/%.4d%.2d%.2d/%swiki-%.4d%.2d%.2d-%s' % (((lang,) + d.timetuple()[:3])*2 + (type,))
 
-                try:
-                    urllib2.urlopen(url).close()
-                except urllib2.HTTPError:
-                    #print 'Skipped',url.split('/')[-1]
+                if opts.urlcachefile and url in notincache:
+                    print 'Skipped',url.split('/')[-1],'(cache)'
                     continue
 
-                print 'Added',url.split('/')[-1]
+                if not (opts.urlcachefile and url in incache):
+                    try:
+                        urllib2.urlopen(url).close()
+                    except urllib2.HTTPError:
+                        print 'Skipped',url.split('/')[-1]
+                        if opts.urlcachefile:
+                            notincache.add(url)               
+                        continue
+
+                print 'Added',url.split('/')[-1],opts.urlcachefile and url in incache and '(cache)' or ''
                 f.write('wget %s\n'%url)
+
+                if opts.urlcachefile:
+                    incache.add(url)
 
                 if opts.download:
                     
                     llock.acquire()
+
                     l.insert(0,url)
                     llock.release()
 
@@ -92,6 +107,9 @@ def main():
         devent.set()
 
     f.close()
+
+    if opts.urlcachefile:
+        urlcachesave(opts.urlcachefile,incache,notincache)
 
 class Download(threading.Thread):
 
@@ -146,6 +164,22 @@ class Download(threading.Thread):
 
             i.close()
             o.close()
+
+def urlcacheload(path):
+    if os.path.exists(path):
+        cachef = file(path)
+        cache = [x.strip() for x in cachef.readlines()]
+        cachef.close()
+
+        return set([x for x in cache if x[0]!='!']), set([x[1:] for x in cache if x[0]=='!'])
+    else:
+        return set(), set()
+
+def urlcachesave(path,incache,notincache):
+    cachef = file(path,'w')
+    cachef.writelines(['%s\n'%x for x in sorted(incache)])
+    cachef.writelines(['!%s\n'%x for x in sorted(notincache)])
+    cachef.close()
 
 if __name__=='__main__':
     main()
