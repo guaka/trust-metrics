@@ -504,7 +504,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
-            
+            print "discussione di ", self.lusername #todelete
             #see documentation of getCollaborators
             collaborators = getCollaborators(self.ltext,self.lang)
             if collaborators:
@@ -692,6 +692,7 @@ def getCollaborators( rawWikiText, lang ):
         start += len(username) + 1 # not consider the end character
         
     #return a list of tuple, the second value of tuple is the weight    
+    print weight( resname ) #todelete
     return weight( resname )
 
 
