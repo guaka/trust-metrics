@@ -1728,6 +1728,26 @@ def md5file(filename):
 
 eprint = lambda x: sys.stderr.write(str(x)+'\n')
 
+# Wikipedia
+
+def wiki_matching(W,Z):
+    
+    max_common_edges = min(Z.number_of_edges(),W.number_of_edges())
+
+    shared_edges = set(map(lambda x: x[:2],W.edges_iter())) & set(map(lambda x: x[:2],Z.edges_iter()))
+
+    p = 100.0 * len(shared_edges) / max_common_edges
+        
+
+    print 'Percentage of shared edges (without consider weight): %.2f%%'%p
+
+    p = 100.0 * len(set(map(lambda x: x[:2]+(x[2]['value'],),W.edges_iter())) & set(map(lambda x: x[:2]+(x[2]['value'],),Z.edges_iter()))) / max_common_edges
+
+    print 'Percentage of shared edges: %.2f%%'%p
+
+    print 'Average error on edges: %.2f'%avg([abs(W.get_edge(x[0],x[1])['value']-Z.get_edge(x[0],x[1])['value']) for x in shared_edges])
+
+
 if __name__=="__main__":
     from trustlet import *
     #test pool
