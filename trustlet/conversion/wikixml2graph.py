@@ -133,6 +133,9 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
     #check!
     if deleteafter:
         os.remove( src )
+
+    x=ch.getPyNetwork()#todelete
+    print len(x[0]),len(x[1])
     
     pynet = del_ips(ch.getPyNetwork())
     
@@ -146,7 +149,7 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
     try:
         perc90 = edges[len(edges)*9/10][2]
         perc95 = edges[len(edges)*95/100][2]
-    except IndexError:
+    except IndexError:#todelete
         print "90th percentile:", len(edges), len(edges)*9/10
         print "95th percentile:", len(edges), len(edges)*95/100
         raise Exception("")
