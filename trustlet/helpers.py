@@ -1745,8 +1745,18 @@ def wiki_matching(W,Z):
 
     print 'Percentage of shared edges: %.2f%%'%p
 
-    print 'Average error on edges: %.2f'%avg([abs(W.get_edge(x[0],x[1])['value']-Z.get_edge(x[0],x[1])['value']) for x in shared_edges])
+    differences = [abs(W.get_edge(x[0],x[1])['value']-Z.get_edge(x[0],x[1])['value']) for x in shared_edges]
 
+    print 'Average error on edges: %.2f'%avg(differences)
+
+    dd = {}
+
+    for x in differences:
+        dd.setdefault(x,0)
+        dd[x] += 1
+
+    print 'Creating error distribution graph...'
+    prettyplot(dd.iteritems(),'error_distribution',title='Distribution of absolute errors',showlines=True)
 
 if __name__=="__main__":
     from trustlet import *
