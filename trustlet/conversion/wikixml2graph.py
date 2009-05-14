@@ -136,9 +136,13 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
 
     x=ch.getPyNetwork()#todelete
     print len(x[0]),len(x[1])
+    print ch.getHowManyText()
     
     pynet = del_ips(ch.getPyNetwork())
     
+    if not pynet[0] or not pynet[1]:
+        raise Exception( "Conversion failed! no edges or no nodes in this network" )
+
     cachedict = {'network':'Wiki','lang':lang,'date':date}
     if threshold>1:
         cachedict['threshold'] = threshold
@@ -146,14 +150,8 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
     # x^th percentile
     edges = pynet[1]
     edges.sort(lambda x,y: cmp(x[2],y[2]))
-    try:
-        perc90 = edges[len(edges)*9/10][2]
-        perc95 = edges[len(edges)*95/100][2]
-    except IndexError:#todelete
-        print "90th percentile:", len(edges), len(edges)*9/10
-        print "95th percentile:", len(edges), len(edges)*95/100
-        raise Exception("")
-    #print [x[2] for x in edges[len(edges)*95/100:]]
+    perc90 = edges[len(edges)*9/10][2]
+    perc95 = edges[len(edges)*95/100][2]
 
     assert save(cachedict,pynet,dst)
 
@@ -474,6 +472,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.last_perc_print = ''
         self.threshold = threshold
         self.verbose = verbose
+        self.cnt = 0 #todelete
         
         self.allusers = set()
         
@@ -486,6 +485,9 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         
         if inputfilename:
             assert 'current' in inputfilename
+
+    def getHowManyText(self): #todelete
+        return self.cnt
 
     def startElement(self,name,attrs):
         
@@ -504,7 +506,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
-            print "discussione di ", self.lusername #todelete
+            self.cnt += 1 #todelete
             #see documentation of getCollaborators
             collaborators = getCollaborators(self.ltext,self.lang)
             if collaborators:
