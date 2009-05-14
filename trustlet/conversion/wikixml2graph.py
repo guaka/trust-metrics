@@ -24,6 +24,8 @@ except ImportError:
 
 if os.system('which 7za &> /dev/null')==0:
     SevenzipFile = lambda name: os.popen('7za x "%s" -so 2> /dev/null' % name)
+elif os.system('which 7zr &> /dev/null')==0:
+    SevenzipFile = lambda name: os.popen('7zr x "%s" -so 2> /dev/null' % name)
 else:
     SevenzipFile = None
 
