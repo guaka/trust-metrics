@@ -433,7 +433,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             ### 'Discussion utente:Paolo-da-skio'
             ### 'Discussion utente:Paolo-da-skio/Subpage'
             title = self.ltitle.partition('/')[0].partition(':')
-            title = (title[0].lower(), title[1].lower(), title[2].lower() ) #lower
+            title = (title[0].lower(), title[1].lower(), title[2] ) #lower
 
             if (title[:2] == (self.i18n[0], ':') or title[:2] == (i18n['en'][0].lower(), ':') )  and title[2]:
                 # if the tag is <title> it means that this is the begin of a new talk page
@@ -590,7 +590,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
             ### 'Discussion utente:Paolo-da-skio'
             title = self.ltitle.partition('/')[0].partition(':')
             #  comparison case insensitive
-            title = (title[0].lower(), title[1].lower(), title[2].lower())
+            title = (title[0].lower(), title[1].lower(), title[2])
             # if the discussion is in english or in the language of this wiki, and name of user is not ''
             if ( ( title[:2] == (self.i18n[0], ':') ) or (title[:2] == (i18n['en'][0].lower(), ':') ) ) and title[2]:
                 self.lusername = title[2]
