@@ -53,25 +53,85 @@ def getpage(url):
 printable = lambda o: ''.join([chr(ord(c)%128) for c in o])
 node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
 
+# BEGIN OF THE FUNCTION TO MANIPULATE i18n
+
 #the right translation for "Discussion User" in the language in key
-i18n = {
-    'vec':('Discussion utente','Utente','Bot'),
-    'nap':('Discussioni utente','Utente','Bot'),
-    'fur':('Discussion utent','Utent','Bot'),
-    'eml':('Discussioni utente','Utente','Bot'),
-    'it': ('Discussioni utente','Utente','Bot'),
-    'en': ('User talk','User','Bot'),
-    'simple':('User talk','User','Bot'),
-    'la': ('Disputatio Usoris','Usor','automaton'),
-    'de': ('Benutzer Diskussion', 'Benutzer', 'Bot'),
-    'fr' : ('Discussion Utilisateur', 'Utilisateur', 'Bot'),
-    'es' : ('Usuario Discusión', 'Usuario', 'Bot'), # check Bot!
-}
+i18n = load('language_parameters', os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork', 'languageparameters.c2' ), fault=False ) 
+
+#{
+#    'vec':('Discussion utente','Utente','Bot'),
+#    'nap':('Discussioni utente','Utente','Bot'),
+#    'fur':('Discussion utent','Utent','Bot'),
+#    'eml':('Discussioni utente','Utente','Bot'),
+#    'it': ('Discussioni utente','Utente','Bot'),
+#    'en': ('User talk','User','Bot'),
+#    'simple':('User talk','User','Bot'),
+#    'la': ('Disputatio usoris','Usor','automaton'),
+#    'de': ('Benutzer Diskussion', 'Benutzer', 'Bot'),
+#    'fr' : ('Discussion utilisateur', 'Utilisateur', 'Bot'),
+#    'es' : ('Usuario discusión', 'Usuario', 'Bot'), # check Bot!
+#}
+def addWikiLanguage(key,definition):
+    """
+    add a language to the list of supported language for wikixml2graph
+    key: name of language, it MUST be the string before 'wiki-...' in the xml file name.
+         ex. emlwiki-20090101-pages-meta-current.xml --> key = 'eml'
+    definition:
+         a tuple of 3 strings, 
+         the first one is how you can say 'User talk' in the language specified,
+         the second one is how you can say 'User' in the language,
+         the third one is how you can say 'Bot' (A 'Bot' is an artificial user, a program registered for some reasons) in the language.
+         definition for the language 'en', must be like this: ('User talk','User','Bot') 
+    """
+    if type(definition) is tuple and definition.__len__() == 3:
+        i18n[key] = definition
+        if not save('language_parameters', i18n, os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork', 'languageparameters.c2' ) ):
+            raise IOError( "Write of changes failed! check the permission to write in this path "+os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork')) 
+    else:
+        raise Exception( "Wrong definition! it must be a tuple with three values, check the documentation of this function" )
+
+    return True
+
+def listWikiLanguage():
+    """
+    print the list of current supported language for wikixml2graph
+    """
+    import pprint
+    pprint.pprint( i18n.keys() )
+
+def deleteWikiLanguage(key,temporary=True):
+    """
+    delete a language from the list of supported language for wikixml2graph
+    warning! if you set temporary to False, the delete will be permanent,
+    and will be propagated in each client that use trustlet.
+    use this function carefully (with great power comes great responsibility)
+    temporary = the deletion is temporary or not, if is set to false,
+                the changes is permanent. If is set to true, the changes
+                is temporary and simply reloading the environment you can rollback
+                the changes
+    key = the language to delete
+    """
+    if not key in i18n:
+        raise KeyError("This language is not present in the list of supported languages")
+
+    del i18n[key]
+    if not temporary:
+        if not save('language_parameters', i18n, os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork', 'languageparameters.c2' ) ):
+            raise IOError( "Write of changes failed! check the permission to write in this path "+os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork')) 
+
+    return True
+
+# END OF THE FUNCTION TO MANIPULATE i18n
+
 
 def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=False):
     '''
     t -> h | c (history or current)
     '''
+
+    if not i18n:
+        raise IOError( os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork', 'languageparameters.c2' )+" does not exists! you have to sync your current directory (with sync_trustlet)") 
+
 
     assert dst.endswith('.c2')
     srcname = os.path.split(src)[1]
@@ -89,9 +149,9 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
 
     s = os.path.split(src)[1]
     lang = s[:s.index('wiki')]
+    assert lang in i18n, "The lang "+lang+" is not supported! (you can add it using the function addWikiLanguage in this package)"
     res = re.search('wiki-(\d{4})(\d{2})(\d{2})-',s)
     date = '-'.join([res.group(x) for x in xrange(1,4)])
-
     assert isdate(date)
 
     deleteafter = False
@@ -136,14 +196,10 @@ def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=
     if deleteafter:
         os.remove( src )
 
-    x=ch.getPyNetwork()#todelete
-    print len(x[0]),len(x[1])
-    print ch.getHowManyText()
-    
     pynet = del_ips(ch.getPyNetwork())
     
     if not pynet[0] or not pynet[1]:
-        raise Exception( "Conversion failed! no edges or no nodes in this network" )
+        raise Exception( "Conversion failed! no edges or no nodes in this network, you might check the line in the i18n corresponding to the "+i18n[lang]+" language" )
 
     cachedict = {'network':'Wiki','lang':lang,'date':date}
     if threshold>1:
@@ -474,7 +530,13 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         self.last_perc_print = ''
         self.threshold = threshold
         self.verbose = verbose
-        self.cnt = 0 #todelete
+        #set parse parameter for this language
+        self.i18n = i18n[self.lang]
+        #made the comparison case insensitive
+        self.i18n[0] = self.i18n[0].lower()
+        self.i18n[1] = self.i18n[1].lower()
+        self.i18n[2] = self.i18n[2].lower()
+        
         
         self.allusers = set()
         
@@ -487,9 +549,6 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         
         if inputfilename:
             assert 'current' in inputfilename
-
-    def getHowManyText(self): #todelete
-        return self.cnt
 
     def startElement(self,name,attrs):
         
@@ -508,7 +567,6 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
         if name == u'text' and self.validdisc:
             self.network.add_node(node(self.lusername))
-            self.cnt += 1 #todelete
             #see documentation of getCollaborators
             collaborators = getCollaborators(self.ltext,self.lang)
             if collaborators:
@@ -531,7 +589,8 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
 
             ### 'Discussion utente:Paolo-da-skio'
             title = self.ltitle.partition('/')[0].partition(':')
-            if title[:2] == (i18n[self.lang][0], ':') and title[2]:
+            #  comparison case insensitive
+            if title[0].lower() == self.i18n[0] and  title[1] == ':' and title[2]:
                 self.lusername = title[2]
                 self.validdisc = True
             else:
@@ -696,7 +755,6 @@ def getCollaborators( rawWikiText, lang ):
         start += len(username) + 1 # not consider the end character
         
     #return a list of tuple, the second value of tuple is the weight    
-    print weight( resname ) #todelete
     return weight( resname )
 
 
