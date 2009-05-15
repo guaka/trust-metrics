@@ -374,6 +374,8 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
         self.distrust = False
         self.threshold = threshold
         self.verbose = verbose
+        self.i18n = i18n[self.lang]
+        self.i18n = (self.i18n[0].lower(),self.i18n[1].lower(),self.i18n[2].lower())
 
         if inputfilename:
             assert 'history' in inputfilename
@@ -431,8 +433,9 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
             ### 'Discussion utente:Paolo-da-skio'
             ### 'Discussion utente:Paolo-da-skio/Subpage'
             title = self.ltitle.partition('/')[0].partition(':')
+            title = (title[0].lower(), title[1].lower(), title[2].lower() ) #lower
 
-            if (title[:2] == (i18n[self.lang][0], ':') or title[:2] == (i18n['en'][0], ':') )  and title[2]:
+            if (title[:2] == (self.i18n[0], ':') or title[:2] == (i18n['en'][0].lower(), ':') )  and title[2]:
                 # if the tag is <title> it means that this is the begin of a new talk page
                 self.pages.append( (title[2],{}) ) # ( user, dict_edit )
                 self.validdisc = True
@@ -441,7 +444,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                 self.validdisc = False
             
             # True if is a talk page or user page                 add talk and user page in english
-            if title[0] in (i18n[self.lang][1],i18n[self.lang][0],i18n['en'][0],i18n['en'][1]) and title[1]==':' and title[2]:
+            if title[0] in (self.i18n[1],self.i18n[0],i18n['en'][0].lower(),i18n['en'][1].lower()) and title[1]==':' and title[2]:
                 self.allusers.add(title[2])
 
         elif name == u'page' and self.validdisc:
@@ -533,10 +536,7 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         #set parse parameter for this language
         self.i18n = i18n[self.lang]
         #made the comparison case insensitive
-        self.i18n[0] = self.i18n[0].lower()
-        self.i18n[1] = self.i18n[1].lower()
-        self.i18n[2] = self.i18n[2].lower()
-        
+        self.i18n = (self.i18n[0].lower(), self.i18n[1].lower(),self.i18n[2].lower() )
         
         self.allusers = set()
         
@@ -590,13 +590,16 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
             ### 'Discussion utente:Paolo-da-skio'
             title = self.ltitle.partition('/')[0].partition(':')
             #  comparison case insensitive
-            if title[0].lower() == self.i18n[0] and  title[1] == ':' and title[2]:
+            title = (title[0].lower(), title[1].lower(), title[2].lower())
+            # if the discussion is in english or in the language of this wiki, and name of user is not ''
+            if ( ( title[:2] == (self.i18n[0], ':') ) or (title[:2] == (i18n['en'][0].lower(), ':') ) ) and title[2]:
                 self.lusername = title[2]
                 self.validdisc = True
             else:
                 self.validdisc = False
 
-            if title[0] in (i18n[self.lang][1],i18n[self.lang][0]) and title[1] == ':' and title[2]:
+            # True if is a talk page or user page                 add talk and user page in english
+            if title[0] in (self.i18n[1],self.i18n[0],i18n['en'][0].lower(), i18n['en'][1].lower() ) and title[1] == ':' and title[2]:
                 self.allusers.add(title[2])
 
     def characters(self,contents):
