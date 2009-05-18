@@ -678,7 +678,7 @@ class PredGraph(CalcGraph):
 
     def abs_error_for_different_orig_nodes(self):
         return [(cond, self.abs_error_cond(cond)) for cond in
-                ['master', 'journeyor', 'apprentice', 'observer']]
+                ['master', 'journeyer', 'apprentice', 'observer']]
 
     def cont_num_of_edges(self,number=10,values=None,force=False):
         if not values:
