@@ -1213,12 +1213,13 @@ class WikiNetwork(WeightedNetwork):
         """
         change the upbound value for this network.
         this modification affected the way in which the edges are rescaled.
-        the modification is permanent.
+        the modification is *not* permanent.
         NB: in order to know what the upbound is, see the doc
             of the method 'upbound'
         """
-        if not trustlet.helpers.save({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE},up,self.filepath):
-            sys.stderr.write( "Failed to store the new value! the change will not be permanent." )
+        # dangerous! 
+        #if not trustlet.helpers.save({'network':'Wiki','lang':str(self.lang),'date':str(self.date),'%':UPBOUNDPERCENTAGE},up,self.filepath):
+        #    sys.stderr.write( "Failed to store the new value! the change will not be permanent." )
 
         self.__upbound = up
         self.weights_list(force=True) #regen the level_map and the weights_list
