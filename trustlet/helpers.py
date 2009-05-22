@@ -1548,46 +1548,66 @@ def relative_path( path, folder, debug=False ):
     return (path,relpath)
 
 
-def getNetworkList( datasetPath ):
+def getNetworkList( ):
     """
-    get a list of network avaiable on www.trustlet.org
-    Parameters:
-       datasetPath = path in wich is located your datasets directory (maybe in the home directory)
-    
-    NB: this function use the internet connection. If you haven't an internet connection enabled
-        you cannot use it.
+    get a list of network avaiable on your datasets/shared_datasets folder
+    return a list of tuple in this form:
+    (networkname,list_of_dates_avaiable)
     """
-    path = os.path.realpath( datasetPath )
-    
-    os.chdir( path )
-
-    name = tempnam()
-    
-    if os.system( 'svn list -R > '+name ) != 0:
-        print "svn error! check your internet connection"
-        return None
-    
-    fd = file( name )
-    lines = fd.readlines()
-    paths = []
-    fd.close()
-    
-    os.remove( name )
-
-    for line in lines:
-        sline = line.strip()
-        if sline[-1] == '/':
-            sline = sline[0:-1] #remove /
+    def containsNetwork(datapath,wiki=False):
+        if not wiki:
+            if os.path.exists( os.path.join( datapath, 'graph.c2' ) ) or os.path.exists( os.path.join( datapath, 'graph.dot' ) ):
+                return True
+            
+            return False
         
-        while sline != '':
-            if os.path.isdir( sline ):
-                if sline not in paths:
-                    paths.append( sline )
-                break
-            else:
-                sline = os.path.split( sline )[0]
+        if os.path.exists( os.path.join( datapath, 'graphCurrent.c2' ) ) or os.path.exists( os.path.join( datapath, 'graphHistory.c2' ) ):
+            return True
+        
+        return False
 
-    return paths
+        
+
+    PATH = 0
+    DIRNAMES = 1
+    FILENAMES = 2
+
+    wiki = os.path.join(os.environ['HOME'],'shared_datasets','WikiNetwork')
+    other = os.path.join(os.environ['HOME'],'datasets')
+    #contains the network name, and the list of dates for the net-type
+    netlist = [(net,[]) for net in os.listdir(other) if os.path.isdir(os.path.join(other,net))]
+    
+    for net,l in netlist:
+        #path is the path in which there are the date
+        path = os.path.join( other, net )
+        
+        for data in os.listdir(path):
+            #skip files
+            if os.path.isfile( os.path.join(path,data) ):
+                continue
+
+            if containsNetwork(os.path.join(path,data)): #only if the network file exists
+                l.append( data )
+
+    #wiki has a different folder structure, so we calculate it in a different manner    
+    for lang in os.listdir(wiki):
+        path = os.path.join( wiki, lang)
+        if os.path.isfile(path):
+            continue
+
+        lwiki = []
+        for data in os.listdir(path):
+            if os.path.isfile(os.path.join(path,data)):
+                continue
+
+            if containsNetwork(os.path.join(path,data),wiki=True): #only if the network file exists
+                lwiki.append( data )
+                
+        netlist.append( ('WikiNetwork/'+lang,lwiki) )
+        
+    return netlist
+    
+
 
 def pool(o,poolname='generic'):
     '''
