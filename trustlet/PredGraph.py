@@ -80,6 +80,9 @@ class CalcGraph(Network):
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
                 
+            print self.edges()
+
+                
             self._set_arrays()
             self._prepare()
             if hasattr(self.TM, 'rescale') and self.TM.rescale:
@@ -282,7 +285,7 @@ class PredGraph(CalcGraph):
         self._paste_graph(pg)
         return pg
         
-    def predicted_ratio(self):
+    def _predicted_ratio(self):
         """
         give a % of edges predicted
         """
@@ -323,7 +326,7 @@ class PredGraph(CalcGraph):
             self.orig_trust = self._trust_array('orig')
         else:
             sys.stderr.write( "#edges in dataset != #edges in predgraph!\n" )
-            sys.stderr.write( "actual ratio: "+ratio+'\n' )
+            sys.stderr.write( "actual ratio: "+str(ratio)+'\n' )
             for e in self.edges_iter():
                 x = dict(self.get_edge(e[0], e[1]))
                 # for some reason the upper line (which is neater) 
@@ -465,7 +468,7 @@ class PredGraph(CalcGraph):
         #not rount None edges
         if weight==UNDEFINED or not weight:
             return weight
-        if hasattr( self.dataset, 'level_map' ):
+        if hasattr( self.dataset, 'level_map' ) and self.dataset.level_map:
             values = self.dataset.level_map.values()
             values.sort(lambda x,y: cmp(abs(x-weight),abs(y-weight)))
             return values[0]

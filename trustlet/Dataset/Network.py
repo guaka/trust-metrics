@@ -121,6 +121,7 @@ class Network(XDiGraph):
             else:
                 return write_pajek(self, self.filepath+'.net' )
         else:
+            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")')
             return False
         
     def load_pajek(self):
@@ -148,6 +149,7 @@ class Network(XDiGraph):
             self.paste_graph(w,key_to_delete='value')
             return True
         else:
+            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
             return False
 
     def load_dot(self):
@@ -167,6 +169,7 @@ class Network(XDiGraph):
             self.paste_graph(w)
             return True
         else:
+            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
             return False
 
     
@@ -180,6 +183,7 @@ class Network(XDiGraph):
             else:
                 return write_dot(self, self.filepath+'.dot' )
         else:
+            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
             return False
         
 
@@ -206,6 +210,7 @@ class Network(XDiGraph):
                                          self,
                                          filepath)
         else:
+            sys.stderr.write('Error! filepath must have the cachedict parameter set, at init-time, or passed to save_c2()\n')
             return False
         
 
@@ -1024,6 +1029,11 @@ class WikiNetwork(WeightedNetwork):
 
 
     def load_c2(self):
+        """
+        load graph from c2 file.
+        automatically called.
+        """
+
         #load from cache
         if not self.silent:
             print "Reading ", self.filepath
@@ -1156,7 +1166,7 @@ class WikiNetwork(WeightedNetwork):
         return a dictionary with all the weights in the network
         and it's rescaled value
         """
-        print "Warning! deprecate function. Use weights()"
+        print "Warning! deprecated function. Use weights()"
         return self.weights()
 
     def upbound(self):
@@ -1209,7 +1219,7 @@ class WikiNetwork(WeightedNetwork):
 
         return self.weights_list()
 
-    def set_upbound(self,up):
+    def set_upbound(self,up,permanent=False):
         """
         change the upbound value for this network.
         this modification affected the way in which the edges are rescaled.

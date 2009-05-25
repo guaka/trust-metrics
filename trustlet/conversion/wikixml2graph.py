@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 '''
 this script convert xml downloaded from www.download.wikimedia.org (history or current)
 in c2 dataset format, usable by trustlet
@@ -58,19 +56,6 @@ node = lambda s: str(printable(s)).replace('"',r'\"').replace('\\',r'\\')
 #the right translation for "Discussion User" in the language in key
 i18n = load('language_parameters', os.path.join( os.environ['HOME'], 'shared_datasets', 'WikiNetwork', 'languageparameters.c2' ), fault=False ) 
 
-#{
-#    'vec':('Discussion utente','Utente','Bot'),
-#    'nap':('Discussioni utente','Utente','Bot'),
-#    'fur':('Discussion utent','Utent','Bot'),
-#    'eml':('Discussioni utente','Utente','Bot'),
-#    'it': ('Discussioni utente','Utente','Bot'),
-#    'en': ('User talk','User','Bot'),
-#    'simple':('User talk','User','Bot'),
-#    'la': ('Disputatio usoris','Usor','automaton'),
-#    'de': ('Benutzer Diskussion', 'Benutzer', 'Bot'),
-#    'fr' : ('Discussion utilisateur', 'Utilisateur', 'Bot'),
-#    'es' : ('Usuario discusión', 'Usuario', 'Bot'), # check Bot!
-#}
 def addWikiLanguage(key,definition):
     """
     add a language to the list of supported language for wikixml2graph
@@ -345,8 +330,11 @@ def get_list_users(lang,cachepath=None,force=False,verbose=False):
     
 
 class WikiHistoryContentHandler(sax.handler.ContentHandler):
-    # startElement: is called when a tag begin, and give as parameter the name and the attributes of the tag
-    # endElement: is called when a tag end, and give as parameter the name of the tag
+    """
+    This class handle the xml for a wiki history dump 
+    """
+    #startElement: is called when a tag begin, and give as parameter the name and the attributes of the tag
+    #endElement: is called when a tag end, and give as parameter the name of the tag
     #characters: is called between start and end of a tag. as parameter will be given the data between tag
     #getNetwork: return a Network with the data calculated
     #getPyNetwork: return a tuple with two list:
