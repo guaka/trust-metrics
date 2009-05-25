@@ -1273,15 +1273,16 @@ def safe_merge(path,delete=True):
     #added by ciropom to fix a bug.. you don't store in "files" the path, but only the file name
     
     if not files:
-        return
+        return False
 
-    merge_cache(files+[fullpath],fullpath)
+    ret =  merge_cache(files+[fullpath],fullpath)
 
-
-    for file in files:
-        if delete:
+    if delete:
+        for file in files:
             print file
             os.remove(file)
+
+    return ret
 
 def load(key,path,version=False,fault=None,cachedcache=True,info=False):
     """
