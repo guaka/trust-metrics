@@ -65,7 +65,7 @@ Now svn commit doesn't upload anything and sync.py may work.
 ''' % path.join(os.environ['HOME'],HIDDENDIR)
 
 size = lambda f: os.stat(f).st_size
-mtime = lambda f: int(os.stat(f).st_mtime)
+mtime = lambda f: os.path.exists(f) and int(os.stat(f).st_mtime) or 0
 re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
 
 
@@ -124,51 +124,199 @@ def main():
     sys.argv = set(sys.argv)
 
     if '--verbose' in sys.argv:
-        sys.argv.append('-v')
+        sys.argv.add('-v')
+
+    upload = not '--no-upload' in sys.argv
     
     #files updated from svn
-    to_remove = []
+    file_updated = set()
 
     #timestamp update
-    tstampup = 0
+    ###tstampup = 0
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
+        # dir checking
         os.chdir(HOME)
         if path.exists(hiddenpath):
             shutil.rmtree(hiddenpath)
         assert not os.system(SVNCO % hiddenpath)
-    elif not '--no-update' in sys.argv:
+    else:
         os.chdir(hiddenpath)
         
-        #add all svn dir files to to_remove
-        for dirpath,dirs,files in os.walk(hiddenpath):
-            if not '.svn' in dirpath:
-                # foreach file saves relative path ( \{c2} )
-                to_remove += [path.join(dirpath,x) for x in files if not x.endswith('.c2')]
+        # obsolete ---
+        #for dirpath,dirs,files in os.walk(hiddenpath):
+        #    if not '.svn' in dirpath:
+        #        # foreach file saves relative path
+        #        file_updated += [path.join(dirpath,x) for x in files]
+        # ---
 
-        #timestamp update
-        tstampup = int(time.time())
+        #timestamp update ..> I can use ts of the last execution of sync?
+        ###tstampup = int(time.time())
+        lastupload = load_upload_timestamp()
         assert not os.system(SVNUP),'Update failied. '+CONFLICT
 
-        to_remove = set(to_remove) # non only files to remove, also c2 to merge
+        #file_updated = set(file_updated)
+
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
-                # remove from to_remove files yet in datasets dir only if
+                # remove from file_updated files yet in datasets dir only if
                 # they have not been modified.
-                to_remove.difference_update(set([path.join(dirpath,x) for x in files
-                                                 if mtime(path.join(dirpath,x))<tstampup]))
+                #unchanged = set([path.join(dirpath,x) for x in files
+                #                 if mtime(path.join(dirpath,x))<tstampup])
+                #file_updated.difference_update(unchanged)
 
-        #print to_remove
-        # remove file from dataset path
-        for f in to_remove:
-            f = f.replace(hiddenpath,datasetspath)
-            # c2 files are managed by merge
-            if path.isfile(f):
-                print "I'm removing",relative_path(f,DIR)[1] # ¡¡¡ it might a lost update, non c2 files only !!!
-                os.remove(f)
+                file_updated |= set([path.join(dirpath,x) for x in files
+                                     if mtime(path.join(dirpath,x))>lastupload])
+
+        added = updated = uploaded = merged = 0
+
+        #print file_updated
+
+        # update files modifiedy both from server and from client
+        for p1 in file_updated:
+            p2 = p1.replace(hiddenpath,datasetspath)
+
+            if p1.endswith('.c2') and os.path.isfile(p2):
+                # sure that p2 is updated
+                safe_merge(p2)
+                
+            if p1.endswith('.c2') and mtime(p2)>lastupload:
+
+                # modified from last time (both server and client) -> merge
+                if merge_cache([p1,p2],p1):
+                    shutil.copy(p1,p2)
+                    print p2,DIR
+                    print 'merged',relative_path(p2,DIR)[1]
+                    merged += 1
+            else:
+                print "I'm updating (coping) from server",relative_path(p2,DIR)[1] # ¡¡¡ it might a lost update, non c2 files only !!!
+                shutil.copy(p1,p2) # hiddenpath -> datasetpath
+                updated += 1
+
+
+        # from svn to datasets
+        for dirpath,dirnames,filenames in os.walk(hiddenpath):
+            if '.svn' in dirpath:
+                continue
+
+            destbasepath = dirpath.replace(hiddenpath,datasetspath)
+
+            # create missing directory
+            if not path.isdir(destbasepath):
+                os.mkdir(destbasepath)
+
+            for filename in filenames:
+                #print filename
+                srcpath = path.join(dirpath,filename)
+                dstpath = path.join(destbasepath,filename)
+                # relative path, without HOME/(.)datasetspath
+                rpath = relative_path(srcpath,HIDDENDIR)[1]
+                #print '<<< File:',rpath
+
+                if path.isfile(dstpath):
+
+                    # Manage removed files
+                    if removed(srcpath):
+                        print 'I\'m removing',dstpath
+                        os.remove(dstpath)
+                        continue
+
+                    if not srcpath in file_updated and mtime(dstpath)>lastupload:
+                        #updated from client and not from server
+                        print 'Upload',rpath
+                        uploaded += 1
+                        shutil.copy(dstpath,srcpath)
+
+                elif filename[0]!=PREFIX and not re_svnconflict.match(filename) and not filename.endswith('.mine') and not removed(srcpath) and not filename.endswith('.lock'):
+                    #adding
+                    print 'adding file',rpath
+                    added += 1
+                    #print srcpath,dstpath
+                    shutil.copy(srcpath,dstpath)
+
+        if added:
+            print '# of added files from server:',added
+        if updated:
+            print '# of updated files:',updated
+        if uploaded:
+            print '# of updated files:',uploaded
+        if merged:
+            print '# of merged files:',merged
+
+        # from datasetspath to svn
+
+        # to adding files
+        os.chdir(hiddenpath)
+
+        #copy *new* files to upload dir (hiddenpath)
+        for dirpath,dirnames,filenames in os.walk(datasetspath):
+            #print '>>',dirpath
+            destbasepath = dirpath.replace(datasetspath,hiddenpath)
+
+            if path.sep+PREFIX in dirpath:
+                # not upload dirs +*
+                print 'Directory %s will not uploaded' % path.split(dirpath)[1]
+                continue
+
+            # merge locally c2 files ( name.\d+.c2 into name.c2 )
+            for filename in filenames:
+                srcpath = path.join(dirpath,filename)
+                dstpath = path.join(destbasepath,filename)
+                
+                # if dstpath in file_updated -» yet merged
+                if srcpath.endswith('.c2') and path.exists(srcpath) and dstpath not in file_updated:
+                    #print 'Merge:',srcpath
+                    safe_merge(srcpath)
+
+            for filename in filenames:
+
+                srcpath = path.join(dirpath,filename)
+                if not path.exists(srcpath):
+                    continue #merging c2 might erase files
+                dstpath = path.join(destbasepath,filename)
+                # relative path, without HOME/(.)datasetspath
+                rpath = relative_path(srcpath,DIR)[1]
+                #print '>>> File:',rpath
+
+                if filename.startswith(PREFIX) or re_svnconflict.match(filename) \
+                        or filename.endswith('.mine') or filename.endswith('~') \
+                        or filename.endswith('.lock'):
+                    # not upload files _*, svn file and backup files
+                    print 'File %s will not uploaded' % rpath
+                    continue
+
+                if not path.isfile(dstpath):
+                    print 'adding file',rpath
+                    added += 1
+
+                    mkpath(destbasepath)
+                    svnaddpath(destbasepath)
+                    shutil.copy(srcpath,destbasepath)
+                    svnadd(dstpath)
+                #print  '<',srcpath,srcpath in updatedc2
+
+        #print updatedc2
+
+        comment = ''
+        if added:
+            comment += ' Added %d files.' % added
+        if updated:
+            comment += ' Updated %d files.' % uploaded
+
+        if usercomment:
+            comment += ' ' + usercomment
+
+        if comment and '-v' in sys.argv:
+            print 'Commit comment:', comment
+        assert not os.system(SVNCI % comment),CONFLICT
+
+        if added:
+            print '# of added files to server repository:',added
     
-    merge(hiddenpath,datasetspath,not '--no-upload' in sys.argv,usercomment)
-
     os.chdir(CURDIR)
+
+    # this is the last thing to do because a crash after save_upload_ts()
+    # without upload new data will cause a lost of them
+    save_upload_timestamp()
 
 def diff(f,g):
     '''
@@ -226,153 +374,19 @@ def removed(path):
         
     return False
 
-def merge(svn,datasets,upload=True,usercomment=''):
-    
-    added = updated = merged = 0
-    updatedc2 = set()
-    updatedfiles = set()
+def save_upload_timestamp():
+    sut = file(os.path.join(HOME,'.syncuploadts'),'w')
+    sut.write(str(time.time())+' '+time.ctime())
+    sut.close()
 
-    # from svn to datasets
-    for dirpath,dirnames,filenames in os.walk(svn):
-        if '.svn' in dirpath:
-            continue
-
-        destbasepath = dirpath.replace(svn,datasets)
-        
-        # create missing directory
-        if not path.isdir(destbasepath):
-            assert not path.isfile(destbasepath),destbasepath
-            os.mkdir(destbasepath)
-
-        for filename in filenames:
-            #print filename
-            srcpath = path.join(dirpath,filename)
-            dstpath = path.join(destbasepath,filename)
-            # relative path, without HOME/(.)datasets
-            rpath = relative_path(srcpath,HIDDENDIR)[1]
-            #print '<<< File:',rpath
-            
-            if path.isfile(dstpath):
-                # yet exists in destination
-
-                #print dstpath
-                # Manage removed files
-                if removed(srcpath):
-                    print 'I\'m removing',dstpath
-                    os.remove(dstpath)
-                    continue
-
-                if not diff(srcpath,dstpath):
-                    # file modified
-                    #print '#>',srcpath
-                    #print '##>',dstpath
-                    if filename.endswith('.c2') and not removed(dstpath):
-                        # priority: dstpath
-                        merge_cache([dstpath,srcpath],dstpath)
-
-                        if diffc2(srcpath,dstpath):
-                            # the content is equal, but file are different.
-                            # we'll keep the server version
-                            # this is useful to avoid ping pong of the same c2
-                            #print 'Copy'
-                            shutil.copy(srcpath,dstpath)
-                        else:
-                            print 'merging client and server version of %s' % rpath
-                            merged += 1
-                            updatedc2.add(dstpath) # save that dstpath is to update
-
-                    else:
-                        print 'file %s differs from client to server. The client version will be kept.' % rpath
-                        updatedfiles.add(dstpath)
-            elif filename[0]!=PREFIX and not re_svnconflict.match(filename) and not filename.endswith('.mine') and not removed(srcpath):
-                #adding
-                print 'adding file',rpath
-                added += 1
-                #print srcpath,dstpath
-                shutil.copy(srcpath,dstpath)
-
-
-    if added:
-        print '# of added files:',added
-    if updated:
-        print '# of updated files:',updated
-    if merged:
-        print '# of merged files:',merged
-    
-    # from datasets to svn
-    if upload:
-        print 'Upload on server'
-        added = updated = 0
-
-        # to adding files
-        os.chdir(svn)
-
-        #copy *new* files and updated c2 to upload dir (svn)
-        for dirpath,dirnames,filenames in os.walk(datasets):
-            #print '>>',dirpath
-            destbasepath = dirpath.replace(datasets,svn)
-
-            if path.sep+PREFIX in dirpath:
-                # not upload dirs +*
-                print 'Directory %s will not uploaded' % path.split(dirpath)[1]
-                continue
-
-            # merge locally c2 files ( name.\d+.c2 into name.c2 )
-
-            for filename in filenames:
-                srcpath = path.join(dirpath,filename)
-                if srcpath.endswith('.c2') and path.exists(srcpath):
-                    #print 'Merge:',srcpath
-                    safe_merge(srcpath)
-
-            for filename in filenames:
-
-                srcpath = path.join(dirpath,filename)
-                if not path.exists(srcpath):
-                    continue #merging c2 can erase files
-                dstpath = path.join(destbasepath,filename)
-                # relative path, without HOME/(.)datasets
-                rpath = relative_path(srcpath,DIR)[1]
-                #print '>>> File:',rpath
-            
-                if filename.startswith(PREFIX) or re_svnconflict.match(filename) \
-                        or filename.endswith('.mine') or filename.endswith('~'):
-                    # not upload files _*, svn file and backup files
-                    print 'File %s will not uploaded' % rpath
-                    continue
-
-                if not path.isfile(dstpath):
-                    print 'adding file',rpath
-                    added += 1
-
-                    mkpath(destbasepath)
-                    svnaddpath(destbasepath)
-                    shutil.copy(srcpath,destbasepath)
-                    svnadd(dstpath)
-                elif srcpath in updatedc2 or srcpath in updatedfiles:
-                    print 'updating file',rpath
-                    updated += 1
-                    shutil.copy(srcpath,dstpath)
-                #print  '<',srcpath,srcpath in updatedc2
-
-        #print updatedc2
-
-        comment = ''
-        if added:
-            comment += ' Added %d files.' % added
-        if updated:
-            comment += ' Updated %d files.' % updated
-        
-        if usercomment:
-            comment += ' ' + usercomment
-
-        if comment and '-v' in sys.argv:
-            print 'Commit comment:', comment
-        assert not os.system(SVNCI % comment),CONFLICT
-
-        if added:
-            print '# of added files to server repository:',added
-        
+def load_upload_timestamp():
+    try:
+        sut = file(os.path.join(HOME,'.syncuploadts'))
+        data = float(sut.read().split()[0])
+        sut.close()
+        return data
+    except IOError:
+        return 0.
 
 if __name__=="__main__":
     main()
