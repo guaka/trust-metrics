@@ -65,7 +65,7 @@ Now svn commit doesn't upload anything and sync.py may work.
 ''' % path.join(os.environ['HOME'],HIDDENDIR)
 
 size = lambda f: os.stat(f).st_size
-mtime = lambda f: int(os.stat(f).st_mtime)
+mtime = lambda f: os.path.exists(f) and int(os.stat(f).st_mtime) or 0
 re_svnconflict = re.compile('.*\.r\d+$') #ends with .r[num]
 
 
@@ -188,8 +188,7 @@ def main():
                     print 'merged',relative_path(p2,DIR)[1]
                     merged += 1
             else:
-                print p2,DIR
-                print "I'm updating (coping)",relative_path(p2,DIR)[1] # ¡¡¡ it might a lost update, non c2 files only !!!
+                print "I'm updating (coping) from server",relative_path(p2,DIR)[1] # ¡¡¡ it might a lost update, non c2 files only !!!
                 shutil.copy(p1,p2) # hiddenpath -> datasetpath
                 updated += 1
 
