@@ -184,8 +184,8 @@ def main():
                 # modified from last time (both server and client) -> merge
                 if merge_cache([p1,p2],p1):
                     shutil.copy(p1,p2)
-                    print p1,DIR
-                    print 'merged',relative_path(p1,DIR)[1]
+                    print p2,DIR
+                    print 'merged',relative_path(p2,DIR)[1]
                     merged += 1
             else:
                 print p2,DIR
