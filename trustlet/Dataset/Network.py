@@ -137,7 +137,7 @@ class Network(XDiGraph):
         this parameter.
         """
 
-        if hasattr(self,"filepath") and self.filepath and os.path.exists(self.filepath):
+        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.net')):
             if self.filepath.endswith( '.net' ):
                 w = read_pajek(self.filepath)
             elif os.path.exists(self.filepath+'.net'):
@@ -157,7 +157,7 @@ class Network(XDiGraph):
         load a graph in a dot format
         """
 
-        if hasattr(self,"filepath") and self.filepath and os.path.exists(self.filepath):
+        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.dot')):
             if self.filepath.endswith( '.dot' ):
                 w = read_dot(self.filepath)
             elif os.path.exists(self.filepath+'.dot'):
