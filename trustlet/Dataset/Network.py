@@ -102,8 +102,92 @@ class Network(XDiGraph):
             return self._cachedict.copy()
         else:
             return None
+ 
+    def __load_from(self, function, extension, decodeUtf8=False):
+        #load from a generic format
+
+        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+extension)):
+            if self.filepath.endswith( extension ):
+                w = function(self.filepath)
+            elif os.path.exists(self.filepath+extension):
+                w = function(self.filepath+extension)
+            else:
+                sys.stderr.write( "error loading network, filepath does not exists\n" )
+                return False
             
-    def save_pajek(self):
+            if decodeUtf8:
+                N = trustlet.Dataset.Network.Network() # we lose all the info :(
+                for node in w.nodes_iter():
+                    N.add_node( node.decode( 'utf-8' ) )
+                    
+                for edge in w.edges_iter():    
+                    N.add_edge( edge[0].decode( 'utf-8' ), edge[1].decode('utf-8' ), edge[2] )
+            else:
+                N = w
+            
+            self.paste_graph(N,key_to_delete='value')
+            return True
+        else:
+            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
+            return False
+
+        
+    def load_pajek(self, decodeUtf8=False):
+        """
+        load a graph in a pajek format.
+        we strongly recomend to use c2 format,
+        because it implements some cache-mechanism
+        and save automatically some important information
+        about network (as level_map).
+        if you use pajek format remember to set your
+        level_map before use some methods (as info or reciprocity_matix for example)
+        and to set parameter force to True, if you had to elaborate a function with
+        this parameter.
+        decodeUtf8 = if true, the nodes and the edges will be automatically decoded
+                     into utf8, if false it aren't.
+        """
+        return self.__load_from( read_pajek, '.net', decodeUtf8 )
+
+    def load_dot(self, decodeUtf8=False):
+        """
+        load a graph in a dot format.
+        we strongly recomend to use c2 format,
+        because it implements some cache-mechanism
+        and save automatically some important information
+        about network (as level_map).
+        if you use dot format remember to set your
+        level_map before use some methods (as info or reciprocity_matix for example)
+        and to set parameter force to True, if you had to elaborate a function with
+        this parameter.
+        decodeUtf8 = if true, the nodes and the edges will be automatically decoded
+                     into utf8, if false it aren't.
+        """
+        return self.__load_from( read_dot, '.dot', decodeUtf8 )
+ 
+    def __save_to( self, function, extension, encodeAscii=False ):
+        #save to a generic format
+        if hasattr(self,"filepath") and self.filepath:
+            #create a new network, encoded with ascii
+            if encodeAscii:
+                N = trustlet.Dataset.Network.Network() #we lose all the info :(
+                for n in self.nodes_iter():
+                    N.add_node( n.encode('utf-8') )
+                for e in self.edges_iter():
+                    N.add_edge( e[0].encode('utf-8'), e[1].encode('utf-8'), e[2] )
+            else:
+                N = self
+
+            if self.filepath.endswith( extension ):
+                return function(N, self.filepath )
+            else:
+                return function(N, self.filepath+extension )
+        else:
+            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
+            return False
+        
+    
+               
+    def save_pajek(self, encodeAscii=False):
         """
         save this network in pajek format in `filepath`.net
         we strongly recomend to use c2 format,
@@ -115,77 +199,13 @@ class Network(XDiGraph):
         and to set parameter force to True, if you had to elaborate a function with
         this parameter.
         """
-        if hasattr(self,"filepath") and self.filepath:
-            if self.filepath.endswith( ".net" ):
-                return write_pajek(self, self.filepath )
-            else:
-                return write_pajek(self, self.filepath+'.net' )
-        else:
-            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")')
-            return False
-        
-    def load_pajek(self):
-        """
-        load a graph in a pajek format.
-        we strongly recomend to use c2 format,
-        because it implements some cache-mechanism
-        and save automatically some important information
-        about network (as level_map).
-        if you use pajek format remember to set your
-        level_map before use some methods (as info or reciprocity_matix for example)
-        and to set parameter force to True, if you had to elaborate a function with
-        this parameter.
-        """
+        return self.__save_to( write_pajek, '.net', encodeAscii ) 
 
-        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.net')):
-            if self.filepath.endswith( '.net' ):
-                w = read_pajek(self.filepath)
-            elif os.path.exists(self.filepath+'.net'):
-                w = read_pajek(self.filepath+'.net')
-            else:
-                sys.stderr.write( "error loading network, filepath does not exists\n" )
-                return False
-                    
-            self.paste_graph(w,key_to_delete='value')
-            return True
-        else:
-            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
-            return False
-
-    def load_dot(self):
-        """
-        load a graph in a dot format
-        """
-
-        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+'.dot')):
-            if self.filepath.endswith( '.dot' ):
-                w = read_dot(self.filepath)
-            elif os.path.exists(self.filepath+'.dot'):
-                w = read_dot(self.filepath+'.dot')
-            else:
-                sys.stderr.write( "error loading network, filepath does not exists\n" )
-                return False
-                    
-            self.paste_graph(w)
-            return True
-        else:
-            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
-            return False
-
-    
-    def save_dot(self):
+    def save_dot(self, encodeAscii=False):
         """
         save this graph in dot format (in self.filepath)
         """
-        if hasattr(self,"filepath") and self.filepath:
-            if self.filepath.endswith( ".dot" ):
-                return write_dot(self, self.filepath )
-            else:
-                return write_dot(self, self.filepath+'.dot' )
-        else:
-            sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
-            return False
-        
+        return self.__save_to( write_dot, '.dot', encodeAscii )
 
 
     def save_c2(self,cachedict=None ):
@@ -612,7 +632,7 @@ class Network(XDiGraph):
                 self.add_node(node)
 
             for edge in iterEdge(cond):
-                if deletekey:
+                if deletekey and edge[2].keys() != [key_to_delete]: #if it isn't the only one
                     del edge[2][key_to_delete]
                 self.add_edge(edge)
 
@@ -626,7 +646,7 @@ class Network(XDiGraph):
                     self.add_node(edge[0])
                     self.add_node(edge[1])
                 else:
-                    if deletekey:
+                    if deletekey and edge[2].keys() != [key_to_delete]: #if it isn't the only one 
                         del edge[2][key_to_delete]
                     self.add_edge(edge) # if we add an edge the nodes will be automatically added
     
