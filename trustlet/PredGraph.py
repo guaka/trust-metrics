@@ -37,7 +37,7 @@ class CalcGraph(Network):
         predict_ratio is the part of the edges that will randomly be
         picked for prediction."""
         Network.__init__(self, make_base_path = False,silent=TM.dataset.silent)
-
+        self.name = 'CalcGraph'
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
@@ -275,7 +275,8 @@ class PredGraph(CalcGraph):
         CalcGraph.__init__(self, TM,
                            recreate = recreate,
                            predict_ratio = predict_ratio)
-        
+        self.name = 'PredGraph'
+ 
     
     def _generate(self):
         """Generate the prediction graph."""
@@ -742,7 +743,7 @@ class CalcWikiGraph(CalcGraph):
         NB: The save format for wiki, is different from the save format
             for Advogato, and other datasets"""
         Network.__init__(self, make_base_path = False,silent=TM.dataset.silent)
-
+        self.name = 'WikiCalcGraph'
         self.TM = TM
         self.dataset = dataset = TM.dataset
         self.predict_ratio = predict_ratio
@@ -908,7 +909,7 @@ class WikiPredGraph(PredGraph,CalcWikiGraph):
 
 
         CalcWikiGraph.__init__( self, TM, recreate = recreate, predict_ratio = predict_ratio)
-
+        self.name = 'WikiPredGraph'
         self.leave_one_out = leave_one_out
         
 

@@ -103,7 +103,7 @@ class Network(XDiGraph):
         else:
             return None
  
-    def __load_from(self, function, extension, decodeUtf8=False):
+    def _load_from(self, function, extension, string_to_weight, decodeUtf8=False):
         #load from a generic format
 
         if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+extension)):
@@ -121,9 +121,42 @@ class Network(XDiGraph):
                     N.add_node( node.decode( 'utf-8' ) )
                     
                 for edge in w.edges_iter():    
-                    N.add_edge( edge[0].decode( 'utf-8' ), edge[1].decode('utf-8' ), edge[2] )
+                    N.add_edge( edge[0].decode( 'utf-8' ), edge[1].decode('utf-8' ), string_to_weight(edge[2]) )
             else:
-                N = w
+                #we have to undo the workaround done in the save, (in order to avoid UnicodedecodeError)
+
+                #HELPER FUNCTIONS
+                #check if a string is in ascii
+                #return a string in ascii, (convert the non-ascii char)
+                def to_utf8(s):
+                    newn = ''
+                    # is used to know how many chars to skip
+                    # after the decode of a utf8-char.
+                    # ex. /ba --> \0xba charToSkip = 2, so 'ba' are not included as chars
+                    charToSkip = 0
+                    for i in xrange(len(s)):
+                        if charToSkip > 0:
+                            charToSkip -= 1
+                            continue
+
+                        if s[i] == '/': #the '/' is before the utf8-char
+                            utf8Char = chr( int( s[i+1:i+3], 16 ) )
+                            newn += utf8Char #replace the invalid position with a '?' in order to avoid UnicodeDecodeError
+                            charToSkip = 2
+                        else:
+                            newn += s[i]
+                    return newn
+                #END HELPER
+                N = trustlet.Dataset.Network.Network() #we lose all the info :(
+                for n in w.nodes_iter():
+                    N.add_node( to_utf8(n).decode('utf8') ) 
+
+                for e in w.edges_iter():
+                    e0 = to_utf8(e[0]).decode('utf-8') 
+                    e1 = to_utf8(e[1]).decode('utf-8') 
+                                
+                    N.add_edge( e0, e1, string_to_weight(e[2]) )
+            
             
             self.paste_graph(N,key_to_delete='value')
             return True
@@ -145,10 +178,14 @@ class Network(XDiGraph):
         this parameter.
         decodeUtf8 = if true, the nodes and the edges will be automatically decoded
                      into utf8, if false it aren't.
+        return False if fail, else return True.
         """
-        return self.__load_from( read_pajek, '.net', decodeUtf8 )
+        def edges(e):
+            return e
 
-    def load_dot(self, decodeUtf8=False):
+        return self._load_from( read_pajek, '.net', edges, decodeUtf8 )
+
+    def load_dot(self, decodeUtf8=False, wiki=False):
         """
         load a graph in a dot format.
         we strongly recomend to use c2 format,
@@ -160,11 +197,25 @@ class Network(XDiGraph):
         and to set parameter force to True, if you had to elaborate a function with
         this parameter.
         decodeUtf8 = if true, the nodes and the edges will be automatically decoded
-                     into utf8, if false it aren't.
+                     into utf8, if false it aren't
+        wiki = if True the dot contains a wikinetwork, if False it not.
+        return False if fail, else return True.
         """
-        return self.__load_from( read_dot, '.dot', decodeUtf8 )
+        if not wiki:
+            def edges(e):
+                return e
+        else:
+            def edges(e):
+                if type(e) is dict:
+                    for k in e.keys():
+                        e[k] = int(e[k])
+                    return e
+                else:
+                    return int(e)
+        
+        return self._load_from( read_dot, '.dot', edges, decodeUtf8 )
  
-    def __save_to( self, function, extension, encodeAscii=False ):
+    def _save_to( self, function, extension, weight_to_string, encodeAscii=False ):
         #save to a generic format
         if hasattr(self,"filepath") and self.filepath:
             #create a new network, encoded with ascii
@@ -173,25 +224,46 @@ class Network(XDiGraph):
                 for n in self.nodes_iter():
                     N.add_node( n.encode('utf-8') )
                 for e in self.edges_iter():
-                    N.add_edge( e[0].encode('utf-8'), e[1].encode('utf-8'), e[2] )
+                    N.add_edge( e[0].encode('utf-8'), e[1].encode('utf-8'), weight_to_string( e[2] ) )
             else:
-                N = self
+                # in order to avoid UnicodeDecodeError
+                # we replace the unicode character with the ord() of it's .encode('utf-8') value
 
-            if self.filepath.endswith('.c2'):
-                filepath = self.filepath[:-3]
-            else:
-                filepath = self.filepath
+                #HELPER FUNCTIONS
+                #check if a string is in ascii
+                #return a string in ascii, (convert the non-ascii char)
+                def to_ascii(s):
+                    newn = ''
+                    for i in xrange(len(s)):     # / is replaced with /*exadecimal code of /*
+                                                 # so when we undo this change, / will be replaced with / :-)
+                        if not ord(s[i]) < 128 or s[i] == '/':
+                            fakeUtf8Char = '/' +str( '%.2x'%ord(s[i]) )
+                            newn += fakeUtf8Char #replace the invalid position with a '?' in order to avoid UnicodeDecodeError
+                        else:
+                            newn += s[i]
+    
+                    return newn
+                #END HELPER
+                N = trustlet.Dataset.Network.Network() #we lose all the info :(
+                for n in self.nodes_iter():
+                    N.add_node( to_ascii(n.encode('utf-8') ) )
 
+                for e in self.edges_iter():
+                    e0 = to_ascii( e[0].encode('utf-8') )
+                    e1 = to_ascii( e[1].encode('utf-8') )
+                                
+                    N.add_edge( e0, e1, weight_to_string(e[2]) )
+            
             if self.filepath.endswith( extension ):
-                return function(N, filepath )
+                function(N, self.filepath )
             else:
-                return function(N, filepath+extension )
+                function(N, self.filepath+extension )
+            return True
         else:
             sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
             return False
         
     
-               
     def save_pajek(self, encodeAscii=False):
         """
         save this network in pajek format in `filepath`.net
@@ -203,14 +275,36 @@ class Network(XDiGraph):
         level_map before use some methods (as info or reciprocity_matix for example)
         and to set parameter force to True, if you had to elaborate a function with
         this parameter.
+        encodeAscii = if true, the value will be decoded to ascii, before writing them,
+                      else it aren't, but
+                     in order to avoid UnicodeDecodeError
+                     we replace the unicode character with the ord() of it's .encode('utf-8') value
+        return False if fail, else return True.
         """
-        return self.__save_to( write_pajek, '.net', encodeAscii ) 
+        def edges(e):
+            return e
+        return self._save_to( write_pajek, '.net', edges, encodeAscii ) 
 
     def save_dot(self, encodeAscii=False):
         """
         save this graph in dot format (in self.filepath)
+        we strongly recomend to use c2 format,
+        because it implements some cache-mechanism
+        and save automatically some important information
+        about network (as level_map).
+        if you use dot format remember to set your
+        level_map before use some methods (as info or reciprocity_matix for example)
+        and to set parameter force to True, if you had to elaborate a function with
+        this parameter.
+        encodeAscii = if true, the value will be decoded to ascii, before writing them,
+                      else it aren't, but
+                      in order to avoid UnicodeDecodeError
+                      we replace the unicode character with the ord() of it's .encode('utf-8') value
+        return False if fail, else return True.
         """
-        return self.__save_to( write_dot, '.dot', encodeAscii )
+        def edges(e):
+            return e
+        return self._save_to( write_dot, '.dot', edges, encodeAscii )
 
 
     def save_c2(self,cachedict=None ):
@@ -998,7 +1092,7 @@ class WeightedNetwork(Network):
 class WikiNetwork(WeightedNetwork):
     """
     Wikipedia Network Handler.
-    You must pass to it a string with lang of wikipedia, and a string with the date of dataset. 
+    You must pass to it a string with lang of wikipedia, and a string with the date of the dataset. 
     Optionally:
     dataset: path to a dot file that it will load and save in the dataset folder
     current: Default False use the dataset generated by History xml dump (named graphHistory), if True use the dataset generated by current xml dump
@@ -1017,7 +1111,7 @@ class WikiNetwork(WeightedNetwork):
         WeightedNetwork.__init__(self,base_path=base_path,prefix=prefix,silent=silent)
         
         assert trustlet.helpers.isdate(date),'date: aaaa-mm-dd'
-
+        self.name= 'WikipediaNetwork/'+str(lang)
         self.url = 'http://www.trustlet.org/trustlet_dataset_svn/'
         self.lang = lang
         self.date = date
@@ -1051,6 +1145,43 @@ class WikiNetwork(WeightedNetwork):
         assert self.load_c2(), 'There isn\'t anything here! ('+self.filepath+')'
 
         self.__rescale()
+
+    def save_dot(self, encodeAscii=False):
+        def edges(e):
+            if type(e) is dict:
+                for k in e.keys():
+                    e[k] = str(e[k])
+                return e
+            else:
+                return str(e)
+
+        return self._save_to( write_dot, '.dot', edges, encodeAscii )
+
+    
+    def load_dot(self, decodeUtf8=False):
+        """
+        load a graph in a dot format.
+        we strongly recomend to use c2 format,
+        because it implements some cache-mechanism
+        and save automatically some important information
+        about network (as level_map).
+        if you use dot format remember to set your
+        level_map before use some methods (as info or reciprocity_matix for example)
+        and to set parameter force to True, if you had to elaborate a function with
+        this parameter.
+        decodeUtf8 = if true, the nodes and the edges will be automatically decoded
+                     into utf8, if false it aren't
+        return False if fail, else return True.
+        """
+        def edges(e):
+            if type(e) is dict:
+                for k in e.keys():
+                    e[k] = int(e[k])
+                return e
+            else:
+                return int(e)
+
+        return self._load_from( read_dot, '.dot', edges, decodeUtf8 )
 
 
     def load_c2(self):

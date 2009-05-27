@@ -126,6 +126,7 @@ class AdvogatoNetwork(trustlet.WeightedNetwork):
 
         self.level_map = weights #level_map deprecated (really?)
         trustlet.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date, silent=silent)
+        self.name= 'AdvogatoNetwork'
 
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
@@ -304,7 +305,8 @@ class Robots_netNetwork(AdvogatoNetwork):
    
         self.level_map = weights #level_map deprecated
         trustlet.Dataset.Network.WeightedNetwork.__init__(self, weights = self.level_map, base_path = base_path,prefix=prefix,date=date)
-
+        self.name= 'Robots_netNetwork'
+        
         self.path = os.path.join(self.path, date)
         if not os.path.exists(self.path):
             os.mkdir(self.path)
@@ -351,9 +353,11 @@ class SqueakfoundationNetwork(AdvogatoNetwork):
                                  cond_on_edge=cond_on_edge,
                                  from_dot=from_dot,
                                  silent=silent)
-
+        self.name= 'SqueakfoundationNetwork'
+    
     # seeds for global advogato TM
     advogato_seeds = ['Yoda', 'luciano']
+        
     def trust_on_edge(self, edge):
         """For Squeak it's color."""
         # print "in trust_on_edge, edge:", edge
@@ -375,6 +379,8 @@ class KaitiakiNetwork(SqueakfoundationNetwork):
                                  cond_on_edge=cond_on_edge,
                                  from_dot=from_dot,
                                  silent=silent)
+        self.name= 'KaitiakiNetwork'
+        
 
 
 if __name__ == "__main__":
