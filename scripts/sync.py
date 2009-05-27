@@ -167,7 +167,6 @@ def main():
                 # modified from last time (both server and client) -> merge
                 if merge_cache([p1,p2],p1):
                     shutil.copy(p1,p2)
-                    print p2,DIR
                     print 'merged',relative_path(p2,DIR)[1]
                     merged += 1
             else:
@@ -230,7 +229,7 @@ def main():
         # to adding files
         os.chdir(hiddenpath)
 
-        #copy *new* files to upload dir (hiddenpath)
+        #copy *new* files to upload dir (hiddenpath) and remove removed files
         for dirpath,dirnames,filenames in os.walk(datasetspath):
             #print '>>',dirpath
             destbasepath = dirpath.replace(datasetspath,hiddenpath)
@@ -245,6 +244,13 @@ def main():
                 srcpath = path.join(dirpath,filename)
                 dstpath = path.join(destbasepath,filename)
                 
+                # Manage removed files
+                if removed(srcpath):
+                    print 'I\'m removing',dstpath
+                    os.remove(dstpath)
+                    continue
+
+
                 # if dstpath in file_updated -» yet merged
                 if srcpath.endswith('.c2') and path.exists(srcpath) and dstpath not in file_updated:
                     #print 'Merge:',srcpath
