@@ -107,11 +107,11 @@ def main():
     hiddenpath = path.join(basepath,HIDDENDIR)
     datasetspath = path.join(basepath,DIR)
 
-    #remove old links
-    if path.islink(path.join(HOME,HIDDENDIR)):
-        os.remove(path.join(HOME,HIDDENDIR))
-    if path.islink(path.join(HOME,DIR)):
-        os.remove(path.join(HOME,DIR))
+    #remove old links - why?
+    #if path.islink(path.join(HOME,HIDDENDIR)):
+    #    os.remove(path.join(HOME,HIDDENDIR))
+    #if path.islink(path.join(HOME,DIR)):
+    #    os.remove(path.join(HOME,DIR))
 
     if basepath != HOME:
         path1 = path.join(HOME,HIDDENDIR)
