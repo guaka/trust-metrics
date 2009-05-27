@@ -156,6 +156,7 @@ def main():
         # update files modifiedy both from server and from client
         for p1 in file_updated:
             p2 = p1.replace(hiddenpath,datasetspath)
+            mkpath(os.path.split(p2)[0])
 
             if p1.endswith('.c2') and os.path.isfile(p2):
                 # sure that p2 is updated
