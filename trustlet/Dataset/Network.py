@@ -177,10 +177,15 @@ class Network(XDiGraph):
             else:
                 N = self
 
-            if self.filepath.endswith( extension ):
-                return function(N, self.filepath )
+            if self.filepath.endswith('.c2'):
+                filepath = self.filepath[:-3]
             else:
-                return function(N, self.filepath+extension )
+                filepath = self.filepath
+
+            if self.filepath.endswith( extension ):
+                return function(N, filepath )
+            else:
+                return function(N, filepath+extension )
         else:
             sys.stderr.write('Error! filepath is not defined! set first the filepath (ending with ".c2")\n')
             return False

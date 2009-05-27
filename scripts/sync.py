@@ -131,8 +131,6 @@ def main():
     #files updated from svn
     file_updated = set()
 
-    #timestamp update
-    ###tstampup = 0
     if not path.isdir(hiddenpath) or not path.isdir(path.join(hiddenpath,'.svn')):
         # dir checking
         os.chdir(HOME)
@@ -141,29 +139,13 @@ def main():
         assert not os.system(SVNCO % hiddenpath)
     else:
         os.chdir(hiddenpath)
-        
-        # obsolete ---
-        #for dirpath,dirs,files in os.walk(hiddenpath):
-        #    if not '.svn' in dirpath:
-        #        # foreach file saves relative path
-        #        file_updated += [path.join(dirpath,x) for x in files]
-        # ---
 
         #timestamp update ..> I can use ts of the last execution of sync?
-        ###tstampup = int(time.time())
         lastupload = load_upload_timestamp()
         assert not os.system(SVNUP),'Update failied. '+CONFLICT
 
-        #file_updated = set(file_updated)
-
         for dirpath,dirs,files in os.walk(hiddenpath):
             if not '.svn' in dirpath:
-                # remove from file_updated files yet in datasets dir only if
-                # they have not been modified.
-                #unchanged = set([path.join(dirpath,x) for x in files
-                #                 if mtime(path.join(dirpath,x))<tstampup])
-                #file_updated.difference_update(unchanged)
-
                 file_updated |= set([path.join(dirpath,x) for x in files
                                      if mtime(path.join(dirpath,x))>lastupload])
 
