@@ -248,7 +248,7 @@ def main():
                 # Manage removed files
                 if removed(srcpath):
                     print 'I\'m removing',dstpath
-                    os.remove(dstpath)
+                    os.remove(srcpath)
                     deleted_local += 1
                     continue
 
@@ -370,8 +370,15 @@ def removed(path):
     return False
 
 def save_upload_timestamp():
+    try:
+        lut = file(os.path.join(HOME,'.syncuploadts'))
+        data = lut.readlines()[:9]
+        lut.close()
+    except IOError:
+        data = []
+
     sut = file(os.path.join(HOME,'.syncuploadts'),'w')
-    sut.write(str(time.time())+' '+time.ctime())
+    sut.writelines([str(time.time())+' '+time.ctime()+'\n']+data)
     sut.close()
 
 def load_upload_timestamp():
