@@ -29,7 +29,7 @@ except:
 
 UNDEFINED = -37 * 37  #mayby use numpy.NaN?
 
-avg = lambda l: 1.0*sum(l)/len(l)
+avg = lambda l: l and float(sum(l)) / len(l)
 mtime = lambda f: int(os.stat(f).st_mtime)
 
 

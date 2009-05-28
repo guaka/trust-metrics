@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Network classes
 
@@ -116,6 +117,8 @@ class Network(XDiGraph):
             else:
                 sys.stderr.write( "error loading network, filepath does not exists\n" )
                 return False
+
+            w = function(filepaths[0])
             
             if decodeUtf8:
                 N = trustlet.Dataset.Network.Network() # we lose all the info :(
@@ -256,7 +259,9 @@ class Network(XDiGraph):
                                 
                     N.add_edge( e0, e1, weight_to_string(e[2]) )
             
-            if self.filepath.endswith( extension ):
+            if self.filepath.endswith( '.c2' ):
+                function(N, self.filepath[:-3]+extension )
+            elif self.filepath.endswith( extension ):
                 function(N, self.filepath )
             elif self.filepath.endswith( '.c2' ):
                 filepath = self.filepath[:-3]

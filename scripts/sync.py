@@ -149,7 +149,7 @@ def main():
                 file_updated |= set([path.join(dirpath,x) for x in files
                                      if mtime(path.join(dirpath,x))>lastupload])
 
-        added = updated = uploaded = merged = 0
+        added = updated = uploaded = merged = deleted_server = deleted_local = 0
 
         #print file_updated
 
@@ -200,6 +200,7 @@ def main():
                     if removed(srcpath):
                         print 'I\'m removing',dstpath
                         os.remove(dstpath)
+                        deleted_server += 1
                         continue
 
                     if not srcpath in file_updated and mtime(dstpath)>lastupload:
@@ -248,6 +249,7 @@ def main():
                 if removed(srcpath):
                     print 'I\'m removing',dstpath
                     os.remove(dstpath)
+                    deleted_local += 1
                     continue
 
 
@@ -290,6 +292,8 @@ def main():
             comment += ' Added %d files.' % added
         if updated:
             comment += ' Updated %d files.' % uploaded
+        if deleted_local:
+            comment += ' Deleted %d files.' % deleted_local
 
         if usercomment:
             comment += ' ' + usercomment
@@ -300,6 +304,8 @@ def main():
 
         if added:
             print '# of added files to server repository:',added
+        if deleted_server or deleted_local:
+            print '# of deleted files:',deleted_local+deleted_server
     
     os.chdir(CURDIR)
 
