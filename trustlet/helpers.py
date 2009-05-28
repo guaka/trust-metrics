@@ -1779,6 +1779,17 @@ def wiki_matching(W,Z):
     print 'Creating error distribution graph...'
     prettyplot(dd.iteritems(),'error_distribution',title='Distribution of absolute errors',showlines=True)
 
+def rm_empty_path(p):
+    '''
+    remove a path and its parents while there isn't file inside.
+    '''
+    
+    p = os.path.realpath(p)
+
+    if not os.listdir(p):
+        os.rmdir(p)
+        rm_empty_path(os.path.join(p,os.pardir))
+
 if __name__=="__main__":
     from trustlet import *
     #test pool

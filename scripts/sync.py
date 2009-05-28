@@ -41,7 +41,7 @@ from socket import gethostname
 # not show: /usr/lib/python2.6/site-packages/networkx/hybrid.py:16: DeprecationWarning: the sets module is deprecated
 stderr = sys.stderr
 sys.stderr = file('/dev/null','w')
-from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge,read_c2
+from trustlet.helpers import merge_cache,mkpath,md5file,relative_path,safe_merge,read_c2,rm_empty_path
 sys.stderr = stderr
 
 HOME = os.environ['HOME']
@@ -200,6 +200,7 @@ def main():
                     if removed(srcpath):
                         print 'I\'m removing',dstpath
                         os.remove(dstpath)
+                        rm_empty_path(os.path.join(os.path.split(srcpath)[0],os.pardir))
                         deleted_server += 1
                         continue
 
@@ -221,7 +222,7 @@ def main():
         if updated:
             print '# of updated files:',updated
         if uploaded:
-            print '# of updated files:',uploaded
+            print '# of uploaded files:',uploaded
         if merged:
             print '# of merged files:',merged
 
@@ -249,6 +250,7 @@ def main():
                 if removed(srcpath):
                     print 'I\'m removing',dstpath
                     os.remove(srcpath)
+                    rm_empty_path(os.path.join(os.path.split(srcpath)[0],os.pardir))
                     deleted_local += 1
                     continue
 
@@ -290,8 +292,8 @@ def main():
         comment = ''
         if added:
             comment += ' Added %d files.' % added
-        if updated:
-            comment += ' Updated %d files.' % uploaded
+        if uploaded:
+            comment += ' Uploaded %d files.' % uploaded
         if deleted_local:
             comment += ' Deleted %d files.' % deleted_local
 
@@ -364,7 +366,7 @@ def removed(path):
         data = f.read().strip()
         f.close()
         
-        if data==REMOVED:
+        if data.strip()==REMOVED:
             return True
         
     return False
