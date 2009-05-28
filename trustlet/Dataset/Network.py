@@ -106,11 +106,13 @@ class Network(XDiGraph):
     def _load_from(self, function, extension, string_to_weight, decodeUtf8=False):
         #load from a generic format
 
-        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+extension)):
+        if hasattr(self,"filepath") and self.filepath and (os.path.exists(self.filepath) or os.path.exists(self.filepath+extension) or os.path.exists(self.filepath[:-3]+extension) ):
             if self.filepath.endswith( extension ):
                 w = function(self.filepath)
             elif os.path.exists(self.filepath+extension):
                 w = function(self.filepath+extension)
+            elif os.path.exists(self.filepath[:-3]+extension): #if the filename ends with another extension (usually c2)
+                w = function(self.filepath[:-3]+extension)
             else:
                 sys.stderr.write( "error loading network, filepath does not exists\n" )
                 return False
@@ -256,6 +258,9 @@ class Network(XDiGraph):
             
             if self.filepath.endswith( extension ):
                 function(N, self.filepath )
+            elif self.filepath.endswith( '.c2' ):
+                filepath = self.filepath[:-3]
+                function(N, filepath+extension )
             else:
                 function(N, self.filepath+extension )
             return True
