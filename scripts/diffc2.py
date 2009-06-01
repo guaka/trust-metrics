@@ -3,12 +3,11 @@
 '''
 Usage:
   diffc2.py one.c2 two.c2
-
-Note: f1 > f2 means that f1 contains f2
 '''
 
 
 import sys
+import optparse
 # not show: /usr/lib/python2.6/site-packages/networkx/hybrid.py:16: DeprecationWarning: the sets module is deprecated
 stderr = sys.stderr
 sys.stderr = file('/dev/null','w')
@@ -17,12 +16,18 @@ sys.stderr = stderr
 
 
 def main():
-    if len(sys.argv[1:]) != 2:
+    
+    o = optparse.OptionParser(usage='usage: %prog [-r] [file1 [file2] [...]]')
+    o.add_option('-v','--verbose',help='print different values',default=False,action='store_true')
+
+    opts, files = o.parse_args()
+
+    if len(files) != 2:
         print __doc__
         return
 
-    one = read_c2(sys.argv[1])
-    two = read_c2(sys.argv[2])
+    one = read_c2(files[0])
+    two = read_c2(files[1])
 
     k1 = set(one.keys())
     k2 = set(two.keys())
@@ -35,43 +40,48 @@ def main():
     diff2 = 0 # two.c2 is newer
 
     for k in k1 & k2:
-        if one[k] == two[k]:
+        if one[k]['dt'] == two[k]['dt']:
             eq += 1
-        elif one[k]['ts'] > two[k]['ts']:
-            diff1 += 1
-        elif one[k]['ts'] < two[k]['ts']:
-            diff2 += 1
         else:
-            assert 0,'Same timestamp, different data. Improbably'
+            if opts.verbose:
+                print '1>',one[k]
+                print '2<',two[k]
+
+            if one[k]['ts'] > two[k]['ts']:
+                diff1 += 1
+            elif one[k]['ts'] < two[k]['ts']:
+                diff2 += 1
+            else:
+                assert 0,'Same timestamp, different data. Improbably'
 
     diff = diff1 + diff2
 
     if not diff:
         if onlyone and not onlytwo:
-            f = (1,2)
+            f = (0,1)
         elif not onlyone and onlytwo:
-            f = (2,1)
+            f = (1,0)
         elif not onlyone and not onlytwo:
             print 'Files are equals'
             return
         
-        print '%s > %s' % (sys.argv[f[0]],sys.argv[f[1]])
+        print '%s > %s' % (files[f[0]],files[f[1]])
     else:
 
         # All different data is newer in `newer` c2 file
         if not diff2:
+            newer = 0
+        elif not diff1:
             newer = 1
-        elif not diff2:
-            newer = 2
         else:
             newer = 0
 
         if newer:
-            print 'The newest c2 is',sys.argv[newer]
+            print 'The newest c2 is',files[newer]
         print 'Same values:',eq
         print 'Different values:',diff
-        print 'Values only in %s:'%sys.argv[1],onlyone
-        print 'Values only in %s:'%sys.argv[2],onlytwo
+        print 'Values only in %s:'%files[0],onlyone
+        print 'Values only in %s:'%files[1],onlytwo
 
 if __name__=='__main__':
     main()
