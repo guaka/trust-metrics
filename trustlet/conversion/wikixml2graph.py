@@ -111,7 +111,18 @@ def deleteWikiLanguage(key,temporary=True):
 
 def wikixml2graph(src,dst,distrust=False,threshold=0,downloadlists=True,verbose=False):
     '''
-    t -> h | c (history or current)
+    This function is the only one that have to be called directly in this module.
+    The other ones are only helpers for this one.
+    This function is able to take a gzipped, 7zipped, or bzipped xml downloaded
+    from www.download.wikimedia.org understand:
+    1. what is the lang of the network (from the filename)
+    2. what is the data in which the snapshot would be taken (from the filename)
+    3. if it is current or history (from the filename)
+    4. if is possible to create a distrust-graph (only for xml with pages)
+    and unzip it, parse it, and create in the right folder (your_home/shared_datasets/WikiNetwork/lang/date/ )
+    the c2 file with the network. (and if possible, the c2 with the distrust graph)
+    threshold = the minimum weight on edges (the edges with weight < threshold, will be deleted)
+    downloadlist = download the list of bots, and the list of blockedusers
     '''
 
     if not i18n:
@@ -342,6 +353,7 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
     #              2. list of tuple that represent the edges (who_edit,who_receive_edit,numbers_of_edit_of_who_edit)
     
     def __init__(self,lang,xmlsize=None,inputfilename=None,forcedistrust=False,threshold=0,verbose=False):
+        
         sax.handler.ContentHandler.__init__(self)
 
         self.lang = lang
@@ -503,6 +515,10 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
 
 
 class WikiCurrentContentHandler(sax.handler.ContentHandler):
+    """
+    This class handle the xml for a wiki current dump 
+    """
+    
     # startElement: is called when a tag begin, and give as parameter the name and the attributes of the tag
     # endElement: is called when a tag end, and give as parameter the name of the tag
     #characters: is called between start and end of a tag. as parameter will be given the data between tag

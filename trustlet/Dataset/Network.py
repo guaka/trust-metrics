@@ -117,8 +117,6 @@ class Network(XDiGraph):
             else:
                 sys.stderr.write( "error loading network, filepath does not exists\n" )
                 return False
-
-            w = function(filepaths[0])
             
             if decodeUtf8:
                 N = trustlet.Dataset.Network.Network() # we lose all the info :(
@@ -241,7 +239,7 @@ class Network(XDiGraph):
                     newn = ''
                     for i in xrange(len(s)):     # / is replaced with /*exadecimal code of /*
                                                  # so when we undo this change, / will be replaced with / :-)
-                        if not ord(s[i]) < 128 or s[i] == '/':
+                        if not ord(s[i]) < 128 or s[i] == '/' or s[i] == '"': # " gives problem with pajek
                             fakeUtf8Char = '/' +str( '%.2x'%ord(s[i]) )
                             newn += fakeUtf8Char #replace the invalid position with a '?' in order to avoid UnicodeDecodeError
                         else:
