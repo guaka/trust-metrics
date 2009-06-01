@@ -1786,6 +1786,8 @@ def rm_empty_path(p):
     
     p = os.path.realpath(p)
 
+    print '*',p
+
     if not os.listdir(p):
         os.rmdir(p)
         rm_empty_path(os.path.join(p,os.pardir))

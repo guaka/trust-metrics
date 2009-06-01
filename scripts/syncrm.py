@@ -23,7 +23,7 @@ def main():
                 for file in files:
                     remove(os.path.join(path,file))
         if os.path.isfile(name):
-            remove(name,opts.recursive)
+            remove(name)
 
 main()
 

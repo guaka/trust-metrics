@@ -182,10 +182,6 @@ def main():
 
             destbasepath = dirpath.replace(hiddenpath,datasetspath)
 
-            # create missing directory
-            if not path.isdir(destbasepath):
-                os.mkdir(destbasepath)
-
             for filename in filenames:
                 #print filename
                 srcpath = path.join(dirpath,filename)
@@ -198,9 +194,9 @@ def main():
 
                     # Manage removed files
                     if removed(srcpath):
-                        print 'I\'m removing',dstpath
+                        print 'I\'m removing',rpath
                         os.remove(dstpath)
-                        rm_empty_path(os.path.join(os.path.split(srcpath)[0],os.pardir))
+                        rm_empty_path(destbasepath) # ¿¿¿!!!
                         deleted_server += 1
                         continue
 
@@ -215,6 +211,9 @@ def main():
                     print 'adding file',rpath
                     added += 1
                     #print srcpath,dstpath
+
+                    # create missing directoriesx
+                    mkpath(destbasepath)
                     shutil.copy(srcpath,dstpath)
 
         if added:
@@ -250,7 +249,7 @@ def main():
                 if removed(srcpath):
                     print 'I\'m removing',dstpath
                     os.remove(srcpath)
-                    rm_empty_path(os.path.join(os.path.split(srcpath)[0],os.pardir))
+                    rm_empty_path(dirpath)
                     deleted_local += 1
                     continue
 
@@ -309,7 +308,7 @@ def main():
         if deleted_server or deleted_local:
             print '# of deleted files:',deleted_local+deleted_server
     
-    os.chdir(CURDIR)
+    #    os.chdir(CURDIR)
 
     # this is the last thing to do because a crash after save_upload_ts()
     # without upload new data will cause a lost of them
