@@ -49,6 +49,11 @@ class igraphDict(dict):
             if self.g.outdegree( node.index ) > 0 or self.g.indegree( node.index ) == 0: 
                 yield ConnectedTo(node,self.g)
 
+    def get(k, d=None ):
+        try:
+            return self.__getitem__(k)
+        except KeyError:
+            return d
 
     def items(self):
         return list(self.iteritems())
@@ -63,7 +68,7 @@ class igraphDict(dict):
         #del the node k, and all his edges
         kidls = _getVertexFromName(self.g, k)
         if not len(kidls):
-            raise KeyError("This key is not in the dictionary")
+            raise KeyError("This key ("+str(k)+") is not in the dictionary")
 
         nodesInK = ConnectedTo( k, self.g )
         for n in nodesInK.iterkeys_id():
@@ -131,6 +136,13 @@ class ConnectedTo(dict):
             self.nodevertex = mynodeIDls[0]
         
         return None
+
+    
+    def get(k, d=None ):
+        try:
+            return self.__getitem__(k)
+        except KeyError:
+            return d
         
     def keys(self):
         return list(self.iterkeys())
