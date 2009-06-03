@@ -129,7 +129,7 @@ def main():
             fname = file
             if fname.endswith('.c2'):
                 fname = fname[:-3]
-            prettyplot(list(plot.iteritems()),fname,showlines=True)
+            prettyplot(list(plot.iteritems()),fname,showlines=True,title='Age of cache info')
 
 if __name__=="__main__":
     main()
