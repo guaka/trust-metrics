@@ -20,15 +20,20 @@ def _getVertexFromName(g, k):
         return g.vs.select( lambda v: v.attributes().has_key('name') and v['name'] == k )
 
 
+class XDiGraph(nx.XDiGraph):
+	def __init__(self, data=None, name='', selfloops=False, multiedges=False):
+		nx.XDiGraph.__init__(self, data=data, name=name, selfloops=selfloops, multiedges=multiedges)
+		
+
+
+#utility class in order to override XDiGraph
 class igraphDict(dict):
     """
     this class provide a match from the xdigraph adj lists,
     and the igraph library.
     """
     def __init__(self):
-        self.g = ig.Graph(directed=True)
-        if self.g.vcount(): #for some reason at init time, Graph contains a vertex..
-            self.g.delete_vertices( 0 )
+        self.g = ig.Graph(n=0,directed=True)
         
     def keys(self):
         return list(self.iterkeys())
@@ -104,11 +109,6 @@ class igraphDict(dict):
         """
         return pprint.pformat(self.g.__str__())
 
-    def __del__(self):
-        """
-        what I have to do when the class will be deallocated
-        """
-        pass
 
 class ConnectedTo(dict):
     """
@@ -216,8 +216,3 @@ class ConnectedTo(dict):
         """
         return pprint.pformat(self.g.__str__())
 
-    def __del__(self):
-        """
-        what I have to do when the class will be deallocated
-        """
-        pass

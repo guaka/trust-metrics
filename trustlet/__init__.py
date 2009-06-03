@@ -20,7 +20,7 @@ Using
 
 
 # how to use subversion revision number?
-__version__ = '0.1.2' # + "-r" + $Revision: $
+__version__ = '0.2' # + "-r" + $Revision: $
 
 from Dataset.Network import *
 from Dataset.Dummy import *
@@ -29,7 +29,7 @@ from TrustMetric import *
 from PredGraph import *
 from netevolution import *
 from conversion import *
-from igraphXdigraphMatch import *
+#from igraphXdigraphMatch import *
 
 #should come last since it overrides some networkx functions
 from conv import * 

@@ -6,7 +6,7 @@ test cache functions.
 """
 
 import unittest
-import igraphXdigraphMatch as IXD
+import trustlet.igraphXdigraphMatch as IXD
 #import os
 #import sys
 #import random
@@ -49,6 +49,7 @@ class TestIXD(unittest.TestCase):
         
         self.assertEqual( self.g.items()[0][0] , 'dan' )
         self.assertEqual( len( self.g.items() ) , 1 )
+        self.assertEqual( self.g['dan'].items()[0][0] , 'john' )
         
     def testKey(self):
         
