@@ -18,9 +18,9 @@ Using
 ... add more here
 """
 
+import re
 
-# how to use subversion revision number?
-__version__ = '0.2-r' + '$Rev$'[6:10]
+__version__ = '0.2-r' + re.match('\$Rev$').group(1)
 
 import igraphXdigraphMatch
 from Dataset.Network import *
