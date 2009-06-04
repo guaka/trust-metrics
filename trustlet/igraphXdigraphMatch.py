@@ -46,6 +46,10 @@ class IgraphDict(dict):
             # but for the nodes added without outedges? these nodes has indegree == 0..
             if self.g.outdegree( n.index ) > 0 or self.g.indegree( n.index ) == 0:
                 yield n['name']
+
+    def __iter__(self):
+	    for k in self.iterkeys():
+		    yield k
             
     def itervalues(self):
         for node in self.g.vs:
@@ -56,7 +60,7 @@ class IgraphDict(dict):
 
     def get(k, d=None ):
         try:
-            return self.__getitem__(k)
+            return self[k]
         except KeyError:
             return d
 

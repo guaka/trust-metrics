@@ -15,7 +15,7 @@ import trustlet.igraphXdigraphMatch as IXD
 
 class TestIXD(unittest.TestCase):
     def setUp(self):
-        self.g = IXD.igraphDict()
+        self.g = IXD.IgraphDict()
         self.g['dan'] = 1
         self.g['dan']['john'] = 1
         
