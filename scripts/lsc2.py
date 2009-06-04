@@ -4,7 +4,8 @@
 shows one or more c2 files on shell.
 '''
 import sys
-import os,pickle
+import os
+import cPickle as pickle
 import time
 import os.path as path
 from gzip import GzipFile
