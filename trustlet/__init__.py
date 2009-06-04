@@ -20,7 +20,7 @@ Using
 
 import re
 
-__version__ = '0.2-r' + re.match('\$Rev$').group(1)
+__version__ = '0.2-r' + re.match('\$'+'Rev: (\d*) \$','$Rev$').group(1)
 
 import igraphXdigraphMatch
 from Dataset.Network import *
