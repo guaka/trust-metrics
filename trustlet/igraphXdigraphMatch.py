@@ -27,7 +27,7 @@ class XDiGraph(nx.XDiGraph):
 
 
 #utility class in order to override XDiGraph
-class igraphDict(dict):
+class IgraphDict(dict):
     """
     this class provide a match from the xdigraph adj lists,
     and the igraph library.
