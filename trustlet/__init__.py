@@ -20,7 +20,7 @@ Using
 
 
 # how to use subversion revision number?
-__version__ = '0.2' + "-r$Rev$"
+__version__ = '0.2-r' + '$Rev$'[6:10]
 
 import igraphXdigraphMatch
 from Dataset.Network import *
