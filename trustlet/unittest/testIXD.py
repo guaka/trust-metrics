@@ -48,17 +48,16 @@ class TestIXD(unittest.TestCase):
 		
 		self.g['dan']['jon']=1
 		del self.g['dan']
-		self.assertEqual( self.g.g.vcount(), 2 ) #here delete all the nodes in 'dan' --> 'john'
+		self.assertEqual( self.g.g.vcount(), 3 ) #here delete all the edges in 'dan' --> 'john'
 		self.assertEqual( self.g.g.ecount(), 0 ) # and 'dan'
 
-		print "-------------------"
 		self.g['dan'] = 1
 		self.g['dan']['xxx'] = 1
 		self.g['dan']['john'] = 1
-		
+		self.g['dan']['pollo'] = 1
 		del self.g['dan']
 
-		self.assertEqual( self.g.g.vcount(), 2 ) #here delete all the nodes in 'dan' --> 'john'
+		self.assertEqual( self.g.g.vcount(), 5 ) #here delete all the nodes in 'dan' --> 'john'
 		self.assertEqual( self.g.g.ecount(), 0 ) #and dan
 	"""	
 	def testDeletePrec(self):
@@ -95,6 +94,14 @@ class TestIXD(unittest.TestCase):
 		
 		self.assertEqual( self.g.values()[0].keys() , ['john'] )
 		self.assertEqual( self.g.values()[0].values() , [1] )
+
+	def testContainTo(self):
+		self.g['dan']['max']=1
+		self.g['dan']['xxx']=1
+		self.gp['dan']['fff']=1
+
+		self.assertEqual( self.g['dan'].values() , [1,1,1] ) 
+		self.assertEqual( self.g['dan'].keys(), ['john','max','xxx'] )
 
 
 if __name__ == '__main__':

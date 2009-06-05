@@ -107,10 +107,11 @@ class IgraphDict(dict):
                 if not len(kidls) and delcond(kidls[0]):
                     raise KeyError("This key ("+str(k)+") is not in the dictionary")
                 
-                connectedTo = ConnectedTo( kidls[0], self.g )
+                #connectedTo = self.g.es.select( lambda e: e.source == kidls[0].index )
 
-                for n in connectedTo.iterkeys_id():
-                    self.g.delete_vertices( n )
+                #for n in connectedTo:
+                #    print "deleting", n.tuple, "(",self.g.vs[n.source]['name'],self.g.vs[n.target]['name'] ,")"
+                #    self.g.delete_edges( n.tuple )
                 
                 try:
                     self.g.delete_vertices( kidls[0].index ) #delete also all the edges that contains this vertex
@@ -249,17 +250,13 @@ class Connected(dict):
     def keys(self):
         return list(self.iterkeys())
 		
-    def iterkeys(self,itercondition):
-
-        for n in self.g.vs:
-            if itercondition(n):
+    def iterkeys(self,itercondition): 
+        for n in self.g.vs.select( itercondition ):
                 yield n['name']
 						
     def iterkeys_id(self,itercondition):
-        for n in self.g.vs:
-            print "itercondition:",self.nodevertex,n, '==', itercondition(n)
-            if itercondition(n):
-                yield n.index
+        for n in self.g.vs.select( itercondition ):
+            yield n.index
 												
     def keys_id(self):
         return list(self.iterkeys_id())
@@ -268,18 +265,15 @@ class Connected(dict):
         return list(self.itervalues())
 		
     def itervalues(self,itercondition):
-        for node in self.g.vs:
-            if itercondition(node): 
-                yield self.g.es[ self.g.get_eid( self.nodevertex.index, node.index ) ]['weight']
-
-								
+        for node in self.g.vs.select( itercondition ):
+            yield self.g.es[ self.g.get_eid( self.nodevertex.index, node.index ) ]['weight']
+	
     def items(self):
         return list(self.iteritems())
 
     def iteritems(self,itercondition):
-        for node in self.g.vs:
-            if itercondition(node): 
-                yield (node['name'], self.g.es[ self.g.get_eid( self.nodevertex.index, node.index ) ]['weight'] )
+        for node in self.g.vs.select( itercondition ): 
+            yield (node['name'], self.g.es[ self.g.get_eid( self.nodevertex.index, node.index ) ]['weight'] )
 								
     def __delitem__(self, k, to):
         kidls = _getVertexFromName(self.g, k)
