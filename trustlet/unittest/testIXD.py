@@ -19,7 +19,7 @@ class TestIXD(unittest.TestCase):
 		self.g['dan'] = 1
 		self.g['dan']['john'] = 1
 		self.g['mas'] = 1
-		#self.g = IXD.PredDict()
+		self.gp = IXD.PredDict(self.g.g)
 
 	def testAssign(self):
 		self.assertEqual( self.g['dan']['john'] , 1 )
@@ -27,6 +27,14 @@ class TestIXD(unittest.TestCase):
 		self.assert_( 'mas' in self.g )
 		self.assert_( 'john' in self.g['dan'] )
 		self.assert_( 'john' not in self.g )
+		#a predDict cannot modify the edges/nodes
+		self.gp['john'] = 1
+		self.gp['dan']['john'] = 2
+		self.assert_( 'john' not in self.g )
+		self.assert_( self.g['dan']['john'], 1 )
+		self.assert_( 'john' in self.gp )
+		self.assert_( self.gp['john']['dan'], 1 )
+
 
 	def testDelete(self):
 		
@@ -35,23 +43,45 @@ class TestIXD(unittest.TestCase):
 		
 		del self.g['dan']['john']
 		
-		self.assertEqual( self.g.g.vcount(), 2 ) #here delete only the edge
+		self.assertEqual( self.g.g.vcount(), 3 ) #here delete only the edge
 		self.assertEqual( self.g.g.ecount(), 0 )
-
-		del self.g['dan']
 		
-		self.assertEqual( self.g.g.vcount(), 1 ) #here delete all the nodes in 'dan' --> 'john'
-		self.assertEqual( self.g.g.ecount(), 0 )
+		self.g['dan']['jon']=1
+		del self.g['dan']
+		self.assertEqual( self.g.g.vcount(), 2 ) #here delete all the nodes in 'dan' --> 'john'
+		self.assertEqual( self.g.g.ecount(), 0 ) # and 'dan'
 
+		print "-------------------"
 		self.g['dan'] = 1
+		self.g['dan']['xxx'] = 1
 		self.g['dan']['john'] = 1
+		
 		del self.g['dan']
 
-		self.assertEqual( self.g.g.vcount(), 1 ) #here delete all the nodes in 'dan' --> 'john'
-		self.assertEqual( self.g.g.ecount(), 0 )
+		self.assertEqual( self.g.g.vcount(), 2 ) #here delete all the nodes in 'dan' --> 'john'
+		self.assertEqual( self.g.g.ecount(), 0 ) #and dan
+	"""	
+	def testDeletePrec(self):
+		#test gp
 		
+		del self.g['john']
+		self.assertEqual( self.gp.g.vcount(), 2 )
+		self.assertEqual( self.gp.g.ecount(), 0 )
+		
+		self.p['dan']['john'] = 1
+		self.p['pollo']['john'] = 2
+		self.p['xxx']['john'] = 3
+		self.p['pold']['john'] = 4
+		self.p['fff']['john'] = 'xxxx'
+		
+		self.assertEqual( self.gp.g.vcount(), 7 )
+		self.assertEqual( self.gp.g.ecount(), 5 )
+		
+		del self.gp['john']
+		self.assertEqual( self.gp.g.vcount(), 6 )
+		self.assertEqual( self.gp.g.ecount(), 0 )
+		"""
 	def testItems(self):
-		
 		self.assertEqual( self.g.items()[0][0] , 'dan' )
 		self.assertEqual( len( self.g.items() ) , 2 )
 		self.assertEqual( self.g['dan'].items()[0][0] , 'john' )

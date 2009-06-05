@@ -99,21 +99,24 @@ class IgraphDict(dict):
                         yield (node['name'],ConnectedTo(node,self.g))
 
             def __delitem__(self, k, delcond, to=True):
-    #del the node k, and all his edges
+                if not to: #only succdict can delete and set
+                    return None
+
+                #del the node k, and all his edges
                 kidls = _getVertexFromName(self.g, k)
                 if not len(kidls) and delcond(kidls[0]):
                     raise KeyError("This key ("+str(k)+") is not in the dictionary")
                 
-                if to:
-                    nodesConnectedK = ConnectedTo( k, self.g )
-                else:
-                    nodesConnectedK = ConnectedFrom( k, self.g )
+                connectedTo = ConnectedTo( kidls[0], self.g )
 
-                for n in nodesConnectedK.iterkeys_id():
+                for n in connectedTo.iterkeys_id():
                     self.g.delete_vertices( n )
-
-                self.g.delete_vertices( kidls[0].index ) #delete also all the edges that contains this vertex
                 
+                try:
+                    self.g.delete_vertices( kidls[0].index ) #delete also all the edges that contains this vertex
+                except ig.core.InternalError:
+                    raise KeyError( "this node "+str(k)+" with id "+str(kidls[0].index)+" is not in the dictionary" )
+
                 return None
 
 	    def __getitem__(self, k, to=True):
@@ -176,7 +179,7 @@ class SuccDict(IgraphDict):
 
 class PredDict(IgraphDict):
 		def __init__(self, graph):
-                    if graph and type(graph) is ig.Graph:
+                    if type(graph) is ig.Graph:
                         self.g = graph
                     else:
                         raise Exception("This class cannot be instantiated standalone!")
@@ -247,12 +250,14 @@ class Connected(dict):
         return list(self.iterkeys())
 		
     def iterkeys(self,itercondition):
+
         for n in self.g.vs:
             if itercondition(n):
                 yield n['name']
 						
     def iterkeys_id(self,itercondition):
         for n in self.g.vs:
+            print "itercondition:",self.nodevertex,n, '==', itercondition(n)
             if itercondition(n):
                 yield n.index
 												
@@ -276,7 +281,7 @@ class Connected(dict):
             if itercondition(node): 
                 yield (node['name'], self.g.es[ self.g.get_eid( self.nodevertex.index, node.index ) ]['weight'] )
 								
-    def __delitem__(self, k, to=True):
+    def __delitem__(self, k, to):
         kidls = _getVertexFromName(self.g, k)
         if not len( kidls ):
             raise KeyError("This key ("+str(k)+") is not in dictionary")
@@ -285,9 +290,7 @@ class Connected(dict):
             self.g.delete_edges( self.g.get_eid( self.nodevertex.index, kidls[0].index ) )
         else:
             self.g.delete_edges( self.g.get_eid( kidls[0].index, self.nodevertex.index ) )
-            
-        self.g.delete_vertices( kidls[0].index )
-
+        
         return None
 
     def __getitem__(self, k, to=True):
@@ -299,7 +302,7 @@ class Connected(dict):
             try:
                 eid = self.g.get_eid( self.nodevertex.index, kidls[0].index )
             except ig.core.InternalError:
-                raise KeyError("the edge from "+str(k)+" to "+str(self.nodename)+" is not in graph")
+                raise KeyError("the edge from "+str(self.nodename)+" to "+str(k)+" is not in graph")
 						
             return self.g.es[ eid ]['weight']
         else:  #the weight of edge k-me
@@ -347,6 +350,16 @@ class Connected(dict):
         """
         return pprint.pformat(self.g.__str__())
 
+
+def _iterconditionTo(graph,node):
+    def cond(n):
+        try:
+            x = graph.get_eid( node.index, n.index )
+            return True
+        except ig.core.InternalError:
+            return False
+    return cond
+
 class ConnectedTo(Connected):
     """
     connected to: every nodes that are the end position of at least an edge that starts in self.nodename
@@ -358,13 +371,13 @@ class ConnectedTo(Connected):
       connectedTo( igraph, ciccio ) contains [pippo,pluto]
     """
     def iterkeys(self):
-        return Connected.iterkeys(self,lambda n:self.g.indegree( n.index ) > 0)
+        return Connected.iterkeys(self,_iterconditionTo(self.g,self.nodevertex) )
     def iterkeys_id(self):
-        return Connected.iterkeys_id(self,lambda n:self.g.indegree( n.index ) > 0)
+        return Connected.iterkeys_id(self,_iterconditionTo(self.g,self.nodevertex))
     def itervalues(self):
-        return Connected.itervalues(self,lambda node:self.g.indegree( node.index ) > 0)
+        return Connected.itervalues(self,_iterconditionTo(self.g,self.nodevertex))
     def iteritems(self):
-        return Connected.iteritems(self,lambda node:self.g.indegree( node.index ) > 0 )
+        return Connected.iteritems(self,_iterconditionTo(self.g,self.nodevertex))
     def __delitem__(self,k):
         return Connected.__delitem__(self,k,to=True)
     def __setitem__(self,k,v):
@@ -372,8 +385,19 @@ class ConnectedTo(Connected):
     def __getitem__(self,k):
         return Connected.__getitem__(self,k,to=True)
     def __contains__(self,k):
-        return Connected.__contains__(self,k,lambda n:self.g.indegree( n.index ) > 0)
-		
+        return Connected.__contains__(self,k,_iterconditionTo(self.g,self.nodevertex))
+	
+
+def _iterconditionFrom(graph,node):
+    def cond(n):
+        try:
+            self.g.get_eid( n.index, node.index )
+            return True
+        except ig.core.InternalError:
+            return False
+	
+    return cond
+
 #connectedFrom
 class ConnectedFrom(Connected):
     """
@@ -386,19 +410,19 @@ class ConnectedFrom(Connected):
       connectedTo( igraph, ciccio ) contains [pippo,pluto]
     """
     def iterkeys(self):
-        return Connected.iterkeys(self,lambda n:self.g.outdegree( n.index ) > 0)
+        return Connected.iterkeys(self,_iterconditionFrom(self.g,self.nodevertex))
     def iterkeys_id(self):
-        return Connected.iterkeys_id(self,lambda n:self.g.outdegree( n.index ) > 0)
+        return Connected.iterkeys_id(self,_iterconditionFrom(self.g,self.nodevertex))
     def itervalues(self):
-        return Connected.itervalues(self,lambda node:self.g.outdegree( node.index ) > 0)
+        return Connected.itervalues(self,_iterconditionFrom(self.g,self.nodevertex))
     def iteritems(self):
-        return Connected.iteritems(self,lambda node:self.g.outdegree( node.index ) > 0 )
+        return Connected.iteritems(self,_iterconditionFrom(self.g,self.nodevertex))
     def __delitem__(self,k):
-        return Connected.__delitem__(self,k,to=False)
+        return Connected.__delitem__(self,k,False)
     def __setitem__(self,k,v):
         return Connected.__setitem__(self,k,v,True)
     def __getitem__(self,k):
         return Connected.__getitem__(self,k,to=False)
     def __contains__(self,k):
-        return Connected.__contains__(self,k,lambda n:self.g.outdegree( n.index ) > 0)
+        return Connected.__contains__(self,k,_iterconditionFrom(self.g,self.nodevertex))
 				
