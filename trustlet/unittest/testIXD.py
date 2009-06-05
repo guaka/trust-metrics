@@ -19,7 +19,7 @@ class TestIXD(unittest.TestCase):
 		self.g['dan'] = 1
 		self.g['dan']['john'] = 1
 		self.g['mas'] = 1
-		self.g = IXD.PredDict()
+		#self.g = IXD.PredDict()
 
 	def testAssign(self):
 		self.assertEqual( self.g['dan']['john'] , 1 )

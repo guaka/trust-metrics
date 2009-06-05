@@ -310,39 +310,42 @@ class Connected(dict):
             
             return self.g.es[ eid ]['weight']
 
-        def __setitem__(self,k,v,revert=False):
-            if revert: #reverted graph cannot change the weights
-                return None
-
-            kidls = _getVertexFromName(self.g, k)
-            
-            #check if node is already in graph
-            if not len( kidls ):
-                self.g.add_vertices(1) #add a vertex
-                ve = self.g.vs[self.g.vcount()-1] #the vertex just added
-                ve['name'] = k #set name of the vertex
-            else:
-                ve = kidls[0] 
-		
-		#add an edge from the node of this instance to the node passed by setitem 
-            self.g.add_edges( (self.nodevertex.index , ve.index)  )
-            self.g.es[ self.g.get_eid( self.nodevertex.index , ve.index ) ]['weight'] = v #probably v == {'level':'Journeyer'}, or {'value':1} 
-				
+    def __setitem__(self,k,v,revert):
+        """
+        set an edge
+        """
+        if revert: #reverted graph cannot change the weights
             return None
 
-        def __contains__(self,k,condition):
-            kidls = _getVertexFromName( self.g , k )
-		#if exists		  and if is the end of some edges  
-            if len(kidls) > 0 and condition( kidls[0] ):
-                return True
-            else:
-                return False
+        kidls = _getVertexFromName(self.g, k)
+            
+        #check if node is already in graph
+        if not len( kidls ):
+            self.g.add_vertices(1) #add a vertex
+            ve = self.g.vs[self.g.vcount()-1] #the vertex just added
+            ve['name'] = k #set name of the vertex
+        else:
+            ve = kidls[0] 
+		
+	#add an edge from the node of this instance to the node passed by setitem 
+        self.g.add_edges( (self.nodevertex.index , ve.index)  )
+        self.g.es[ self.g.get_eid( self.nodevertex.index , ve.index ) ]['weight'] = v #probably v == {'level':'Journeyer'}, or {'value':1} 
+				
+        return None
 
-        def __str__(self):
-            """
-            return only some of the data
-            """
-            return pprint.pformat(self.g.__str__())
+    def __contains__(self,k,condition):
+        kidls = _getVertexFromName( self.g , k )
+        #if exists		  and if is the end of some edges  
+        if len(kidls) > 0 and condition( kidls[0] ):
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        """
+        return only some of the data
+        """
+        return pprint.pformat(self.g.__str__())
 
 class ConnectedTo(Connected):
     """
@@ -365,7 +368,7 @@ class ConnectedTo(Connected):
     def __delitem__(self,k):
         return Connected.__delitem__(self,k,to=True)
     def __setitem__(self,k,v):
-        return Connected.__setitem__(self,k,v,revert=False)
+        return Connected.__setitem__(self,k,v,False)
     def __getitem__(self,k):
         return Connected.__getitem__(self,k,to=True)
     def __contains__(self,k):
@@ -393,7 +396,7 @@ class ConnectedFrom(Connected):
     def __delitem__(self,k):
         return Connected.__delitem__(self,k,to=False)
     def __setitem__(self,k,v):
-        return Connected.__setitem__(self,k,v,revert=True)
+        return Connected.__setitem__(self,k,v,True)
     def __getitem__(self,k):
         return Connected.__getitem__(self,k,to=False)
     def __contains__(self,k):
