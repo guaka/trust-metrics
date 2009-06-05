@@ -14,54 +14,59 @@ import trustlet.igraphXdigraphMatch as IXD
 
 
 class TestIXD(unittest.TestCase):
-    def setUp(self):
-        self.g = IXD.IgraphDict()
-        self.g['dan'] = 1
-        self.g['dan']['john'] = 1
-        
+	def setUp(self):
+		self.g = IXD.SuccDict()
+		self.g['dan'] = 1
+		self.g['dan']['john'] = 1
+		self.g['mas'] = 1
+		self.g = IXD.PredDict()
 
-    def testAssign(self):
-        self.assertEqual( self.g['dan']['john'] , 1 )
+	def testAssign(self):
+		self.assertEqual( self.g['dan']['john'] , 1 )
+		self.assert_( 'dan' in self.g )
+		self.assert_( 'mas' in self.g )
+		self.assert_( 'john' in self.g['dan'] )
+		self.assert_( 'john' not in self.g )
 
-    def testDelete(self):
-        
-        self.assertEqual( self.g.g.vcount(), 2 )
-        self.assertEqual( self.g.g.ecount(), 1 )
+	def testDelete(self):
+		
+		self.assertEqual( self.g.g.vcount(), 3 )
+		self.assertEqual( self.g.g.ecount(), 1 )
+		
+		del self.g['dan']['john']
+		
+		self.assertEqual( self.g.g.vcount(), 2 ) #here delete only the edge
+		self.assertEqual( self.g.g.ecount(), 0 )
 
-        del self.g['dan']['john']
-        
-        self.assertEqual( self.g.g.vcount(), 1 ) #here delete only the edge
-        self.assertEqual( self.g.g.ecount(), 0 )
+		del self.g['dan']
+		
+		self.assertEqual( self.g.g.vcount(), 1 ) #here delete all the nodes in 'dan' --> 'john'
+		self.assertEqual( self.g.g.ecount(), 0 )
 
-        del self.g['dan']
-        
-        self.assertEqual( self.g.g.vcount(), 0 ) #here delete all the nodes in 'dan' --> 'john'
-        self.assertEqual( self.g.g.ecount(), 0 )
+		self.g['dan'] = 1
+		self.g['dan']['john'] = 1
+		del self.g['dan']
 
-        self.g['dan'] = 1
-        self.g['dan']['john'] = 1
-        del self.g['dan']
+		self.assertEqual( self.g.g.vcount(), 1 ) #here delete all the nodes in 'dan' --> 'john'
+		self.assertEqual( self.g.g.ecount(), 0 )
+		
+	def testItems(self):
+		
+		self.assertEqual( self.g.items()[0][0] , 'dan' )
+		self.assertEqual( len( self.g.items() ) , 2 )
+		self.assertEqual( self.g['dan'].items()[0][0] , 'john' )
+		
+	def testKey(self):
+		
+		self.assertEqual( self.g.keys() , ['dan','mas'] )
+		self.assertEqual( self.g['dan'].keys(), ['john'] )
 
-        self.assertEqual( self.g.g.vcount(), 0 ) #here delete all the nodes in 'dan' --> 'john'
-        self.assertEqual( self.g.g.ecount(), 0 )
-        
-    def testItems(self):
-        
-        self.assertEqual( self.g.items()[0][0] , 'dan' )
-        self.assertEqual( len( self.g.items() ) , 1 )
-        self.assertEqual( self.g['dan'].items()[0][0] , 'john' )
-        
-    def testKey(self):
-        
-        self.assertEqual( self.g.keys() , ['dan'] )
-        self.assertEqual( self.g['dan'].keys(), ['john'] )
-
-    def testValue(self):
-        
-        self.assertEqual( self.g.values()[0].keys() , ['john'] )
-        self.assertEqual( self.g.values()[0].values() , [1] )
+	def testValue(self):
+		
+		self.assertEqual( self.g.values()[0].keys() , ['john'] )
+		self.assertEqual( self.g.values()[0].values() , [1] )
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestIXD)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+	suite = unittest.TestLoader().loadTestsFromTestCase(TestIXD)
+	unittest.TextTestRunner(verbosity=2).run(suite)
