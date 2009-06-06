@@ -29,11 +29,17 @@ class TestIXD(unittest.TestCase):
 		self.assert_( 'john' not in self.g )
 		#a predDict cannot modify the edges/nodes
 		self.gp['john'] = 1
-		self.gp['dan']['john'] = 2
+		self.gp['john']['dan'] = 2
+
 		self.assert_( 'john' not in self.g )
-		self.assert_( self.g['dan']['john'], 1 )
 		self.assert_( 'john' in self.gp )
-		self.assert_( self.gp['john']['dan'], 1 )
+		
+		self.assert_( 'dan' not in self.gp )
+		self.assert_( 'dan' in self.g )
+
+		self.assert_( self.g['dan']['john'], 1 )
+		self.assert_( self.gp['john']['dan'], 1 ) #viceversa
+		
 
 
 	def testDelete(self):
@@ -95,13 +101,19 @@ class TestIXD(unittest.TestCase):
 		self.assertEqual( self.g.values()[0].keys() , ['john'] )
 		self.assertEqual( self.g.values()[0].values() , [1] )
 
-	def testContainTo(self):
+	def testContain(self):
 		self.g['dan']['max']=1
+		self.g['mas']['max']=2
 		self.g['dan']['xxx']=1
-		self.gp['dan']['fff']=1
+		self.gp['xxx']['dan']=2
 
 		self.assertEqual( self.g['dan'].values() , [1,1,1] ) 
 		self.assertEqual( self.g['dan'].keys(), ['john','max','xxx'] )
+		
+		#test containfrom
+		self.assertEqual( self.gp['max'].values() , [1,2] )
+		self.assertEqual( self.gp['max'].keys() , ['dan','mas'] )
+		
 
 
 if __name__ == '__main__':

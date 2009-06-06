@@ -121,10 +121,18 @@ class IgraphDict(dict):
                 return None
 
 	    def __getitem__(self, k, to=True):
-                if to:
-                    return ConnectedTo(k,self.g)
-                else:
-                    return ConnectedFrom(k,self.g)
+			nk = _getVertexFromName(self.g, k )
+			if not len(nk):
+				raise KeyError( "This key ("+str(k)+") is not in dictionary" )
+				
+			n = nk[0]
+
+			if to and ( self.g.outdegree( n.index ) > 0 or self.g.indegree( n.index ) == 0 ):
+				return ConnectedTo( n , self.g )
+			elif not to and ( self.g.indegree( n.index ) > 0 or self.g.outdegree( n.index ) == 0 ):
+				return ConnectedFrom(n,self.g)
+			else:
+				raise KeyError( "This key ("+str(k)+") is not in dictionary" )
 
 	    def __setitem__(self,k,v, reverted=True):
 	    #v is not used!
@@ -385,7 +393,7 @@ class ConnectedTo(Connected):
 def _iterconditionFrom(graph,node):
     def cond(n):
         try:
-            self.g.get_eid( n.index, node.index )
+            graph.get_eid( n.index, node.index )
             return True
         except ig.core.InternalError:
             return False
