@@ -119,6 +119,17 @@ class TestIXD(unittest.TestCase):
 		
 			self.assert_( gp.has_key( 'dan' ) )
 
+	def testMultipleEdge(self):
+		self.assert_( self.g.g.ecount(), 1 ) 
+
+		self.g['dan']['mas']=1
+		self.g['dan']['mas']=2
+		self.g['dan']['mas']=3
+		
+		self.assert_( self.g.g.ecount(), 2 )
+		self.assertEqual( self.g['dan']['mas'], 1 )
+
+
 if __name__ == '__main__':
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestIXD)
 	unittest.TextTestRunner(verbosity=2).run(suite)

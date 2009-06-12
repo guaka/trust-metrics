@@ -50,10 +50,10 @@ class TestIXD(unittest.TestCase):
 
 			self.g.delete_edge('dan','mas')
 			try:
-					x=self.g.get_edge('dan','mas')
-					self.assert_(False)
+				x=self.g.get_edge('dan','mas')
+				self.assert_(False)
 			except nx.NetworkXError:
-					pass
+				pass
 			
 			self.assertEqual( self.g.number_of_edges() , 3 )
 			

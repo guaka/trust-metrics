@@ -65,9 +65,8 @@ class IgraphDict(dict):
 		return list(self.itervalues())
 
 	def iterkeys(self, itercondition):
-		for n in self.g.vs:
-			if itercondition(n):
-				yield n['name']
+		for n in self.g.vs.select( itercondition ):
+			yield n['name']
 
 	def __iter__(self,itercondition):
 		for k in self.iterkeys(itercondition):
@@ -86,12 +85,11 @@ class IgraphDict(dict):
 		return self.__contains__(k)
 
 	def itervalues(self,itercondition,to=True):
-		for node in self.g.vs:
-			if itercondition(node): 
-				if to:
-					yield ConnectedTo(node,self.g)
-				else:
-					yield ConnectedFrom(node,self.g)
+		for node in self.g.vs.select( itercondition ):
+			if to:
+				yield ConnectedTo(node,self.g)
+			else:
+				yield ConnectedFrom(node,self.g)
 
 	def get(k, to=True, d=None ):
 		#to means, i have to return the vertex connected to k, or viceversa 
@@ -105,9 +103,8 @@ class IgraphDict(dict):
 		return list(self.iteritems())
 
 	def iteritems(self,itercondition):
-		for node in self.g.vs:
-			if itercondition(node): 
-				yield (node['name'],ConnectedTo(node,self.g))
+		for node in self.g.vs.select( itercondition ):
+			yield (node['name'],ConnectedTo(node,self.g))
 
 	def __delitem__(self, k, delcond, to=True):
 		if not to: #only succdict can delete and set
@@ -153,16 +150,17 @@ class IgraphDict(dict):
 		#else:
 		#	raise KeyError( "Error on this key ("+str(k)+")" )
 
-	def __setitem__(self,k,v, reverted=True):
+	def __setitem__(self,k,v, reverted=True, check=True):
 	#v is not used!
 		if reverted: #if reverted we cannot add nothing! only normal graph can add nodes
 			return None
+		#check if node exists
+		if check:
+			kidls = _getVertexFromName(self.g, k)
 
-		kidls = _getVertexFromName(self.g, k)
-
-	#check if node is already in graph
-		if len(kidls) == 1:
-			return None #set nothing
+			#check if node is already in graph
+			if len(kidls) == 1:
+				return None #set nothing
 
 		self.g.add_vertices(1) #add a vertex
 		ve = self.g.vs[self.g.vcount()-1] #the vertex just added
@@ -217,8 +215,8 @@ class SuccDict(IgraphDict):
 		return IgraphDict.__delitem__(self,k, lambda node:True, to=True )
 	def __getitem__(self,k):
 		return IgraphDict.__getitem__(self, k, lambda node:True, to=True)
-	def __setitem__(self,k,v):
-		return IgraphDict.__setitem__(self,k,v,reverted=False)
+	def __setitem__(self,k,v):                                    #improve performance
+		return IgraphDict.__setitem__(self,k,v,reverted=False,check=True)
 
 class PredDict(IgraphDict):
 	"""
@@ -285,9 +283,9 @@ class Connected(dict):
 		
 		if type(mynode) is ig.Vertex:
 			self.nodevertex = mynode
-			self.nodename = mynode.attributes().has_key( 'name' ) and mynode['name']
-			if not self.nodename:
+			if not mynode.attributes().has_key( 'name' ):
 				raise KeyError("This key ("+str(mynode)+") is not contained in this dictionary")
+			self.nodename = mynode['name']
 		else:
 			#if mynode is a string
 			self.nodename = mynode
@@ -382,9 +380,8 @@ class Connected(dict):
 		"""
 		if revert: #reverted graph cannot change the weights
 			return None
-
 		kidls = _getVertexFromName(self.g, k)
-			
+		
 		#check if node is already in graph
 		if not len( kidls ):
 			self.g.add_vertices(1) #add a vertex
@@ -392,11 +389,15 @@ class Connected(dict):
 			ve['name'] = k #set name of the vertex
 		else:
 			ve = kidls[0] 
+		try:
+			eid = self.g.get_eid( self.nodevertex.index , ve.index, directed=True )
+			return None #if we arrive here, the edge exist! skip assignment
+		except ig.core.InternalError:
+			pass
 		
-	#add an edge from the node of this instance to the node passed by setitem 
-		self.g.add_edges( (self.nodevertex.index , ve.index)  )
-		self.g.es[ self.g.get_eid( self.nodevertex.index , ve.index, directed=True ) ]['weight'] = v #probably v == {'level':'Journeyer'}, or {'value':1} 
-				
+ 	        #add an edge from the node of this instance to the node passed by setitem 
+		self.g.add_edges( (self.nodevertex.index , ve.index ) )
+		self.g.es[ self.g.ecount()-1 ]['weight'] = v #probably v == {'level':'Journeyer'}, or {'value':1}
 		return None
 
 	def __contains__(self,k,condition):
