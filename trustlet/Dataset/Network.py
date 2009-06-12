@@ -17,6 +17,7 @@ import networkx
 
 import os
 from networkx.xdigraph import XDiGraph
+#from trustlet.igraphXdigraphMatch import XDiGraph
 from networkx import cluster, path, component
 
 import numpy
