@@ -1702,7 +1702,6 @@ def toNetwork( data , key=None, net=None ):
         w = net
 
     for name in nodes:
-        print name
         w.add_node( rname.findall(name)[0] )
 
     if key:

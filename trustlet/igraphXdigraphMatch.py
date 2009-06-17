@@ -4,6 +4,11 @@ The goal is to have a dictionary similar to the adiacency dictionary (ad predece
 in networkx, but instead of add data to a dictionary we add data to
 an igraph instance, in order to save ram and improve performance,
 but maintaining all XDiGraph powerful functions.
+
+p.s.
+  this module works, but it is *very* low,
+  and take so much RAM.
+  Next step of development : find the bug 
 """
 
 import igraph as ig
@@ -33,8 +38,8 @@ import pprint
 # this bug imply that if i invoke __contains__ method (on an item k) on a ConnectedTo class,
 # this method get back every edges that is connected (to or from) k, instead only the edges connected to k.
 
-def _getVertexFromName(g, k):
-	return g.vs.select( lambda v: v.attributes().has_key('name') and v['name'] == k )
+def _getVertexFromName(g, k):	
+	return g.vs.select( lambda v: v.attributes().has_key('id') and v['id'] == k )
 
 
 #utility class in order to override XDiGraph do not call them directly!
@@ -49,7 +54,8 @@ class IgraphDict(dict):
 	def __init__(self, graph=None):
 		if self.__class__.__name__ == 'IgraphDict':
 			raise Exception( "This class cannot be istantiated! you must instantiate only the subclasses" )
-
+		
+		self.vertexDict = {} #dictionary useful to avoid lose of time (avoid to call _getVertexFromName() each times )
 		if graph and type(graph) is ig.Graph:
 			self.g = graph
 		else:
@@ -64,36 +70,35 @@ class IgraphDict(dict):
 	def values(self):
 		return list(self.itervalues())
 
-	def iterkeys(self, itercondition):
-		for n in self.g.vs.select( itercondition ):
-			yield n['name']
+	def iterkeys(self):
+		for n in self.g.vs:
+			yield n['id']
 
-	def __iter__(self,itercondition):
-		for k in self.iterkeys(itercondition):
-			yield k
+	def __iter__(self):
+		return self.iterkeys()
 
-	def __contains__(self,k,containscondition):
+	def __contains__(self,k):
 			kidls = _getVertexFromName( self.g , k )
 	#if exists		  and if is the start of some edges	 
-			if len(kidls) > 0 and containscondition( kidls[0] ):
+			try:
+				k = kidls[0]	
 				return True
-			else:
+			except IndexError:
 				return False
 
 	def has_key(self, k ):
 		"""D.has_key(k) -> True if D has a key k, else False"""
 		return self.__contains__(k)
 
-	def itervalues(self,itercondition,to=True):
-		for node in self.g.vs.select( itercondition ):
+	def itervalues(self,to=True):
+		for node in self.g.vs:
 			if to:
-				yield ConnectedTo(node,self.g)
+				yield ConnectedTo(node,self.g,self.vertexDict)
 			else:
-				yield ConnectedFrom(node,self.g)
+				yield ConnectedFrom(node,self.g,self.vertexDict)
 
 	def get(k, to=True, d=None ):
-		#to means, i have to return the vertex connected to k, or viceversa 
-		kidls = _getVertexFromName( self.g , k )
+        #to means, i have to return the vertex connected to k, or viceversa 
 		try:
 			return self.__getitem__(k)
 		except:
@@ -102,39 +107,51 @@ class IgraphDict(dict):
 	def items(self):
 		return list(self.iteritems())
 
-	def iteritems(self,itercondition):
-		for node in self.g.vs.select( itercondition ):
-			yield (node['name'],ConnectedTo(node,self.g))
+	def iteritems(self):
+		for node in self.g.vs:
+			yield (node['id'],ConnectedTo(node,self.g,self.vertexDict))
 
-	def __delitem__(self, k, delcond, to=True):
+	def __delitem__(self, k, to=True):
 		if not to: #only succdict can delete and set
 			return None
 
-		#del the node k, and all his edges
-		kidls = _getVertexFromName(self.g, k)
-		if not len(kidls) and delcond(kidls[0]):
-			raise KeyError("This key ("+str(k)+") is not in the dictionary")
-
+		try:
+			kid = self.vertexDict[k]
+			del self.vertexDict[k] #delete from dictionary
+		except KeyError:	
+            #del the node k, and all his edges
+			kidls = _getVertexFromName(self.g, k)
+			try:
+				kid = kidls[0]
+			except IndexError:	
+				raise KeyError("This key ("+str(k)+") is not in the dictionary")
+			#do not add in vertexDict, because we had to delete this node
+			
 		#connectedTo = self.g.es.select( lambda e: e.source == kidls[0].index )
 
 		#for n in connectedTo:
-		#	 print "deleting", n.tuple, "(",self.g.vs[n.source]['name'],self.g.vs[n.target]['name'] ,")"
+		#	 print "deleting", n.tuple, "(",self.g.vs[n.source]['id'],self.g.vs[n.target]['id'] ,")"
 		#	 self.g.delete_edges( n.tuple )
 
 		try:
-			self.g.delete_vertices( kidls[0].index ) #delete also all the edges that contains this vertex
+			self.g.delete_vertices( kid.index ) #delete also all the edges that contains this vertex
 		except ig.core.InternalError:
-			raise KeyError( "this node "+str(k)+" with id "+str(kidls[0].index)+" is not in the dictionary" )
+			raise KeyError( "this node "+str(k)+" with id "+str(kid.index)+" is not in the dictionary" )
 
 		return None
 
-	def __getitem__(self, k, cond, to=True):
-		nk = _getVertexFromName(self.g, k )
-		if not len(nk):
-			raise KeyError( "This key ("+str(k)+") is not in the graph" )
-
-		n = nk[0]
-
+	def __getitem__(self, k, to=True):
+		try:
+			n = self.vertexDict[k]
+		except KeyError:	
+			nk = _getVertexFromName(self.g, k )
+			
+			try:
+				n = nk[0]
+			except IndexError:
+				raise KeyError( "This key ("+str(k)+") is not in the graph" )	
+			
+			self.vertexDict[k] = n
 		#if to and cond(n):
 		#	return ConnectedTo( n , self.g )
 		#elif to:
@@ -144,9 +161,9 @@ class IgraphDict(dict):
 		#elif not to:
 		#	raise KeyError( "This key ("+str(k)+") is not in this dictionary" )	
 		if to:
-			return ConnectedTo( n, self.g )
+			return ConnectedTo( n, self.g, self.vertexDict )
 		else:
-			return ConnectedFrom( n, self.g )	
+			return ConnectedFrom( n, self.g, self.vertexDict )	
 		#else:
 		#	raise KeyError( "Error on this key ("+str(k)+")" )
 
@@ -156,15 +173,23 @@ class IgraphDict(dict):
 			return None
 		#check if node exists
 		if check:
-			kidls = _getVertexFromName(self.g, k)
-
-			#check if node is already in graph
-			if len(kidls) == 1:
-				return None #set nothing
+			exist = True	
+			try:
+				kidls = []
+				kidls.append( self.vertexDict[k] )
+			except KeyError:	
+				kidls = _getVertexFromName(self.g, k)
+				try:
+					self.vertexDict[k] = kidls[0]
+				except IndexError:
+					exist = False	
+			
+			if exist:
+				return None #set nothing	
 
 		self.g.add_vertices(1) #add a vertex
 		ve = self.g.vs[self.g.vcount()-1] #the vertex just added
-		ve['name'] = k #set name of the vertex
+		ve['id'] = k #set name of the vertex
 	#when the user use getitem to get this value,
 	#i return a connectedTo class instantiated with 'k'
 		return None
@@ -197,24 +222,14 @@ class SuccDict(IgraphDict):
 	  id.items() return a list with foreach node: (node,connectedTo(node))
 	  id.values() return a list with foreach node: connectedTo(node)
 	"""
-	def iterkeys(self):
-		return IgraphDict.iterkeys(self, lambda n: True )
-	def __iter__(self):
-					#the same as iterkeys
-		return IgraphDict.__iter__(self, lambda n: True )
-	def __contains__(self,k):
-		#return IgraphDict.__contains__(self,k, lambda n: self.g.outdegree( n.index ) > 0 or self.g.indegree( n.index ) == 0	  )
-		return IgraphDict.__contains__(self,k, lambda n: True )	
 	def itervalues(self):
-		return IgraphDict.itervalues(self, lambda node:True , to=True )
+		return IgraphDict.itervalues(self, to=True )
 	def get(self, k, d=None):
 		return IgraphDict.get(k,d,to=True)
-	def iteritems(self):
-		return IgraphDict.iteritems(self, lambda node:True )
 	def __delitem__(self,k):
-		return IgraphDict.__delitem__(self,k, lambda node:True, to=True )
+		return IgraphDict.__delitem__(self,k, to=True )
 	def __getitem__(self,k):
-		return IgraphDict.__getitem__(self, k, lambda node:True, to=True)
+		return IgraphDict.__getitem__(self, k, to=True)
 	def __setitem__(self,k,v):                                    #improve performance
 		return IgraphDict.__setitem__(self,k,v,reverted=False,check=True)
 
@@ -239,32 +254,23 @@ class PredDict(IgraphDict):
 	  idp.values() return a list with foreach node: connectedFrom(node)
 	"""
 		
-	def __init__(self, graph):
+	def __init__(self, graph, vertexDict):
 		if type(graph) is ig.Graph:
 			self.g = graph
+			self.vertexDict = vertexDict
 		else:
 			raise Exception("This class cannot be instantiated standalone!")
 
-	def iterkeys(self):
-		return IgraphDict.iterkeys(self, lambda n: True )
-	def __iter__(self):
-					#the same as iterkeys
-		return IgraphDict.__iter__(self, lambda n: True )
-	def __contains__(self,k):
-		#return IgraphDict.__contains__(self,k, lambda n: self.g.indegree( n.index ) > 0 or self.g.outdegree( n.index ) == 0	 )
-		return IgraphDict.__contains__(self,k, lambda n: True )	
 	def itervalues(self):
 		# if there is at least an edge that starts in node, then this node is in the first dictionary, so we had to include it
 		# but for the nodes added without outedges? these nodes has indegree == 0..
-		return IgraphDict.itervalues(self, lambda node: True , to=False )
+		return IgraphDict.itervalues(self, to=False )
 	def get(self, k, d=None):
 		return IgraphDict.get(k,d,to=False)
-	def iteritems(self):
-		return IgraphDict.iteritems(self, lambda n : True )
 	def __delitem__(self,k):
-		return IgraphDict.__delitem__(self,k, lambda node:True, to=False )
+		return IgraphDict.__delitem__(self,k, to=False )
 	def __getitem__(self,k):
-		return IgraphDict.__getitem__(self, k, lambda node:True, to=False)
+		return IgraphDict.__getitem__(self, k, to=False)
 	def __setitem__(self,k,v):
 			#preddict cannot modify the igraph.Graph instance
 		return IgraphDict.__setitem__(self,k,v,reverted=True)
@@ -277,28 +283,30 @@ class Connected(dict):
 	"""
 	used to represent the in/outdegree of a node.
 	"""
-	def __init__(self, mynode, igraph):
+	def __init__(self, mynode, igraph, vertexDict):
 		#check if the node exist, else raise an error
 		self.g = igraph
+		self.vertexDict = vertexDict #this is a dictionary useful to save time (avoid to recalculate the vertex of each node with _getVertexFromName())
 		
 		if type(mynode) is ig.Vertex:
 			self.nodevertex = mynode
-			if not mynode.attributes().has_key( 'name' ):
+			if not mynode.attributes().has_key( 'id' ):
 				raise KeyError("This key ("+str(mynode)+") is not contained in this dictionary")
-			self.nodename = mynode['name']
+			self.nodename = mynode['id']
 		else:
 			#if mynode is a string
 			self.nodename = mynode
 			mynodeIDls = _getVertexFromName(igraph, mynode)
 			
-			if not len( mynodeIDls ):
+			try:
+				self.nodevertex = mynodeIDls[0]
+			except IndexError:	
 				raise KeyError("This key ("+str(mynode)+") is not contained in this dictionary")
 
-			self.nodevertex = mynodeIDls[0]
 		return None
 
 	def __len__(self):
-			return len(self.keys())
+		return len(self.keys())
 
 	def get(k, d=None ):
 		try:
@@ -319,7 +327,7 @@ class Connected(dict):
 		
 	def iterkeys(self,iterator): 
 		for n in iterator():
-			yield n['name']
+			yield n['id']
 						
 	def iterkeys_id(self,iterator):
 		for n in iterator():
@@ -334,41 +342,58 @@ class Connected(dict):
 	def itervalues(self,iterator):
 		for node,eid in iterator():
 			yield self.g.es[ eid ]['weight']
+
 			
 	def items(self):
 		return list(self.iteritems())
 
 	def iteritems(self,iterator):	    
 		for node,eid in iterator(): 
-			yield (node['name'], self.g.es[ eid ]['weight'] )
+			yield (node['id'], self.g.es[ eid ]['weight'] )
 				
 	def __delitem__(self, k, to):
-		kidls = _getVertexFromName(self.g, k)
-		if not len( kidls ):
-			raise KeyError("This key ("+str(k)+") is not in dictionary")
+		try:
+			kid = self.vertexDict[k]
+		except KeyError: #if there isn't in vertexDict
+			
+			kidls = _getVertexFromName(self.g, k)
+			try:
+				kid = kidls[0]
+			except IndexError:	
+				raise KeyError("This key ("+str(k)+") is not in dictionary")
 		
+			self.vertexDict[k] = kid #add for future
+
 		if to:
-			self.g.delete_edges( self.g.get_eid( self.nodevertex.index, kidls[0].index, directed=True ) )
+			self.g.delete_edges( self.g.get_eid( self.nodevertex.index, kid.index, directed=True ) )
 		else:
-			self.g.delete_edges( self.g.get_eid( kidls[0].index, self.nodevertex.index, directed=True ) )
+			self.g.delete_edges( self.g.get_eid( kid.index, self.nodevertex.index, directed=True ) )
 		
 		return None
 
 	def __getitem__(self, k, to=True):
-		kidls = _getVertexFromName(self.g, k)
-		if not len( kidls ):
-			raise KeyError("This key ("+str(k)+") is not in dictionary")
-		
+		try:
+			kid = self.vertexDict[k]
+		except KeyError: #if there isn't in vertexDict
+			
+			kidls = _getVertexFromName(self.g, k)
+			try:
+				kid = kidls[0]
+			except IndexError:	
+				raise KeyError("This key ("+str(k)+") is not in dictionary")
+			
+			self.vertexDict[k]= kid
+			
 		if to: #the weight of edge me-k
 			try:
-				eid = self.g.get_eid( self.nodevertex.index, kidls[0].index, directed=True )
+				eid = self.g.get_eid( self.nodevertex.index, kid.index, directed=True )
 			except ig.core.InternalError:
 				raise KeyError("the edge from "+str(self.nodename)+" to "+str(k)+" is not in graph")
 						
 			return self.g.es[ eid ]['weight']
 		else:  #the weight of edge k-me
 			try:
-				eid = self.g.get_eid( kidls[0].index,self.nodevertex.index, directed=True )
+				eid = self.g.get_eid( kid.index,self.nodevertex.index, directed=True )
 			except ig.core.InternalError:
 				raise KeyError("the edge from "+str(k)+" to "+str(self.nodename)+" is not in graph")
 			
@@ -380,15 +405,27 @@ class Connected(dict):
 		"""
 		if revert: #reverted graph cannot change the weights
 			return None
-		kidls = _getVertexFromName(self.g, k)
 		
-		#check if node is already in graph
-		if not len( kidls ):
+		exist = True
+		try:
+			kidls = []
+			kidls.append( self.vertexDict[k] )
+		except KeyError: #if there isn't in vertexDict
+				
+			kidls = _getVertexFromName(self.g, k)
+			try:
+				self.vertexDict[k] = kidls[0]
+			except IndexError:	
+				exist = False	
+		
+        #check if node is already in graph
+		if not exist:
 			self.g.add_vertices(1) #add a vertex
 			ve = self.g.vs[self.g.vcount()-1] #the vertex just added
-			ve['name'] = k #set name of the vertex
+			ve['id'] = k #set name of the vertex
 		else:
-			ve = kidls[0] 
+			ve = kidls[0]	
+
 		try:
 			eid = self.g.get_eid( self.nodevertex.index , ve.index, directed=True )
 			return None #if we arrive here, the edge exist! skip assignment
@@ -401,9 +438,19 @@ class Connected(dict):
 		return None
 
 	def __contains__(self,k,condition):
+	
+		if k in self.vertexDict and condition( self.vertexDict[k] ):
+			return True	
+	
 		kidls = _getVertexFromName( self.g , k )
+		try:
+			k = kidls[0]
+			exist = True
+		except IndexError:
+			exist = False
+	
 		#if exists		  and if is the end of some edges  
-		if len(kidls) > 0 and condition( kidls[0] ):
+		if exist and condition( kidls[0] ):
 			return True
 		else:
 			return False
@@ -431,7 +478,7 @@ def _iterconditionTo(graph,nodeStart,condition=False,noEid=False):
 	def cond(n):
 		try:
 			x = graph.get_eid( nodeStart.index, n.index, directed=True )
-			#print "da", node.attributes()['name'], n.attributes()['name'], "yes"
+			#print "da", node.attributes()['id'], n.attributes()['id'], "yes"
 			return True
 		except ig.core.InternalError:
 			return False
@@ -495,7 +542,7 @@ def _iterconditionFrom(graph,nodeEnd,condition=False,noEid=False):
 	def cond(n):
 		try:
 			x = graph.get_eid( n.index, nodeEnd.index, directed=True )
-			#print "da", node.attributes()['name'], n.attributes()['name'], "yes"
+			#print "da", node.attributes()['id'], n.attributes()['id'], "yes"
 			return True
 		except ig.core.InternalError:
 			return False
@@ -563,9 +610,15 @@ class XDiGraph(nx.XDiGraph):
 	def __init__(self, data=None, name='', selfloops=False, multiedges=False):
 		nx.XDiGraph.__init__(self, data=data, name=name, selfloops=selfloops, multiedges=multiedges)
 		self.succ = SuccDict()
-		self.pred = PredDict(self.succ.g)
+		self.pred = PredDict(self.succ.g, self.succ.vertexDict)
 		self.adj = self.succ
 		return None
+
+	def number_of_edges(self):
+		return self.succ.g.ecount()
+	
+	def number_of_nodes(self):
+		return self.succ.g.vcount()	
 
 	#this methods are overrided only for avoid useless waste of time
 	#in theory this class have to work only with __init__ method overrided

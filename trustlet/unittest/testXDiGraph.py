@@ -8,7 +8,8 @@ test cache functions.
 import unittest
 import trustlet.igraphXdigraphMatch as IXD
 import networkx as nx
-#import os
+import igraph
+import os
 #import sys
 #import random
 #import time
@@ -21,6 +22,27 @@ class TestIXD(unittest.TestCase):
 		self.g.add_edge('mart','mas',{'level':'journeyer'})
 		self.g.add_edge('luc','mas',{'level':'master'})
 		self.g.add_edge('dan','luc',{'level':'apprentice'})
+
+	def testDot(self):
+		self.assertEqual( self.g.number_of_edges(), 4 )	
+		self.assertEqual( self.g.number_of_edges(), 4 )	
+		nx.write_dot( self.g, './test.dot' )
+		g1 = nx.read_dot( './test.dot' )
+		self.assertEqual( g1.number_of_edges(), self.g.number_of_edges() )
+		self.assertEqual( g1.number_of_edges(), 4 )
+        #os.remove( './test.dot' )
+		#first method of loading
+		#g2 = igraph.load( 'test~', format='pajek' )
+		#g3 = IXD.XDiGraph()
+		#self.g3.succ.g = g2
+		
+		#self.assertEqual( g3.number_of_edges(), self.g.number_of_edges() )
+		#second method
+		#g1 = nx.read_pajek( './test.net' )
+		
+		#self.assertEqual( self.g.number_of_edges(), g1.number_of_edges() )
+		#self.assertEqual( g3.number_of_edges(), g1.number_of_edges() )
+		
 
 	def testValuesOnEdges(self):
 		self.assertEqual( self.g.get_edge( 'dan','mas' ) , {'level':'journeyer'} )

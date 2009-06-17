@@ -19,7 +19,7 @@ class TestIXD(unittest.TestCase):
 		self.g['dan'] = 1
 		self.g['dan']['john'] = 1
 		self.g['mas'] = 1
-		self.gp = IXD.PredDict(self.g.g)
+		self.gp = IXD.PredDict(self.g.g, self.g.vertexDict)
 
 	def testAssign(self):
 		self.assertEqual( self.g['dan']['john'] , 1 )

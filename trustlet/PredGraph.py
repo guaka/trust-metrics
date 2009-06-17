@@ -841,7 +841,7 @@ class CalcWikiGraph(CalcGraph):
         try:
             #for predgraph we save the xdigraph class in c2 file
             #because from version 0.37 xdigraph support pickling
-            self._paste_graph( c2 )
+            self._paste_graph( c2 , decodeUtf8=False )
             
             assert c2.number_of_edges() == self.number_of_edges()
             

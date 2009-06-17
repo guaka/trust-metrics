@@ -37,7 +37,6 @@ class TestWiki(unittest.TestCase):
             if not found:
                 continue # if for a network I don't found any network, skip it
 
-            print netname
             self.setInstances[netname+'_'+tmpdata] = trustlet.Dataset.Network.WikiNetwork( lang=netname, date=tmpdata, silent=True )
             
     def testWeights(self):
