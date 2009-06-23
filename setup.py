@@ -37,8 +37,7 @@ data = [# (docdirbase, glob("doc/*.txt")),
 package_data     = {'': ['*.txt'],}
 
 
-dependencies = ['igraph',
-                'pygraphviz',
+dependencies = ['pygraphviz',
                 'pyparsing',
                 'networkx',
                 'numpy',
