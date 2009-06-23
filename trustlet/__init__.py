@@ -22,7 +22,7 @@ import re
 
 __version__ = '0.2' #+ '-r' + re.match('\$'+'Rev: (\d*) \$','$Rev: 1312 $').group(1) # doesn't work -_-
 
-import igraphXdigraphMatch
+#import igraphXdigraphMatch
 from Dataset.Network import *
 from Dataset.Dummy import *
 from Dataset.Advogato import *

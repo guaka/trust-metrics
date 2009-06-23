@@ -80,9 +80,6 @@ class CalcGraph(Network):
                 graph = self._generate()
                 self._write_pred_graph_dot(graph)
                 
-            print self.edges()
-
-                
             self._set_arrays()
             self._prepare()
             if hasattr(self.TM, 'rescale') and self.TM.rescale:
@@ -841,7 +838,7 @@ class CalcWikiGraph(CalcGraph):
         try:
             #for predgraph we save the xdigraph class in c2 file
             #because from version 0.37 xdigraph support pickling
-            self._paste_graph( c2 , decodeUtf8=False )
+            self.paste_graph( c2 , decodeUtf8=False )
             
             assert c2.number_of_edges() == self.number_of_edges()
             

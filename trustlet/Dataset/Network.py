@@ -8,7 +8,7 @@ Each network supported has it's own class to wrap it.
 """
 
 from networkx.readwrite import read_pajek,write_pajek
-import igraph # fist improve memory usage and speed of igraphXdiGraphMatch
+#import igraph # fist improve memory usage and speed of igraphXdiGraphMatch
 
 from networkx import read_dot,write_dot
 from trustlet.Table import Table
@@ -589,10 +589,13 @@ class Network(XDiGraph):
 			except:
 				sys.stderr.write( "Warning! "+desc+" not calculated (probably because your network has no level_map)\n" )  
 				continue
-			
+
 		del function_list[2] #number of edges
 		del function_list[3] #number of nodes
 		del function_list[-1] #number of connected components
+		del function_list[9] #betwenness centrality (a type)
+		del function_list[10] #betwenness centrality (a type)
+		del function_list[11] #betwenness centrality (a type)
 
 		if not (hasattr(self,"date") and self.date):
 			self.date = '1970-01-01'
@@ -621,7 +624,7 @@ class Network(XDiGraph):
 
 		if not trustlet.helpers.save( cachekey, buffer, path ):
 			sys.stderr.write( "Warning! save of cache failed\n" )
-		
+					
 		return None
 		
 	def powerlaw_exponent(self):
