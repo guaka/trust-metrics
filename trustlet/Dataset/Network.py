@@ -361,14 +361,6 @@ class Network(XDiGraph):
 			self.filepath += '.c2'
 
 		pydataset = trustlet.helpers.load(cachekey, self.filepath)
-		#if this is an igraph
-		if type(pydataset) is igraph.Graph:
-			try:
-				self.succ.g = pydataset
-				return True
-			except AttributeError:
-				sys.stderr.write('This is a standard XDiGraph, igraph load is not supported\n')
-				return False
 
 		if not pydataset and cachekey.has_key('threshold'):
 			# retry without thresold
@@ -1267,30 +1259,11 @@ class WikiNetwork(WeightedNetwork):
 		
 		pydataset = trustlet.helpers.load(cachedict, self.filepath )
 		
-		if type(pydataset) is igraph.Graph:
-			try:
-				self.succ.g = pydataset
-				return True
-			except AttributeError:
-				sys.stderr.write('This is a standard XDiGraph, igraph load is not supported\n')
-				return False
-		
 		if pydataset == None and self.threshold > 1:
 			#try without threshold
 			cachedict = {'network':'Wiki','lang':str(self.lang),'date':str(self.date)}
 			pydataset = trustlet.helpers.load(cachedict, self.filepath )
-			if type(pydataset) is igraph.Graph:
-				try:
-					self.succ.g = pydataset
-				except AttributeError:
-					sys.stderr.write('This is a standard XDiGraph, igraph load is not supported\n')
-					return False
-
-				for e in self.edges(): #calculate manually threshold
-					if e[2] < self.treshold:
-						self.delete_edge(e)
-				return True		
-			elif type(pydataset) is tuple:
+			if type(pydataset) is tuple:
 			    #calculate manually treshold
 				if pydataset:
 					edges = pydataset[1]
