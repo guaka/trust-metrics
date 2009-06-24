@@ -9,6 +9,8 @@ contains edges
 
 names:
 une name per line for nodes
+
+If obfuscation.map is present, it will be used.
 '''
 
 import sys
@@ -40,7 +42,6 @@ if os.path.isfile('obfuscation.map'):
         assert n not in obfuscation
         obfuscation[n] = o
     f.close()
-    print len(obfuscation)
 
 names.difference_update(set(obfuscation.itervalues()))
 
@@ -78,7 +79,6 @@ N._cachedict = {'date':date}
 N.save_c2()
 print 'Saved in',N.filepath
 
-print '/',len(obfuscation)
 f = file('obfuscation.map','w')
 for k,v in obfuscation.iteritems():
     f.write(str(k)+' '+str(v)+'\n')
