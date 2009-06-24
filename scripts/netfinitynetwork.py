@@ -1,7 +1,7 @@
 #!/usr/bin/env ipython
 
 '''
-getnetfinitynetwork <input> [[<names>] map]
+getnetfinitynetwork <input> [<names>]
 
 input:
 contains edges
@@ -18,19 +18,31 @@ import re
 from trustlet import *
 
 f = file(sys.argv[1])
-edges = [tuple(map(int,x.strip().split())) for x in f.readlines()]
+edges = [(lambda x: (x[0],x[1],int(x[2])))(x.strip().split()) for x in f]
 f.close()
 
 if sys.argv[2:]:
     f = file(sys.argv[2])
-    names = [x.strip() for x in f.readlines()]
-    random.shuffle(names)
+    names = set([x.strip() for x in f.readlines() if x.strip() and x.strip()[0]!='#'])
     f.close()
 else:
     names = []
 
 oedges = []
 obfuscation = {}
+
+if os.path.isfile('obfuscation.map'):
+    print 'Reading obfuscation'
+    f = file('obfuscation.map')
+
+    for x in f:
+        n,o = x.strip().split()
+        assert n not in obfuscation
+        obfuscation[n] = o
+    f.close()
+    print len(obfuscation)
+
+names.difference_update(set(obfuscation.itervalues()))
 
 random.shuffle(edges)
 cont = 0
@@ -39,13 +51,13 @@ for u,v,e in edges:
         if names:
             obfuscation[u] = names.pop()
         else:
-            obfuscation[u] = cont
+            obfuscation[u] = str(cont)
             cont += 1
     if not v in obfuscation:
         if names:
             obfuscation[v] = names.pop()
         else:
-            obfuscation[v] = cont
+            obfuscation[v] = str(cont)
             cont += 1
     oedges.append((obfuscation[u],obfuscation[v],e))
 
@@ -66,9 +78,8 @@ N._cachedict = {'date':date}
 N.save_c2()
 print 'Saved in',N.filepath
 
-if 'map' in sys.argv or 1:
-    print 'Saved '+date+'.map'
-    f = file(date+'.map','w')
-    for k,v in obfuscation.iteritems():
-        f.write(str(k)+' '+str(v)+'\n')
-    f.close()
+print '/',len(obfuscation)
+f = file('obfuscation.map','w')
+for k,v in obfuscation.iteritems():
+    f.write(str(k)+' '+str(v)+'\n')
+f.close()
