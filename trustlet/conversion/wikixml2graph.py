@@ -427,23 +427,25 @@ class WikiHistoryContentHandler(sax.handler.ContentHandler):
                         d[self.lusername] = 1
                         
         elif name == u'title':
-            
+            #TODO: duplicated code (see the same function in the Current Handler)?
             ### 'Discussion utente:Paolo-da-skio'
             ### 'Discussion utente:Paolo-da-skio/Subpage'
-            title = self.ltitle.partition('/')[0].partition(':')
-            title = (title[0].lower(), title[1].lower(), title[2] ) #lower
+            title = self.ltitle.split('/')[0].split(':')
+            #  comparison case insensitive
+            title[0] = title[0].lower()
 
-            if (title[:2] == (self.i18n[0], ':') or title[:2] == (i18n['en'][0].lower(), ':') )  and title[2]:
+            # if the discussion is in english or in the language of this wiki, and name of user is not ''
+            if (len(title) > 1) and (( title[0] == self.i18n[0]) or (title[0] == i18n['en'][0].lower()) ) and title[1]:
                 # if the tag is <title> it means that this is the begin of a new talk page
-                self.pages.append( (title[2],{}) ) # ( user, dict_edit )
+                self.pages.append( (title[1],{}) ) # ( user, dict_edit )
                 self.validdisc = True
                 
             else:
                 self.validdisc = False
             
             # True if is a talk page or user page                 add talk and user page in english
-            if title[0] in (self.i18n[1],self.i18n[0],i18n['en'][0].lower(),i18n['en'][1].lower()) and title[1]==':' and title[2]:
-                self.allusers.add(title[2])
+            if len(title) > 1 and title[0] in (self.i18n[1], self.i18n[0], i18n['en'][0].lower(), i18n['en'][1].lower()) and title[1]:
+                self.allusers.add(title[1])
 
         elif name == u'page' and self.validdisc:
             # erase edges if weight < self.threshold
@@ -592,19 +594,20 @@ class WikiCurrentContentHandler(sax.handler.ContentHandler):
         elif name == u'title':
 
             ### 'Discussion utente:Paolo-da-skio'
-            title = self.ltitle.partition('/')[0].partition(':')
+            title = self.ltitle.split('/')[0].split(':')
             #  comparison case insensitive
-            title = (title[0].lower(), title[1].lower(), title[2])
+            title[0] = title[0].lower()
+
             # if the discussion is in english or in the language of this wiki, and name of user is not ''
-            if ( ( title[:2] == (self.i18n[0], ':') ) or (title[:2] == (i18n['en'][0].lower(), ':') ) ) and title[2]:
-                self.lusername = title[2]
+            if (len(title) > 1) and (( title[0] == self.i18n[0]) or (title[0] == i18n['en'][0].lower()) ) and title[1]:
+                self.lusername = title[1]
                 self.validdisc = True
             else:
                 self.validdisc = False
 
             # True if is a talk page or user page                 add talk and user page in english
-            if title[0] in (self.i18n[1],self.i18n[0],i18n['en'][0].lower(), i18n['en'][1].lower() ) and title[1] == ':' and title[2]:
-                self.allusers.add(title[2])
+            if len(title) > 1 and title[0] in (self.i18n[1],self.i18n[0],i18n['en'][0].lower(), i18n['en'][1].lower() ) and title[1]:
+                self.allusers.add(title[1])
 
     def characters(self,contents):
         #fill the value
