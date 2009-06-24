@@ -66,17 +66,28 @@ re_date = re.compile('netfinitynetwork-([0-9-]{10}).txt')
 
 date = re_date.match(sys.argv[1]).group(1)
 
+users = set([x[0] for x in oedges])
+
 N = WeightedNetwork()
+U = WeightedNetwork()
 
 for u,v,e in oedges:
     N.add_node(u)
     N.add_node(v)
     N.add_edge(u,v,{'value':e})
 
-N.filepath = os.path.join(relative_path(N.filepath,'datasets')[0].replace('datasets','shared_datasets'),'NetfinityNetwork',date)
+    if v in users:
+        U.add_node(u)
+        U.add_node(v)
+        U.add_edge(u,v,{'value':e})
+        
+
+U.filepath = N.filepath = os.path.join(relative_path(N.filepath,'datasets')[0].replace('datasets','shared_datasets'),'NetfinityNetwork',date)
 N._cachedict = {'date':date}
+U._cachedict = {'date':date,'type':'users'}
 
 N.save_c2()
+U.save_c2()
 print 'Saved in',N.filepath
 
 f = file('obfuscation.map','w')
