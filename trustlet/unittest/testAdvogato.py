@@ -112,14 +112,6 @@ class TestAdvogato(unittest.TestCase):
             self.assertEqual( c2.number_of_connected_components(), dot.number_of_connected_components() )
             self.assertEqual( c2.avg_degree(), dot.avg_degree() )
             
-    def testWeights(self):
-        print ""
-        
-        for netname in self.setInstances:
-            print "Testing", netname
-            net = self.setInstances[netname]['dot']
-            
-            self.assertEqual( len( net.weights_list() ), net.number_of_edges() )
             
     def testPajek(self):
         print ""

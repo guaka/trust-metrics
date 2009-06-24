@@ -166,9 +166,13 @@ class CalcGraph(Network):
     def _trust_array(self, which_one = 'pred'):
         """Return numpy array of pred (default) or orig values."""
         def mapper(edge):
-            val = edge[2][which_one]
+            try:
+                val = edge[2][which_one]
+            except KeyError:
+                raise KeyError( "malformed edge "+str(edge[2]) )
+
             return ( val == 'None' or val == 0.0 ) and UNDEFINED or float(val)
-        return self._edge_array(mapper)
+        return self._edge_array(mapper) #here
 
     def _write_pred_graph_dot(self, pred_graph):
         """Write PredGraph.dot."""
@@ -280,7 +284,7 @@ class PredGraph(CalcGraph):
         if not self.silent:
             print "Generating", self.filepath
         pg = self._predict_existing()
-        self._paste_graph(pg)
+        #self._paste_graph(pg)
         return pg
         
     def _predicted_ratio(self):
@@ -312,15 +316,19 @@ class PredGraph(CalcGraph):
         # if True:  # check if self has orig
         if ratio == 1.0:
             # add orig trust value into self
+            
             for e in self.dataset.edges_iter():
                 # for some RTFMing reason get_edge gives an
                 # ItemAttribute, not dict, so we do some casting
                 # work here
                 x = dict(self.get_edge(e[0], e[1]))
                 x['orig'] = self.dataset.trust_on_edge(e)
+                #readd in order to convert in float
                 x['pred'] = (( (x['pred'] == 'None') or (x['pred'] == 0.0) ) and 
                              UNDEFINED or float(x['pred']))
                 self.add_edge(e[0], e[1], x)
+            
+            #print self.edges()[2][2]
             self.orig_trust = self._trust_array('orig')
         else:
             sys.stderr.write( "#edges in dataset != #edges in predgraph!\n" )
@@ -344,8 +352,9 @@ class PredGraph(CalcGraph):
 
     def _predict_existing(self):
         """Predict existing nodes by leaving out the edge"""
-        pred_graph = XDiGraph()  # could be avoided when working on self
-        for n in self.dataset.nodes():
+        #pred_graph = XDiGraph()  # could be avoided when working on self
+        pred_graph = self
+        for n in self.dataset.nodes_iter():
             pred_graph.add_node(n)
 
         count = 0
@@ -355,15 +364,20 @@ class PredGraph(CalcGraph):
             if (self.predict_ratio == 1.0 or
                 random() <= self.predict_ratio):
                 predicted_trust = tm.leave_one_out(edge)
-                
-                pred_graph.add_edge(edge[0], edge[1], 
-                                    {'pred': str(predicted_trust)})
-                                     #'orig': str(self.dataset.trust_on_edge(edge)})
+                valuedict = {}
+                valuedict['pred'] = (( (predicted_trust == None) or (predicted_trust == 0.0) ) and 
+                                     UNDEFINED or float(predicted_trust))
+                #not added because we will add it later (in dot, we cannot save orig)
+                #valuedict['orig'] = str(self.dataset.trust_on_edge(edge) )
+
+                pred_graph.add_edge(edge[0], edge[1], valuedict )
+                                    #{'pred': str(predicted_trust)})
+                                    # 'orig': str(self.dataset.trust_on_edge(edge)) } )
                 count += 1
                 if divmod(count, 100)[1] == 0:
                     self._time_indicator(count, str( (edge, predicted_trust) )+' tm: '+get_name(self.TM) )
         
-            
+        #print pred_graph.edges()
         return pred_graph
         
 

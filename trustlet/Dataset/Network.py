@@ -406,6 +406,9 @@ class Network(XDiGraph):
 			sys.stderr.write( 'On this c2 '+self.filepath+' there isn\'t this key '+str(cachekey)+'\n')	
 			return False
 
+		if not self.level_map:
+			self.level_map = self.weights()
+		
 		return True
 
 	def _name(self):
@@ -910,21 +913,10 @@ class WeightedNetwork(Network):
 		"""
 		if hasattr(self, "_weights_list") and self._weights_list and not force:
 			ws = self._weights_list
-		else:
-			self.weights(force=True) #create self._weights if there isn't
-			ws = []
-	
-			if self._weights:
-				for n in self.edges_iter():
-					if type(n[2]) is dict:
-						x = n[2].values()[0]
-					else:
-						x = n[2]
-				
-					ws.append( self._weights[str(x)] )
-					
+		else:		
+			ws = list( self.weights(force=True) ) #create self._weights if there isn't
 			self._weights_list = ws
-		
+			
 		return ws
 	
 	def weights(self,force=False):
@@ -948,6 +940,8 @@ class WeightedNetwork(Network):
 						ws[x.values()[0]] = self.level_map[ x.values()[0] ]
 					elif type(x) is tuple:
 						ws[x[0]] = x[1]
+					elif type(x) is dict:
+						ws[x.values()[0]] = x.values()[0]	
 					
 			self._weights_dictionary = self._weights = ws
 		
