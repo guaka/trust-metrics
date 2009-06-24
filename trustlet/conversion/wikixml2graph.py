@@ -7,9 +7,7 @@ in c2 dataset format, usable by trustlet
 from xml import sax
 from trustlet.Dataset.Network import Network,WeightedNetwork
 from trustlet.helpers import *
-from networkx import write_dot
 from string import index, split
-import hashlib
 import sys
 import os,re,time
 import urllib

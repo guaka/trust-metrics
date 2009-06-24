@@ -17,7 +17,12 @@ import cPickle as marshal
 import threading
 #cache
 import re
-from hashlib import md5
+
+try:
+    from hashlib import md5
+except:
+    import md5
+
 import cPickle as pickle
 from gzip import GzipFile
 from socket import gethostname
