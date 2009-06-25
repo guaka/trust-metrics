@@ -73,6 +73,7 @@ class Network(XDiGraph):
 		'''
 
 		XDiGraph.__init__(self, multiedges = False)
+		self.level_map = {}
 		self.silent = silent
 		self.date = date
 		self.filename = ''
@@ -102,7 +103,7 @@ class Network(XDiGraph):
 				classpath = prefix+self.__class__.__name__
 			else:
 				classpath = self.__class__.__name__
-
+				
 			self.filepath = os.path.realpath( os.path.join(dataset_dir(base_path), classpath, self.date == None and '.' or self.date   , 'graph' ) )
 			self.filename = 'graph'
 		
@@ -406,7 +407,7 @@ class Network(XDiGraph):
 			sys.stderr.write( 'On this c2 '+self.filepath+' there isn\'t this key '+str(cachekey)+'\n')	
 			return False
 
-		if not self.level_map:
+		if not hasattr(self,"level_map") or hasattr(self,"level_map") and  not self.level_map:
 			self.level_map = self.weights()
 		
 		return True
@@ -553,8 +554,14 @@ class Network(XDiGraph):
 			if data:  # if data is not false
 				print data
 				return None
+
+		if cachekey.has_key("cond_on_edge") and cachekey['cond_on_edge']=='<lambda>':
+			sys.stderr.write( "Warning! cannot save the data about computation, with a lambda condition.\nRemove the 'cond_on_edge' key from your key-dict\n" )
+			return None
 		
-		stdout = sys.stdout
+		if force: #if force specified, we had to recalculate also 'function':'info'
+			buffer = '' #buffer that contains all the metric with his respective values in plain text. It will be saved in cachedict extended with 'function': 'info'
+		stdout = sys.stdout #save stdout
 		
 		# turn down warning
 		stderr = sys.stderr
@@ -562,10 +569,6 @@ class Network(XDiGraph):
 		tmpnam = os.tmpnam()
 		sys.stderr = stderr
 			
-		tmpfile = file( tmpnam, 'w' ) #set temporary buffer
-		
-		sys.stdout = tmpfile #save all output in a temporary file
-
 		from trustlet.netevolution import fl
 		function_list = fl[:] #copy fl
 		self.quick_info()
@@ -578,13 +581,44 @@ class Network(XDiGraph):
 							 ("number_of_connected_components","Number of connected components:"),
 							 ("connected_components_size2","Connected component size:"),
 							 ]:
+
+			cachekey['method'] = desc[:-1]
+			if not force:
+				data = trustlet.helpers.load( cachekey, path, fault=False)
+				if data:
+					print data
+					continue
+				
+			sys.stderr.write( "Evaluating "+desc[:-1]+"\n" )
+			tmpfile = file( tmpnam, 'w' ) #set temporary buffer
+				
+			sys.stdout = tmpfile #save all output in a temporary file
+
 			try:
-				sys.stderr.write( "Evaluating "+desc[:-1]+"\n" )
 				self._show_method(method, desc)
+				
 			except:
 				sys.stderr.write( "Warning! "+desc+" not calculated (probably because your network has no level_map)\n" )  
+				sys.stdout = stdout #restore stdout
 				continue
+			
+			#each time that we calculate a metric, then we save it
+			#this stdout sostitution is made because the metric print result
+			#on standard output, in order to unmodify the other functions,
+			#this workaround is needed
+			tmpfile.close()
+			info = file(tmpnam).readline()
+			#save in cache
+			if not trustlet.helpers.save( cachekey, info, path ):
+				sys.stderr.write( "Warning! save of cache about "+desc[:-1]+" failed\n" )
+				
+			sys.stdout = stdout #restore stdout
+			#print on real stdout
+			print info 
 
+			if force: #save new data for 'fucntion':'info' key
+				buffer += info	
+			
 		del function_list[2] #number of edges
 		del function_list[3] #number of nodes
 		del function_list[-1] #number of connected components
@@ -592,34 +626,42 @@ class Network(XDiGraph):
 		del function_list[10] #betwenness centrality (a type)
 		del function_list[11] #betwenness centrality (a type)
 
+		#in order to workaround a check on the date
 		if not (hasattr(self,"date") and self.date):
 			self.date = '1970-01-01'
-
+			
+		#another list of functions
+			
 		for (f,pf) in function_list.__iter__():
+			cachekey['method'] = f.__name__
+			if not force:
+				data = trustlet.helpers.load( cachekey, path, fault=False)
+				if data:
+					print data
+					continue
+
+			sys.stderr.write( "Evaluating "+f.__name__+"\n" )
+				
 			try:
-				sys.stderr.write( "Evaluating "+f.__name__+"\n" )
-				res = f(self,self.date)[1]
-				print f.__name__, ":", res
+				res = f(self,self.date)[1]	
 			except:
 				sys.stderr.write( "Warning! "+f.__name__+" not calculated (probably because your network has no level_map)\n" )	 
 				continue
 			
-		sys.stdout = stdout #restore stdout
-		tmpfile.close() #flush buffer
-		
-		buffer = ''
-		for line in file( tmpnam ).readlines():
-			buffer += line
+            #print on stdout
+			info = f.__name__+" : "+str(res)+"\n"
+			print info 
 			
-		print buffer
-
-		if cachekey.has_key("cond_on_edge") and cachekey['cond_on_edge']=='<lambda>':
-			sys.stderr.write( "Warning! cannot save the data about computation, with a lambda condition.\n" )
-			return None
-
+			if force: #save new data for 'fucntion':'info' key
+				buffer += info	
+			#save in cache
+			if not trustlet.helpers.save( cachekey, info, path ):
+				sys.stderr.write( "Warning! save of cache about "+desc[:-1]+" failed\n" )
+		
+		del cachekey['method']
 		if not trustlet.helpers.save( cachekey, buffer, path ):
-			sys.stderr.write( "Warning! save of cache failed\n" )
-					
+			sys.stderr.write( "Warning! save of whole cache failed\n" )
+	
 		return None
 		
 	def powerlaw_exponent(self):
@@ -900,9 +942,9 @@ class WeightedNetwork(Network):
 		SHOULD BE: weight_on_edge
 		"""
 
-		if type(edge[2]) is dict and hasattr(self,"level_map") and self.level_map!={}:
+		if type(edge[2]) is dict and hasattr(self,"level_map") and self.level_map:
 			return self.level_map[edge[2].values()[0]]
-		elif hasattr(self,"level_map") and self.level_map!={}:
+		elif hasattr(self,"level_map") and self.level_map:
 			return self.level_map[edge[2]]
 		else:
 			return edge[2]
