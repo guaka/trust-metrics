@@ -20,7 +20,7 @@ import re
 from trustlet import *
 
 f = file(sys.argv[1])
-edges = [(lambda x: (x[0],x[1],int(x[2])))(x.strip().split()) for x in f]
+edges = [(lambda x: (x[0],x[1],int(x[2])))(x.strip().split()) for x in f if x.strip()]
 f.close()
 
 if sys.argv[2:]:
