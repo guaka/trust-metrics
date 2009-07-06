@@ -1,3 +1,3 @@
 
 doc:
-	cd trustlet && epydoc*.py
+	cd trustlet && epydoc *.py
