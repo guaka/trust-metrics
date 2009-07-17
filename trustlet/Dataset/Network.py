@@ -926,7 +926,7 @@ class WeightedNetwork(Network):
 	"""
 	
 	def __init__(self, weights = None, has_discrete_weights = True, base_path = None,prefix=None, from_graph=None, filepath='', cachedict=None,date=None,silent=False):
-		Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=filepath,date=date,silent=silent)
+		Network.__init__(self, base_path=base_path,prefix=prefix,from_graph=from_graph,cachedict=cachedict,filepath=os.path.abspath(filepath),date=date,silent=silent)
 		self.name= 'generic_weighted_network'
 		self.has_discrete_weights = has_discrete_weights
 		self.is_weighted = True

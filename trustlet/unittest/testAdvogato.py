@@ -62,6 +62,8 @@ class TestAdvogato(unittest.TestCase):
             data = None
 
             #find an avaiable network
+            if not os.path.isdir(os.path.join( basepath , net.__name__)):
+                continue
             for tmpdata in os.listdir( os.path.join( basepath , net.__name__) ):
                 tmpath = os.path.join( basepath , net.__name__ , tmpdata  )
                 #skip non present network
@@ -83,7 +85,7 @@ class TestAdvogato(unittest.TestCase):
         
     def testReciprocity(self):
         print "" #skip a line
-        CIRCA = 10**(-15)
+        ABOUT = 10**(-15)
         
         for netname in self.setInstances:
             print "Testing", netname
@@ -94,10 +96,10 @@ class TestAdvogato(unittest.TestCase):
             self.assert_( type(val) is dict ) #must be a dict
             for level in val:
                 level_tot = sum([val[level][key] for key in val[level]]) #this must be 1 or 0 
-                if not (( level_tot < 0.0+CIRCA and level_tot > 0.0-CIRCA ) or ( level_tot < 1.0+CIRCA and level_tot > 1.0-CIRCA )):
+                if not (( level_tot < 0.0+ABOUT and level_tot > 0.0-ABOUT ) or ( level_tot < 1.0+ABOUT and level_tot > 1.0-ABOUT )):
                     print "level:",level,"1.0-level_tot:",1.0-level_tot
                 #check that the sum of value in dictionary is 1 or 0
-                self.assert_( ( level_tot < 0.0+CIRCA and level_tot > 0.0-CIRCA ) or ( level_tot < 1.0+CIRCA and level_tot > 1.0-CIRCA ) ) 
+                self.assert_( ( level_tot < 0.0+ABOUT and level_tot > 0.0-ABOUT ) or ( level_tot < 1.0+ABOUT and level_tot > 1.0-ABOUT ) ) 
     
     def testDotEqualC2(self):
         print ""

@@ -7,6 +7,8 @@ IMPORTANT: see script install sections
 
 == Depending packages ==
 
+Note: names of packages can change from a distribution to another.
+
 * python-setuptools and python-devel (in order to run setup.py install)
 * NetworkX <= 0.37 (download it from http://networkx.lanl.gov/ if you haven't it in your repository)
 * scipy

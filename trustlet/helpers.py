@@ -1478,6 +1478,9 @@ def merge_cache_old(srcpath , dstpath , mpath=None, ignoreerrors=False, priority
         f.close()
 
 
+def is_void_c2(path):
+    raise Exception('Not Implemented')
+
 def read_c2(path):
     '''return all cache dictionary'''
     try:
@@ -1762,7 +1765,7 @@ def wiki_matching(W,Z):
     shared_edges = set(map(lambda x: x[:2],W.edges_iter())) & set(map(lambda x: x[:2],Z.edges_iter()))
 
     p = 100.0 * len(shared_edges) / max_common_edges
-        
+    
 
     print 'Percentage of shared edges (without consider weight): %.2f%%'%p
 
@@ -1798,20 +1801,4 @@ def rm_empty_path(p):
 
 if __name__=="__main__":
     from trustlet import *
-    #test pool
-    q = {1:2,2:2,3:2}
-    w = {1:2,2:2,3:2}
-    e = {1:2,2:2,3:2}
-    r = {1:1,2:1,3:1}
-    t = {1:3,2:3,3:3}
-
-    l = []
-    l.append(pool(q))
-    l.append(pool(w))
-    l.append(pool(e))
-    l.append(pool(r))
-    l.append(pool(t))
-
-    t['qweqwe'] = 1
-
-    print l
+    print "I'm exiting"
