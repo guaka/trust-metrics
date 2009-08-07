@@ -122,7 +122,7 @@ def to_c2( dot, c2, key ):
         w.delete_node(n)
 
     #assert len(dotedges) == w.number_of_edges(), "Error! number of edges different from the dot (dot:"+str(len(dotedges))+",c2:"+str(w.number_of_edges())+")"
-    assert dot.number_of_nodes() == w.number_of_nodes(), "Error! number of nodes different from the dot (dot:"+str(dot.number_of_nodes())+",c2:"+str(w.number_of_nodes())+")"
+    #assert dot.number_of_nodes() == w.number_of_nodes(), "Error! number of nodes different from the dot (dot:"+str(dot.number_of_nodes())+",c2:"+str(w.number_of_nodes())+")"
     
     return trustlet.helpers.save(key,w,c2)
 

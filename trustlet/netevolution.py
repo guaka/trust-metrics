@@ -3,6 +3,7 @@
 This package contains all the function 
 on the evolution of a network
 """
+import trustlet
 from trustlet.helpers import *
 from trustlet.conversion import dot
 from trustlet.Dataset import Network,Advogato
@@ -376,7 +377,8 @@ def trustaverage( K, d ):
     d = date
     """
 
-    weight = K.weights_list()
+    #weight = K.weights_list()
+    weight = [trustlet.Dataset.Advogato._generic_map[x[2].values()[0]] for x in K.edges_iter()]
     #try to use some dictionary, because
     #sometimes the key is 'value' and sometimes is 'level'
     if not weight:
